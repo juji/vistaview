@@ -6,8 +6,10 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/vistaview.ts'),
       name: 'VistaView',
-      fileName: 'vistaview'
+      fileName: 'vistaview',
+      formats: ['es', 'umd']
     },
+    cssCodeSplit: false,
     rolldownOptions: {
       external: [],
       output: {

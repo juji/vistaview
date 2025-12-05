@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VistaView Demo</title>
+</head>
+<body>
+  <div style="padding: 20px; font-family: Arial, sans-serif;">
+    <h1>VistaView Library Demo</h1>
+    <p>This is a demo page for the VistaView frontend library.</p>
+
+    <button id="triggerBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+      Open VistaView
+    </button>
+
+    <div style="margin-top: 20px;">
+      <h2>Instructions:</h2>
+      <p>Click the button above to see VistaView in action. It should create an animated overlay that expands from the button to fill the screen.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { vistaView } from './src/vistaview.ts';
+
+    const triggerBtn = document.getElementById('triggerBtn');
+
+    triggerBtn.addEventListener('click', () => {
+      vistaView({
+        parent: document.body,
+        backgroundColor: '#000000',
+        zIndex: 9999,
+        style: {
+          foregroundColor: '#ffffff',
+          borderRadius: '8px',
+          backgroundColor: '#000000',
+          backgroundBlur: '10px',
+          backgroundOpacity: 0.8,
+          buttonColor: '#ffffff'
+        }
+      });
+    });
+  </script>
+</body>
+</html>
