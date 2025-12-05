@@ -1,6 +1,6 @@
 
-import { vistaViewComponent } from "./components"
-import { createTrustedHtml } from "./utils"
+import { vistaViewComponent, getDownloadButton } from "./components"
+import { createTrustedHtml  } from "./utils"
 
 export type VistaViewElm = {
   objectFit?: string
@@ -24,6 +24,21 @@ export type VistaViewImage = {
 
 export type VistaViewOptions = {
   animationDurationBase?: number;
+  controls?: {
+    topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    topCenter?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    bottomCenter?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    bottomLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    bottomRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+  }
+}
+
+export type VistaViewDefaultControls = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'download' | 'close';
+export type VistaViewCustomControl = {
+  name: string;
+  icon: string;
+  onClick: ( v: VistaViewImage ) => void;
 }
 
 const GlobalVistaState = {
@@ -31,7 +46,18 @@ const GlobalVistaState = {
 }
 
 const DefaultOptions = {
-  animationDurationBase: 300
+  animationDurationBase: 300,
+  controls: {
+    topLeft: [
+      'indexDisplay',
+    ],
+    topRight: [
+      'zoomIn',
+      'zoomOut',
+      getDownloadButton(),
+      'close'
+    ]
+  }
 }
 
 export class VistaView {
@@ -84,7 +110,7 @@ export class VistaView {
     this.currentIndex = index;
 
     // prepend
-    const component = vistaViewComponent(this.elements);
+    const component = vistaViewComponent(this.elements, (this.options.controls || DefaultOptions.controls) as VistaViewOptions['controls']);
     document.body.prepend(createTrustedHtml(component));
 
     // set elements
@@ -165,6 +191,7 @@ export class VistaView {
   view(index: number): void {
     if(!this.isActive) return;
     this.currentIndex = index;
+    this.setIndexDisplay();
     console.log(`VistaView: view called with index ${index}`);
   }
 

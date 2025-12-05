@@ -83,6 +83,14 @@
       cursor: pointer;
       background-color: var(--vistaview-bg-color);
       color: var(--vistaview-text-color);
+
+      &:hover{
+        background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 20));
+      }
+
+      &:active{
+        background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 40));
+      }
     }
 
     .vistaview-image-container {
