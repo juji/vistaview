@@ -104,6 +104,10 @@ export class VistaView {
 
     index = index || 0;
 
+    if(index < 0 || index >= this.elements.length) {
+      throw new Error('VistaView: Index out of bounds:' + index);
+    }
+
     this.currentIndex = index;
 
     // prepend
@@ -190,6 +194,9 @@ export class VistaView {
     // set current index display
     this.setIndexDisplay();
 
+    // set current index css var
+    this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
+
     // set as initialized
     setTimeout(() => {
       this.rootElement &&
@@ -246,8 +253,12 @@ export class VistaView {
 
   view(index: number): void {
     if(!this.isActive) return;
+    if(index < 0 || index >= this.elements.length) {
+      throw new Error('VistaView: Index out of bounds:' + index);
+    }
     this.currentIndex = index;
     this.setIndexDisplay();
+    this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
     console.log(`VistaView: view called with index ${index}`);
   }
 

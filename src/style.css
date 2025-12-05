@@ -6,7 +6,7 @@
   --vistaview-background-blur: 10px;
   --vistaview-background-opacity: 0.8;
 
-  --vistaview-initial-z-index: 30;
+  --vistaview-initial-z-index: 1;
   --vistaview-destination-z-index: 2147483647;
   --vistaview-animation-duration: 600;
 
