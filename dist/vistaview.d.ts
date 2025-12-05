@@ -1,4 +1,5 @@
-import { VistaViewImage } from './lib/VistaView';
+import { VistaViewImage, VistaViewElm } from './lib/VistaView';
+export type { VistaViewImage, VistaViewElm };
 export type VistaViewOptions = {
     parent?: HTMLElement;
     elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];

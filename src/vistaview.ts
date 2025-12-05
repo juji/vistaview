@@ -1,8 +1,11 @@
 
 import { getElmProperties } from './lib/utils';
 import { VistaView } from './lib/VistaView';
-import type { VistaViewImage } from './lib/VistaView';
+import type { VistaViewImage, VistaViewElm } from './lib/VistaView';
 import './style.css';
+
+// Re-export types for library consumers
+export type { VistaViewImage, VistaViewElm };
 
 
 export type VistaViewOptions = {
