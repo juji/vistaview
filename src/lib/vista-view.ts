@@ -62,7 +62,7 @@ export class VistaView {
     this.currentIndex = index;
 
     const component = vistaViewComponent(this.elements);
-    document.body.insertAdjacentHTML('afterbegin', createTrustedHtml(component) as unknown as string);
+    document.body.prepend(createTrustedHtml(component) as unknown as string);
   }
 
   close(): void {
