@@ -191,14 +191,9 @@ export class VistaView {
     this.setIndexDisplay();
 
     // set as initialized
-    const animationDurationBase = this.getAnimationDurationBase();
     setTimeout(() => {
       this.rootElement &&
       this.rootElement.classList.add('vistaview--initialized');
-      setTimeout( () => {
-        this.rootElement &&
-        this.rootElement.classList.add('vistaview--ready');
-      }, animationDurationBase);
     },33)
 
     // 

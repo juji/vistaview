@@ -97,6 +97,29 @@
   }
 }
 
+@keyframes vistaview-ui-anim-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+@keyframes vistaview-ui-anim-out {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
 /* .vistaview-root > * {
   display: none;
 } */
@@ -105,7 +128,6 @@
   
   
   .vistaview-ui{
-    transition: opacity 300ms ease 300ms;
     opacity: 0;
   }
 
@@ -208,18 +230,14 @@ vistaview is initialized, with initial position and size
 .vistaview-root.vistaview--initialized{
   display: block;
   animation: vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
-}
-
-.vistaview-root.vistaview--ready{
   .vistaview-ui{
-    opacity: 1;
+    animation: vistaview-ui-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out calc(var(--vistaview-animation-duration) * 1ms) forwards;
   }
 }
 
 .vistaview-root.vistaview--closing{
   .vistaview-ui{
-    transition: opacity 300ms ease 0ms;
-    opacity: 0;
+    display: none;
   }
   animation: vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 }
