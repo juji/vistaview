@@ -6,7 +6,7 @@
   --vistaview-background-blur: 10px;
   --vistaview-background-opacity: 0.8;
 
-  --vistaview-initial-z-index: 0;
+  --vistaview-initial-z-index: 30;
   --vistaview-destination-z-index: 2147483647;
   --vistaview-animation-duration: 600;
 
@@ -29,10 +29,11 @@
   --vistaview-container-initial-height: 0;
   --vistaview-container-initial-top: 0;
   --vistaview-container-initial-left: 0;
+  --vistaview-image-border-radius: 0px;
 
 }
 
-@keyframes vistaview-anim {
+@keyframes vistaview-anim-in {
   0% {
     top: var(--vistaview-container-initial-top);
     left: var(--vistaview-container-initial-left);
@@ -40,6 +41,7 @@
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
+    border-radius: var(--vistaview-image-border-radius);
     z-index: var(--vistaview-initial-z-index);
   }
   50% {
@@ -49,6 +51,7 @@
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
+    border-radius: 0px;
     z-index: var(--vistaview-initial-z-index);
   }
   100%{
@@ -62,11 +65,50 @@
   }
 }
 
+@keyframes vistaview-anim-out {
+  0% {
+    z-index: var(--vistaview-destination-z-index);
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
+    width: 100%;
+    height: 100%;
+    background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
+    backdrop-filter: blur(var(--vistaview-background-blur));
+  }
+  50% {
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
+    backdrop-filter: blur(0px);
+    border-radius: 0px;
+    z-index: var(--vistaview-initial-z-index);
+  }
+  100%{
+    top: var(--vistaview-container-initial-top);
+    left: var(--vistaview-container-initial-left);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
+    backdrop-filter: blur(0px);
+    border-radius: var(--vistaview-image-border-radius);
+    z-index: var(--vistaview-initial-z-index);
+  }
+}
+
 /* .vistaview-root > * {
   display: none;
 } */
 
-.vistaview-root { 
+.vistaview-root {
+  
+  
+  .vistaview-ui{
+    transition: opacity 300ms ease 300ms;
+    opacity: 0;
+  }
+
   .vistaview-container {
     width: 100%;
     height: 100%;
@@ -157,6 +199,7 @@
   display: none;
   isolation: isolate;
   translate: -50% -50%;
+  overflow: hidden;
 }
 
 /* 
@@ -164,53 +207,19 @@ vistaview is initialized, with initial position and size
  */
 .vistaview-root.vistaview--initialized{
   display: block;
-  /* top: var(--vistaview-container-initial-top);
-  left: var(--vistaview-container-initial-left);
-  width: var(--vistaview-container-initial-width);
-  height: var(--vistaview-container-initial-height);
-  background: rgb(from var(--vistaview-bg-color) r g b / 0);
-  backdrop-filter: blur(0px);
-  z-index: var(--vistaview-initial-z-index); */
-  animation: vistaview-anim calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
-
-  /* transition: 
-    top calc(var(--vistaview-animation-duration) * 1ms) ease-out,
-    left calc(var(--vistaview-animation-duration) * 1ms) ease-out,
-    width calc(var(--vistaview-animation-duration) * 1ms) ease-out calc(var(--vistaview-animation-duration) * 1ms),
-    height calc(var(--vistaview-animation-duration) * 1ms) ease-out calc(var(--vistaview-animation-duration) * 1ms),
-    background calc(var(--vistaview-animation-duration) * 1ms) ease-in calc(var(--vistaview-animation-duration) * 1ms),
-    backdrop-filter calc(var(--vistaview-animation-duration) * 1ms) ease-in calc(var(--vistaview-animation-duration) * 1ms)
-  ; */
+  animation: vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 }
 
-/*
-this is after vistaview is started, moving to the center of the screen 
- */
-/* .vistaview-root.vistaview--transit {
-  top: var(--vistaview-center-y);
-  left: var(--vistaview-center-x);
-  background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
-  backdrop-filter: blur(var(--vistaview-background-blur));
-  width: 100%;
-  height: 100%;
-} */
-
-/*
-this is after vistaview is active, taking the full screen
- */
-/* .vistaview-root.vistaview--started {
-  z-index: var(--vistaview-destination-z-index);
-  top:0;
-  left:0;
-
-  transition: 
-    top calc(var(--vistaview-animation-duration) * 1ms) ease-in-out calc(var(--vistaview-animation-duration) * 1ms),
-    left calc(var(--vistaview-animation-duration) * 1ms) ease-in-out calc(var(--vistaview-animation-duration) * 1ms),
-    width calc(var(--vistaview-animation-duration) * 1ms) ease-in-out,
-    height calc(var(--vistaview-animation-duration) * 1ms) ease-in-out
-  ;
-} */
+.vistaview-root.vistaview--ready{
+  .vistaview-ui{
+    opacity: 1;
+  }
+}
 
 .vistaview-root.vistaview--closing{
-  animation: vistaview-anim calc(var(--vistaview-animation-duration) * 1ms) ease-out reverse;
+  .vistaview-ui{
+    transition: opacity 300ms ease 0ms;
+    opacity: 0;
+  }
+  animation: vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 }

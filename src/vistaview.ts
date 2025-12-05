@@ -1,6 +1,4 @@
 
-
-import { getElmProperties } from './lib/utils';
 import { VistaView } from './lib/vista-view';
 import type { VistaViewImage, VistaViewElm } from './lib/vista-view';
 import './style.css';
@@ -40,10 +38,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
         height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
         smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
         alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
-        anchorProps: el instanceof HTMLAnchorElement ? getElmProperties(el) : undefined,
         anchor: el instanceof HTMLAnchorElement ? el : undefined,
-        imageProps: el instanceof HTMLImageElement ?  getElmProperties(el as HTMLImageElement) : 
-          el.querySelector('img') ? getElmProperties(el.querySelector('img') as HTMLImageElement) : undefined,
         image: el instanceof HTMLImageElement ? el as HTMLImageElement : 
           el.querySelector('img') ? el.querySelector('img') as HTMLImageElement : undefined
       }
@@ -65,10 +60,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
           height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
           smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
           alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
-          anchorProps: el instanceof HTMLAnchorElement ? getElmProperties(el) : undefined,
           anchor: el instanceof HTMLAnchorElement ? el : undefined,
-          imageProps: el instanceof HTMLImageElement ?  getElmProperties(el as HTMLImageElement) : 
-            el.querySelector('img') ? getElmProperties(el.querySelector('img') as HTMLImageElement) : undefined,
           image: el instanceof HTMLImageElement ? el as HTMLImageElement : 
             el.querySelector('img') ? el.querySelector('img') as HTMLImageElement : undefined
         }

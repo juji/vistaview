@@ -62,18 +62,18 @@ export function vistaViewComponent(
           </div>
         `).join('')}
       </div>
-      <div class="vistaview-top-bar">
+      <div class="vistaview-top-bar vistaview-ui">
         <div>${controls?.topLeft ? controls.topLeft.map( control => convertControlToHtml(control) ).join('') : ''}</div>
         <div>${controls?.topCenter ? controls.topCenter.map( control => convertControlToHtml(control) ).join('') : ''}</div>
         <div>${controls?.topRight ? controls.topRight.map( control => convertControlToHtml(control) ).join('') : ''}</div>
       </div>
-      <div class="vistaview-bottom-bar">
+      <div class="vistaview-bottom-bar vistaview-ui">
           <div>${controls?.bottomLeft ? controls.bottomLeft.map( control => convertControlToHtml(control) ).join('') : ''}</div>
           <div>${controls?.bottomCenter ? controls.bottomCenter.map( control => convertControlToHtml(control) ).join('') : ''}</div>
           <div>${controls?.bottomRight ? controls.bottomRight.map( control => convertControlToHtml(control) ).join('') : ''}</div>
       </div>
-      <div class="vistaview-prev-btn"><button>${chevronLeft}</button></div>
-      <div class="vistaview-next-btn"><button>${chevronRight}</button></div>
+      <div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
+      <div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
     </div>
   </div>`;
 }

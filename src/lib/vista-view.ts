@@ -1,6 +1,6 @@
 
 import { vistaViewComponent, getDownloadButton } from "./components"
-import { createTrustedHtml  } from "./utils"
+import { createTrustedHtml, getElmProperties, isNotZeroCssValue  } from "./utils"
 
 export type VistaViewElm = {
   objectFit?: string
@@ -15,9 +15,7 @@ export type VistaViewImage = {
   height: number;
   alt?: string;
   smallSrc?: string;
-  anchorProps?: VistaViewElm
   anchor?: HTMLAnchorElement
-  imageProps?: VistaViewElm
   image?: HTMLImageElement,
   onClick?: ( e: Event ) => void
 }
@@ -125,8 +123,9 @@ export class VistaView {
     }
 
     // add vars
-    const props = this.elements[index].anchorProps || this.elements[index].imageProps;
-    const elm = props && this.elements[index].anchor ? this.elements[index].anchor : this.elements[index].image;
+    const imageProps = this.elements[index].image ? getElmProperties(this.elements[index].image as HTMLImageElement) : undefined;
+    const anchorProps = this.elements[index].anchor ? getElmProperties(this.elements[index].anchor as HTMLAnchorElement) : undefined;
+    const elm = this.elements[index].anchor ? this.elements[index].anchor : this.elements[index].image;
     if(!elm) throw new Error('VistaView: Failed to get element.');
     const pos = elm.getBoundingClientRect();
 
@@ -136,6 +135,8 @@ export class VistaView {
     this.rootElement.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
     this.rootElement.style.setProperty('--vistaview-center-x', `${window.innerWidth / 2}px`);
     this.rootElement.style.setProperty('--vistaview-center-y', `${window.innerHeight / 2}px`);
+    this.rootElement.style.setProperty('--vistaview-image-border-radius', 
+      isNotZeroCssValue(imageProps?.borderRadius) || isNotZeroCssValue(anchorProps?.borderRadius) || '0px');
 
     // get all custom controls
     const allCustomControls = (this.options.controls ? [
@@ -190,12 +191,22 @@ export class VistaView {
     this.setIndexDisplay();
 
     // set as initialized
+    const animationDurationBase = this.getAnimationDurationBase();
     setTimeout(() => {
       this.rootElement &&
       this.rootElement.classList.add('vistaview--initialized');
-    },0)
+      setTimeout( () => {
+        this.rootElement &&
+        this.rootElement.classList.add('vistaview--ready');
+      }, animationDurationBase);
+    },33)
 
     // 
+  }
+
+  private getAnimationDurationBase(): number {
+    const style = window.getComputedStyle(this.rootElement!);
+    return parseInt(style.getPropertyValue('--vistaview-animation-duration'));
   }
 
   async close(animate = true): Promise<void> {
@@ -205,8 +216,7 @@ export class VistaView {
     if (animate) {
 
       // get animation duration base from css
-      const style = window.getComputedStyle(this.rootElement!);
-      const animationDurationBase = parseInt(style.getPropertyValue('--vistaview-animation-duration'))
+      const animationDurationBase = this.getAnimationDurationBase();
 
       // wait for animation
       this.rootElement?.classList.add('vistaview--closing');

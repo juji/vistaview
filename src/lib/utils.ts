@@ -62,3 +62,9 @@ export function createTrustedHtml( htmlString: string ): DocumentFragment {
   template.remove();
   return html;
 }
+
+export function isNotZeroCssValue( value?: string ): false | string | undefined {
+  const zeroValues = ['0', '0px', '0%', '0em', '0rem', '0vw', '0vh', '0vmin', '0vmax', '0cm', '0mm', '0in', '0pt', '0pc', '0ex', '0ch'];
+  const isZero = value ? zeroValues.includes( value?.trim().toLowerCase() || '' ) : value;
+  return isZero ? false : value;
+}
