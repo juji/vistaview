@@ -272,10 +272,6 @@
         background-color: var(--vistaview-bg-color);
         color: var(--vistaview-text-color);
       }
-
-      .vistaview-tools{
-        display: flex;
-      }
     }
 
     .vistaview-bottom-bar{

@@ -46,7 +46,7 @@ const GlobalVistaState = {
   somethingOpened: false
 }
 
-const DefaultOptions = {
+export const DefaultOptions = {
   detectReducedMotion: true,
   zoomStep: 300,
   controls: {
