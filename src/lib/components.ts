@@ -58,7 +58,7 @@ export function vistaViewComponent(
       <div class="vistaview-image-container">
         ${elements.map( el => `
           <div class="vistaview-item">
-            <img src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}" />
+            <img src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.image?.width || el.width}" height="${el.image?.height || el.height}" />
           </div>
         `).join('')}
       </div>

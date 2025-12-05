@@ -69,6 +69,7 @@ export class VistaView {
 
   private options: VistaViewOptions;
   private indexDisplayElement: HTMLElement | null = null;
+  private resizeListener: (() => void) | null = null;
 
   constructor(
     elements: VistaViewImage[],
@@ -142,10 +143,21 @@ export class VistaView {
     this.rootElement.style.setProperty('--vistaview-container-initial-height', `${pos?.height}px`);
     this.rootElement.style.setProperty('--vistaview-container-initial-top', `${pos.top + pos.height / 2}px`);
     this.rootElement.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
-    this.rootElement.style.setProperty('--vistaview-center-x', `${window.innerWidth / 2}px`);
-    this.rootElement.style.setProperty('--vistaview-center-y', `${window.innerHeight / 2}px`);
     this.rootElement.style.setProperty('--vistaview-image-border-radius', 
       isNotZeroCssValue(imageProps?.borderRadius) || isNotZeroCssValue(anchorProps?.borderRadius) || '0px');
+
+    // set properties on window resize
+    this.resizeListener = () => {
+      if(!this.isActive) return;
+      const elm = this.elements[this.currentIndex].anchor ? this.elements[this.currentIndex].anchor : this.elements[this.currentIndex].image;
+      if(!elm) return;
+      const pos = elm.getBoundingClientRect();
+      this.rootElement?.style.setProperty('--vistaview-container-initial-width', `${pos?.width}px`);
+      this.rootElement?.style.setProperty('--vistaview-container-initial-height', `${pos?.height}px`);
+      this.rootElement?.style.setProperty('--vistaview-container-initial-top', `${pos.top + pos.height / 2}px`);
+      this.rootElement?.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
+    };
+    window.addEventListener('resize', this.resizeListener);
 
     // get all custom controls
     const allCustomControls = (this.options.controls ? [
@@ -241,6 +253,7 @@ export class VistaView {
     this.rootElement?.remove();
     this.rootElement = null;
     this.containerElement = null;
+    this.resizeListener && window.removeEventListener('resize', this.resizeListener);
     GlobalVistaState.somethingOpened = false;
 
   }
