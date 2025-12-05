@@ -10,18 +10,6 @@
   --vistaview-destination-z-index: 2147483647;
   --vistaview-animation-duration: 600;
 
-
-  /* --vistaview-button-hover-bg-opacity: 1;
-  --vistaview-button-bg-opacity: 0.8;
-  --vistaview-button-opacity: var(--vistaview-button-bg-opacity);
-  --vistaview-button-bg-color: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-button-opacity));
-  --vistaview-button-text-color: var(--vistaview-text-color);
-  --vistaview-button-hover-text-color: #ffffff;
-  --vistaview-button-border-radius: var(--vistaview-border-radius);
-  --vistaview-button-border-width: 1px;
-  --vistaview-button-border-color: hsl(from var(--vistaview-button-bg-color) h s calc(l + 10) / var(--vistaview-button-opacity)); */
-
-
   /* calculated */
   --vistaview-center-x: 0;
   --vistaview-center-y: 0;
