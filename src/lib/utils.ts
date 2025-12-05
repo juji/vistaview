@@ -41,5 +41,7 @@ export function createTrustedHtml( htmlString: string ): DocumentFragment {
   const template = document.createElement('template');
   // In browsers with Trusted Types, we need to assign the TrustedHTML to innerHTML
   (template as any).innerHTML = trustedHtml;
-  return template.content;
+  const html = template.content;
+  template.remove();
+  return html;
 }
