@@ -18,6 +18,30 @@ export function getElmProperties( elm: HTMLElement ): VistaViewElm {
   };
 }
 
+let cachedPolicy: TrustedTypePolicy | null = null;
+function getPolicy(){
+
+  if(cachedPolicy){
+    return cachedPolicy;
+  }
+
+  // Check if Trusted Types is supported
+  if (!window.trustedTypes) {
+    (window as any).trustedTypes = {
+      createPolicy: (_name: string, _rules: any) => _rules
+    } as TrustedTypePolicyFactory;
+  }
+
+  // Use default policy - Trusted Types will return existing policy if name already exists
+  cachedPolicy = window.trustedTypes!.createPolicy("vistaView-policy", {
+    createHTML: (input: string) => DOMPurify.sanitize(input),
+    createScript: (_input: string) => { throw new Error("createScript not implemented"); },
+    createScriptURL: (_input: string) => { throw new Error("createScriptURL not implemented"); }
+  });
+
+  return cachedPolicy;
+}
+
 export function createTrustedHtml( htmlString: string ): DocumentFragment {
   // Check if Trusted Types is supported
   if (!window.trustedTypes) {
@@ -26,15 +50,13 @@ export function createTrustedHtml( htmlString: string ): DocumentFragment {
     };
   }
 
-  // Use Trusted Types when available
-  const policy = window.trustedTypes!.createPolicy("default", {
-    createHTML: (input: string) => DOMPurify.sanitize(input)
-  });
+  // Use default policy - Trusted Types will return existing policy if name already exists
+  const policy = getPolicy();
+
   const trustedHtml = policy.createHTML(htmlString);
 
   // Create a template element to safely parse the TrustedHTML
   const template = document.createElement('template');
-  // In browsers with Trusted Types, we need to assign the TrustedHTML to innerHTML
   (template as any).innerHTML = trustedHtml;
   const html = template.content;
   template.remove();

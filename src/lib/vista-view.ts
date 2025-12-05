@@ -46,7 +46,6 @@ const GlobalVistaState = {
 }
 
 const DefaultOptions = {
-  animationDurationBase: 300,
   controls: {
     topLeft: [
       'indexDisplay',
@@ -138,6 +137,55 @@ export class VistaView {
     this.rootElement.style.setProperty('--vistaview-center-x', `${window.innerWidth / 2}px`);
     this.rootElement.style.setProperty('--vistaview-center-y', `${window.innerHeight / 2}px`);
 
+    // get all custom controls
+    const allCustomControls = (this.options.controls ? [
+      ...(this.options.controls.topLeft || []),
+      ...(this.options.controls.topCenter || []),
+      ...(this.options.controls.topRight || []),
+      ...(this.options.controls.bottomLeft || []),
+      ...(this.options.controls.bottomCenter || []),
+      ...(this.options.controls.bottomRight || [])
+    ] : [
+      ...DefaultOptions.controls.topLeft || [],
+      ...DefaultOptions.controls.topRight || [],
+    ] ) .filter( c => typeof c !== 'string' ) as VistaViewCustomControl[];  
+    
+    // set buttons listeners
+    this.containerElement.querySelectorAll('button').forEach( button => {
+      const customControlName = button.getAttribute('data-vistaview-custom-control');
+      if (customControlName) {
+        const control = allCustomControls.find(c => c.name === customControlName) as VistaViewCustomControl | undefined;
+        if (control) {
+          button.addEventListener('click', () => {
+            control.onClick(this.elements[this.currentIndex]);
+          });
+        }
+      } else {
+        // default control
+        if (button.classList.contains('vistaview-zoom-in-button')) {
+          button.addEventListener('click', () => {
+            console.log('Zoom In clicked');
+          });
+        } else if (button.classList.contains('vistaview-zoom-out-button')) {
+          button.addEventListener('click', () => {
+            console.log('Zoom Out clicked');
+          });
+        } else if (button.classList.contains('vistaview-close-button')) {
+          button.addEventListener('click', () => {
+            this.close();
+          })
+        } else if (button.parentElement?.classList.contains('vistaview-prev-btn')) {
+          button.addEventListener('click', () => {
+            this.prev();
+          });
+        } else if (button.parentElement?.classList.contains('vistaview-next-btn')) {
+          button.addEventListener('click', () => {
+            this.next();
+          });
+        }
+      }
+    });
+
     // set current index display
     this.setIndexDisplay();
 
@@ -156,14 +204,17 @@ export class VistaView {
 
     if (animate) {
 
+      // get animation duration base from css
+      const style = window.getComputedStyle(this.rootElement!);
+      const animationDurationBase = parseInt(style.getPropertyValue('--vistaview-animation-duration'))
+
       // wait for animation
       this.rootElement?.classList.add('vistaview--closing');
       await new Promise( resolve => {
         setTimeout( () => {
           resolve(true);
         }, (
-          this.options.animationDurationBase || 
-          DefaultOptions.animationDurationBase
+          animationDurationBase
         ) * 2);
       });
 
