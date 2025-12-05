@@ -264,19 +264,16 @@ export class VistaView {
     this.currentIndex = index;
     this.setIndexDisplay();
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
-    console.log(`VistaView: view called with index ${index}`);
   }
 
   next(): void {
     if(!this.isActive) return;
     this.view((this.currentIndex + 1) % this.elements.length);
-    console.log('VistaView: next called');
   }
 
   prev(): void {
     if(!this.isActive) return;
     this.view((this.currentIndex - 1 + this.elements.length) % this.elements.length);
-    console.log('VistaView: previous called');
   }
 
   getCurrentIndex(): number {
