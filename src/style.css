@@ -8,11 +8,11 @@
 
   --vistaview-initial-z-index: 1;
   --vistaview-destination-z-index: 2147483647;
-  --vistaview-animation-duration: 500;
-
-  /* calculated */
+  --vistaview-animation-duration: 333;
   --vistaview-center-x: 50%;
   --vistaview-center-y: 50%;
+
+  /* calculated */
   --vistaview-container-initial-width: 0;
   --vistaview-container-initial-height: 0;
   --vistaview-container-initial-top: 0;
