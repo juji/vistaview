@@ -1,4 +1,5 @@
 
+
 import { getElmProperties } from './lib/utils';
 import { VistaView } from './lib/vista-view';
 import type { VistaViewImage, VistaViewElm } from './lib/vista-view';
@@ -37,6 +38,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
         width: el.dataset.vistaviewWidth ? parseInt(el.dataset.vistaviewWidth) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalWidth : 0 ),
         height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
         smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
+        alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
         anchorProps: el instanceof HTMLAnchorElement ? getElmProperties(el) : undefined,
         anchor: el instanceof HTMLAnchorElement ? el : undefined,
         imageProps: el instanceof HTMLImageElement ?  getElmProperties(el as HTMLImageElement) : 
@@ -61,6 +63,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
           width: el.dataset.vistaviewWidth ? parseInt(el.dataset.vistaviewWidth) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalWidth : 0 ),
           height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
           smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
+          alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
           anchorProps: el instanceof HTMLAnchorElement ? getElmProperties(el) : undefined,
           anchor: el instanceof HTMLAnchorElement ? el : undefined,
           imageProps: el instanceof HTMLImageElement ?  getElmProperties(el as HTMLImageElement) : 
@@ -81,6 +84,9 @@ export function vistaView( options: VistaViewOptions ): VistaView {
         }
         if( typeof el.height !== 'number') {
           throw new Error(`VistaView: Invalid height type in elements array at index ${i}. Should be a number.`);
+        }
+        if( el.alt && typeof el.alt !== 'string' ) {
+          throw new Error(`VistaView: Invalid alt in elements array at index ${i}. Should be a string.`);
         }
         if( el.smallSrc && typeof el.smallSrc !== 'string' ) {
           throw new Error(`VistaView: Invalid smallSrc in elements array at index ${i}. Should be a string.`);

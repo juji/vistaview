@@ -1,4 +1,7 @@
 
+import { vistaViewComponent } from "./components"
+import { createTrustedHtml } from "./utils"
+
 export type VistaViewElm = {
   width: number 
   height: number 
@@ -14,11 +17,17 @@ export type VistaViewImage = {
   src: string;
   width: number;
   height: number;
+  alt?: string;
   smallSrc?: string;
   anchorProps?: VistaViewElm
   anchor?: HTMLAnchorElement
   imageProps?: VistaViewElm
-  image?: HTMLImageElement
+  image?: HTMLImageElement,
+  onClick?: ( e: Event ) => void
+}
+
+const GlobalVistaState = {
+  somethingOpened: false
 }
 
 export class VistaView {
@@ -28,13 +37,36 @@ export class VistaView {
 
   constructor(elements: VistaViewImage[]) {
     this.elements = elements;
+
+    this.elements.forEach((el, index) => {
+      const clickable = el.anchor || el.image;
+      if (clickable) {
+        el.onClick = (e) => {
+          e.preventDefault();
+          this.open(index);
+        };
+        clickable.addEventListener('click', el.onClick);
+      }
+    });
+
   }
 
-  open(index: number = 0): void {
-    console.log(`VistaView: open called with index ${index}`);
+  open(index?: number): void {
+    
+    // prevent opening if other vistaview is already opened 
+    if(GlobalVistaState.somethingOpened) return;
+    GlobalVistaState.somethingOpened = true;
+
+    index = index || 0;
+
+    this.currentIndex = index;
+
+    const component = vistaViewComponent(this.elements);
+    document.body.insertAdjacentHTML('afterbegin', createTrustedHtml(component) as unknown as string);
   }
 
   close(): void {
+    GlobalVistaState.somethingOpened = false;
     console.log('VistaView: close called');
   }
 
@@ -57,7 +89,13 @@ export class VistaView {
   }
 
   destroy(): void {
-    console.log('VistaView: destroy called');
+    GlobalVistaState.somethingOpened = false;
+    this.elements.forEach((el, index) => {
+      const clickable = el.anchor || el.image;
+      if (clickable && el.onClick) {
+        clickable.removeEventListener('click', el.onClick);
+      }
+    });
   }
 
 }

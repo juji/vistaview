@@ -32,11 +32,17 @@
 
 }
 
+/*
+vistaview is created but not initialized 
+ */
+.vistaview-root{
+  display: none;
+}
 
 /* 
-vistaview is created, with initial position and size
+vistaview is initialized, with initial position and size
  */
-.vistaview-container {
+.vistaview-root.vistaview--init {
   position: fixed;
   top: var(--vistaview-container-initial-top);
   left: var(--vistaview-container-initial-left);
@@ -58,7 +64,7 @@ vistaview is created, with initial position and size
 /*
 this is after vistaview is started, moving to the center of the screen 
  */
-.vistaview-container.vistaview--started {
+.vistaview-root.vistaview--started {
   top: var(--vistaview-center-y);
   left: var(--vistaview-center-x);
 }
@@ -66,7 +72,7 @@ this is after vistaview is started, moving to the center of the screen
 /*
 this is after vistaview is active, taking the full screen
  */
-.vistaview-container.vistaview--active{
+.vistaview-root.vistaview--active{
   z-index: var(--vistaview-destination-z-index);
   top:0;
   left:0;
