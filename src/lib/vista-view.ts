@@ -1,6 +1,6 @@
 
 import { vistaViewComponent, getDownloadButton } from "./components"
-import { createTrustedHtml, getElmProperties, isNotZeroCssValue  } from "./utils"
+import { createTrustedHtml, getElmProperties, getFittedSize, isNotZeroCssValue, makeFullScreenContain  } from "./utils"
 
 export type VistaViewElm = {
   objectFit?: string
@@ -214,6 +214,34 @@ export class VistaView {
 
     // set current index css var
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
+
+
+    const highresImages = this.containerElement.querySelectorAll('.vistaview-image-highres');
+    highresImages.forEach( (img, i) => {
+
+      const im = img as HTMLImageElement;
+
+      // set large image initial dimensions
+      const el = this.elements[i];
+      const thumb = el.image
+      if(!thumb) return;
+      const { width, height } = getFittedSize(thumb as HTMLImageElement);
+      im.style.width = `${Math.min(width, thumb.width)}px;`;
+      im.style.height = `${Math.min(height, thumb.height)}px;`;
+
+      // on loaded
+      if(im.complete){
+        im.classList.add('vistaview-image-loaded');
+        makeFullScreenContain( im );
+      }else{
+        im.onload = () => {
+          im.classList.add('vistaview-image-loaded');
+          makeFullScreenContain( im );
+        }
+      }
+      
+      
+    });
 
     // set as initialized
     setTimeout(() => {

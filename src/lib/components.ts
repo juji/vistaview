@@ -56,11 +56,20 @@ export function vistaViewComponent(
   return `<div class="vistaview-root" id="vistaview-root">
     <div class="vistaview-container">
       <div class="vistaview-image-container">
-        ${elements.map( el => `
-          <div class="vistaview-item">
-            <img src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.image?.width || el.width}" height="${el.image?.height || el.height}" />
-          </div>
-        `).join('')}
+        ${elements.map( el => {
+          const imageObjectFit = el.image?.computedStyleMap().get('object-fit')?.toString();
+          return `
+            <div class="vistaview-item">
+              <img class="vistaview-image-lowres"
+                style="${imageObjectFit ? `object-fit: ${imageObjectFit};` : ''}"
+                src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.image?.width}" height="${el.image?.height}" />
+              <img class="vistaview-image-highres"
+                data-vistaview-thumbnail-objectfit="${imageObjectFit}"
+                style="width: ${el.image?.width}px; height: ${el.image?.height}px;"
+                src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}" />
+            </div>
+          `
+        }).join('')}
       </div>
       <div class="vistaview-top-bar vistaview-ui">
         <div>${controls?.topLeft ? controls.topLeft.map( control => convertControlToHtml(control) ).join('') : ''}</div>
