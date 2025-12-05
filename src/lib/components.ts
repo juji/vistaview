@@ -57,7 +57,7 @@ export function vistaViewComponent(
     <div class="vistaview-container">
       <div class="vistaview-image-container">
         ${elements.map( el => {
-          const imageObjectFit = el.image?.computedStyleMap().get('object-fit')?.toString();
+          const imageObjectFit = el.image ? getComputedStyle(el.image).objectFit : undefined;
           return `
             <div class="vistaview-item">
               <img class="vistaview-image-lowres"
