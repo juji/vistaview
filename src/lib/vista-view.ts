@@ -164,13 +164,30 @@ export class VistaView {
 
       if(newWidth === minWidth) {
         this.containerElement?.querySelector('button.vistaview-zoom-out-button')?.setAttribute('disabled', 'true');
-        highresImages.attributes.removeNamedItem('data-vistaview-current-width');
-        highresImages.attributes.removeNamedItem('data-vistaview-current-height');
-        highresImages.attributes.removeNamedItem('data-vistaview-initial-width');
-        highresImages.attributes.removeNamedItem('data-vistaview-initial-height');
+        highresImages.removeAttribute('data-vistaview-current-width');
+        highresImages.removeAttribute('data-vistaview-current-height');
+        highresImages.removeAttribute('data-vistaview-initial-width');
+        highresImages.removeAttribute('data-vistaview-initial-height');
         highresImages?.classList.remove('vistaview-image--zooming');
       }
     }
+  }
+
+  private clearZoom(): void {
+    const highresImages = this.containerElement?.querySelectorAll('.vistaview-image-highres')[this.currentIndex] as HTMLImageElement;
+    if(highresImages.dataset.vistaviewInitialWidth){
+      highresImages.style.width = `${highresImages.dataset.vistaviewInitialWidth}px`;
+    }
+    if(highresImages.dataset.vistaviewInitialHeight){
+      highresImages.style.height = `${highresImages.dataset.vistaviewInitialHeight}px`;
+    }
+    this.containerElement?.querySelector('button.vistaview-zoom-in-button')?.removeAttribute('disabled');
+    this.containerElement?.querySelector('button.vistaview-zoom-out-button')?.setAttribute('disabled', 'true');
+    highresImages.removeAttribute('data-vistaview-current-width');
+    highresImages.removeAttribute('data-vistaview-current-height');
+    highresImages.removeAttribute('data-vistaview-initial-width');
+    highresImages.removeAttribute('data-vistaview-initial-height');
+    highresImages?.classList.remove('vistaview-image--zooming');
   }
 
   open(index?: number): void {
@@ -394,6 +411,7 @@ export class VistaView {
     if(index < 0 || index >= this.elements.length) {
       throw new Error('VistaView: Index out of bounds:' + index);
     }
+    this.clearZoom()
     this.currentIndex = index;
     this.setIndexDisplay();
     this.setInitialProperties && this.setInitialProperties()
