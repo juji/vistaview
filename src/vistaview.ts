@@ -1,24 +1,24 @@
 
 import { VistaView, DefaultOptions } from './lib/vista-view';
-import type { VistaViewImage, VistaViewElm } from './lib/vista-view';
+import type { VistaViewImage, VistaViewElm, VistaViewOptions as VistaViewOptionsBase } from './lib/vista-view';
 import './style.css';
 
 // Re-export types for library consumers
-export type { VistaViewImage, VistaViewElm };
+export type { VistaViewImage, VistaViewElm, VistaViewOptionsBase };
 export { DefaultOptions };
 
 
 export type VistaViewOptions = {
   parent?: HTMLElement;
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
-  animationDurationBase?: number;
-}
+} & VistaViewOptionsBase
 
 export function vistaView( options: VistaViewOptions ): VistaView {
 
   let {
     parent,
-    elements
+    elements,
+    ...vistaViewOptionsBase
   } = options
 
   if(!parent && !elements) {
@@ -97,7 +97,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
   }
 
   return new VistaView(elements, {
-    animationDurationBase: options.animationDurationBase
+    ...vistaViewOptionsBase
   });
 
 }
