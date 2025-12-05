@@ -290,10 +290,9 @@ vistaview is initialized, with initial position and size
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vistaview-root, .vistaview-root * {
+  .vistaview--reduced-motion, .vistaview--reduced-motion * {
     animation-name: none !important;
     animation-duration: 0ms;
     transition-duration: 0ms !important;
   }
-  
 }

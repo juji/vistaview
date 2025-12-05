@@ -23,6 +23,7 @@ export type VistaViewImage = {
 export type VistaViewOptions = {
   animationDurationBase?: number;
   initialZIndex?: number;
+  detectReducedMotion?: boolean;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -45,6 +46,7 @@ const GlobalVistaState = {
 }
 
 const DefaultOptions = {
+  detectReducedMotion: true,
   controls: {
     topLeft: [
       'indexDisplay',
@@ -71,6 +73,7 @@ export class VistaView {
   private indexDisplayElement: HTMLElement | null = null;
   private setInitialProperties: (() => void) | null = null;
   private isReducedMotion: boolean;
+  private detectReducedMotion: boolean = true;
 
   constructor(
     elements: VistaViewImage[],
@@ -78,6 +81,7 @@ export class VistaView {
   ) {
 
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.detectReducedMotion = options.detectReducedMotion !== undefined ? options.detectReducedMotion : DefaultOptions.detectReducedMotion;
     
     this.elements = elements;
     this.options = options;
@@ -122,6 +126,10 @@ export class VistaView {
     // set elements
     this.rootElement = document.querySelector('#vistaview-root');
     if(!this.rootElement) throw new Error('VistaView: Failed to create root element.');
+    if(this.detectReducedMotion){
+      this.rootElement.classList.add(this.isReducedMotion ? 'vistaview--reduced-motion' : '');
+    }
+
     this.containerElement = this.rootElement.querySelector('.vistaview-container');
     if(!this.containerElement) throw new Error('VistaView: Failed to create container element.');
     this.indexDisplayElement = this.containerElement.querySelector('.vistaview-index-display');
