@@ -19,6 +19,7 @@
   --vistaview-container-initial-left: 0;
   --vistaview-image-border-radius: 0px;
   --vistaview-current-index: 0;
+  --vistaview-number-elements: 0;
 
 }
 
@@ -146,21 +147,25 @@
     }
 
     .vistaview-image-container {
-      width: 100%;
+      width: calc(var(--vistaview-number-elements) * 100%); 
       height: 100%;
       overflow-x: hidden;
       z-index: 1;
       position: absolute;
-      left: calc(var(--vistaview-current-index) * -100vw);
+      top: 0;
+      left: calc(var(--vistaview-current-index) * -100%);
 
       display: flex;
+      gap: 0;
 
       .vistaview-item {
-        width: 100%;
+        width: calc(100 / var(--vistaview-number-elements) * 1%);
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
         flex-shrink: 0; /* Prevent flex items from shrinking */
-        height: 100%;
         position: relative;
-        overflow: hidden;
+        /* overflow: hidden; */
 
         img{
           display: block;

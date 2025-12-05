@@ -69,7 +69,7 @@ export class VistaView {
 
   private options: VistaViewOptions;
   private indexDisplayElement: HTMLElement | null = null;
-  private resizeListener: (() => void) | null = null;
+  private setInitialProperties: (() => void) | null = null;
 
   constructor(
     elements: VistaViewImage[],
@@ -143,11 +143,12 @@ export class VistaView {
     this.rootElement.style.setProperty('--vistaview-container-initial-height', `${pos?.height}px`);
     this.rootElement.style.setProperty('--vistaview-container-initial-top', `${pos.top + pos.height / 2}px`);
     this.rootElement.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
+    this.rootElement.style.setProperty('--vistaview-number-elements', `${this.elements.length}`);
     this.rootElement.style.setProperty('--vistaview-image-border-radius', 
       isNotZeroCssValue(imageProps?.borderRadius) || isNotZeroCssValue(anchorProps?.borderRadius) || '0px');
 
     // set properties on window resize
-    this.resizeListener = () => {
+    this.setInitialProperties = () => {
       if(!this.isActive) return;
       const elm = this.elements[this.currentIndex].anchor ? this.elements[this.currentIndex].anchor : this.elements[this.currentIndex].image;
       if(!elm) return;
@@ -157,7 +158,7 @@ export class VistaView {
       this.rootElement?.style.setProperty('--vistaview-container-initial-top', `${pos.top + pos.height / 2}px`);
       this.rootElement?.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
     };
-    window.addEventListener('resize', this.resizeListener);
+    window.addEventListener('resize', this.setInitialProperties);
 
     // get all custom controls
     const allCustomControls = (this.options.controls ? [
@@ -253,7 +254,7 @@ export class VistaView {
     this.rootElement?.remove();
     this.rootElement = null;
     this.containerElement = null;
-    this.resizeListener && window.removeEventListener('resize', this.resizeListener);
+    this.setInitialProperties && window.removeEventListener('resize', this.setInitialProperties);
     GlobalVistaState.somethingOpened = false;
 
   }
@@ -276,6 +277,7 @@ export class VistaView {
     }
     this.currentIndex = index;
     this.setIndexDisplay();
+    this.setInitialProperties && this.setInitialProperties()
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
   }
 
