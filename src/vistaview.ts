@@ -13,17 +13,7 @@ export type VistaViewOptions = {
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
 }
 
-export type VistaViewMethods = {
-  open: ( index?: number ) => void;
-  close: () => void;
-  view: ( index: number ) => void;
-  next: () => void;
-  prev: () => void;
-  destroy: () => void;
-  getCurrentIndex: () => number;
-}
-
-export function vistaView( options: VistaViewOptions ): VistaViewMethods {
+export function vistaView( options: VistaViewOptions ): VistaView {
 
   let {
     parent,
@@ -106,32 +96,6 @@ export function vistaView( options: VistaViewOptions ): VistaViewMethods {
     throw new Error('VistaView: No elements found to display.');
   }
 
-  const component = new VistaView(elements);
-
-  return {
-    open: ( index?: number ) => {
-      index = index || 0;
-      component.open( index );
-    },
-    close: () => {
-      component.close();
-    },
-    view: ( index: number ) => {
-      component.view( index );
-    },
-    next: () => {
-      component.next();
-    },
-    prev: () => {
-      component.prev();
-    },
-    destroy: () => {
-      component.destroy();
-    },
-    getCurrentIndex: () => {
-      return component.getCurrentIndex();
-    }
-
-  }
+  return new VistaView(elements);
 
 }
