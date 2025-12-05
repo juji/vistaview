@@ -37,7 +37,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin: 20px 0;
+  margin: 20px;
 }
 
 .image-grid a {

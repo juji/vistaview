@@ -136,14 +136,22 @@
     position: relative;
 
     button{
-      // normalize button styles
-      all: unset;
+
+      background: none;
+      color: inherit;
+      border: none;
+      font: inherit;
+      cursor: pointer;
+      outline: inherit;
+
       box-sizing: border-box;
       margin: 0;
       padding: 8px;
-      border: none;
       border-radius: 0px;
-      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       background-color: var(--vistaview-bg-color);
       color: var(--vistaview-text-color);
 
@@ -253,6 +261,10 @@
       align-items: center;
       justify-content: space-between;
       z-index: 2;
+
+      & > div {
+        display: flex;
+      }
 
       .vistaview-index-display{
         font-size: 16px;
