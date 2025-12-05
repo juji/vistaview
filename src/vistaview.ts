@@ -1,10 +1,11 @@
 
-import { VistaView } from './lib/vista-view';
+import { VistaView, DefaultOptions } from './lib/vista-view';
 import type { VistaViewImage, VistaViewElm } from './lib/vista-view';
 import './style.css';
 
 // Re-export types for library consumers
 export type { VistaViewImage, VistaViewElm };
+export { DefaultOptions };
 
 
 export type VistaViewOptions = {
