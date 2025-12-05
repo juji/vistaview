@@ -4,25 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VistaView Dev</title>
+  <link rel="stylesheet" href="./dev.css">
 </head>
 <body>
-  <div style="padding: 20px; font-family: Arial, sans-serif;">
-    <h1>VistaView Library Dev</h1>
-    <p>This is a demo page for the VistaView frontend library.</p>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+    <h1>VistaView Library - Development Demo</h1>
 
-    <button id="triggerBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
-      Open VistaView
-    </button>
-
-    <div style="margin-top: 20px;">
-      <h2>Instructions:</h2>
-      <p>Click the button above to see VistaView in action. It should create an animated overlay that expands from the button to fill the screen.</p>
+    <div class="image-grid">
+      <img src="https://picsum.photos/220/180?random=1" alt="Image 1">
+      <img src="https://picsum.photos/180/220?random=2" alt="Image 2">
+      <img src="https://picsum.photos/200/160?random=3" alt="Image 3">
+      <img src="https://picsum.photos/240/200?random=4" alt="Image 4">
+      <img src="https://picsum.photos/190/210?random=5" alt="Image 5">
+      <img src="https://picsum.photos/210/190?random=6" alt="Image 6">
+      <img src="https://picsum.photos/230/170?random=7" alt="Image 7">
+      <img src="https://picsum.photos/170/230?random=8" alt="Image 8">
+      <img src="https://picsum.photos/200/200?random=9" alt="Image 9">
     </div>
+
   </div>
 
   <script type="module">
     import { vistaView } from '../src/vistaview.ts';
 
+    // VistaView demo functionality
     const triggerBtn = document.getElementById('triggerBtn');
 
     triggerBtn.addEventListener('click', () => {

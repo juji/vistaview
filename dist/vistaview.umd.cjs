@@ -1,0 +1,1 @@
+(function(e,t){typeof exports==`object`&&typeof module<`u`?t(exports):typeof define==`function`&&define.amd?define([`exports`],t):(e=typeof globalThis<`u`?globalThis:e||self,t(e.VistaView={}))})(this,function(e){function t(e){console.log(`Hello, from VistaView!`),console.log(e)}e.vistaView=t});
