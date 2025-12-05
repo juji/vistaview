@@ -23,10 +23,30 @@
 
 }
 
-@keyframes vistaview-anim-in {
+@keyframes vistaview-pos-in {
   0% {
     top: var(--vistaview-container-initial-top);
     left: var(--vistaview-container-initial-left);
+  }
+  100%{
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
+  }
+}
+
+@keyframes vistaview-pos-out {
+  0% {
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
+  }
+  100%{
+    top: var(--vistaview-container-initial-top);
+    left: var(--vistaview-container-initial-left);
+  }
+}
+
+@keyframes vistaview-anim-in {
+  0% {
     width: var(--vistaview-container-initial-width);
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
@@ -35,8 +55,6 @@
     z-index: var(--vistaview-initial-z-index);
   }
   50% {
-    top: var(--vistaview-center-y);
-    left: var(--vistaview-center-x);
     width: var(--vistaview-container-initial-width);
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
@@ -46,8 +64,6 @@
   }
   100%{
     z-index: var(--vistaview-destination-z-index);
-    top: var(--vistaview-center-y);
-    left: var(--vistaview-center-x);
     width: 100%;
     height: 100%;
     background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
@@ -58,16 +74,12 @@
 @keyframes vistaview-anim-out {
   0% {
     z-index: var(--vistaview-destination-z-index);
-    top: var(--vistaview-center-y);
-    left: var(--vistaview-center-x);
     width: 100%;
     height: 100%;
     background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
     backdrop-filter: blur(var(--vistaview-background-blur));
   }
   50% {
-    top: var(--vistaview-center-y);
-    left: var(--vistaview-center-x);
     width: var(--vistaview-container-initial-width);
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
@@ -76,8 +88,6 @@
     z-index: var(--vistaview-initial-z-index);
   }
   100%{
-    top: var(--vistaview-container-initial-top);
-    left: var(--vistaview-container-initial-left);
     width: var(--vistaview-container-initial-width);
     height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
@@ -278,7 +288,8 @@ vistaview is initialized, with initial position and size
  */
 .vistaview-root.vistaview--initialized{
   display: block;
-  animation: vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
+  animation: vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards,
+             vistaview-pos-in calc(var(--vistaview-animation-duration) * 0.5ms) ease-out forwards;
   .vistaview-ui{
     animation: vistaview-ui-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out calc(var(--vistaview-animation-duration) * 1ms) forwards;
   }
@@ -288,7 +299,8 @@ vistaview is initialized, with initial position and size
   .vistaview-ui{
     display: none;
   }
-  animation: vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
+  animation: vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards,
+             vistaview-pos-out calc(var(--vistaview-animation-duration) * 1ms) cubic-bezier(0.6, -0.8, 0.78, 0.64) forwards;
 
   & .vistaview-container {
     & .vistaview-image-container {
