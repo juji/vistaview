@@ -22,7 +22,7 @@ export function getDownloadButton(): VistaViewCustomControl {
       // Handle download
       const link = document.createElement('a');
       link.href = image.src;
-      link.download = image.alt || 'download';
+      link.download = image.src.split('/').pop() || 'download';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
