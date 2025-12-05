@@ -22,6 +22,7 @@ export type VistaViewImage = {
 
 export type VistaViewOptions = {
   animationDurationBase?: number;
+  initialZIndex?: number;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -124,6 +125,10 @@ export class VistaView {
     // add options
     if (this.options.animationDurationBase) {
       this.rootElement.style.setProperty('--vistaview-animation-duration', `${this.options.animationDurationBase}ms`);
+    }
+
+    if( this.options.initialZIndex !== undefined ) {
+      this.rootElement.style.setProperty('--vistaview-initial-z-index', `${this.options.initialZIndex}`);
     }
 
     // add vars
