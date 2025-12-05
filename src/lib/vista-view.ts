@@ -220,7 +220,7 @@ export class VistaView {
           resolve(true);
         }, (
           animationDurationBase
-        ) * 2);
+        ) * 1.5);
       });
 
     }
