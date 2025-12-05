@@ -126,8 +126,8 @@ export class VistaView {
     // set elements
     this.rootElement = document.querySelector('#vistaview-root');
     if(!this.rootElement) throw new Error('VistaView: Failed to create root element.');
-    if(this.detectReducedMotion){
-      this.rootElement.classList.add(this.isReducedMotion ? 'vistaview--reduced-motion' : '');
+    if(this.detectReducedMotion && this.isReducedMotion){
+      this.rootElement.classList.add('vistaview--reduced-motion');
     }
 
     this.containerElement = this.rootElement.querySelector('.vistaview-container');
@@ -279,7 +279,7 @@ export class VistaView {
 
       // wait for animation
       this.rootElement?.classList.add('vistaview--closing');
-      if(!this.isReducedMotion) {
+      if(!(this.detectReducedMotion && this.isReducedMotion)) {
         await new Promise( resolve => {
           setTimeout( () => {
             resolve(true);
