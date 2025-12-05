@@ -127,7 +127,6 @@ export class VistaView {
 
     highresImages?.classList.add('vistaview-image--zooming');
     const maxWidth = highresImages.naturalWidth || 0;
-    console.log('maxWidth', maxWidth, 'width', width);
 
     if(width && maxWidth && width < maxWidth) {
       const newWidth = Math.min(width + (this.options.zoomStep || DefaultOptions.zoomStep), maxWidth);
@@ -139,7 +138,6 @@ export class VistaView {
       highresImages.dataset.vistaviewCurrentWidth = newWidth.toString();
       highresImages.dataset.vistaviewCurrentHeight = newHeight.toString();
 
-      console.log('maxWidth result', maxWidth, 'newWidth', newWidth);
       if(newWidth === maxWidth) {
         this.containerElement?.querySelector('button.vistaview-zoom-in-button')?.setAttribute('disabled', 'true');
       }
@@ -188,6 +186,20 @@ export class VistaView {
     highresImages.removeAttribute('data-vistaview-initial-width');
     highresImages.removeAttribute('data-vistaview-initial-height');
     highresImages?.classList.remove('vistaview-image--zooming');
+  }
+
+  private resetImageOpacity( turnOn = false ): void {
+    this.elements.forEach((el, i) => {
+      if(!el.image?.dataset.vistaviewInitialOpacity) {
+        el.image!.dataset.vistaviewInitialOpacity = el.image!.style.opacity || '1';
+      }
+
+      if (i === this.currentIndex && !turnOn) {
+        el.image!.style.opacity = '0';
+      } else {
+        el.image!.style.opacity = el.image!.dataset.vistaviewInitialOpacity;
+      }
+    });
   }
 
   open(index?: number): void {
@@ -357,6 +369,7 @@ export class VistaView {
     setTimeout(() => {
       this.rootElement &&
       this.rootElement.classList.add('vistaview--initialized');
+      this.resetImageOpacity();
     },33)
 
     // 
@@ -389,6 +402,7 @@ export class VistaView {
     this.rootElement?.remove();
     this.rootElement = null;
     this.containerElement = null;
+    this.resetImageOpacity( true );
     this.setInitialProperties && window.removeEventListener('resize', this.setInitialProperties);
     this.setFullScreenContain && window.removeEventListener('resize', this.setFullScreenContain);
     GlobalVistaState.somethingOpened = false;
@@ -413,6 +427,7 @@ export class VistaView {
     }
     this.clearZoom()
     this.currentIndex = index;
+    this.resetImageOpacity();
     this.setIndexDisplay();
     this.setInitialProperties && this.setInitialProperties()
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
