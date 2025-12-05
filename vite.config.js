@@ -16,7 +16,7 @@ export default defineConfig({
       formats: ['es', 'umd']
     },
     cssCodeSplit: false,
-    rollupOptions: {
+    rolldownOptions: {
       external: [],
       output: {
         globals: {},
