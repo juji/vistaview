@@ -26,7 +26,7 @@ export function vistaView( options: VistaViewOptions ): VistaView {
   }
 
   if(parent) {
-    let childElements = Array.from(parent.querySelectorAll<HTMLElement>('[data-vistaview-src]'));
+    let childElements = Array.from(parent.querySelectorAll<HTMLElement>('img[data-vistaview-src]'));
     if(!childElements.length) {
       childElements = Array.from(parent.querySelectorAll<HTMLElement>('a[href]'));
     }
