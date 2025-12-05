@@ -70,11 +70,14 @@ export class VistaView {
   private options: VistaViewOptions;
   private indexDisplayElement: HTMLElement | null = null;
   private setInitialProperties: (() => void) | null = null;
+  private isReducedMotion: boolean;
 
   constructor(
     elements: VistaViewImage[],
     options: VistaViewOptions
   ) {
+
+    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     this.elements = elements;
     this.options = options;
@@ -268,13 +271,15 @@ export class VistaView {
 
       // wait for animation
       this.rootElement?.classList.add('vistaview--closing');
-      await new Promise( resolve => {
-        setTimeout( () => {
-          resolve(true);
-        }, (
-          animationDurationBase
-        ) * 1.5);
-      });
+      if(!this.isReducedMotion) {
+        await new Promise( resolve => {
+          setTimeout( () => {
+            resolve(true);
+          }, (
+            animationDurationBase
+          ) * 1.5);
+        });
+      }
 
     }
 
