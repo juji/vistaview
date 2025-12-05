@@ -139,7 +139,10 @@ export function getFittedSize(img: HTMLImageElement): {
 }
 
 
-export function makeFullScreenContain(img: HTMLImageElement) {
+export function makeFullScreenContain(
+  img: HTMLImageElement,
+  setDataAttribute: boolean = false
+) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -147,6 +150,13 @@ export function makeFullScreenContain(img: HTMLImageElement) {
   const nh = img.naturalHeight;
 
   if (!nw || !nh) return;
+
+  if(nw < vw && nh < vh){
+    // smaller than screen, no need to resize
+    img.style.width = nw + "px";
+    img.style.height = nh + "px";
+    return;
+  }
 
   const imageAR = nw / nh;
   const screenAR = vw / vh;
@@ -165,6 +175,11 @@ export function makeFullScreenContain(img: HTMLImageElement) {
   }
 
   // Apply size
-  img.style.width = width + "px";
-  img.style.height = height + "px";
+  if(setDataAttribute) {
+    img.dataset.vistaviewInitialWidth = width.toString();
+    img.dataset.vistaviewInitialHeight = height.toString();
+  } else {
+    img.style.width = width + "px";
+    img.style.height = height + "px";
+  }
 }

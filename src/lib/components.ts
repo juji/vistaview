@@ -36,7 +36,7 @@ function convertControlToHtml( control: VistaViewDefaultControls | VistaViewCust
       case 'zoomIn':
         return `<button class="vistaview-zoom-in-button">${zoomIn}</button>`;
       case 'zoomOut':
-        return `<button class="vistaview-zoom-out-button">${zoomOut}</button>`;
+        return `<button disabled="true" class="vistaview-zoom-out-button">${zoomOut}</button>`;
       case 'close':
         return `<button class="vistaview-close-button">${close}</button>`;
       case 'indexDisplay':
