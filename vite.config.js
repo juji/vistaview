@@ -1,7 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import dts from 'vite-plugin-dts'
 
 export default defineConfig({
+  plugins: [
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/vistaview.ts'),
@@ -10,7 +16,7 @@ export default defineConfig({
       formats: ['es', 'umd']
     },
     cssCodeSplit: false,
-    rolldownOptions: {
+    rollupOptions: {
       external: [],
       output: {
         globals: {},

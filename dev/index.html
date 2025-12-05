@@ -85,23 +85,11 @@
     import { vistaView } from '../src/vistaview.ts';
 
     // VistaView demo functionality
-    const triggerBtn = document.getElementById('triggerBtn');
+    const imageGrid = document.getElementById('image-grid');
 
-    triggerBtn.addEventListener('click', () => {
-      vistaView({
-        parent: document.body,
-        backgroundColor: '#000000',
-        zIndex: 9999,
-        style: {
-          foregroundColor: '#ffffff',
-          borderRadius: '8px',
-          backgroundColor: '#000000',
-          backgroundBlur: '10px',
-          backgroundOpacity: 0.8,
-          buttonColor: '#ffffff'
-        }
-      });
-    });
+    vistaView({
+      parent: imageGrid,
+    });   
   </script>
 </body>
 </html>

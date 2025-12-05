@@ -41,7 +41,7 @@ fs.readdir(inputDir, (err, files) => {
     const outputPath = path.join(outputDir, `thumb_${file}`);
 
     sharp(inputPath)
-      .resize(300, 200, {
+      .resize(300, null, {
         fit: 'cover',
         position: 'center'
       })
