@@ -185,7 +185,7 @@
           translate: -50% -50%;
           object-fit: cover;
           opacity: 0;
-          transition: width 0.3s ease 0.3s, height 0.3s ease 0.3s;
+          transition: width 0.3s ease 0.3s, height 0.3s ease 0.3s, opacity 0.3s ease 0.3s;
           max-width: 100%;
           max-height: 100%;
 
@@ -274,4 +274,26 @@ vistaview is initialized, with initial position and size
     display: none;
   }
   animation: vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
+
+  & .vistaview-container {
+    & .vistaview-image-container {
+      & .vistaview-item {
+        & img.vistaview-image-highres {
+          &.vistaview-image-loaded {
+            transition: width 0.3s ease 0, height 0.3s ease 0, opacity 0.3s ease 0;
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vistaview-root, .vistaview-root * {
+    animation-name: none !important;
+    animation-duration: 0ms;
+    transition-duration: 0ms !important;
+  }
+  
 }
