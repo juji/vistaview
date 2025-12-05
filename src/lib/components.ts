@@ -12,20 +12,26 @@ const close = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" vi
 export function vistaViewComponent( elements: VistaViewImage[] ): string {
   return `<div class="vistaview-root" id="vistaview-root">
     <div class="vistaview-container">
-      ${elements.map( el => `
-        <div class="vistaview-item">
-          <img src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}" />
+      <div class="vistaview-image-container">
+        ${elements.map( el => `
+          <div class="vistaview-item">
+            <img src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}" />
+          </div>
+        `).join('')}
+      </div>
+      <div class="vistaview-top-bar">
+        <div class="vistaview-index-display"></div>
+        <div class="vistaview-tools">
+          <div class="vistaview-zoom-in-btn"><button>${zoomIn}</button></div>
+          <div class="vistaview-zoom-out-btn"><button>${zoomOut}</button></div>
+          <div class="vistaview-print-btn"><button>${print}</button></div>
+          <div class="vistaview-download-btn"><button>${download}</button></div>
+          <div class="vistaview-close-btn"><button>${close}</button></div>
         </div>
-      `).join('')}
+      </div>
+      <div class="vistaview-prev-btn"><button>${chevronLeft}</button></div>
+      <div class="vistaview-next-btn"><button>${chevronRight}</button></div>
     </div>
-    <div class="vistaview-index-display"></div>
-    <div class="vistaview-zoom-in-btn"><button>${zoomIn}</button></div>
-    <div class="vistaview-zoom-out-btn"><button>${zoomOut}</button></div>
-    <div class="vistaview-print-btn"><button>${print}</button></div>
-    <div class="vistaview-download-btn"><button>${download}</button></div>
-    <div class="vistaview-close-btn"><button>${close}</button></div>
-    <div class="vistaview-prev-btn"><button>${chevronLeft}</button></div>
-    <div class="vistaview-next-btn"><button>${chevronRight}</button></div>
   </div>`;
 }
 

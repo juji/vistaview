@@ -3,10 +3,6 @@ import { vistaViewComponent } from "./components"
 import { createTrustedHtml } from "./utils"
 
 export type VistaViewElm = {
-  width: number 
-  height: number 
-  naturalWidth: number
-  naturalHeight: number
   objectFit?: string
   borderRadius?: string
   objectPosition?: string
@@ -48,6 +44,7 @@ export class VistaView {
   private isActive: boolean = false;
 
   private options: VistaViewOptions;
+  private indexDisplayElement: HTMLElement | null = null;
 
   constructor(
     elements: VistaViewImage[],
@@ -70,6 +67,11 @@ export class VistaView {
 
   }
 
+  private setIndexDisplay(): void {
+    if(!this.indexDisplayElement) return;
+    this.indexDisplayElement.textContent = `${this.currentIndex + 1} / ${this.elements.length}`;
+  }
+
   open(index?: number): void {
     
     // prevent opening if other vistaview is already opened 
@@ -90,12 +92,34 @@ export class VistaView {
     if(!this.rootElement) throw new Error('VistaView: Failed to create root element.');
     this.containerElement = this.rootElement.querySelector('.vistaview-container');
     if(!this.containerElement) throw new Error('VistaView: Failed to create container element.');
+    this.indexDisplayElement = this.containerElement.querySelector('.vistaview-index-display');
 
     // add options
     if (this.options.animationDurationBase) {
       this.rootElement.style.setProperty('--vistaview-animation-duration', `${this.options.animationDurationBase}ms`);
     }
 
+    // add vars
+    const props = this.elements[index].anchorProps || this.elements[index].imageProps;
+    const elm = props && this.elements[index].anchor ? this.elements[index].anchor : this.elements[index].image;
+    if(!elm) throw new Error('VistaView: Failed to get element.');
+    const pos = elm.getBoundingClientRect();
+
+    this.rootElement.style.setProperty('--vistaview-container-initial-width', `${pos?.width}px`);
+    this.rootElement.style.setProperty('--vistaview-container-initial-height', `${pos?.height}px`);
+    this.rootElement.style.setProperty('--vistaview-container-initial-top', `${pos.top + pos.height / 2}px`);
+    this.rootElement.style.setProperty('--vistaview-container-initial-left', `${pos.left + pos.width / 2}px`);
+    this.rootElement.style.setProperty('--vistaview-center-x', `${window.innerWidth / 2}px`);
+    this.rootElement.style.setProperty('--vistaview-center-y', `${window.innerHeight / 2}px`);
+
+    // set current index display
+    this.setIndexDisplay();
+
+    // set as initialized
+    setTimeout(() => {
+      this.rootElement &&
+      this.rootElement.classList.add('vistaview--initialized');
+    },0)
 
     // 
   }

@@ -8,7 +8,7 @@
 
   --vistaview-initial-z-index: 0;
   --vistaview-destination-z-index: 2147483647;
-  --vistaview-animation-duration: 300;
+  --vistaview-animation-duration: 600;
 
 
   /* --vistaview-button-hover-bg-opacity: 1;
@@ -45,11 +45,16 @@
   50% {
     top: var(--vistaview-center-y);
     left: var(--vistaview-center-x);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
+    backdrop-filter: blur(0px);
+    z-index: var(--vistaview-initial-z-index);
   }
   100%{
     z-index: var(--vistaview-destination-z-index);
-    top:0;
-    left:0;
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
     width: 100%;
     height: 100%;
     background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
@@ -57,11 +62,100 @@
   }
 }
 
+/* .vistaview-root > * {
+  display: none;
+} */
+
+.vistaview-root { 
+  .vistaview-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    button{
+      // normalize button styles
+      all: unset;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 8px;
+      border: none;
+      border-radius: 0px;
+      cursor: pointer;
+      background-color: var(--vistaview-bg-color);
+      color: var(--vistaview-text-color);
+    }
+
+    .vistaview-image-container {
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+      z-index: 1;
+      .vistaview-item {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: auto;
+      }
+    }
+
+    .vistaview-prev-btn{
+      position: absolute;
+      top: 50%;
+      left: 0;
+      translate: 0 -50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vistaview-next-btn{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      translate: 0 -50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vistaview-top-bar{
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: 100%;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .vistaview-index-display{
+        font-size: 16px;
+        padding: 8px;
+        background-color: var(--vistaview-bg-color);
+        color: var(--vistaview-text-color);
+      }
+
+      .vistaview-tools{
+        display: flex;
+      }
+    }
+
+
+  }
+}
+
+.vistaview-root{
+  position: fixed;
+  display: none;
+  isolation: isolate;
+  translate: -50% -50%;
+}
+
 /* 
 vistaview is initialized, with initial position and size
  */
-.vistaview-root {
-  position: fixed;
+.vistaview-root.vistaview--initialized{
+  display: block;
   /* top: var(--vistaview-container-initial-top);
   left: var(--vistaview-container-initial-left);
   width: var(--vistaview-container-initial-width);
@@ -69,8 +163,6 @@ vistaview is initialized, with initial position and size
   background: rgb(from var(--vistaview-bg-color) r g b / 0);
   backdrop-filter: blur(0px);
   z-index: var(--vistaview-initial-z-index); */
-  isolation: isolate;
-  translate: -50% -50%;
   animation: vistaview-anim calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 
   /* transition: 
