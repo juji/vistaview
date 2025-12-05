@@ -23,7 +23,7 @@ export function getElmProperties( elm: HTMLElement ): VistaViewElm {
   };
 }
 
-export function createTrustedHtml( htmlString: string ): TrustedHTML {
+export function createTrustedHtml( htmlString: string ): DocumentFragment {
   // Check if Trusted Types is supported
   if (!window.trustedTypes) {
     (window as any).trustedTypes = {
@@ -36,5 +36,10 @@ export function createTrustedHtml( htmlString: string ): TrustedHTML {
     createHTML: (input: string) => DOMPurify.sanitize(input)
   });
   const trustedHtml = policy.createHTML(htmlString);
-  return trustedHtml;
+
+  // Create a template element to safely parse the TrustedHTML
+  const template = document.createElement('template');
+  // In browsers with Trusted Types, we need to assign the TrustedHTML to innerHTML
+  (template as any).innerHTML = trustedHtml;
+  return template.content;
 }

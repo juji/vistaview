@@ -26,8 +26,16 @@ export type VistaViewImage = {
   onClick?: ( e: Event ) => void
 }
 
+export type VistaViewOptions = {
+  animationDurationBase?: number;
+}
+
 const GlobalVistaState = {
   somethingOpened: false
+}
+
+const DefaultOptions = {
+  animationDurationBase: 300
 }
 
 export class VistaView {
@@ -35,8 +43,19 @@ export class VistaView {
   private elements: VistaViewImage[];
   private currentIndex: number = 0;
 
-  constructor(elements: VistaViewImage[]) {
+  private rootElement: HTMLElement | null = null;
+  private containerElement: HTMLElement | null = null;
+  private isActive: boolean = false;
+
+  private options: VistaViewOptions;
+
+  constructor(
+    elements: VistaViewImage[],
+    options: VistaViewOptions
+  ) {
+    
     this.elements = elements;
+    this.options = options;
 
     this.elements.forEach((el, index) => {
       const clickable = el.anchor || el.image;
@@ -56,46 +75,89 @@ export class VistaView {
     // prevent opening if other vistaview is already opened 
     if(GlobalVistaState.somethingOpened) return;
     GlobalVistaState.somethingOpened = true;
+    this.isActive = true;
 
     index = index || 0;
 
     this.currentIndex = index;
 
+    // prepend
     const component = vistaViewComponent(this.elements);
-    document.body.prepend(createTrustedHtml(component) as unknown as string);
+    document.body.prepend(createTrustedHtml(component));
+
+    // set elements
+    this.rootElement = document.querySelector('#vistaview-root');
+    if(!this.rootElement) throw new Error('VistaView: Failed to create root element.');
+    this.containerElement = this.rootElement.querySelector('.vistaview-container');
+    if(!this.containerElement) throw new Error('VistaView: Failed to create container element.');
+
+    // add options
+    if (this.options.animationDurationBase) {
+      this.rootElement.style.setProperty('--vistaview-animation-duration', `${this.options.animationDurationBase}ms`);
+    }
+
+
+    // 
   }
 
-  close(): void {
+  async close(animate = true): Promise<void> {
+    if(!this.isActive) return;
+    this.isActive = false;
+
+    if (animate) {
+
+      // wait for animation
+      this.rootElement?.classList.add('vistaview--closing');
+      await new Promise( resolve => {
+        setTimeout( () => {
+          resolve(true);
+        }, (
+          this.options.animationDurationBase || 
+          DefaultOptions.animationDurationBase
+        ) * 2);
+      });
+
+    }
+
+    // Remove the root element
+    this.rootElement?.remove();
+    this.rootElement = null;
+    this.containerElement = null;
     GlobalVistaState.somethingOpened = false;
-    console.log('VistaView: close called');
-  }
 
-  view(index: number): void {
-    console.log(`VistaView: view called with index ${index}`);
-  }
-
-  next(): void {
-    this.currentIndex = (this.currentIndex + 1) % this.elements.length;
-    console.log('VistaView: next called');
-  }
-
-  prev(): void {
-    this.currentIndex = (this.currentIndex - 1 + this.elements.length) % this.elements.length;
-    console.log('VistaView: previous called');
-  }
-
-  getCurrentIndex(): number {
-    return this.currentIndex;
   }
 
   destroy(): void {
-    GlobalVistaState.somethingOpened = false;
-    this.elements.forEach((el, index) => {
+    if(!this.isActive) return;
+    this.close( false );
+    this.elements.forEach((el) => {
       const clickable = el.anchor || el.image;
       if (clickable && el.onClick) {
         clickable.removeEventListener('click', el.onClick);
       }
     });
+  }
+
+  view(index: number): void {
+    if(!this.isActive) return;
+    this.currentIndex = index;
+    console.log(`VistaView: view called with index ${index}`);
+  }
+
+  next(): void {
+    if(!this.isActive) return;
+    this.view((this.currentIndex + 1) % this.elements.length);
+    console.log('VistaView: next called');
+  }
+
+  prev(): void {
+    if(!this.isActive) return;
+    this.view((this.currentIndex - 1 + this.elements.length) % this.elements.length);
+    console.log('VistaView: previous called');
+  }
+
+  getCurrentIndex(): number {
+    return this.isActive ? this.currentIndex : -1;
   }
 
 }

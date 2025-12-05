@@ -12,6 +12,7 @@ export type { VistaViewImage, VistaViewElm };
 export type VistaViewOptions = {
   parent?: HTMLElement;
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
+  animationDurationBase?: number;
 }
 
 export function vistaView( options: VistaViewOptions ): VistaView {
@@ -102,6 +103,8 @@ export function vistaView( options: VistaViewOptions ): VistaView {
     throw new Error('VistaView: No elements found to display.');
   }
 
-  return new VistaView(elements);
+  return new VistaView(elements, {
+    animationDurationBase: options.animationDurationBase
+  });
 
 }
