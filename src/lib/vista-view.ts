@@ -62,6 +62,8 @@ const GlobalVistaState = {
 
 export const DefaultOptions = {
   detectReducedMotion: true,
+  // debug, don't remove
+  // animationDurationBase: 1000,
   zoomStep: 500,
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
