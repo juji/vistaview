@@ -1,24 +1,165 @@
 # VistaView
 
-VistaView is best described as a **lightweight, modern, highly configurable image gallery/lightbox library** designed primarily for the web.
+A lightweight, modern image lightbox library for the web. Zero dependencies, framework-agnostic, and highly customizable.
 
-### **What VistaView *is***  
-- A **JavaScript lightbox** that displays images (and videos) in a fullscreen, touch-friendly gallery.  
-- Optimized for **mobile**, with smooth gestures (pinch-to-zoom, swipe to move, tap to close).  
-- **Framework-agnostic**: works with plain JS or any frontend framework.  
-- Uses **progressive image loading**: low-res → high-res, responsive sizes, zoom based on real resolution.  
-- Designed for **performance**: virtualization, minimal DOM, fast rendering.
+## Features
 
-### **What experience it creates**  
-- Opens media in a **clean, immersive, distraction-free** modal viewer.  
-- Feels *native* on phones: natural inertia, momentum, and gesture handling.  
-- Supports **zooming up to actual pixel resolution**, giving a premium feel.
+- 🪶 **Lightweight** — Minimal footprint, no external dependencies
+- 📱 **Mobile-first** — Touch gestures, smooth animations, responsive design
+- 🎨 **Customizable** — Configurable controls, animations, and styling
+- ♿ **Accessible** — Keyboard navigation, reduced motion support
+- 🔧 **Framework-agnostic** — Works with vanilla JS, React, Vue, or any framework
+- 🖼️ **Progressive loading** — Low-res thumbnails → high-res images with smooth transitions
+- 🔍 **Zoom support** — Zoom in/out with buttons, respects actual image resolution
 
-### **Why people choose it**  
-- **Small footprint**.  
-- **No framework lock-in**.  
-- **Highly customizable**: UI, animations, captions, buttons, preload behavior, etc.  
-- Ideal for **product photos**, **portfolios**, **blogs**, or any image-heavy experience.
+## Installation
 
-### **A metaphor**  
-VistaView is like a **high-end camera viewfinder** for the web—clean, responsive, tactile, and designed so the content itself shines.
+```bash
+npm install vistaview
+```
+
+## Quick Start
+
+### Using anchor elements (recommended)
+
+```html
+<div id="gallery">
+  <a href="/images/photo1-full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg" data-vistaview-width="1280" data-vistaview-height="720">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+</div>
+
+<script type="module">
+  import { vistaView } from 'vistaview';
+  import 'vistaview/style.css';
+
+  vistaView({
+    parent: document.getElementById('gallery'),
+  });
+</script>
+```
+
+### Using data attributes on images
+
+```html
+<div id="gallery">
+  <img
+    src="/images/thumb1.jpg"
+    data-vistaview-src="/images/full1.jpg"
+    data-vistaview-width="1920"
+    data-vistaview-height="1080"
+    alt="Photo 1"
+  />
+</div>
+```
+
+### Using a CSS selector
+
+```js
+vistaView({
+  elements: '.gallery-image',
+});
+```
+
+### Using an array of images
+
+```js
+vistaView({
+  elements: [
+    { src: '/images/photo1.jpg', width: 1920, height: 1080, alt: 'Photo 1' },
+    { src: '/images/photo2.jpg', width: 1280, height: 720, alt: 'Photo 2' },
+  ],
+});
+```
+
+## Options
+
+```ts
+vistaView({
+  // Required: specify either parent OR elements
+  parent: HTMLElement, // Container element with images/anchors
+  elements: string | NodeList | Array, // Selector, NodeList, or array of images
+
+  // Optional configuration
+  animationDurationBase: 333, // Base animation duration in ms
+  initialZIndex: 1, // Starting z-index for the lightbox
+  detectReducedMotion: true, // Respect prefers-reduced-motion
+  zoomStep: 300, // Pixels to zoom per step
+
+  // Control placement
+  controls: {
+    topLeft: ['indexDisplay'],
+    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    topCenter: [],
+    bottomLeft: [],
+    bottomCenter: [],
+    bottomRight: [],
+  },
+});
+```
+
+## Default Controls
+
+| Control        | Description                               |
+| -------------- | ----------------------------------------- |
+| `indexDisplay` | Shows current image index (e.g., "1 / 5") |
+| `zoomIn`       | Zoom into the image                       |
+| `zoomOut`      | Zoom out of the image                     |
+| `download`     | Download the current image                |
+| `close`        | Close the lightbox                        |
+
+## Custom Controls
+
+```js
+vistaView({
+  parent: document.getElementById('gallery'),
+  controls: {
+    topRight: [
+      {
+        name: 'share',
+        icon: '<svg>...</svg>',
+        onClick: (image) => {
+          navigator.share({ url: image.src });
+        },
+      },
+      'close',
+    ],
+  },
+});
+```
+
+## Styling
+
+VistaView uses CSS custom properties for easy theming:
+
+```css
+:root {
+  --vistaview-bg-color: #000000;
+  --vistaview-text-color: #ffffff;
+  --vistaview-border-radius: 8px;
+  --vistaview-background-blur: 10px;
+  --vistaview-background-opacity: 0.8;
+  --vistaview-animation-duration: 333;
+}
+```
+
+## Data Attributes
+
+| Attribute                 | Description                                |
+| ------------------------- | ------------------------------------------ |
+| `data-vistaview-src`      | Full-size image URL (for `<img>` elements) |
+| `data-vistaview-width`    | Full-size image width in pixels            |
+| `data-vistaview-height`   | Full-size image height in pixels           |
+| `data-vistaview-alt`      | Alt text for the image                     |
+| `data-vistaview-smallsrc` | Thumbnail URL (optional)                   |
+
+## Browser Support
+
+VistaView works in all modern browsers (Chrome, Firefox, Safari, Edge).
+
+## License
+
+MIT
