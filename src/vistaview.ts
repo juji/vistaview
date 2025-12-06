@@ -20,7 +20,7 @@ const toImage = (el: HTMLElement): VistaViewImage => {
   const img =
     el instanceof HTMLImageElement ? el : (el.querySelector('img') as HTMLImageElement | null);
   return {
-    src: el.dataset.vistaviewSrc || el.getAttribute('href') || '',
+    src: el.dataset.vistaviewSrc || el.getAttribute('href') || el.getAttribute('src') || '',
     width: +(el.dataset.vistaviewWidth || img?.naturalWidth || 0),
     height: +(el.dataset.vistaviewHeight || img?.naturalHeight || 0),
     smallSrc: img?.src || el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
