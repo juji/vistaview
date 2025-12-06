@@ -670,13 +670,14 @@ export class VistaView {
       const thumb = el.image;
       if (!thumb) return;
       const { width, height } = getFittedSize(thumb as HTMLImageElement);
-      im.style.width = `${width}px`;
-      im.style.height = `${height}px`;
-      im.style.setProperty('--vistaview-fitted-width', `${width}px`);
-      im.style.setProperty('--vistaview-fitted-height', `${height}px`);
+      const w = Math.min(thumb.width, width);
+      const h = Math.min(thumb.height, height);
+      im.style.width = `${w}px`;
+      im.style.height = `${h}px`;
+      im.style.setProperty('--vistaview-fitted-width', `${w}px`);
+      im.style.setProperty('--vistaview-fitted-height', `${h}px`);
 
-      // on loaded
-      if (im.complete) {
+      function onLoaded() {
         im.classList.add('vistaview-image-loaded');
         setTimeout(() => {
           makeFullScreenContain(im);
@@ -686,18 +687,13 @@ export class VistaView {
             ?.querySelector('.vistaview-image-lowres')
             ?.classList.add('vistaview-image--hidden');
         }, 500);
+      }
+
+      // on loaded
+      if (im.complete) {
+        onLoaded();
       } else {
-        im.onload = () => {
-          im.classList.add('vistaview-image-loaded');
-          setTimeout(() => {
-            makeFullScreenContain(im);
-          }, 100);
-          setTimeout(() => {
-            im.parentElement
-              ?.querySelector('.vistaview-image-lowres')
-              ?.classList.add('vistaview-image--hidden');
-          }, 500);
-        };
+        im.onload = onLoaded;
       }
     });
 
