@@ -389,6 +389,7 @@ export class VistaView {
 
   private resetImageOpacity(turnOn = false): void {
     this.elements.forEach((el, i) => {
+      if (!el.image) return;
       if (!el.image?.dataset.vistaviewInitialOpacity) {
         el.image!.dataset.vistaviewInitialOpacity = el.image!.style.opacity || '1';
       }
@@ -557,19 +558,23 @@ export class VistaView {
     const elm = this.elements[index].anchor
       ? this.elements[index].anchor
       : this.elements[index].image;
-    if (!elm) throw new Error('VistaView: Failed to get element.');
-    const pos = elm.getBoundingClientRect();
+    if (elm) {
+      const pos = elm.getBoundingClientRect();
 
-    this.rootElement.style.setProperty('--vistaview-container-initial-width', `${pos?.width}px`);
-    this.rootElement.style.setProperty('--vistaview-container-initial-height', `${pos?.height}px`);
-    this.rootElement.style.setProperty(
-      '--vistaview-container-initial-top',
-      `${pos.top + pos.height / 2}px`
-    );
-    this.rootElement.style.setProperty(
-      '--vistaview-container-initial-left',
-      `${pos.left + pos.width / 2}px`
-    );
+      this.rootElement.style.setProperty('--vistaview-container-initial-width', `${pos?.width}px`);
+      this.rootElement.style.setProperty(
+        '--vistaview-container-initial-height',
+        `${pos?.height}px`
+      );
+      this.rootElement.style.setProperty(
+        '--vistaview-container-initial-top',
+        `${pos.top + pos.height / 2}px`
+      );
+      this.rootElement.style.setProperty(
+        '--vistaview-container-initial-left',
+        `${pos.left + pos.width / 2}px`
+      );
+    }
     this.rootElement.style.setProperty('--vistaview-number-elements', `${this.elements.length}`);
 
     this.rootElement.style.setProperty(
@@ -668,14 +673,15 @@ export class VistaView {
       // set large image initial dimensions
       const el = this.elements[i];
       const thumb = el.image;
-      if (!thumb) return;
-      const { width, height } = getFittedSize(thumb as HTMLImageElement);
-      const w = Math.min(thumb.width, width);
-      const h = Math.min(thumb.height, height);
-      im.style.width = `${w}px`;
-      im.style.height = `${h}px`;
-      im.style.setProperty('--vistaview-fitted-width', `${w}px`);
-      im.style.setProperty('--vistaview-fitted-height', `${h}px`);
+      if (thumb) {
+        const { width, height } = getFittedSize(thumb as HTMLImageElement);
+        const w = Math.min(thumb.width, width);
+        const h = Math.min(thumb.height, height);
+        im.style.width = `${w}px`;
+        im.style.height = `${h}px`;
+        im.style.setProperty('--vistaview-fitted-width', `${w}px`);
+        im.style.setProperty('--vistaview-fitted-height', `${h}px`);
+      }
 
       function onLoaded() {
         im.classList.add('vistaview-image-loaded');

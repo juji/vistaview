@@ -15,6 +15,16 @@ export type VistaViewOptions = {
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
 } & VistaViewOptionsBase;
 
+export type VistaViewInterface = {
+  open: (startIndex?: number) => void;
+  close: () => void;
+  next: () => void;
+  prev: () => void;
+  destroy: () => void;
+  getCurrentIndex: () => number;
+  view: (index: number) => void;
+};
+
 // Helper to convert HTML element to VistaViewImage
 const toImage = (el: HTMLElement): VistaViewImage => {
   const img =
@@ -30,7 +40,7 @@ const toImage = (el: HTMLElement): VistaViewImage => {
   };
 };
 
-export function vistaView({ parent, elements, ...opts }: VistaViewOptions): VistaView {
+export function vistaView({ parent, elements, ...opts }: VistaViewOptions): VistaViewInterface {
   if (!parent && !elements) throw new Error('No parent or elements');
 
   let imgs: VistaViewImage[];
@@ -52,5 +62,17 @@ export function vistaView({ parent, elements, ...opts }: VistaViewOptions): Vist
 
   if (!imgs.length) throw new Error('No elements found');
 
-  return new VistaView(imgs, opts);
+  const vv = new VistaView(imgs, opts);
+
+  return {
+    open: (startIndex = 0) => vv.open(startIndex),
+    close: () => vv.close(),
+    next: () => vv.next(),
+    prev: () => vv.prev(),
+    destroy: () => vv.destroy(),
+    getCurrentIndex: () => vv.getCurrentIndex(),
+    view: (index: number) => {
+      vv.view(index);
+    },
+  };
 }

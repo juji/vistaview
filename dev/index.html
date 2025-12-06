@@ -202,6 +202,11 @@
 
   </div>
 
+  <div style="width: 100%; margin: 0 auto; padding: 2rem; text-align: center;">
+    <button id="button-clicker">Click to Open Image Viewer</button>
+  </div>
+
+
   <script type="module">
     import { vistaView } from '../src/vistaview.ts';
 
@@ -227,6 +232,30 @@
 
     vistaView({
       elements: document.querySelectorAll('#image-grid-node-list a'),
+    });
+
+    const { open } = vistaView({
+      elements: [
+        {
+          src: '/images/92-1600x900.jpg',
+          width: 1600,
+          height: 900
+        },
+        {
+          src: '/images/1013-1440x900.jpg',
+          width: 1440,
+          height: 900
+        },
+        {
+          src: '/images/743-1680x1050.jpg',
+          width: 1680,
+          height: 1050
+        },
+      ]
+    });
+
+    document.getElementById('button-clicker').addEventListener('click', () => {
+      open(0);
     });
   </script>
 </body>
