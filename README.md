@@ -113,14 +113,14 @@ vistaView({
 
 ## Default Controls
 
-| Control        | Description                               |
-| -------------- | ----------------------------------------- |
-| `indexDisplay` | Shows current image index (e.g., "1 / 5") |
-| `zoomIn`       | Zoom into the image                       |
-| `zoomOut`      | Zoom out of the image                     |
-| `download`     | Download the current image                |
-| `close`        | Close the lightbox                        |
-| `description`  | Shows the image alt text                  |
+| Control               | Description                               |
+| --------------------- | ----------------------------------------- |
+| `indexDisplay`        | Shows current image index (e.g., "1 / 5") |
+| `zoomIn`              | Zoom into the image                       |
+| `zoomOut`             | Zoom out of the image                     |
+| `getDownloadButton()` | Download the current image                |
+| `close`               | Close the lightbox                        |
+| `description`         | Shows the image alt text                  |
 
 ## Custom Controls
 
