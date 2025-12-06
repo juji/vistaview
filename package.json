@@ -21,7 +21,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "echo \"no test specified\""
   },
   "lint-staged": {
     "*.{js,ts,css,json,md}": "prettier --write"
