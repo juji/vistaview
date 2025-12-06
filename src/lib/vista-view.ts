@@ -266,6 +266,32 @@ export class VistaView {
     return parseInt(style.getPropertyValue('--vistaview-animation-duration'));
   }
 
+  private updateZoomButtonsVisibility(): void {
+    const highresImage = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+      this.currentIndex
+    ] as HTMLImageElement;
+    if (!highresImage) return;
+
+    const zoomInBtn = this.containerElement?.querySelector(
+      'button.vistaview-zoom-in-button'
+    ) as HTMLButtonElement | null;
+    const zoomOutBtn = this.containerElement?.querySelector(
+      'button.vistaview-zoom-out-button'
+    ) as HTMLButtonElement | null;
+
+    // Check if zoom is possible: current width < maxWidth (naturalWidth * maxZoomLevel)
+    const currentWidth = highresImage.width;
+    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
+    const canZoom = currentWidth < maxWidth && maxWidth > 0;
+
+    if (zoomInBtn) {
+      zoomInBtn.style.display = canZoom ? '' : 'none';
+    }
+    if (zoomOutBtn) {
+      zoomOutBtn.style.display = canZoom ? '' : 'none';
+    }
+  }
+
   private zoomIn(): void {
     const highresImage = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
       this.currentIndex
@@ -684,7 +710,7 @@ export class VistaView {
         im.style.setProperty('--vistaview-fitted-height', `${h}px`);
       }
 
-      function onLoaded() {
+      const onLoaded = () => {
         im.classList.add('vistaview-image-loaded');
         setTimeout(() => {
           makeFullScreenContain(im);
@@ -694,7 +720,11 @@ export class VistaView {
             ?.querySelector('.vistaview-image-lowres')
             ?.classList.add('vistaview-image--hidden');
         }, 500);
-      }
+        // Update zoom button visibility when current image loads
+        if (i === this.currentIndex) {
+          this.updateZoomButtonsVisibility();
+        }
+      };
 
       // on loaded
       if (im.complete) {
@@ -808,6 +838,7 @@ export class VistaView {
     this.resetImageOpacity();
     this.setIndexDisplay();
     this.setCurrentDescription();
+    this.updateZoomButtonsVisibility();
     this.setInitialProperties && this.setInitialProperties();
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
   }
