@@ -83,9 +83,9 @@ export class VistaView {
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
   constructor(elements: VistaViewImage[], options?: VistaViewOptions) {
-    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     this.elements = elements;
+
+    // merge options
     this.options = {
       ...DefaultOptions,
       ...(options || {}),
@@ -95,6 +95,10 @@ export class VistaView {
       },
     };
 
+    // detect reduced motion
+    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // set click listeners on elements
     this.elements.forEach((el, index) => {
       const clickable = el.anchor || el.image;
       if (clickable) {
@@ -107,10 +111,12 @@ export class VistaView {
     });
   }
 
+  // set zoomed image
   private setZoomed(index: number | false): void {
     if (this.isZoomed === index) return;
 
-    //
+    // get current image first
+    // do this before setting this.isZoomed to false
     let image =
       this.isZoomed !== false
         ? (this.containerElement?.querySelectorAll('.vistaview-image-highres')[
@@ -120,6 +126,7 @@ export class VistaView {
 
     this.isZoomed = index;
 
+    // if zooming out to normal
     if (this.isZoomed === false && image) {
       if (this.onZoomedPointerDown) {
         image.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
@@ -141,6 +148,7 @@ export class VistaView {
       return;
     }
 
+    // if zooming in
     if (this.isZoomed !== false) {
       image = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
         this.isZoomed as number
@@ -159,6 +167,7 @@ export class VistaView {
       let localDiffX = 0;
       let localDiffY = 0;
 
+      // remove previous listeners
       if (this.onZoomedPointerDown) {
         image.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
         this.onZoomedPointerDown = null;
@@ -172,6 +181,7 @@ export class VistaView {
         this.onZoomedPointerUp = null;
       }
 
+      // set new listeners
       this.onZoomedPointerDown = (e: PointerEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -211,6 +221,7 @@ export class VistaView {
         localDiffY = 0;
       };
 
+      // add listeners
       image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
       image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
       image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
@@ -234,6 +245,7 @@ export class VistaView {
     const width = highresImage.width;
     const height = highresImage.height;
 
+    // store initial width/height if not set
     if (!highresImage.dataset.vistaviewInitialWidth) {
       highresImage.dataset.vistaviewInitialWidth = width.toString();
     }
@@ -243,8 +255,8 @@ export class VistaView {
 
     this.setZoomed(this.currentIndex);
 
+    // calculate new width/height
     const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
-
     if (width && maxWidth && width < maxWidth) {
       const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
       highresImage!.style.width = `${newWidth}px`;
@@ -257,6 +269,7 @@ export class VistaView {
       highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
       highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
+      // set counter zoom panning limits
       if (newWidth === maxWidth) {
         this.containerElement
           ?.querySelector('button.vistaview-zoom-in-button')
@@ -272,10 +285,12 @@ export class VistaView {
     const width = highresImage.width;
     const height = highresImage.height;
 
+    // get min width
     const minWidth = highresImage.dataset.vistaviewInitialWidth
       ? parseInt(highresImage.dataset.vistaviewInitialWidth)
       : 0;
 
+    // calculate new width/height
     if (width && minWidth && width > minWidth) {
       const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
       highresImage!.style.width = `${newWidth}px`;
