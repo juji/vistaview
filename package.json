@@ -19,16 +19,56 @@
     "responsive"
   ],
   "type": "module",
-  "main": "./dist/vistaview.umd.cjs",
+  "main": "./dist/vistaview.cjs",
   "module": "./dist/vistaview.js",
   "types": "./dist/vistaview.d.ts",
   "exports": {
     ".": {
       "types": "./dist/vistaview.d.ts",
       "import": "./dist/vistaview.js",
-      "require": "./dist/vistaview.umd.cjs"
+      "require": "./dist/vistaview.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
+    },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.js",
+      "require": "./dist/svelte.cjs"
+    },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js",
+      "require": "./dist/solid.cjs"
     },
     "./style.css": "./dist/vistaview.css"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "solid-js": ">=1.0.0",
+    "svelte": ">=4.0.0",
+    "vue": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
   },
   "files": [
     "dist"
@@ -44,14 +84,18 @@
     "*.{js,ts,css,json,md}": "prettier --write"
   },
   "devDependencies": {
+    "@types/react": "^19.2.7",
     "@types/trusted-types": "^2.0.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "sharp": "^0.34.5",
+    "solid-js": "^1.9.10",
+    "svelte": "^5.45.6",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.2.5",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.25"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"

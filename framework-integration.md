@@ -1,8 +1,43 @@
 # Framework Integration
 
-VistaView is framework-agnostic and works with any JavaScript framework. Below are examples for popular frameworks.
+VistaView provides official bindings for popular frameworks via subpath exports. It's also framework-agnostic and works with any JavaScript framework.
 
 ## React
+
+VistaView ships with a built-in React hook and component:
+
+```tsx
+import { useVistaView, VistaView } from 'vistaview/react';
+import 'vistaview/style.css';
+
+// Option 1: Use the hook
+function Gallery() {
+  const { ref, open, close, next, prev, getCurrentIndex } = useVistaView();
+
+  return (
+    <div ref={ref}>
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </div>
+  );
+}
+
+// Option 2: Use the component
+function Gallery2() {
+  return (
+    <VistaView>
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </VistaView>
+  );
+}
+```
+
+### Manual Setup
+
+If you prefer manual setup:
 
 ```tsx
 import { useEffect, useRef } from 'react';
@@ -25,52 +60,30 @@ function Gallery({ children }: { children: React.ReactNode }) {
 }
 ```
 
-### Custom Hook
+## Vue 3
 
-Create a reusable hook:
+VistaView ships with a built-in Vue composable:
 
-```tsx
-import { useEffect, useRef, useCallback } from 'react';
-import { vistaView, type VistaViewOptions, type VistaViewInterface } from 'vistaview';
+```vue
+<script setup>
+import { useVistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
 
-export function useVistaView(options: Omit<VistaViewOptions, 'parent'> = {}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const instanceRef = useRef<VistaViewInterface | null>(null);
+const { container, open, close, next, prev, getCurrentIndex } = useVistaView();
+</script>
 
-  useEffect(() => {
-    if (!ref.current) return;
-    instanceRef.current = vistaView({ parent: ref.current, ...options });
-    return () => {
-      instanceRef.current?.destroy();
-      instanceRef.current = null;
-    };
-  }, []);
-
-  const open = useCallback((index = 0) => instanceRef.current?.open(index), []);
-  const close = useCallback(() => instanceRef.current?.close(), []);
-  const next = useCallback(() => instanceRef.current?.next(), []);
-  const prev = useCallback(() => instanceRef.current?.prev(), []);
-  const view = useCallback((index: number) => instanceRef.current?.view(index), []);
-  const getCurrentIndex = useCallback(() => instanceRef.current?.getCurrentIndex() ?? -1, []);
-
-  return { ref, open, close, next, prev, view, getCurrentIndex };
-}
-
-// Usage
-function Gallery() {
-  const { ref, open } = useVistaView();
-
-  return (
-    <div ref={ref}>
-      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
-        <img src="/images/thumb.jpg" alt="Photo" />
-      </a>
-    </div>
-  );
-}
+<template>
+  <div ref="container">
+    <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+      <img src="/images/thumb.jpg" alt="Photo" />
+    </a>
+  </div>
+</template>
 ```
 
-## Vue 3
+### Manual Setup
+
+If you prefer manual setup:
 
 ```vue
 <script setup>
@@ -97,42 +110,26 @@ onUnmounted(() => {
 </template>
 ```
 
-### Composable
+## Svelte
 
-Create a reusable composable:
+VistaView ships with a built-in Svelte hook:
 
-```ts
-// useVistaView.ts
-import { ref, onMounted, onUnmounted, type Ref } from 'vue';
-import { vistaView, type VistaViewOptions, type VistaViewInterface } from 'vistaview';
+```svelte
+<script>
+import { useVistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
 
-export function useVistaView(options: Omit<VistaViewOptions, 'parent'> = {}) {
-  const container: Ref<HTMLElement | null> = ref(null);
-  let instance: VistaViewInterface | null = null;
+const { init, open, close, next, prev, getCurrentIndex } = useVistaView();
+</script>
 
-  onMounted(() => {
-    if (container.value) {
-      instance = vistaView({ parent: container.value, ...options });
-    }
-  });
-
-  onUnmounted(() => {
-    instance?.destroy();
-  });
-
-  return {
-    container,
-    open: (index?: number) => instance?.open(index),
-    close: () => instance?.close(),
-    next: () => instance?.next(),
-    prev: () => instance?.prev(),
-    view: (index: number) => instance?.view(index),
-    getCurrentIndex: () => instance?.getCurrentIndex() ?? -1,
-  };
-}
+<div use:init>
+  <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</div>
 ```
 
-## Svelte 5
+### Manual Setup (Svelte 5)
 
 ```svelte
 <script>
@@ -157,7 +154,7 @@ onDestroy(() => {
 </div>
 ```
 
-## Svelte 4
+### Manual Setup (Svelte 4)
 
 ```svelte
 <script>
@@ -183,6 +180,27 @@ onDestroy(() => {
 ```
 
 ## Solid
+
+VistaView ships with a built-in Solid hook:
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const { init, open, close, next, prev, getCurrentIndex } = useVistaView();
+
+  return (
+    <div ref={init}>
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </div>
+  );
+}
+```
+
+### Manual Setup
 
 ```tsx
 import { onMount, onCleanup, type ParentProps } from 'solid-js';

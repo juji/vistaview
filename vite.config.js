@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import dts from 'vite-plugin-dts'
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
@@ -10,18 +10,29 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/vistaview.ts'),
+      entry: {
+        vistaview: resolve(__dirname, 'src/vistaview.ts'),
+        react: resolve(__dirname, 'src/react.tsx'),
+        vue: resolve(__dirname, 'src/vue.ts'),
+        svelte: resolve(__dirname, 'src/svelte.ts'),
+        solid: resolve(__dirname, 'src/solid.ts'),
+      },
       name: 'VistaView',
-      fileName: 'vistaview',
-      formats: ['es', 'umd']
+      formats: ['es', 'cjs'],
     },
     cssCodeSplit: false,
     rolldownOptions: {
-      external: [],
+      external: ['react', 'react/jsx-runtime', 'vue', 'svelte', 'solid-js'],
       output: {
-        globals: {},
-        exports: 'named'
-      }
+        globals: {
+          react: 'React',
+          'react/jsx-runtime': 'jsxRuntime',
+          vue: 'Vue',
+          svelte: 'svelte',
+          'solid-js': 'solid',
+        },
+        exports: 'named',
+      },
     },
-  }
-})
+  },
+});
