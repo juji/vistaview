@@ -106,6 +106,32 @@ export class VistaView {
     });
   }
 
+  private getMaxMinZoomLevels(
+    currentWidth: number,
+    currentHeight: number
+  ): {
+    maxDiffX: number;
+    minDiffY: number;
+    maxDiffY: number;
+    minDiffX: number;
+  } {
+    const winHeight = window.innerHeight;
+    const winWidth = window.innerWidth;
+    const imageWidth = currentWidth;
+    const imageHeight = currentHeight;
+    const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2) + winWidth / 2;
+    const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2) + winHeight / 2;
+    const minDiffX = -maxDiffX;
+    const minDiffY = -maxDiffY;
+
+    return {
+      maxDiffX,
+      minDiffY,
+      maxDiffY,
+      minDiffX,
+    };
+  }
+
   private setZoomed(index: number | false): void {
     if (this.isZoomed === index) return;
 
@@ -185,14 +211,13 @@ export class VistaView {
         e.preventDefault();
         localDiffX = e.pageX - startX;
         localDiffY = e.pageY - startY;
-        const winHeight = window.innerHeight;
-        const winWidth = window.innerWidth;
+
         const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
         const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
-        const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2) + winWidth / 2;
-        const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2) + winHeight / 2;
-        const minDiffX = -maxDiffX;
-        const minDiffY = -maxDiffY;
+        const { maxDiffX, minDiffY, maxDiffY, minDiffX } = this.getMaxMinZoomLevels(
+          imageWidth,
+          imageHeight
+        );
         const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
         const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
         localDiffX = pointerDiffX - diffX;
@@ -243,7 +268,7 @@ export class VistaView {
 
     this.setZoomed(this.currentIndex);
 
-    const maxWidth = highresImage.naturalWidth || 0;
+    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
 
     if (width && maxWidth && width < maxWidth) {
       const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
@@ -286,6 +311,22 @@ export class VistaView {
         ?.removeAttribute('disabled');
       highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
       highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+
+      const { maxDiffX, minDiffY, maxDiffY, minDiffX } = this.getMaxMinZoomLevels(
+        newWidth,
+        newHeight
+      );
+      let pointerDiffX = parseInt(
+        highresImage?.style.getPropertyValue('--pointer-diff-x').replace('px', '') || '0'
+      );
+      let pointerDiffY = parseInt(
+        highresImage?.style.getPropertyValue('--pointer-diff-y').replace('px', '') || '0'
+      );
+      pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, pointerDiffX));
+      pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, pointerDiffY));
+
+      highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
+      highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
 
       if (newWidth === minWidth) {
         this.containerElement
