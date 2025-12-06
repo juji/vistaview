@@ -60,7 +60,15 @@ npm install vistaview
 
 ```js
 vistaView({
-  elements: '.gallery-image',
+  elements: '#gallery img',
+});
+```
+
+### Using a NodeList
+
+```js
+vistaView({
+  elements: document.querySelectorAll('.gallery-image'),
 });
 ```
 
@@ -81,21 +89,23 @@ vistaView({
 vistaView({
   // Required: specify either parent OR elements
   parent: HTMLElement, // Container element with images/anchors
-  elements: string | NodeList | Array, // Selector, NodeList, or array of images
+  elements: string | NodeList | VistaViewImage[], // Selector, NodeList, or array of images
 
   // Optional configuration
-  animationDurationBase: 333, // Base animation duration in ms
-  initialZIndex: 1, // Starting z-index for the lightbox
-  detectReducedMotion: true, // Respect prefers-reduced-motion
-  zoomStep: 300, // Pixels to zoom per step
+  animationDurationBase: 333, // Base animation duration in ms (default: 333)
+  initialZIndex: 1, // Starting z-index for the lightbox (default: 1)
+  detectReducedMotion: true, // Respect prefers-reduced-motion (default: true)
+  zoomStep: 500, // Pixels to zoom per step (default: 500)
+  maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
+  touchSpeedThreshold: 1, // Swipe speed threshold for navigation (default: 1)
 
-  // Control placement
+  // Control placement (defaults shown)
   controls: {
     topLeft: ['indexDisplay'],
-    topRight: ['zoomIn', 'zoomOut', 'close'],
+    topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
     topCenter: [],
     bottomLeft: [],
-    bottomCenter: [],
+    bottomCenter: ['description'],
     bottomRight: [],
   },
 });
@@ -108,7 +118,9 @@ vistaView({
 | `indexDisplay` | Shows current image index (e.g., "1 / 5") |
 | `zoomIn`       | Zoom into the image                       |
 | `zoomOut`      | Zoom out of the image                     |
+| `download`     | Download the current image                |
 | `close`        | Close the lightbox                        |
+| `description`  | Shows the image alt text                  |
 
 ## Custom Controls
 
@@ -145,7 +157,6 @@ VistaView uses CSS custom properties for easy theming:
 :root {
   --vistaview-bg-color: #000000;
   --vistaview-text-color: #ffffff;
-  --vistaview-border-radius: 8px;
   --vistaview-background-blur: 10px;
   --vistaview-background-opacity: 0.8;
   --vistaview-animation-duration: 333;
