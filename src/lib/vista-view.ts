@@ -304,6 +304,8 @@ export class VistaView {
     if (width && minWidth && width > minWidth) {
       const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
       highresImage!.style.width = `${newWidth}px`;
+
+      // set counter zoom panning limits
       const newHeight = (newWidth / width) * height;
       highresImage!.style.height = `${newHeight}px`;
       this.containerElement
