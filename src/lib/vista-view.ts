@@ -53,7 +53,7 @@ const GlobalVistaState = {
 
 export const DefaultOptions = {
   detectReducedMotion: true,
-  zoomStep: 300,
+  zoomStep: 500,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
