@@ -571,6 +571,7 @@ export class VistaView {
       `${pos.left + pos.width / 2}px`
     );
     this.rootElement.style.setProperty('--vistaview-number-elements', `${this.elements.length}`);
+
     this.rootElement.style.setProperty(
       '--vistaview-image-border-radius',
       isNotZeroCssValue(imageProps?.borderRadius) ||
