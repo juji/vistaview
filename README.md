@@ -8,7 +8,7 @@ A lightweight, modern image lightbox library for the web. Zero dependencies, fra
 - 📱 **Mobile-first** — Touch gestures, smooth animations, responsive design
 - 🎨 **Customizable** — Configurable controls, animations, and styling
 - ♿ **Accessible** — Keyboard navigation, reduced motion support
-- 🔧 **Framework-agnostic** — Works with vanilla JS, React, Vue, or any framework
+- 🔧 **Framework-agnostic** — Works with vanilla JS, React, Vue, Svelte, Solid, or any framework
 - 🖼️ **Progressive loading** — Low-res thumbnails → high-res images with smooth transitions
 - 🔍 **Zoom support** — Zoom in/out with buttons, respects actual image resolution
 
@@ -176,6 +176,26 @@ VistaView uses CSS custom properties for easy theming:
 ## Browser Support
 
 VistaView works in all modern browsers (Chrome, Firefox, Safari, Edge).
+
+## Framework Integration
+
+VistaView provides official bindings for popular frameworks:
+
+```tsx
+// React
+import { useVistaView, VistaView } from 'vistaview/react';
+
+// Vue
+import { useVistaView } from 'vistaview/vue';
+
+// Svelte
+import { useVistaView } from 'vistaview/svelte';
+
+// Solid
+import { useVistaView } from 'vistaview/solid';
+```
+
+See [framework-integration.md](./framework-integration.md) for detailed examples.
 
 ## License
 
