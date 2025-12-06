@@ -227,6 +227,11 @@
               opacity 0.3s ease 0s;
             max-width: unset;
             max-height: unset;
+            cursor: grab;
+
+            &:active {
+              cursor: grabbing;
+            }
           }
 
           &.vistaview-image-loaded {

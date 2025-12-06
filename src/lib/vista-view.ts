@@ -67,6 +67,7 @@ export class VistaView {
   private rootElement: HTMLElement | null = null;
   private containerElement: HTMLElement | null = null;
   private isActive: boolean = false;
+  private isZoomed: number | boolean = false;
 
   private options: VistaViewOptions;
   private indexDisplayElement: HTMLElement | null = null;
@@ -109,36 +110,36 @@ export class VistaView {
   }
 
   private zoomIn(): void {
-    const highresImages = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+    const highresImage = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
       this.currentIndex
     ] as HTMLImageElement;
-    const width = highresImages.width;
-    const height = highresImages.height;
+    const width = highresImage.width;
+    const height = highresImage.height;
 
-    if (!highresImages.dataset.vistaviewInitialWidth) {
-      highresImages.dataset.vistaviewInitialWidth = width.toString();
+    if (!highresImage.dataset.vistaviewInitialWidth) {
+      highresImage.dataset.vistaviewInitialWidth = width.toString();
     }
-    if (!highresImages.dataset.vistaviewInitialHeight) {
-      highresImages.dataset.vistaviewInitialHeight = height.toString();
+    if (!highresImage.dataset.vistaviewInitialHeight) {
+      highresImage.dataset.vistaviewInitialHeight = height.toString();
     }
 
-    highresImages?.classList.add('vistaview-image--zooming');
-    const maxWidth = highresImages.naturalWidth || 0;
+    highresImage?.classList.add('vistaview-image--zooming');
+    const maxWidth = highresImage.naturalWidth || 0;
 
     if (width && maxWidth && width < maxWidth) {
       const newWidth = Math.min(
         width + (this.options.zoomStep || DefaultOptions.zoomStep),
         maxWidth
       );
-      highresImages!.style.width = `${newWidth}px`;
+      highresImage!.style.width = `${newWidth}px`;
       const newHeight = (newWidth / width) * height;
-      highresImages!.style.height = `${newHeight}px`;
+      highresImage!.style.height = `${newHeight}px`;
       this.containerElement
         ?.querySelector('button.vistaview-zoom-out-button')
         ?.removeAttribute('disabled');
 
-      highresImages.dataset.vistaviewCurrentWidth = newWidth.toString();
-      highresImages.dataset.vistaviewCurrentHeight = newHeight.toString();
+      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
       if (newWidth === maxWidth) {
         this.containerElement
@@ -149,14 +150,14 @@ export class VistaView {
   }
 
   private zoomOut(): void {
-    const highresImages = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+    const highresImage = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
       this.currentIndex
     ] as HTMLImageElement;
-    const width = highresImages.width;
-    const height = highresImages.height;
+    const width = highresImage.width;
+    const height = highresImage.height;
 
-    const minWidth = highresImages.dataset.vistaviewInitialWidth
-      ? parseInt(highresImages.dataset.vistaviewInitialWidth)
+    const minWidth = highresImage.dataset.vistaviewInitialWidth
+      ? parseInt(highresImage.dataset.vistaviewInitialWidth)
       : 0;
 
     if (width && minWidth && width > minWidth) {
@@ -164,24 +165,24 @@ export class VistaView {
         width - (this.options.zoomStep || DefaultOptions.zoomStep),
         minWidth
       );
-      highresImages!.style.width = `${newWidth}px`;
+      highresImage!.style.width = `${newWidth}px`;
       const newHeight = (newWidth / width) * height;
-      highresImages!.style.height = `${newHeight}px`;
+      highresImage!.style.height = `${newHeight}px`;
       this.containerElement
         ?.querySelector('button.vistaview-zoom-in-button')
         ?.removeAttribute('disabled');
-      highresImages.dataset.vistaviewCurrentWidth = newWidth.toString();
-      highresImages.dataset.vistaviewCurrentHeight = newHeight.toString();
+      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
       if (newWidth === minWidth) {
         this.containerElement
           ?.querySelector('button.vistaview-zoom-out-button')
           ?.setAttribute('disabled', 'true');
-        highresImages.removeAttribute('data-vistaview-current-width');
-        highresImages.removeAttribute('data-vistaview-current-height');
-        highresImages.removeAttribute('data-vistaview-initial-width');
-        highresImages.removeAttribute('data-vistaview-initial-height');
-        highresImages?.classList.remove('vistaview-image--zooming');
+        highresImage.removeAttribute('data-vistaview-current-width');
+        highresImage.removeAttribute('data-vistaview-current-height');
+        highresImage.removeAttribute('data-vistaview-initial-width');
+        highresImage.removeAttribute('data-vistaview-initial-height');
+        highresImage?.classList.remove('vistaview-image--zooming');
       }
     }
   }
