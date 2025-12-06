@@ -225,19 +225,21 @@
           object-fit: cover;
           opacity: 0;
           transition:
-            width 0.3s ease 0.3s,
-            height 0.3s ease 0.3s,
-            opacity 0.3s ease 0.3s;
+            width calc(var(--vistaview-animation-duration) * 1ms) ease
+              calc(var(--vistaview-animation-duration) * 0.8ms),
+            height calc(var(--vistaview-animation-duration) * 1ms) ease
+              calc(var(--vistaview-animation-duration) * 0.8ms),
+            opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms;
           max-width: 100%;
           max-height: 100%;
 
           &.vistaview-image--zooming {
             transition:
-              width 0.3s ease 0s,
-              height 0.3s ease 0s,
-              opacity 0.3s ease 0s,
-              top 0.1s ease 0s,
-              left 0.1s ease 0s;
+              width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              top 111ms ease-out 0s,
+              left 111ms ease-out 0s;
             max-width: unset;
             max-height: unset;
             cursor: grab;
@@ -351,18 +353,20 @@ vistaview is initialized, with initial position and size
   & .vistaview-container {
     & .vistaview-image-container {
       & .vistaview-item {
-        & img.vistaview-image-lowres {
+        img.vistaview-image-lowres {
           &.vistaview-image--hidden {
             opacity: 1;
           }
         }
 
-        & img.vistaview-image-highres {
+        img.vistaview-image-highres {
+          transition:
+            width calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+            height calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+            opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease
+              calc(var(--vistaview-animation-duration) * 0.5ms);
+
           &.vistaview-image-loaded {
-            transition:
-              width 0.3s ease 0,
-              height 0.3s ease 0,
-              opacity 0.3s ease 0;
             opacity: 0;
           }
         }

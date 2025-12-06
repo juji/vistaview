@@ -42,22 +42,25 @@ body {
 
 .image-grid a {
   text-decoration: none;
+  outline: 1px solid lightgreen;
 
-  & > img{
+  & > img {
     width: 100%;
     height: 200px;
     object-fit: cover;
     border-radius: 16px;
     border: 1px solid var(--border-color);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     display: block;
   }
 
-  &:nth-child(2){
+  &:nth-child(2) {
     border-radius: 16px;
     overflow: hidden;
 
-    & > img{
+    & > img {
       border-radius: 0px;
     }
   }
