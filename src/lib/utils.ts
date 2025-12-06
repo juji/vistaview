@@ -1,4 +1,3 @@
-
 /// <reference types="trusted-types" />
 import type { VistaViewElm } from './vista-view';
 
@@ -8,7 +7,7 @@ export function getElmProperties(elm: HTMLElement): VistaViewElm {
     objectFit: s.objectFit,
     borderRadius: s.borderRadius,
     objectPosition: s.objectPosition,
-    overflow: s.overflow
+    overflow: s.overflow,
   };
 }
 
@@ -18,14 +17,18 @@ function getPolicy() {
 
   if (!window.trustedTypes) {
     (window as any).trustedTypes = {
-      createPolicy: (_name: string, rules: any) => rules
+      createPolicy: (_name: string, rules: any) => rules,
     } as TrustedTypePolicyFactory;
   }
 
-  cachedPolicy = window.trustedTypes!.createPolicy("vistaView-policy", {
+  cachedPolicy = window.trustedTypes!.createPolicy('vistaView-policy', {
     createHTML: (input: string) => input,
-    createScript: () => { throw new Error("Not implemented"); },
-    createScriptURL: () => { throw new Error("Not implemented"); }
+    createScript: () => {
+      throw new Error('Not implemented');
+    },
+    createScriptURL: () => {
+      throw new Error('Not implemented');
+    },
   });
 
   return cachedPolicy;
@@ -42,7 +45,9 @@ export function createTrustedHtml(htmlString: string): DocumentFragment {
 }
 
 export function isNotZeroCssValue(value?: string): false | string | undefined {
-  return value && !/^0(px|%|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|ex|ch)?$/i.test(value.trim()) && value;
+  return (
+    value && !/^0(px|%|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|ex|ch)?$/i.test(value.trim()) && value
+  );
 }
 
 export function getFittedSize(img: HTMLImageElement): {
@@ -50,7 +55,7 @@ export function getFittedSize(img: HTMLImageElement): {
   height: number;
 } {
   const style = window.getComputedStyle(img);
-  const objectFit = style.objectFit || ""; // empty string in some old browsers
+  const objectFit = style.objectFit || ''; // empty string in some old browsers
 
   // Rendered <img> size
   const { width: boxW, height: boxH } = img.getBoundingClientRect();
@@ -73,27 +78,27 @@ export function getFittedSize(img: HTMLImageElement): {
   const boxAR = boxW / boxH;
 
   switch (objectFit) {
-    case "fill":
+    case 'fill':
       return { width: boxW, height: boxH };
 
-    case "none":
+    case 'none':
       return { width: natW, height: natH };
 
-    case "contain":
+    case 'contain':
       if (imageAR > boxAR) {
         return { width: boxW, height: boxW / imageAR };
       } else {
         return { width: boxH * imageAR, height: boxH };
       }
 
-    case "cover":
+    case 'cover':
       if (imageAR < boxAR) {
         return { width: boxW, height: boxW / imageAR };
       } else {
         return { width: boxH * imageAR, height: boxH };
       }
 
-    case "scale-down": {
+    case 'scale-down': {
       // natural size
       const natural = { width: natW, height: natH };
 
@@ -104,9 +109,7 @@ export function getFittedSize(img: HTMLImageElement): {
           : { width: boxH * imageAR, height: boxH };
 
       // pick the smaller of the two
-      return (contain.width <= natural.width && contain.height <= natural.height)
-        ? contain
-        : natural;
+      return contain.width <= natural.width && contain.height <= natural.height ? contain : natural;
     }
   }
 
@@ -114,11 +117,7 @@ export function getFittedSize(img: HTMLImageElement): {
   return { width: boxW, height: boxH };
 }
 
-
-export function makeFullScreenContain(
-  img: HTMLImageElement,
-  setDataAttribute: boolean = false
-) {
+export function makeFullScreenContain(img: HTMLImageElement, setDataAttribute: boolean = false) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -127,10 +126,10 @@ export function makeFullScreenContain(
 
   if (!nw || !nh) return;
 
-  if(nw < vw && nh < vh){
+  if (nw < vw && nh < vh) {
     // smaller than screen, no need to resize
-    img.style.width = nw + "px";
-    img.style.height = nh + "px";
+    img.style.width = nw + 'px';
+    img.style.height = nh + 'px';
     return;
   }
 
@@ -151,11 +150,11 @@ export function makeFullScreenContain(
   }
 
   // Apply size
-  if(setDataAttribute) {
+  if (setDataAttribute) {
     img.dataset.vistaviewInitialWidth = width.toString();
     img.dataset.vistaviewInitialHeight = height.toString();
   } else {
-    img.style.width = width + "px";
-    img.style.height = height + "px";
+    img.style.width = width + 'px';
+    img.style.height = height + 'px';
   }
 }

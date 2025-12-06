@@ -1,9 +1,8 @@
-
-import type { 
+import type {
   VistaViewDefaultControls,
-  VistaViewCustomControl, 
-  VistaViewImage, 
-  VistaViewOptions 
+  VistaViewCustomControl,
+  VistaViewImage,
+  VistaViewOptions,
 } from './vista-view';
 
 // Optimized SVG icons - common attributes applied via CSS
@@ -25,18 +24,23 @@ export function getDownloadButton(): VistaViewCustomControl {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-  }
+    },
+  };
 }
 
 function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCustomControl): string {
   if (typeof control === 'string') {
     switch (control) {
-      case 'zoomIn': return `<button class="vistaview-zoom-in-button">${zoomInIcon}</button>`;
-      case 'zoomOut': return `<button disabled class="vistaview-zoom-out-button">${zoomOutIcon}</button>`;
-      case 'close': return `<button class="vistaview-close-button">${closeIcon}</button>`;
-      case 'indexDisplay': return `<div class="vistaview-index-display"></div>`;
-      default: return '';
+      case 'zoomIn':
+        return `<button class="vistaview-zoom-in-button">${zoomInIcon}</button>`;
+      case 'zoomOut':
+        return `<button disabled class="vistaview-zoom-out-button">${zoomOutIcon}</button>`;
+      case 'close':
+        return `<button class="vistaview-close-button">${closeIcon}</button>`;
+      case 'indexDisplay':
+        return `<div class="vistaview-index-display"></div>`;
+      default:
+        return '';
     }
   }
   return `<button data-vistaview-custom-control="${control.name}">${control.icon}</button>`;
@@ -46,20 +50,23 @@ export function vistaViewComponent(
   elements: VistaViewImage[],
   controls: VistaViewOptions['controls']
 ): string {
-  const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) => 
+  const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
 
   return `<div class="vistaview-root" id="vistaview-root">
 <div class="vistaview-container">
 <div class="vistaview-image-container">
-${elements.map(el => {
-  const fit = el.image ? getComputedStyle(el.image).objectFit : '';
-  const w = el.image?.width, h = el.image?.height;
-  return `<div class="vistaview-item">
+${elements
+  .map((el) => {
+    const fit = el.image ? getComputedStyle(el.image).objectFit : '';
+    const w = el.image?.width,
+      h = el.image?.height;
+    return `<div class="vistaview-item">
 <img class="vistaview-image-lowres"${fit ? ` style="object-fit:${fit}"` : ''} src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${w}" height="${h}">
 <img class="vistaview-image-highres" data-vv-of="${fit}" style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
 </div>`;
-}).join('')}
+  })
+  .join('')}
 </div>
 <div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
 <div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
@@ -68,4 +75,3 @@ ${elements.map(el => {
 </div>
 </div>`;
 }
-

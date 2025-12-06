@@ -1,5 +1,9 @@
 import { VistaView, DefaultOptions } from './lib/vista-view';
-import type { VistaViewImage, VistaViewElm, VistaViewOptions as VistaViewOptionsBase } from './lib/vista-view';
+import type {
+  VistaViewImage,
+  VistaViewElm,
+  VistaViewOptions as VistaViewOptionsBase,
+} from './lib/vista-view';
 import './style.css';
 
 export type { VistaViewImage, VistaViewElm, VistaViewOptionsBase };
@@ -8,11 +12,12 @@ export { DefaultOptions };
 export type VistaViewOptions = {
   parent?: HTMLElement;
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
-} & VistaViewOptionsBase
+} & VistaViewOptionsBase;
 
 // Helper to convert HTML element to VistaViewImage
 const toImage = (el: HTMLElement): VistaViewImage => {
-  const img = el instanceof HTMLImageElement ? el : el.querySelector('img') as HTMLImageElement | null;
+  const img =
+    el instanceof HTMLImageElement ? el : (el.querySelector('img') as HTMLImageElement | null);
   return {
     src: el.dataset.vistaviewSrc || el.getAttribute('href') || '',
     width: +(el.dataset.vistaviewWidth || img?.naturalWidth || 0),
@@ -20,7 +25,7 @@ const toImage = (el: HTMLElement): VistaViewImage => {
     smallSrc: img?.src || el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
     alt: img?.alt || el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
     anchor: el instanceof HTMLAnchorElement ? el : undefined,
-    image: img || undefined
+    image: img || undefined,
   };
 };
 
@@ -30,7 +35,9 @@ export function vistaView({ parent, elements, ...opts }: VistaViewOptions): Vist
   let imgs: VistaViewImage[];
 
   if (parent) {
-    const sel = parent.querySelector('img[data-vistaview-src]') ? 'img[data-vistaview-src]' : 'a[href]';
+    const sel = parent.querySelector('img[data-vistaview-src]')
+      ? 'img[data-vistaview-src]'
+      : 'a[href]';
     imgs = Array.from(parent.querySelectorAll<HTMLElement>(sel)).map(toImage);
   } else if (typeof elements === 'string') {
     imgs = Array.from(document.querySelectorAll<HTMLElement>(elements)).map(toImage);
