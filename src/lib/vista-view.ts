@@ -118,7 +118,6 @@ export class VistaView {
     this.isZoomed = index;
 
     if (this.isZoomed === false && image) {
-      image.classList.remove('vistaview-image--zooming');
       if (this.onZoomedPointerDown) {
         image.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
         this.onZoomedPointerDown = null;
@@ -133,19 +132,19 @@ export class VistaView {
       }
       image?.style.removeProperty('--pointer-diff-x');
       image?.style.removeProperty('--pointer-diff-y');
+      setTimeout(() => {
+        image?.classList.remove('vistaview-image--zooming');
+      }, 500);
       return;
     }
 
     if (this.isZoomed !== false) {
-      console.log('setZoomed', this.isZoomed);
-
       image = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
         this.isZoomed as number
       ] as HTMLImageElement;
 
-      console.log('image', image);
-
       image.classList.add('vistaview-image--zooming');
+
       image?.style.setProperty('--pointer-diff-x', `0px`);
       image?.style.setProperty('--pointer-diff-y', `0px`);
 
@@ -156,6 +155,19 @@ export class VistaView {
       let diffY = 0;
       let localDiffX = 0;
       let localDiffY = 0;
+
+      if (this.onZoomedPointerDown) {
+        image.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
+        this.onZoomedPointerDown = null;
+      }
+      if (this.onZoomedPointerMove) {
+        image.parentElement?.removeEventListener('pointermove', this.onZoomedPointerMove!);
+        this.onZoomedPointerMove = null;
+      }
+      if (this.onZoomedPointerUp) {
+        image.parentElement?.removeEventListener('pointerup', this.onZoomedPointerUp!);
+        this.onZoomedPointerUp = null;
+      }
 
       this.onZoomedPointerDown = (e: PointerEvent) => {
         e.preventDefault();
@@ -175,8 +187,8 @@ export class VistaView {
         const winWidth = window.innerWidth;
         const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
         const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
-        const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2);
-        const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2);
+        const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2) + winWidth / 2;
+        const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2) + winHeight / 2;
         const minDiffX = -maxDiffX;
         const minDiffY = -maxDiffY;
         const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
