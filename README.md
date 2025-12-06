@@ -173,6 +173,16 @@ VistaView uses CSS custom properties for easy theming:
 | `data-vistaview-alt`      | Alt text for the image                     |
 | `data-vistaview-smallsrc` | Thumbnail URL (optional)                   |
 
+## Keyboard Navigation
+
+| Key       | Action         |
+| --------- | -------------- |
+| `←` Left  | Previous image |
+| `→` Right | Next image     |
+| `↑` Up    | Zoom in        |
+| `↓` Down  | Zoom out       |
+| `Esc`     | Close lightbox |
+
 ## Browser Support
 
 VistaView works in all modern browsers (Chrome, Firefox, Safari, Edge).

@@ -99,6 +99,7 @@ export class VistaView {
   private onPointerDown: ((e: PointerEvent) => void) | null = null;
   private onPointerMove: ((e: PointerEvent) => void) | null = null;
   private onPointerUp: ((e: PointerEvent) => void) | null = null;
+  private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(elements: VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -718,6 +719,34 @@ export class VistaView {
     //
     this.setTouchActions();
 
+    // keyboard navigation
+    this.onKeyDown = (e: KeyboardEvent) => {
+      if (!this.isActive) return;
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          this.prev();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          this.next();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          this.zoomIn();
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          this.zoomOut();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          this.close();
+          break;
+      }
+    };
+    window.addEventListener('keydown', this.onKeyDown);
+
     // set as initialized
     setTimeout(() => {
       this.rootElement && this.rootElement.classList.add('vistaview--initialized');
@@ -754,6 +783,7 @@ export class VistaView {
     this.resetImageOpacity(true);
     this.setInitialProperties && window.removeEventListener('resize', this.setInitialProperties);
     this.setFullScreenContain && window.removeEventListener('resize', this.setFullScreenContain);
+    this.onKeyDown && window.removeEventListener('keydown', this.onKeyDown);
     GlobalVistaState.somethingOpened = false;
   }
 
