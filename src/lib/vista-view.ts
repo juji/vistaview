@@ -238,9 +238,13 @@ export class VistaView {
     this.currentIndex = index;
 
     // prepend
+    const mergedControls = {
+      ...DefaultOptions.controls,
+      ...this.options.controls,
+    };
     const component = vistaViewComponent(
       this.elements,
-      (this.options.controls || DefaultOptions.controls) as VistaViewOptions['controls']
+      mergedControls as VistaViewOptions['controls']
     );
     document.body.prepend(createTrustedHtml(component));
 
@@ -326,18 +330,14 @@ export class VistaView {
     window.addEventListener('resize', this.setInitialProperties);
 
     // get all custom controls
-    const allCustomControls = (
-      this.options.controls
-        ? [
-            ...(this.options.controls.topLeft || []),
-            ...(this.options.controls.topCenter || []),
-            ...(this.options.controls.topRight || []),
-            ...(this.options.controls.bottomLeft || []),
-            ...(this.options.controls.bottomCenter || []),
-            ...(this.options.controls.bottomRight || []),
-          ]
-        : [...(DefaultOptions.controls.topLeft || []), ...(DefaultOptions.controls.topRight || [])]
-    ).filter((c) => typeof c !== 'string') as VistaViewCustomControl[];
+    const allCustomControls = [
+      ...(mergedControls.topLeft || []),
+      ...(mergedControls.topCenter || []),
+      ...(mergedControls.topRight || []),
+      ...(mergedControls.bottomLeft || []),
+      ...(mergedControls.bottomCenter || []),
+      ...(mergedControls.bottomRight || []),
+    ].filter((c) => typeof c !== 'string') as VistaViewCustomControl[];
 
     // set buttons listeners
     this.containerElement.querySelectorAll('button').forEach((button) => {

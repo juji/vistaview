@@ -112,7 +112,7 @@ vistaView({
 
 ## Custom Controls
 
-You can add custom controls by providing an object with `name`, `icon`, and `onClick`:
+Controls are merged with defaults—only the positions you specify are replaced. Provide an object with `name`, `icon`, and `onClick`:
 
 ```js
 import { vistaView, getDownloadButton } from 'vistaview';
