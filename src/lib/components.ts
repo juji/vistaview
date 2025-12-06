@@ -65,7 +65,7 @@ ${elements
       h = el.image?.height;
     return `<div class="vistaview-item">
 <img class="vistaview-image-lowres"${fit ? ` style="object-fit:${fit}"` : ''} src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${w}" height="${h}">
-<img class="vistaview-image-highres" data-vv-of="${fit}" style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
+<img class="vistaview-image-highres" loading="lazy" data-vv-of="${fit}" style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
 </div>`;
   })
   .join('')}
