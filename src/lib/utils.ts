@@ -1,61 +1,39 @@
 
 /// <reference types="trusted-types" />
-import DOMPurify from "isomorphic-dompurify";
 import type { VistaViewElm } from './vista-view';
 
-export function getElmProperties( elm: HTMLElement ): VistaViewElm {
-
-  const objectFit = window.getComputedStyle( elm ).getPropertyValue( 'object-fit' );
-  const borderRadius = window.getComputedStyle( elm ).getPropertyValue( 'border-radius' );
-  const objectPosition = window.getComputedStyle( elm ).getPropertyValue( 'object-position' );
-  const overflow = window.getComputedStyle( elm ).getPropertyValue( 'overflow' );
-
+export function getElmProperties(elm: HTMLElement): VistaViewElm {
+  const s = getComputedStyle(elm);
   return {
-    objectFit,
-    borderRadius,
-    objectPosition,
-    overflow
+    objectFit: s.objectFit,
+    borderRadius: s.borderRadius,
+    objectPosition: s.objectPosition,
+    overflow: s.overflow
   };
 }
 
 let cachedPolicy: TrustedTypePolicy | null = null;
-function getPolicy(){
+function getPolicy() {
+  if (cachedPolicy) return cachedPolicy;
 
-  if(cachedPolicy){
-    return cachedPolicy;
-  }
-
-  // Check if Trusted Types is supported
   if (!window.trustedTypes) {
     (window as any).trustedTypes = {
-      createPolicy: (_name: string, _rules: any) => _rules
+      createPolicy: (_name: string, rules: any) => rules
     } as TrustedTypePolicyFactory;
   }
 
-  // Use default policy - Trusted Types will return existing policy if name already exists
   cachedPolicy = window.trustedTypes!.createPolicy("vistaView-policy", {
-    createHTML: (input: string) => DOMPurify.sanitize(input),
-    createScript: (_input: string) => { throw new Error("createScript not implemented"); },
-    createScriptURL: (_input: string) => { throw new Error("createScriptURL not implemented"); }
+    createHTML: (input: string) => input,
+    createScript: () => { throw new Error("Not implemented"); },
+    createScriptURL: () => { throw new Error("Not implemented"); }
   });
 
   return cachedPolicy;
 }
 
-export function createTrustedHtml( htmlString: string ): DocumentFragment {
-  // Check if Trusted Types is supported
-  if (!window.trustedTypes) {
-    (window as any).trustedTypes = {
-      createPolicy: (_name: string, _rules: any) => _rules
-    };
-  }
-
-  // Use default policy - Trusted Types will return existing policy if name already exists
+export function createTrustedHtml(htmlString: string): DocumentFragment {
   const policy = getPolicy();
-
   const trustedHtml = policy.createHTML(htmlString);
-
-  // Create a template element to safely parse the TrustedHTML
   const template = document.createElement('template');
   (template as any).innerHTML = trustedHtml;
   const html = template.content;
@@ -63,10 +41,8 @@ export function createTrustedHtml( htmlString: string ): DocumentFragment {
   return html;
 }
 
-export function isNotZeroCssValue( value?: string ): false | string | undefined {
-  const zeroValues = ['0', '0px', '0%', '0em', '0rem', '0vw', '0vh', '0vmin', '0vmax', '0cm', '0mm', '0in', '0pt', '0pc', '0ex', '0ch'];
-  const isZero = value ? zeroValues.includes( value?.trim().toLowerCase() || '' ) : value;
-  return isZero ? false : value;
+export function isNotZeroCssValue(value?: string): false | string | undefined {
+  return value && !/^0(px|%|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|ex|ch)?$/i.test(value.trim()) && value;
 }
 
 export function getFittedSize(img: HTMLImageElement): {

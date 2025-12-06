@@ -1,103 +1,48 @@
-
 import { VistaView, DefaultOptions } from './lib/vista-view';
 import type { VistaViewImage, VistaViewElm, VistaViewOptions as VistaViewOptionsBase } from './lib/vista-view';
 import './style.css';
 
-// Re-export types for library consumers
 export type { VistaViewImage, VistaViewElm, VistaViewOptionsBase };
 export { DefaultOptions };
-
 
 export type VistaViewOptions = {
   parent?: HTMLElement;
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
 } & VistaViewOptionsBase
 
-export function vistaView( options: VistaViewOptions ): VistaView {
+// Helper to convert HTML element to VistaViewImage
+const toImage = (el: HTMLElement): VistaViewImage => {
+  const img = el instanceof HTMLImageElement ? el : el.querySelector('img') as HTMLImageElement | null;
+  return {
+    src: el.dataset.vistaviewSrc || el.getAttribute('href') || '',
+    width: +(el.dataset.vistaviewWidth || img?.naturalWidth || 0),
+    height: +(el.dataset.vistaviewHeight || img?.naturalHeight || 0),
+    smallSrc: img?.src || el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
+    alt: img?.alt || el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
+    anchor: el instanceof HTMLAnchorElement ? el : undefined,
+    image: img || undefined
+  };
+};
 
-  let {
-    parent,
-    elements,
-    ...vistaViewOptionsBase
-  } = options
+export function vistaView({ parent, elements, ...opts }: VistaViewOptions): VistaView {
+  if (!parent && !elements) throw new Error('No parent or elements');
 
-  if(!parent && !elements) {
-    throw new Error('VistaView: No parent or elements specified.');
+  let imgs: VistaViewImage[];
+
+  if (parent) {
+    const sel = parent.querySelector('img[data-vistaview-src]') ? 'img[data-vistaview-src]' : 'a[href]';
+    imgs = Array.from(parent.querySelectorAll<HTMLElement>(sel)).map(toImage);
+  } else if (typeof elements === 'string') {
+    imgs = Array.from(document.querySelectorAll<HTMLElement>(elements)).map(toImage);
+  } else if (elements instanceof NodeList) {
+    imgs = Array.from(elements).map(toImage);
+  } else if (Array.isArray(elements)) {
+    imgs = elements;
+  } else {
+    throw new Error('Invalid elements');
   }
 
-  if(parent) {
-    let childElements = Array.from(parent.querySelectorAll<HTMLElement>('img[data-vistaview-src]'));
-    if(!childElements.length) {
-      childElements = Array.from(parent.querySelectorAll<HTMLElement>('a[href]'));
-    }
+  if (!imgs.length) throw new Error('No elements found');
 
-    elements = childElements.map( el => {
-
-      return {
-        src: el.dataset.vistaviewSrc || el.getAttribute('href') || '',
-        width: el.dataset.vistaviewWidth ? parseInt(el.dataset.vistaviewWidth) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalWidth : 0 ),
-        height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
-        smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
-        alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
-        anchor: el instanceof HTMLAnchorElement ? el : undefined,
-        image: el instanceof HTMLImageElement ? el as HTMLImageElement : 
-          el.querySelector('img') ? el.querySelector('img') as HTMLImageElement : undefined
-      }
-
-    })
-
-  }else if(elements) {
-
-    if(typeof elements === 'string'){
-      elements = document.querySelectorAll<HTMLElement>(elements);
-    }
-
-    if(elements instanceof NodeList){
-      elements = Array.from(elements).map( el => {
-
-        return {
-          src: el.dataset.vistaviewSrc || el.getAttribute('href') || '',
-          width: el.dataset.vistaviewWidth ? parseInt(el.dataset.vistaviewWidth) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalWidth : 0 ),
-          height: el.dataset.vistaviewHeight ? parseInt(el.dataset.vistaviewHeight) : ( el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).naturalHeight : 0 ),
-          smallSrc: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).src : el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
-          alt: el.querySelector('img') ? (el.querySelector('img') as HTMLImageElement).alt : el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
-          anchor: el instanceof HTMLAnchorElement ? el : undefined,
-          image: el instanceof HTMLImageElement ? el as HTMLImageElement : 
-            el.querySelector('img') ? el.querySelector('img') as HTMLImageElement : undefined
-        }
-
-      })
-    }else if (Array.isArray(elements)) {
-      // check for correct structure
-      elements.forEach( (el, i) => {
-        if( typeof el.src !== 'string') {
-          throw new Error(`VistaView: Invalid src type in elements array at index ${i}. Should be a string.`);
-        }
-        if( typeof el.width !== 'number') {
-          throw new Error(`VistaView: Invalid width type in elements array at index ${i}. Should be a number.`);
-        }
-        if( typeof el.height !== 'number') {
-          throw new Error(`VistaView: Invalid height type in elements array at index ${i}. Should be a number.`);
-        }
-        if( el.alt && typeof el.alt !== 'string' ) {
-          throw new Error(`VistaView: Invalid alt in elements array at index ${i}. Should be a string.`);
-        }
-        if( el.smallSrc && typeof el.smallSrc !== 'string' ) {
-          throw new Error(`VistaView: Invalid smallSrc in elements array at index ${i}. Should be a string.`);
-        }
-      });
-    }else{
-      throw new Error('VistaView: Invalid elements option.');
-    }
-
-  }
-
-  if(!Array.isArray(elements) || !elements.length) {
-    throw new Error('VistaView: No elements found to display.');
-  }
-
-  return new VistaView(elements, {
-    ...vistaViewOptionsBase
-  });
-
+  return new VistaView(imgs, opts);
 }
