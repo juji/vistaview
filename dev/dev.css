@@ -42,7 +42,7 @@ body {
 
 .image-grid a {
   text-decoration: none;
-  outline: 1px solid lightgreen;
+  /* outline: 1px solid lightgreen; */
 
   & > img {
     width: 100%;
@@ -64,6 +64,18 @@ body {
       border-radius: 0px;
     }
   }
+}
+
+.image-only img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  display: block;
 }
 
 .image-grid img:hover {

@@ -67,20 +67,32 @@
          data-vistaview-height="1440">
         <img src="/images/thumbnails/thumb_694-2560x1440.jpg" style="border-radius: 64px;" alt="Image 9">
       </a>
-
-      <!-- Original Picsum URLs for reference:
-      <img src="https://picsum.photos/1920/1080?random=1" alt="Image 1">
-      <img src="https://picsum.photos/1280/720?random=2" alt="Image 2">
-      <img src="https://picsum.photos/800/600?random=3" alt="Image 3">
-      <img src="https://picsum.photos/1024/768?random=4" alt="Image 4">
-      <img src="https://picsum.photos/1600/900?random=5" alt="Image 5">
-      <img src="https://picsum.photos/1440/900?random=6" alt="Image 6">
-      <img src="https://picsum.photos/1680/1050?random=8" alt="Image 7">
-      <img src="https://picsum.photos/1920/1200?random=9" alt="Image 8">
-      <img src="https://picsum.photos/2560/1440?random=10" alt="Image 9">
-      -->
     </div>
-    <div style="height: 100vh;"></div>
+
+  </div>
+
+  <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Image only</div>
+  </h1>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid image-only" id="image-grid-image-only">
+      <img 
+      data-vistaview-src="/images/573-1920x1080.jpg"
+        data-vistaview-width="1920"
+        data-vistaview-height="1080"
+      src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+      <img 
+      data-vistaview-src="/images/947-1280x720.jpg"
+        data-vistaview-width="1280"
+        data-vistaview-height="720"
+      src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+      <img 
+      data-vistaview-src="/images/thumbnails/thumb_59-800x600.jpg"
+        data-vistaview-width="300"
+        data-vistaview-height="225"
+      src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+    </div>
 
   </div>
 
@@ -89,10 +101,15 @@
 
     // VistaView demo functionality
     const imageGrid = document.getElementById('image-grid');
+    const imageGridImageOnly = document.getElementById('image-grid-image-only');
 
     vistaView({
       parent: imageGrid,
-    });   
+    });
+    
+    vistaView({
+      parent: imageGridImageOnly,
+    });
   </script>
 </body>
 </html>

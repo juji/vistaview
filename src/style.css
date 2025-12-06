@@ -1,7 +1,6 @@
 :root {
   --vistaview-bg-color: #000000;
   --vistaview-text-color: #ffffff;
-  --vistaview-border-radius: 8px;
   --vistaview-background-blur: 10px;
   --vistaview-background-opacity: 0.8;
 
@@ -197,7 +196,7 @@
         max-height: 100%;
         flex-shrink: 0; /* Prevent flex items from shrinking */
         position: relative;
-        /* overflow: hidden; */
+        overflow: hidden;
 
         img.vistaview-image-lowres {
           display: block;
@@ -237,9 +236,7 @@
             transition:
               width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
               height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              top 111ms ease-out 0s,
-              left 111ms ease-out 0s;
+              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s;
             max-width: unset;
             max-height: unset;
             cursor: grab;
@@ -247,6 +244,15 @@
             &:active {
               cursor: grabbing;
             }
+          }
+
+          &.vistaview-image--zooming-out {
+            transition:
+              width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+              top 300ms ease 0s,
+              left 300ms ease 0s;
           }
 
           &.vistaview-image-loaded {

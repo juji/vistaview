@@ -317,6 +317,11 @@ export class VistaView {
       ? parseInt(highresImage.dataset.vistaviewInitialWidth)
       : 0;
 
+    highresImage.classList.add('vistaview-image--zooming-out');
+    setTimeout(() => {
+      highresImage.classList.remove('vistaview-image--zooming-out');
+    }, 333);
+
     // calculate new width/height
     if (width && minWidth && width > minWidth) {
       const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
