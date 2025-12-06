@@ -32,6 +32,7 @@ export type VistaViewOptions = {
   detectReducedMotion?: boolean;
   zoomStep?: number;
   maxZoomLevel?: number;
+  touchSpeedThreshold?: number;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -63,6 +64,7 @@ export const DefaultOptions = {
   detectReducedMotion: true,
   zoomStep: 500,
   maxZoomLevel: 2,
+  touchSpeedThreshold: 1,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
@@ -91,6 +93,10 @@ export class VistaView {
   private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
+
+  private onPointerDown: ((e: PointerEvent) => void) | null = null;
+  private onPointerMove: ((e: PointerEvent) => void) | null = null;
+  private onPointerUp: ((e: PointerEvent) => void) | null = null;
 
   constructor(elements: VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -388,6 +394,107 @@ export class VistaView {
     });
   }
 
+  private setTouchActions(): void {
+    this.removeTouchActions();
+    const elm = this.containerElement?.querySelector('.vistaview-image-container') as HTMLElement;
+    if (!elm) return;
+
+    let initX = 0;
+    let initY = 0;
+    let lastX = 0;
+    let initTouchTime = 0;
+    let isActive = false;
+    let currentImageActive: number = this.currentIndex;
+    let observer: IntersectionObserver;
+
+    this.onPointerDown = (e: PointerEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.isZoomed !== false) return;
+      currentImageActive = this.currentIndex;
+      isActive = true;
+      initX = e.pageX;
+      initY = e.pageY;
+      lastX = e.pageX;
+      initTouchTime = Date.now();
+
+      elm.classList.add('vistaview-image-container--pointer-down');
+
+      const imageContainer = this.containerElement?.querySelector(
+        '.vistaview-image-container'
+      ) as HTMLElement;
+      // intersection observer for each image, change currentImageActive on intersection
+      const images = Array.from(imageContainer.querySelectorAll('.vistaview-item'));
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              currentImageActive = images.indexOf(entry.target as HTMLElement);
+              console.log('currentImageActive', currentImageActive);
+            }
+          });
+        },
+        {
+          threshold: 0.5,
+          root: this.containerElement,
+        }
+      );
+      images.forEach((image) => {
+        observer.observe(image);
+      });
+    };
+    this.onPointerMove = (e: PointerEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.isZoomed !== false) return;
+      if (!isActive) return;
+      const diffX = e.pageX - initX;
+      const diffY = e.pageY - initY;
+      lastX = e.pageX;
+      elm.style.setProperty('--vistaview-pointer-diff-x', `${diffX}px`);
+      elm.style.setProperty('--vistaview-pointer-diff-y', `${diffY}px`);
+    };
+    this.onPointerUp = (e: PointerEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.isZoomed !== false) return;
+      if (!isActive) return;
+      isActive = false;
+      observer.disconnect();
+
+      const distanceX = lastX - initX;
+      const timeDiff = Date.now() - initTouchTime;
+      const speed = distanceX / timeDiff; // touch speed
+      const threshold = this.options.touchSpeedThreshold || 1;
+
+      if (speed < -threshold && currentImageActive === this.currentIndex) {
+        currentImageActive = this.currentIndex + 1;
+      } else if (speed > threshold && currentImageActive === this.currentIndex) {
+        currentImageActive = this.currentIndex - 1;
+      }
+
+      elm.style.setProperty('--vistaview-pointer-diff-x', `0px`);
+      elm.style.setProperty('--vistaview-pointer-diff-y', `0px`);
+      elm.classList.remove('vistaview-image-container--pointer-down');
+      if (currentImageActive !== this.currentIndex) {
+        this.view(currentImageActive);
+      }
+    };
+
+    elm.addEventListener('pointermove', this.onPointerMove);
+    elm.addEventListener('pointerup', this.onPointerUp);
+    elm.addEventListener('pointerdown', this.onPointerDown);
+  }
+
+  private removeTouchActions(): void {
+    const elm = this.containerElement?.querySelector('.vistaview-image-container') as HTMLElement;
+    if (!elm) return;
+
+    if (this.onPointerMove) elm.removeEventListener('pointermove', this.onPointerMove);
+    if (this.onPointerUp) elm.removeEventListener('pointerup', this.onPointerUp);
+    if (this.onPointerDown) elm.removeEventListener('pointerdown', this.onPointerDown);
+  }
+
   open(index?: number): void {
     // prevent opening if other vistaview is already opened
     if (GlobalVistaState.somethingOpened) return;
@@ -546,6 +653,7 @@ export class VistaView {
     // set current index css var
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
 
+    // set dimension on highres images
     const highresImages = this.containerElement.querySelectorAll('.vistaview-image-highres');
     highresImages.forEach((img, i) => {
       const im = img as HTMLImageElement;
@@ -588,6 +696,9 @@ export class VistaView {
 
     window.addEventListener('resize', this.setFullScreenContain);
 
+    //
+    this.setTouchActions();
+
     // set as initialized
     setTimeout(() => {
       this.rootElement && this.rootElement.classList.add('vistaview--initialized');
@@ -617,6 +728,7 @@ export class VistaView {
     }
 
     // Remove the root element
+    this.removeTouchActions();
     this.rootElement?.remove();
     this.rootElement = null;
     this.containerElement = null;
