@@ -97,11 +97,11 @@
   </div>
 
   <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
-    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Image only</div>
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Query Selector</div>
   </h1>
   <div class="container" style="max-width: 800px; margin: 0 auto;">
 
-    <div class="image-grid image-only" id="image-grid-image-only">
+    <div class="image-grid image-only" id="image-grid-query-selector">
       <img 
         data-vistaview-src="/images/573-1920x1080.jpg"
         data-vistaview-width="1920"
@@ -121,6 +121,87 @@
 
   </div>
 
+  <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Query Selector</div>
+  </h1>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid image-only" id="image-grid-query-selector">
+      <img 
+        data-vistaview-src="/images/573-1920x1080.jpg"
+        data-vistaview-width="1920"
+        data-vistaview-height="1080"
+        src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+      <img 
+        data-vistaview-src="/images/947-1280x720.jpg"
+        data-vistaview-width="1280"
+        data-vistaview-height="720"
+        src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+      <img 
+        data-vistaview-src="/images/thumbnails/thumb_59-800x600.jpg"
+        data-vistaview-width="300"
+        data-vistaview-height="225"
+        src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+    </div>
+
+  </div>
+
+  </div><h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Query Selector link</div>
+  </h1>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid" id="image-grid-qs-link">
+      <a href="/images/573-1920x1080.jpg"
+         target="_blank"
+         data-vistaview-width="1920"
+         data-vistaview-height="1080">
+        <img src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+      </a>
+      <a href="/images/947-1280x720.jpg"
+         target="_blank"
+         data-vistaview-width="1280"
+         data-vistaview-height="720">
+        <img src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+      </a>
+      <a href="/images/thumbnails/thumb_59-800x600.jpg"
+         target="_blank"
+         data-vistaview-width="300"
+         data-vistaview-height="225">
+        <img src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+      </a>
+    </div>
+
+  </div>
+
+  </div><h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - NodeList</div>
+  </h1>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid" id="image-grid-node-list">
+      <a href="/images/573-1920x1080.jpg"
+         target="_blank"
+         data-vistaview-width="1920"
+         data-vistaview-height="1080">
+        <img src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+      </a>
+      <a href="/images/947-1280x720.jpg"
+         target="_blank"
+         data-vistaview-width="1280"
+         data-vistaview-height="720">
+        <img src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+      </a>
+      <a href="/images/thumbnails/thumb_59-800x600.jpg"
+         target="_blank"
+         data-vistaview-width="300"
+         data-vistaview-height="225">
+        <img src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+      </a>
+    </div>
+
+  </div>
+
   <script type="module">
     import { vistaView } from '../src/vistaview.ts';
 
@@ -134,6 +215,18 @@
     
     vistaView({
       parent: imageGridImageOnly,
+    });
+
+    vistaView({
+      elements: '#image-grid-query-selector img',
+    });
+
+    vistaView({
+      elements: '#image-grid-qs-link a',
+    });
+
+    vistaView({
+      elements: document.querySelectorAll('#image-grid-node-list a'),
     });
   </script>
 </body>
