@@ -5,6 +5,7 @@ import {
   getFittedSize,
   isNotZeroCssValue,
   makeFullScreenContain,
+  getMaxMinZoomLevels,
 } from './utils';
 
 export type VistaViewElm = {
@@ -106,32 +107,6 @@ export class VistaView {
     });
   }
 
-  private getMaxMinZoomLevels(
-    currentWidth: number,
-    currentHeight: number
-  ): {
-    maxDiffX: number;
-    minDiffY: number;
-    maxDiffY: number;
-    minDiffX: number;
-  } {
-    const winHeight = window.innerHeight;
-    const winWidth = window.innerWidth;
-    const imageWidth = currentWidth;
-    const imageHeight = currentHeight;
-    const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2) + winWidth / 2;
-    const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2) + winHeight / 2;
-    const minDiffX = -maxDiffX;
-    const minDiffY = -maxDiffY;
-
-    return {
-      maxDiffX,
-      minDiffY,
-      maxDiffY,
-      minDiffX,
-    };
-  }
-
   private setZoomed(index: number | false): void {
     if (this.isZoomed === index) return;
 
@@ -214,7 +189,7 @@ export class VistaView {
 
         const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
         const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
-        const { maxDiffX, minDiffY, maxDiffY, minDiffX } = this.getMaxMinZoomLevels(
+        const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(
           imageWidth,
           imageHeight
         );
@@ -314,10 +289,7 @@ export class VistaView {
       highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
       // set counter zoom panning limits
-      const { maxDiffX, minDiffY, maxDiffY, minDiffX } = this.getMaxMinZoomLevels(
-        newWidth,
-        newHeight
-      );
+      const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(newWidth, newHeight);
       let pointerDiffX = parseInt(
         highresImage?.style.getPropertyValue('--pointer-diff-x').replace('px', '') || '0'
       );

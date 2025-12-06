@@ -158,3 +158,29 @@ export function makeFullScreenContain(img: HTMLImageElement, setDataAttribute: b
     img.style.height = height + 'px';
   }
 }
+
+export function getMaxMinZoomLevels(
+  currentWidth: number,
+  currentHeight: number
+): {
+  maxDiffX: number;
+  minDiffY: number;
+  maxDiffY: number;
+  minDiffX: number;
+} {
+  const winHeight = window.innerHeight;
+  const winWidth = window.innerWidth;
+  const imageWidth = currentWidth;
+  const imageHeight = currentHeight;
+  const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2) + winWidth / 2;
+  const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2) + winHeight / 2;
+  const minDiffX = -maxDiffX;
+  const minDiffY = -maxDiffY;
+
+  return {
+    maxDiffX,
+    minDiffY,
+    maxDiffY,
+    minDiffX,
+  };
+}
