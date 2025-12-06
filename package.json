@@ -1,7 +1,7 @@
 {
   "name": "vistaview",
   "version": "0.0.1",
-  "description": "A JavaScript library for ...",
+  "description": "A lightweight, zero-dependency image lightbox library with smooth animations and touch support",
   "type": "module",
   "main": "./dist/vistaview.umd.cjs",
   "module": "./dist/vistaview.js",
