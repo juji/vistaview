@@ -206,10 +206,13 @@
         }
 
         img.vistaview-image-highres {
+          --pointer-diff-x: 0px;
+          --pointer-diff-y: 0px;
+
           display: block;
           position: absolute;
-          top: 50%;
-          left: 50%;
+          top: calc(50% + var(--pointer-diff-y));
+          left: calc(50% + var(--pointer-diff-x));
           translate: -50% -50%;
           object-fit: cover;
           opacity: 0;

@@ -30,6 +30,7 @@ export type VistaViewOptions = {
   initialZIndex?: number;
   detectReducedMotion?: boolean;
   zoomStep?: number;
+  maxZoomLevel?: number;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -54,6 +55,7 @@ const GlobalVistaState = {
 export const DefaultOptions = {
   detectReducedMotion: true,
   zoomStep: 500,
+  maxZoomLevel: 1,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
@@ -76,6 +78,9 @@ export class VistaView {
 
   private setInitialProperties: (() => void) | null = null;
   private setFullScreenContain: (() => void) | null = null;
+  private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
   constructor(elements: VistaViewImage[], options: VistaViewOptions) {
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -97,6 +102,105 @@ export class VistaView {
         clickable.addEventListener('click', el.onClick);
       }
     });
+  }
+
+  private setZoomed(index: number | false): void {
+    if (this.isZoomed === index) return;
+
+    //
+    let image =
+      this.isZoomed !== false
+        ? (this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+            this.isZoomed as number
+          ] as HTMLImageElement)
+        : null;
+
+    this.isZoomed = index;
+
+    if (this.isZoomed === false && image) {
+      image.classList.remove('vistaview-image--zooming');
+      if (this.onZoomedPointerDown) {
+        image.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
+        this.onZoomedPointerDown = null;
+      }
+      if (this.onZoomedPointerMove) {
+        image.parentElement?.removeEventListener('pointermove', this.onZoomedPointerMove!);
+        this.onZoomedPointerMove = null;
+      }
+      if (this.onZoomedPointerUp) {
+        image.parentElement?.removeEventListener('pointerup', this.onZoomedPointerUp!);
+        this.onZoomedPointerUp = null;
+      }
+      image?.style.removeProperty('--pointer-diff-x');
+      image?.style.removeProperty('--pointer-diff-y');
+      return;
+    }
+
+    if (this.isZoomed !== false) {
+      console.log('setZoomed', this.isZoomed);
+
+      image = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+        this.isZoomed as number
+      ] as HTMLImageElement;
+
+      console.log('image', image);
+
+      image.classList.add('vistaview-image--zooming');
+      image?.style.setProperty('--pointer-diff-x', `0px`);
+      image?.style.setProperty('--pointer-diff-y', `0px`);
+
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let diffX = 0;
+      let diffY = 0;
+      let localDiffX = 0;
+      let localDiffY = 0;
+
+      this.onZoomedPointerDown = (e: PointerEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        startX = e.pageX;
+        startY = e.pageY;
+        image!.setPointerCapture(e.pointerId);
+      };
+
+      this.onZoomedPointerMove = (e: PointerEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        localDiffX = e.pageX - startX;
+        localDiffY = e.pageY - startY;
+        const winHeight = window.innerHeight;
+        const winWidth = window.innerWidth;
+        const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
+        const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
+        const maxDiffX = Math.max(0, (imageWidth - winWidth) / 2);
+        const maxDiffY = Math.max(0, (imageHeight - winHeight) / 2);
+        const minDiffX = -maxDiffX;
+        const minDiffY = -maxDiffY;
+        const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
+        const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
+        localDiffX = pointerDiffX - diffX;
+        localDiffY = pointerDiffY - diffY;
+
+        image?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
+        image?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
+      };
+
+      this.onZoomedPointerUp = (e: PointerEvent) => {
+        isDragging = false;
+        image!.releasePointerCapture(e.pointerId);
+        diffX += localDiffX;
+        diffY += localDiffY;
+        localDiffX = 0;
+        localDiffY = 0;
+      };
+
+      image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
+      image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
+      image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
+    }
   }
 
   private setIndexDisplay(): void {
@@ -123,7 +227,8 @@ export class VistaView {
       highresImage.dataset.vistaviewInitialHeight = height.toString();
     }
 
-    highresImage?.classList.add('vistaview-image--zooming');
+    this.setZoomed(this.currentIndex);
+
     const maxWidth = highresImage.naturalWidth || 0;
 
     if (width && maxWidth && width < maxWidth) {
@@ -182,20 +287,20 @@ export class VistaView {
         highresImage.removeAttribute('data-vistaview-current-height');
         highresImage.removeAttribute('data-vistaview-initial-width');
         highresImage.removeAttribute('data-vistaview-initial-height');
-        highresImage?.classList.remove('vistaview-image--zooming');
+        this.setZoomed(false);
       }
     }
   }
 
   private clearZoom(): void {
-    const highresImages = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
+    const highresImage = this.containerElement?.querySelectorAll('.vistaview-image-highres')[
       this.currentIndex
     ] as HTMLImageElement;
-    if (highresImages.dataset.vistaviewInitialWidth) {
-      highresImages.style.width = `${highresImages.dataset.vistaviewInitialWidth}px`;
+    if (highresImage.dataset.vistaviewInitialWidth) {
+      highresImage.style.width = `${highresImage.dataset.vistaviewInitialWidth}px`;
     }
-    if (highresImages.dataset.vistaviewInitialHeight) {
-      highresImages.style.height = `${highresImages.dataset.vistaviewInitialHeight}px`;
+    if (highresImage.dataset.vistaviewInitialHeight) {
+      highresImage.style.height = `${highresImage.dataset.vistaviewInitialHeight}px`;
     }
     this.containerElement
       ?.querySelector('button.vistaview-zoom-in-button')
@@ -203,11 +308,12 @@ export class VistaView {
     this.containerElement
       ?.querySelector('button.vistaview-zoom-out-button')
       ?.setAttribute('disabled', 'true');
-    highresImages.removeAttribute('data-vistaview-current-width');
-    highresImages.removeAttribute('data-vistaview-current-height');
-    highresImages.removeAttribute('data-vistaview-initial-width');
-    highresImages.removeAttribute('data-vistaview-initial-height');
-    highresImages?.classList.remove('vistaview-image--zooming');
+    highresImage.removeAttribute('data-vistaview-current-width');
+    highresImage.removeAttribute('data-vistaview-current-height');
+    highresImage.removeAttribute('data-vistaview-initial-width');
+    highresImage.removeAttribute('data-vistaview-initial-height');
+
+    this.setZoomed(false);
   }
 
   private resetImageOpacity(turnOn = false): void {
