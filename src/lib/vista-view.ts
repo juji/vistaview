@@ -430,7 +430,6 @@ export class VistaView {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               currentImageActive = images.indexOf(entry.target as HTMLElement);
-              console.log('currentImageActive', currentImageActive);
             }
           });
         },
@@ -468,9 +467,9 @@ export class VistaView {
       const threshold = this.options.touchSpeedThreshold || 1;
 
       if (speed < -threshold && currentImageActive === this.currentIndex) {
-        currentImageActive = this.currentIndex + 1;
+        currentImageActive = Math.min(this.currentIndex + 1, this.elements.length - 1);
       } else if (speed > threshold && currentImageActive === this.currentIndex) {
-        currentImageActive = this.currentIndex - 1;
+        currentImageActive = Math.max(this.currentIndex - 1, 0);
       }
 
       elm.style.setProperty('--vistaview-pointer-diff-x', `0px`);
