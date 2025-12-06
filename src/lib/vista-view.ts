@@ -240,7 +240,7 @@ export class VistaView {
     // prepend
     const mergedControls = {
       ...DefaultOptions.controls,
-      ...this.options.controls,
+      ...(this.options.controls || {}),
     };
     const component = vistaViewComponent(
       this.elements,
