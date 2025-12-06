@@ -290,6 +290,17 @@
         background-color: var(--vistaview-bg-color);
         color: var(--vistaview-text-color);
       }
+
+      .vistaview-image-description {
+        font-size: 14px;
+        padding: 8px 15px;
+        background-color: var(--vistaview-bg-color);
+        color: var(--vistaview-text-color);
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
 
     .vistaview-bottom-bar {

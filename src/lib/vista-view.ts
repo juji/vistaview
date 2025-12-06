@@ -42,7 +42,13 @@ export type VistaViewOptions = {
   };
 };
 
-export type VistaViewDefaultControls = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'download' | 'close';
+export type VistaViewDefaultControls =
+  | 'indexDisplay'
+  | 'zoomIn'
+  | 'zoomOut'
+  | 'download'
+  | 'close'
+  | 'description';
 export type VistaViewCustomControl = {
   name: string;
   icon: string;
@@ -60,20 +66,24 @@ export const DefaultOptions = {
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
+    bottomCenter: ['description'],
   } as VistaViewOptions['controls'],
 };
 
 export class VistaView {
+  private options: VistaViewOptions;
   private elements: VistaViewImage[];
+
   private currentIndex: number = 0;
+  private currentDescription: string = '';
 
   private rootElement: HTMLElement | null = null;
   private containerElement: HTMLElement | null = null;
+  private indexDisplayElement: HTMLElement | null = null;
+  private descriptionElement: HTMLElement | null = null;
   private isActive: boolean = false;
   private isZoomed: number | boolean = false;
 
-  private options: VistaViewOptions;
-  private indexDisplayElement: HTMLElement | null = null;
   private isReducedMotion: boolean;
 
   private setInitialProperties: (() => void) | null = null;
@@ -231,6 +241,15 @@ export class VistaView {
   private setIndexDisplay(): void {
     if (!this.indexDisplayElement) return;
     this.indexDisplayElement.textContent = `${this.currentIndex + 1} / ${this.elements.length}`;
+  }
+
+  private setCurrentDescription(): void {
+    if (!this.descriptionElement) return;
+    const el = this.elements[this.currentIndex];
+    this.currentDescription = el.alt || '';
+    if (this.descriptionElement) {
+      this.descriptionElement.textContent = this.currentDescription;
+    }
   }
 
   private getAnimationDurationBase(): number {
@@ -396,7 +415,9 @@ export class VistaView {
 
     this.containerElement = this.rootElement.querySelector('.vistaview-container');
     if (!this.containerElement) throw new Error('VistaView: Failed to create container element.');
+
     this.indexDisplayElement = this.containerElement.querySelector('.vistaview-index-display');
+    this.descriptionElement = this.containerElement.querySelector('.vistaview-image-description');
 
     // add options
     if (this.options.animationDurationBase) {
@@ -519,6 +540,9 @@ export class VistaView {
     // set current index display
     this.setIndexDisplay();
 
+    // set current description
+    this.setCurrentDescription();
+
     // set current index css var
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
 
@@ -622,6 +646,7 @@ export class VistaView {
     this.currentIndex = index;
     this.resetImageOpacity();
     this.setIndexDisplay();
+    this.setCurrentDescription();
     this.setInitialProperties && this.setInitialProperties();
     this.rootElement?.style.setProperty('--vistaview-current-index', `${this.currentIndex}`);
   }

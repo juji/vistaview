@@ -39,6 +39,8 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
         return `<button class="vistaview-close-button">${closeIcon}</button>`;
       case 'indexDisplay':
         return `<div class="vistaview-index-display"></div>`;
+      case 'description':
+        return `<div class="vistaview-image-description"></div>`;
       default:
         return '';
     }
