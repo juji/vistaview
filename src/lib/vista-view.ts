@@ -305,7 +305,6 @@ export class VistaView {
       const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
       highresImage!.style.width = `${newWidth}px`;
 
-      // set counter zoom panning limits
       const newHeight = (newWidth / width) * height;
       highresImage!.style.height = `${newHeight}px`;
       this.containerElement
@@ -314,6 +313,7 @@ export class VistaView {
       highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
       highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
+      // set counter zoom panning limits
       const { maxDiffX, minDiffY, maxDiffY, minDiffX } = this.getMaxMinZoomLevels(
         newWidth,
         newHeight
@@ -330,6 +330,7 @@ export class VistaView {
       highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
       highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
 
+      // when reached min zoom level
       if (newWidth === minWidth) {
         this.containerElement
           ?.querySelector('button.vistaview-zoom-out-button')
