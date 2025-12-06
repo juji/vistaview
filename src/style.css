@@ -117,20 +117,20 @@
   }
 }
 
-@keyframes vistaview-fade {
+@keyframes vistaview-pulse {
   0% {
     opacity: 1;
-    border-radius: var(--vistaview-image-border-radius);
+    border-radius: 3px;
     scale: 1;
   }
   50% {
     opacity: 0.8;
-    border-radius: calc(var(--vistaview-image-border-radius) + 3px);
+    border-radius: 7px;
     scale: 0.99;
   }
   100% {
     opacity: 1;
-    border-radius: var(--vistaview-image-border-radius);
+    border-radius: 3px;
     scale: 1;
   }
 }
@@ -224,7 +224,7 @@
           translate: -50% -50%;
           max-width: 100%;
           max-height: 100%;
-          animation: vistaview-fade 1s ease-in-out infinite;
+          animation: vistaview-pulse 1s ease-in-out infinite;
 
           &:has(+ img.vistaview-image-loaded) {
             animation: none;
