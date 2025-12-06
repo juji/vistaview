@@ -92,7 +92,7 @@ vistaView({
   // Control placement
   controls: {
     topLeft: ['indexDisplay'],
-    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    topRight: ['zoomIn', 'zoomOut', 'close'],
     topCenter: [],
     bottomLeft: [],
     bottomCenter: [],
@@ -108,16 +108,22 @@ vistaView({
 | `indexDisplay` | Shows current image index (e.g., "1 / 5") |
 | `zoomIn`       | Zoom into the image                       |
 | `zoomOut`      | Zoom out of the image                     |
-| `download`     | Download the current image                |
 | `close`        | Close the lightbox                        |
 
 ## Custom Controls
 
+You can add custom controls by providing an object with `name`, `icon`, and `onClick`:
+
 ```js
+import { vistaView, getDownloadButton } from 'vistaview';
+
 vistaView({
   parent: document.getElementById('gallery'),
   controls: {
     topRight: [
+      'zoomIn',
+      'zoomOut',
+      getDownloadButton(), // Example: Built-in download helper
       {
         name: 'share',
         icon: '<svg>...</svg>',

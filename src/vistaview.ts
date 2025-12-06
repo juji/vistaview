@@ -1,4 +1,5 @@
 import { VistaView, DefaultOptions } from './lib/vista-view';
+import { getDownloadButton } from './lib/components';
 import type {
   VistaViewImage,
   VistaViewElm,
@@ -7,7 +8,7 @@ import type {
 import './style.css';
 
 export type { VistaViewImage, VistaViewElm, VistaViewOptionsBase };
-export { DefaultOptions };
+export { DefaultOptions, getDownloadButton };
 
 export type VistaViewOptions = {
   parent?: HTMLElement;
