@@ -55,11 +55,11 @@ const GlobalVistaState = {
 export const DefaultOptions = {
   detectReducedMotion: true,
   zoomStep: 500,
-  maxZoomLevel: 1,
+  maxZoomLevel: 2,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
-  },
+  } as VistaViewOptions['controls'],
 };
 
 export class VistaView {
@@ -74,7 +74,6 @@ export class VistaView {
   private options: VistaViewOptions;
   private indexDisplayElement: HTMLElement | null = null;
   private isReducedMotion: boolean;
-  private detectReducedMotion: boolean = true;
 
   private setInitialProperties: (() => void) | null = null;
   private setFullScreenContain: (() => void) | null = null;
@@ -82,15 +81,18 @@ export class VistaView {
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
-  constructor(elements: VistaViewImage[], options: VistaViewOptions) {
+  constructor(elements: VistaViewImage[], options?: VistaViewOptions) {
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.detectReducedMotion =
-      options.detectReducedMotion !== undefined
-        ? options.detectReducedMotion
-        : DefaultOptions.detectReducedMotion;
 
     this.elements = elements;
-    this.options = options;
+    this.options = {
+      ...DefaultOptions,
+      ...(options || {}),
+      controls: {
+        ...DefaultOptions.controls,
+        ...(options?.controls || {}),
+      },
+    };
 
     this.elements.forEach((el, index) => {
       const clickable = el.anchor || el.image;
@@ -244,10 +246,7 @@ export class VistaView {
     const maxWidth = highresImage.naturalWidth || 0;
 
     if (width && maxWidth && width < maxWidth) {
-      const newWidth = Math.min(
-        width + (this.options.zoomStep || DefaultOptions.zoomStep),
-        maxWidth
-      );
+      const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
       highresImage!.style.width = `${newWidth}px`;
       const newHeight = (newWidth / width) * height;
       highresImage!.style.height = `${newHeight}px`;
@@ -278,10 +277,7 @@ export class VistaView {
       : 0;
 
     if (width && minWidth && width > minWidth) {
-      const newWidth = Math.max(
-        width - (this.options.zoomStep || DefaultOptions.zoomStep),
-        minWidth
-      );
+      const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
       highresImage!.style.width = `${newWidth}px`;
       const newHeight = (newWidth / width) * height;
       highresImage!.style.height = `${newHeight}px`;
@@ -357,20 +353,13 @@ export class VistaView {
     this.currentIndex = index;
 
     // prepend
-    const mergedControls = {
-      ...DefaultOptions.controls,
-      ...(this.options.controls || {}),
-    };
-    const component = vistaViewComponent(
-      this.elements,
-      mergedControls as VistaViewOptions['controls']
-    );
+    const component = vistaViewComponent(this.elements, this.options.controls!);
     document.body.prepend(createTrustedHtml(component));
 
     // set elements
     this.rootElement = document.querySelector('#vistaview-root');
     if (!this.rootElement) throw new Error('VistaView: Failed to create root element.');
-    if (this.detectReducedMotion && this.isReducedMotion) {
+    if (this.options.detectReducedMotion && this.isReducedMotion) {
       this.rootElement.classList.add('vistaview--reduced-motion');
     }
 
@@ -450,12 +439,12 @@ export class VistaView {
 
     // get all custom controls
     const allCustomControls = [
-      ...(mergedControls.topLeft || []),
-      ...(mergedControls.topCenter || []),
-      ...(mergedControls.topRight || []),
-      ...(mergedControls.bottomLeft || []),
-      ...(mergedControls.bottomCenter || []),
-      ...(mergedControls.bottomRight || []),
+      ...(this.options.controls!.topLeft || []),
+      ...(this.options.controls!.topCenter || []),
+      ...(this.options.controls!.topRight || []),
+      ...(this.options.controls!.bottomLeft || []),
+      ...(this.options.controls!.bottomCenter || []),
+      ...(this.options.controls!.bottomRight || []),
     ].filter((c) => typeof c !== 'string') as VistaViewCustomControl[];
 
     // set buttons listeners
@@ -563,7 +552,7 @@ export class VistaView {
 
       // wait for animation
       this.rootElement?.classList.add('vistaview--closing');
-      if (!(this.detectReducedMotion && this.isReducedMotion)) {
+      if (!(this.options.detectReducedMotion && this.isReducedMotion)) {
         await new Promise((resolve) => {
           setTimeout(() => {
             resolve(true);
