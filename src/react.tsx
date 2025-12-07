@@ -53,6 +53,7 @@ export function VistaView({
 
   useEffect(() => {
     if (!ref.current) return;
+    if (!selector) throw new Error('VistaView: selector is required');
     instance.current = vistaView({ ...options, elements: ref.current.querySelectorAll(selector) });
     return () => {
       instance.current?.destroy();
