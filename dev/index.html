@@ -206,6 +206,17 @@
     <button id="button-clicker">Click to Open Image Viewer</button>
   </div>
 
+  </div><h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - many</div>
+  </h1>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid" id="image-grid-many">
+      
+    </div>
+
+  </div>
+
 
   <script type="module">
     import { vistaView } from '../src/vistaview.ts';
@@ -260,7 +271,21 @@
 
     document.getElementById('button-clicker').addEventListener('click', () => {
       open(0);
+    })
+    
+    document.getElementById('image-grid-many').innerHTML = Array.from({ length: 10000 }, (_, i) => `
+      <a href="https://picsum.photos/seed/${i}/1200/1800"
+         target="_blank"
+         data-vistaview-width="1200"
+         data-vistaview-height="1800">
+        <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">
+      </a>
+    `).join('');
+
+    vistaView({
+      elements: '#image-grid-many a',
     });
+
   </script>
 </body>
 </html>

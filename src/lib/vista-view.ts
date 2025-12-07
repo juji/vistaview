@@ -33,6 +33,7 @@ export type VistaViewOptions = {
   zoomStep?: number;
   maxZoomLevel?: number;
   touchSpeedThreshold?: number;
+  inifinite?: boolean;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -79,6 +80,7 @@ export class VistaView {
   private elements: VistaViewImage[];
 
   private currentIndex: number = 0;
+  // private infiniteIndex: number = 0;
   private currentDescription: string = '';
 
   private rootElement: HTMLElement | null = null;

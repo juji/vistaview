@@ -103,3 +103,5 @@ temp/
 
 # TypeScript cache
 *.tsbuildinfo
+
+images/many
