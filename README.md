@@ -37,7 +37,7 @@ npm install vistaview
   import 'vistaview/style.css';
 
   vistaView({
-    parent: document.getElementById('gallery'),
+    elements: '#gallery a',
   });
 </script>
 ```
@@ -87,9 +87,8 @@ vistaView({
 
 ```ts
 vistaView({
-  // Required: specify either parent OR elements
-  parent: HTMLElement, // Container element with images/anchors
-  elements: string | NodeList | VistaViewImage[], // Selector, NodeList, or array of images
+  // Required: specify elements (string selector, NodeList, or array)
+  elements: string | NodeList | VistaViewImage[],
 
   // Optional configuration
   animationDurationBase: 333, // Base animation duration in ms (default: 333)
@@ -130,7 +129,7 @@ Controls are merged with defaults—only the positions you specify are replaced.
 import { vistaView, getDownloadButton } from 'vistaview';
 
 vistaView({
-  parent: document.getElementById('gallery'),
+  elements: '#gallery a',
   controls: {
     topRight: [
       'zoomIn',
@@ -191,21 +190,81 @@ VistaView works in all modern browsers (Chrome, Firefox, Safari, Edge).
 
 VistaView provides official bindings for popular frameworks:
 
+### React
+
 ```tsx
-// React
 import { useVistaView, VistaView } from 'vistaview/react';
 
-// Vue
-import { useVistaView } from 'vistaview/vue';
+// Using the hook
+function Gallery() {
+  const { open } = useVistaView({ elements: '#gallery a' });
+  return <div id="gallery">...</div>;
+}
 
-// Svelte
-import { useVistaView } from 'vistaview/svelte';
-
-// Solid
-import { useVistaView } from 'vistaview/solid';
+// Using the component
+function Gallery() {
+  return (
+    <VistaView selector="a">
+      <a href="/full.jpg">
+        <img src="/thumb.jpg" />
+      </a>
+    </VistaView>
+  );
+}
 ```
 
-See [framework-integration.md](./framework-integration.md) for detailed examples.
+### Vue
+
+```vue
+<script setup>
+import { useVistaView, VistaView } from 'vistaview/vue';
+
+// Using the hook
+const { open } = useVistaView({ elements: '#gallery a' });
+</script>
+
+<template>
+  <!-- Using the component -->
+  <VistaView selector="a">
+    <a href="/full.jpg"><img src="/thumb.jpg" /></a>
+  </VistaView>
+</template>
+```
+
+### Svelte
+
+```svelte
+<script>
+import { useVistaView } from 'vistaview/svelte';
+
+const { open } = useVistaView({ elements: '#gallery a' });
+</script>
+
+<div id="gallery">...</div>
+```
+
+### Solid
+
+```tsx
+import { useVistaView, VistaView } from 'vistaview/solid';
+
+// Using the hook
+function Gallery() {
+  const { open } = useVistaView({ elements: '#gallery a' });
+  return <div id="gallery">...</div>;
+}
+
+// Using the component
+function Gallery() {
+  return (
+    <VistaView selector="a">
+      <a href="/full.jpg">
+        <img src="/thumb.jpg" />
+      </a>
+    </VistaView>
+  );
+}
+```
 
 ## License
 
