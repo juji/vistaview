@@ -70,6 +70,7 @@ export class VistaView {
 
   private onResizeHandler: (() => void) | null = null;
   private userTransition: UserTransitionFunction | null = null;
+  private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -337,6 +338,57 @@ export class VistaView {
     return [currentIndex];
   }
 
+  private setKeyboardListeners(): void {
+    // keyboard navigation
+    this.onKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          this.prev();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          this.next();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          this.zoomIn();
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          this.zoomOut();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          this.close();
+          break;
+      }
+    };
+    window.addEventListener('keydown', this.onKeyDown);
+  }
+
+  private setResizeListeners(): void {
+    this.onResizeHandler = () => {
+      const center = this.currentImages[1] || this.currentImages[0];
+      this.setInitialDimPos(center);
+      const highresImages = this.rootElm?.querySelectorAll(
+        '.vistaview-image-highres.vistaview-image-loaded'
+      );
+      highresImages?.forEach((img) => {
+        const im = img as HTMLImageElement;
+        const { width, height } = getFullSizeDim(im);
+        if (im.classList.contains('vistaview-image--zooming')) {
+          im.dataset.vistaviewInitialWidth = width.toString();
+          im.dataset.vistaviewInitialHeight = height.toString();
+        } else {
+          im.style.width = `${width}px`;
+          im.style.height = `${height}px`;
+        }
+      });
+    };
+    window.addEventListener('resize', this.onResizeHandler);
+  }
+
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) return;
     GlobalVistaState.somethingOpened = this;
@@ -441,26 +493,9 @@ export class VistaView {
     const centerElm = this.currentImages[1] || this.currentImages[0];
     this.setInitialDimPos(centerElm);
 
-    // set on resize handler
-    this.onResizeHandler = () => {
-      const center = this.currentImages[1] || this.currentImages[0];
-      this.setInitialDimPos(center);
-      const highresImages = this.rootElm?.querySelectorAll(
-        '.vistaview-image-highres.vistaview-image-loaded'
-      );
-      highresImages?.forEach((img) => {
-        const im = img as HTMLImageElement;
-        const { width, height } = getFullSizeDim(im);
-        if (im.classList.contains('vistaview-image--zooming')) {
-          im.dataset.vistaviewInitialWidth = width.toString();
-          im.dataset.vistaviewInitialHeight = height.toString();
-        } else {
-          im.style.width = `${width}px`;
-          im.style.height = `${height}px`;
-        }
-      });
-    };
-    window.addEventListener('resize', this.onResizeHandler);
+    // set on event handlers
+    this.setResizeListeners();
+    this.setKeyboardListeners();
 
     // for single image, hide next/prev buttons and index-display
     if (this.elements.length === 1) {
@@ -478,11 +513,6 @@ export class VistaView {
   close(noWait?: boolean): void {
     if (GlobalVistaState.somethingOpened !== this) return;
 
-    if (this.onResizeHandler) {
-      window.removeEventListener('resize', this.onResizeHandler);
-      this.onResizeHandler = null;
-    }
-
     this.rootElm?.classList.add('vistaview--closing');
     if (noWait) {
       document.body.removeChild(this.rootElm!);
@@ -499,6 +529,16 @@ export class VistaView {
         document.body.removeChild(this.rootElm!);
         this.rootElm = null;
       });
+    }
+
+    if (this.onResizeHandler) {
+      window.removeEventListener('resize', this.onResizeHandler);
+      this.onResizeHandler = null;
+    }
+
+    if (this.onKeyDown) {
+      window.removeEventListener('keydown', this.onKeyDown);
+      this.onKeyDown = null;
     }
 
     GlobalVistaState.somethingOpened = null;
