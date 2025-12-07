@@ -1,17 +1,12 @@
 import { VistaView, DefaultOptions } from './lib/vista-view';
 import { getDownloadButton } from './lib/components';
-import type {
-  VistaViewImage,
-  VistaViewElm,
-  VistaViewOptions as VistaViewOptionsBase,
-} from './lib/vista-view';
+import type { VistaViewImage, VistaViewOptions as VistaViewOptionsBase } from './lib/types';
 import './style.css';
 
-export type { VistaViewImage, VistaViewElm, VistaViewOptionsBase };
+export type { VistaViewImage, VistaViewOptionsBase };
 export { DefaultOptions, getDownloadButton };
 
 export type VistaViewOptions = {
-  parent?: HTMLElement;
   elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
 } & VistaViewOptionsBase;
 
@@ -25,44 +20,50 @@ export type VistaViewInterface = {
   view: (index: number) => void;
 };
 
-// Helper to convert HTML element to VistaViewImage
-const toImage = (el: HTMLElement): VistaViewImage => {
-  const img =
-    el instanceof HTMLImageElement ? el : (el.querySelector('img') as HTMLImageElement | null);
-  return {
-    src: el.dataset.vistaviewSrc || el.getAttribute('href') || el.getAttribute('src') || '',
-    width: +(el.dataset.vistaviewWidth || img?.naturalWidth || 0),
-    height: +(el.dataset.vistaviewHeight || img?.naturalHeight || 0),
-    smallSrc: img?.src || el.dataset.vistaviewSmallsrc || el.getAttribute('src') || '',
-    alt: img?.alt || el.dataset.vistaviewAlt || el.getAttribute('alt') || '',
-    anchor: el instanceof HTMLAnchorElement ? el : undefined,
-    image: img || undefined,
-  };
-};
-
-export function vistaView({ parent, elements, ...opts }: VistaViewOptions): VistaViewInterface {
-  if (!parent && !elements) throw new Error('No parent or elements');
-
-  let imgs: VistaViewImage[];
-
-  if (parent) {
-    const sel = parent.querySelector('img[data-vistaview-src]')
-      ? 'img[data-vistaview-src]'
-      : 'a[href]';
-    imgs = Array.from(parent.querySelectorAll<HTMLElement>(sel)).map(toImage);
-  } else if (typeof elements === 'string') {
-    imgs = Array.from(document.querySelectorAll<HTMLElement>(elements)).map(toImage);
+function checkElementsCorrectness(
+  elements: string | NodeListOf<HTMLElement> | VistaViewImage[]
+): string | (NodeListOf<HTMLElement> | VistaViewImage[]) {
+  let els: NodeListOf<HTMLElement> | null = null;
+  // check for correctness
+  if (typeof elements === 'string') {
+    els = document.querySelectorAll<HTMLElement>(elements);
   } else if (elements instanceof NodeList) {
-    imgs = Array.from(elements).map(toImage);
-  } else if (Array.isArray(elements)) {
-    imgs = elements;
-  } else {
-    throw new Error('Invalid elements');
+    els = elements;
   }
 
-  if (!imgs.length) throw new Error('No elements found');
+  if (els) {
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i];
+      let src = el.dataset.vistaviewSrc || el.getAttribute('href') || el.getAttribute('src') || '';
 
-  const vv = new VistaView(imgs, opts);
+      if (!src) {
+        return `Element at index ${i} is missing 'src' / 'data-vistaview-src' / 'href' attribute.`;
+      }
+    }
+  } else {
+    const images = elements as VistaViewImage[];
+    for (let i = 0; i < images.length; i++) {
+      const el = images[i];
+      if (!el.src) {
+        return `Element at index ${i} is missing 'src' attribute.`;
+      }
+    }
+  }
+
+  return els || (elements as VistaViewImage[]);
+}
+
+export function vistaView({ elements, ...opts }: VistaViewOptions): VistaViewInterface | null {
+  if (!elements) throw new Error('No elements');
+
+  let elms = checkElementsCorrectness(elements);
+  if (typeof elms === 'string') {
+    console.error(elms);
+    console.warn('VistaView: silently returning.');
+    return null;
+  }
+
+  const vv = new VistaView(elms, opts);
 
   return {
     open: (startIndex = 0) => vv.open(startIndex),

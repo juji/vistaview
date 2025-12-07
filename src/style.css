@@ -52,8 +52,8 @@
     z-index: var(--vistaview-initial-z-index);
   }
   50% {
-    width: var(--vistaview-container-initial-width);
-    height: var(--vistaview-container-initial-height);
+    width: calc(var(--vistaview-container-initial-width) - 42px);
+    height: calc(var(--vistaview-container-initial-height) - 42px);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
     border-radius: 0px;
@@ -65,6 +65,7 @@
     height: 100%;
     background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
     backdrop-filter: blur(var(--vistaview-background-blur));
+    border-radius: 0px;
   }
 }
 
@@ -75,10 +76,11 @@
     height: 100%;
     background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
     backdrop-filter: blur(var(--vistaview-background-blur));
+    border-radius: 0px;
   }
   50% {
-    width: var(--vistaview-container-initial-width);
-    height: var(--vistaview-container-initial-height);
+    width: calc(var(--vistaview-container-initial-width) - 42px);
+    height: calc(var(--vistaview-container-initial-height) - 42px);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
     border-radius: var(--vistaview-image-border-radius);
@@ -136,224 +138,229 @@
 }
 
 .vistaview-root {
-  /* outline: 1px solid greenyellow; */
-  padding: 0;
-  margin: 0;
+  position: fixed;
+  display: none;
+  isolation: isolate;
+  overflow: hidden;
+  translate: -50% -50%;
 
-  .vistaview-ui {
+  width: var(--vistaview-container-initial-width);
+  height: var(--vistaview-container-initial-height);
+  top: var(--vistaview-container-initial-top);
+  left: var(--vistaview-container-initial-left);
+  border-radius: var(--vistaview-image-border-radius);
+}
+
+.vistaview-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.vistaview-image-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.vistaview-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+
+  &[data-vistaview-order='-1'] {
+    z-index: 1;
+    opacity: 0;
+  }
+  &[data-vistaview-order='0'] {
+    z-index: 2;
+    opacity: 1;
+  }
+  &[data-vistaview-order='1'] {
+    z-index: 1;
     opacity: 0;
   }
 
-  .vistaview-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
+  img.vistaview-image-lowres {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: vistaview-pulse 1s ease-in-out infinite;
 
-    button {
-      background: none;
-      color: inherit;
-      border: none;
-      font: inherit;
-      cursor: pointer;
-      outline: inherit;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 8px;
-      border-radius: 0px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--vistaview-bg-color);
-      color: var(--vistaview-text-color);
+    &:has(+ img.vistaview-image-loaded) {
+      animation: none;
+    }
 
-      &:disabled {
-        color: rgb(from var(--vistaview-text-color) r g b / 0.5);
-        cursor: not-allowed;
-      }
-      &:hover {
-        background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 20));
-      }
+    &.vistaview-image--hidden {
+      opacity: 0;
+    }
+  }
+
+  img.vistaview-image-highres {
+    --pointer-diff-x: 0px;
+    --pointer-diff-y: 0px;
+
+    display: block;
+    position: absolute;
+    top: calc(50% + var(--pointer-diff-y));
+    left: calc(50% + var(--pointer-diff-x));
+    translate: -50% -50%;
+    object-fit: cover;
+    opacity: 0;
+    transition:
+      width calc(var(--vistaview-animation-duration) * 1ms) ease
+        calc(var(--vistaview-animation-duration) * 0.3ms),
+      height calc(var(--vistaview-animation-duration) * 1ms) ease
+        calc(var(--vistaview-animation-duration) * 0.3ms),
+      opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms;
+    max-width: 100%;
+    max-height: 100%;
+
+    &.vistaview-image--zooming {
+      transition:
+        width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s;
+      max-width: unset;
+      max-height: unset;
+      cursor: grab;
+
       &:active {
-        background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 40));
-      }
-
-      svg {
-        width: 24px;
-        height: 24px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-    }
-    .vistaview-image-container {
-      --vistaview-pointer-diff-x: 0px;
-      --vistaview-pointer-diff-y: 0px;
-
-      width: calc(var(--vistaview-number-elements) * 100%);
-      height: 100%;
-      overflow-x: hidden;
-      z-index: 1;
-      position: absolute;
-      top: 0;
-      left: calc(calc(var(--vistaview-current-index) * -100%) + var(--vistaview-pointer-diff-x));
-      transition: left 0.3s ease;
-
-      &.vistaview-image-container--pointer-down {
-        transition: none;
-      }
-
-      display: flex;
-      gap: 0;
-
-      .vistaview-item {
-        width: calc(100 / var(--vistaview-number-elements) * 1%);
-        height: 100vh;
-        max-width: 100%;
-        max-height: 100%;
-        flex-shrink: 0; /* Prevent flex items from shrinking */
-        position: relative;
-        overflow: hidden;
-
-        img.vistaview-image-lowres {
-          display: block;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          translate: -50% -50%;
-          max-width: 100%;
-          max-height: 100%;
-          animation: vistaview-pulse 1s ease-in-out infinite;
-
-          &:has(+ img.vistaview-image-loaded) {
-            animation: none;
-          }
-
-          &.vistaview-image--hidden {
-            opacity: 0;
-          }
-        }
-
-        img.vistaview-image-highres {
-          --pointer-diff-x: 0px;
-          --pointer-diff-y: 0px;
-
-          display: block;
-          position: absolute;
-          top: calc(50% + var(--pointer-diff-y));
-          left: calc(50% + var(--pointer-diff-x));
-          translate: -50% -50%;
-          object-fit: cover;
-          opacity: 0;
-          transition:
-            width calc(var(--vistaview-animation-duration) * 1ms) ease
-              calc(var(--vistaview-animation-duration) * 0.3ms),
-            height calc(var(--vistaview-animation-duration) * 1ms) ease
-              calc(var(--vistaview-animation-duration) * 0.3ms),
-            opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms;
-          max-width: 100%;
-          max-height: 100%;
-
-          &.vistaview-image--zooming {
-            transition:
-              width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s;
-            max-width: unset;
-            max-height: unset;
-            cursor: grab;
-
-            &:active {
-              cursor: grabbing;
-            }
-          }
-
-          &.vistaview-image--zooming-out {
-            transition:
-              width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
-              top 300ms ease 0s,
-              left 300ms ease 0s;
-          }
-
-          &.vistaview-image-loaded {
-            opacity: 1;
-          }
-        }
+        cursor: grabbing;
       }
     }
 
-    .vistaview-prev-btn {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      translate: 0 -50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
+    &.vistaview-image--zooming-out {
+      transition:
+        width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        top 300ms ease 0s,
+        left 300ms ease 0s;
     }
 
-    .vistaview-next-btn {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      translate: 0 -50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-
-    .vistaview-top-bar,
-    .vistaview-bottom-bar {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      width: 100%;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      & > div {
-        display: flex;
-      }
-
-      .vistaview-index-display {
-        font-size: 16px;
-        padding: 8px;
-        background-color: var(--vistaview-bg-color);
-        color: var(--vistaview-text-color);
-      }
-
-      .vistaview-image-description {
-        font-size: 14px;
-        padding: 8px 15px;
-        background-color: var(--vistaview-bg-color);
-        color: var(--vistaview-text-color);
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    .vistaview-bottom-bar {
-      bottom: 0px;
-      top: unset;
+    &.vistaview-image-loaded {
+      opacity: 1;
     }
   }
 }
 
-.vistaview-root {
-  position: fixed;
-  display: none;
-  isolation: isolate;
-  translate: -50% -50%;
-  overflow: hidden;
+.vistaview-ui {
+  opacity: 0;
+
+  button {
+    background: none;
+    color: inherit;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px;
+    border-radius: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--vistaview-bg-color);
+    color: var(--vistaview-text-color);
+
+    &:disabled {
+      color: rgb(from var(--vistaview-text-color) r g b / 0.5);
+      cursor: not-allowed;
+    }
+    &:hover {
+      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 20));
+    }
+    &:active {
+      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 40));
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+
+  &.vistaview-prev-btn {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 0 -50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  &.vistaview-next-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    translate: 0 -50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  &.vistaview-top-bar,
+  &.vistaview-bottom-bar {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & > div {
+      display: flex;
+    }
+
+    .vistaview-index-display {
+      font-size: 16px;
+      padding: 8px;
+      background-color: var(--vistaview-bg-color);
+      color: var(--vistaview-text-color);
+    }
+
+    .vistaview-description {
+      font-size: 14px;
+      padding: 8px 15px;
+      background-color: var(--vistaview-bg-color);
+      color: var(--vistaview-text-color);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &.vistaview-bottom-bar {
+    bottom: 0px;
+    top: unset;
+  }
 }
 
 /* 
@@ -362,8 +369,8 @@ vistaview is initialized, with initial position and size
 .vistaview-root.vistaview--initialized {
   display: block;
   animation:
-    vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards,
-    vistaview-pos-in calc(var(--vistaview-animation-duration) * 0.6ms) ease-in forwards;
+    vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-in forwards,
+    vistaview-pos-in calc(var(--vistaview-animation-duration) * 0.6ms) ease-out forwards;
   .vistaview-ui {
     animation: vistaview-ui-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out
       calc(var(--vistaview-animation-duration) * 1ms) forwards;
@@ -380,39 +387,35 @@ vistaview is initialized, with initial position and size
     display: none;
   }
 
-  & .vistaview-container {
-    & .vistaview-image-container {
-      & .vistaview-item {
-        img.vistaview-image-lowres {
-          border-radius: var(--vistaview-image-border-radius);
-          &.vistaview-image--hidden {
-            opacity: 1;
-          }
-        }
+  img.vistaview-image-lowres {
+    border-radius: var(--vistaview-image-border-radius);
+    &.vistaview-image--hidden {
+      opacity: 1;
+    }
+  }
 
-        img.vistaview-image-highres {
-          width: var(--vistaview-fitted-width) !important;
-          height: var(--vistaview-fitted-height) !important;
-          transition:
-            width calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
-            height calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
-            opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease
-              calc(var(--vistaview-animation-duration) * 0.5ms);
+  img.vistaview-image-highres {
+    width: var(--vistaview-fitted-width) !important;
+    height: var(--vistaview-fitted-height) !important;
+    transition:
+      width calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+      height calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+      opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease
+        calc(var(--vistaview-animation-duration) * 0.5ms);
 
-          &.vistaview-image-loaded {
-            opacity: 0;
-          }
-        }
-      }
+    &.vistaview-image-loaded {
+      opacity: 0;
     }
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .vistaview--reduced-motion,
-  .vistaview--reduced-motion * {
-    animation-name: none !important;
-    animation-duration: 0ms;
-    transition-duration: 0ms !important;
-  }
+.vistaview--none {
+  display: none !important;
+}
+
+.vistaview--reduced-motion,
+.vistaview--reduced-motion * {
+  animation-name: none !important;
+  animation-duration: 0ms !important;
+  transition-duration: 0ms !important;
 }

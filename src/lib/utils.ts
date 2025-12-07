@@ -1,13 +1,20 @@
 /// <reference types="trusted-types" />
-import type { VistaViewElm } from './vista-view';
+import type { VistaViewElmProps } from './types';
 
-export function getElmProperties(elm: HTMLElement): VistaViewElm {
+export function getElmProperties(elm: HTMLElement): VistaViewElmProps {
   const s = getComputedStyle(elm);
+  const pos = elm.getBoundingClientRect();
   return {
     objectFit: s.objectFit,
     borderRadius: s.borderRadius,
     objectPosition: s.objectPosition,
     overflow: s.overflow,
+    top: pos.top,
+    left: pos.left,
+    width: pos.width,
+    height: pos.height,
+    naturalWidth: (elm as HTMLImageElement).naturalWidth,
+    naturalHeight: (elm as HTMLImageElement).naturalHeight,
   };
 }
 
@@ -125,20 +132,27 @@ export function getFittedSize(img: HTMLImageElement): {
   return { width: boxW, height: boxH };
 }
 
-export function makeFullScreenContain(img: HTMLImageElement, setDataAttribute: boolean = false) {
+export function getFullSizeDim(img: HTMLImageElement): {
+  width: number;
+  height: number;
+} {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
   const nw = img.naturalWidth;
   const nh = img.naturalHeight;
 
-  if (!nw || !nh) return;
+  if (!nw || !nh) {
+    console.error('Error', img);
+    throw new Error('Image natural dimensions are zero');
+  }
 
   if (nw < vw && nh < vh) {
     // smaller than screen, no need to resize
-    img.style.width = nw + 'px';
-    img.style.height = nh + 'px';
-    return;
+    return {
+      width: nw,
+      height: nh,
+    };
   }
 
   const imageAR = nw / nh;
@@ -157,14 +171,10 @@ export function makeFullScreenContain(img: HTMLImageElement, setDataAttribute: b
     width = vh * imageAR;
   }
 
-  // Apply size
-  if (setDataAttribute) {
-    img.dataset.vistaviewInitialWidth = width.toString();
-    img.dataset.vistaviewInitialHeight = height.toString();
-  } else {
-    img.style.width = width + 'px';
-    img.style.height = height + 'px';
-  }
+  return {
+    width,
+    height,
+  };
 }
 
 export function getMaxMinZoomLevels(

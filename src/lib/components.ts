@@ -1,9 +1,9 @@
 import type {
   VistaViewDefaultControls,
   VistaViewCustomControl,
-  VistaViewImage,
+  VistaViewImageIndexed,
   VistaViewOptions,
-} from './vista-view';
+} from './types';
 
 // Optimized SVG icons - common attributes applied via CSS
 const chevronLeft = `<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>`;
@@ -17,7 +17,7 @@ export function getDownloadButton(): VistaViewCustomControl {
   return {
     name: 'download',
     icon: downloadIcon,
-    onClick: (image) => {
+    onClick: (image: VistaViewImageIndexed) => {
       const link = document.createElement('a');
       link.href = image.src;
       link.download = image.src.split('/').pop() || 'download';
@@ -32,15 +32,15 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
-        return `<button class="vistaview-zoom-in-button">${zoomInIcon}</button>`;
+        return `<button class="vistaview-zoom-in-btn">${zoomInIcon}</button>`;
       case 'zoomOut':
-        return `<button disabled class="vistaview-zoom-out-button">${zoomOutIcon}</button>`;
+        return `<button disabled class="vistaview-zoom-out-btn">${zoomOutIcon}</button>`;
       case 'close':
-        return `<button class="vistaview-close-button">${closeIcon}</button>`;
+        return `<button class="vistaview-close-btn">${closeIcon}</button>`;
       case 'indexDisplay':
         return `<div class="vistaview-index-display"></div>`;
       case 'description':
-        return `<div class="vistaview-image-description"></div>`;
+        return `<div class="vistaview-description"></div>`;
       default:
         return '';
     }
@@ -48,33 +48,48 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
   return `<button data-vistaview-custom-control="${control.name}">${control.icon}</button>`;
 }
 
-export function vistaViewComponent(
-  elements: VistaViewImage[],
-  controls: VistaViewOptions['controls'],
-  active: number = 0
-): string {
+export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
+  const comp = el.imageElm ? getComputedStyle(el.imageElm) : null;
+  const fit = comp?.objectFit || '';
+  const nw = el.imageElm?.naturalWidth || '';
+  const nh = el.imageElm?.naturalHeight || '';
+  const w = comp?.width || '';
+  const h = comp?.height || '';
+
+  const div = document.createElement('div');
+  div.className = 'vistaview-item';
+  div.dataset.vistaviewIndex = el.index.toString();
+  div.innerHTML = `<img class="vistaview-image-lowres"
+    style="${fit ? `object-fit:${fit};` : ''}${w ? `width:${w};` : ''}${h ? `height:${h};` : ''}"
+    src="${el.thumb || el.src}" 
+    alt="${el.alt || ''}"
+    ${nw ? `width="${nw}"` : ''}
+    ${nh ? `height="${nh}"` : ''}
+  />
+  <img class="vistaview-image-highres" src="${el.src}" alt="${el.alt || ''}" />`;
+
+  return div;
+}
+
+export function vistaViewComponent({
+  controls,
+  isReducedMotion,
+}: {
+  elements: VistaViewImageIndexed[];
+  controls: VistaViewOptions['controls'];
+  isReducedMotion: boolean;
+  active: number;
+}): string {
   const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
 
-  return `<div class="vistaview-root" id="vistaview-root">
-<div class="vistaview-container">
-<div class="vistaview-image-container">
-${elements
-  .map((el, index) => {
-    const fit = el.image ? getComputedStyle(el.image).objectFit : '';
-    const w = el.image?.width,
-      h = el.image?.height;
-    return `<div class="vistaview-item">
-<img class="vistaview-image-lowres"${fit ? ` style="object-fit:${fit}"` : ''} src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${w}" height="${h}">
-<img class="vistaview-image-highres" ${active === index ? '' : 'loading="lazy"'} style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
-</div>`;
-  })
-  .join('')}
-</div>
-<div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
-<div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
-<div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
-<div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
-</div>
-</div>`;
+  return `<div class="vistaview-root${isReducedMotion ? ' vistaview--reduced-motion' : ''}" id="vistaview-root">
+  <div class="vistaview-container">
+  <div class="vistaview-image-container"></div>
+  <div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
+  <div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
+  <div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
+  <div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
+  </div>
+  </div>`;
 }
