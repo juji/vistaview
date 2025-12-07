@@ -79,8 +79,8 @@
     border-radius: 0px;
   }
   50% {
-    width: calc(var(--vistaview-container-initial-width) - 42px);
-    height: calc(var(--vistaview-container-initial-height) - 42px);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
     border-radius: var(--vistaview-image-border-radius);
