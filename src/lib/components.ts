@@ -50,7 +50,8 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
 
 export function vistaViewComponent(
   elements: VistaViewImage[],
-  controls: VistaViewOptions['controls']
+  controls: VistaViewOptions['controls'],
+  active: number = 0
 ): string {
   const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
@@ -59,13 +60,13 @@ export function vistaViewComponent(
 <div class="vistaview-container">
 <div class="vistaview-image-container">
 ${elements
-  .map((el) => {
+  .map((el, index) => {
     const fit = el.image ? getComputedStyle(el.image).objectFit : '';
     const w = el.image?.width,
       h = el.image?.height;
     return `<div class="vistaview-item">
 <img class="vistaview-image-lowres"${fit ? ` style="object-fit:${fit}"` : ''} src="${el.smallSrc || el.src}" alt="${el.alt || ''}" width="${w}" height="${h}">
-<img class="vistaview-image-highres" loading="lazy" style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
+<img class="vistaview-image-highres" ${active === index ? '' : 'loading="lazy"'} style="width:${w}px;height:${h}px" src="${el.src}" alt="${el.alt || ''}" width="${el.width}" height="${el.height}">
 </div>`;
   })
   .join('')}

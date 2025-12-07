@@ -544,7 +544,7 @@ export class VistaView {
     this.currentIndex = index;
 
     // prepend
-    const component = vistaViewComponent(this.elements, this.options.controls!);
+    const component = vistaViewComponent(this.elements, this.options.controls!, this.currentIndex);
     document.body.prepend(createTrustedHtml(component));
 
     // set elements
