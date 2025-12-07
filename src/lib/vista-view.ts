@@ -410,7 +410,14 @@ export class VistaView {
           (img) => img.index === this.currentIndex.value
         );
         if (control && currentImage) {
-          control.onClick(currentImage);
+          if (control.onClick.constructor.name === 'AsyncFunction') {
+            btn.classList.add('vistaview-button--loading');
+            (control.onClick(currentImage) as Promise<void>).finally(() => {
+              btn.classList.remove('vistaview-button--loading');
+            });
+          } else {
+            control.onClick(currentImage);
+          }
         }
       });
     });

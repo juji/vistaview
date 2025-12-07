@@ -51,7 +51,7 @@ export type VistaViewDefaultControls =
 export type VistaViewCustomControl = {
   name: string;
   icon: string;
-  onClick: (v: VistaViewImageIndexed) => void;
+  onClick: (v: VistaViewImageIndexed) => void | Promise<void>;
 };
 
 export type UserTransitionFunctionParams = {

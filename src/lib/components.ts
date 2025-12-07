@@ -17,10 +17,13 @@ export function getDownloadButton(): VistaViewCustomControl {
   return {
     name: 'download',
     icon: downloadIcon,
-    onClick: (image: VistaViewImageIndexed) => {
+    onClick: async (image: VistaViewImageIndexed) => {
+      const response = await fetch(image.src);
+      const blob = await response.blob();
+      const finalUrl = response.url; // This is the redirected URL
       const link = document.createElement('a');
-      link.href = image.src;
-      link.download = image.src.split('/').pop() || 'download';
+      link.href = URL.createObjectURL(blob);
+      link.download = finalUrl.split('/').pop() || 'download';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
