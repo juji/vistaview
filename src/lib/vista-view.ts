@@ -6,9 +6,6 @@ import {
   getFittedSize,
   getFullSizeDim,
   isNotZeroCssValue,
-  // getFittedSize,
-  // isNotZeroCssValue,
-  // getMaxMinZoomLevels,
 } from './utils';
 
 import type {
@@ -17,16 +14,7 @@ import type {
   VistaViewImage,
   VistaViewImageIndexed,
   VistaViewOptions,
-  // VistaViewCustomControl
 } from './types';
-
-// if (setDataAttribute) {
-//     img.dataset.vistaviewInitialWidth = width.toString();
-//     img.dataset.vistaviewInitialHeight = height.toString();
-//   } else {
-//     img.style.width = width + 'px';
-//     img.style.height = height + 'px';
-//   }
 
 export const GlobalVistaState = {
   somethingOpened: null,
@@ -233,11 +221,8 @@ export class VistaView {
     const top = (anchorProps?.top || imageProps?.top || 0) + height / 2;
 
     this.rootElm.style.setProperty('--vistaview-container-initial-width', width + 'px');
-
     this.rootElm.style.setProperty('--vistaview-container-initial-height', height + 'px');
-
     this.rootElm.style.setProperty('--vistaview-container-initial-top', top + 'px');
-
     this.rootElm.style.setProperty('--vistaview-container-initial-left', left + 'px');
 
     this.rootElm.style.setProperty(
@@ -293,38 +278,46 @@ export class VistaView {
         sizes.h = Math.min(thumb.height, height);
       }
 
-      const onLoaded = () => {
-        if (sizes.w && sizes.h) {
-          im.style.width = `${sizes.w}px`;
-          im.style.height = `${sizes.h}px`;
-          im.style.setProperty('--vistaview-fitted-width', `${sizes.w}px`);
-          im.style.setProperty('--vistaview-fitted-height', `${sizes.h}px`);
-        }
+      const onLoaded =
+        (alreadyDone: boolean = false) =>
+        () => {
+          if (sizes.w && sizes.h) {
+            im.style.width = `${sizes.w}px`;
+            im.style.height = `${sizes.h}px`;
+            im.style.setProperty('--vistaview-fitted-width', `${sizes.w}px`);
+            im.style.setProperty('--vistaview-fitted-height', `${sizes.h}px`);
+          }
 
-        im.classList.add('vistaview-image-loaded');
-        im.width = im.naturalWidth;
-        im.height = im.naturalHeight;
-        setTimeout(() => {
-          const { width, height } = getFullSizeDim(im);
-          im.style.width = `${width}px`;
-          im.style.height = `${height}px`;
-        }, 100);
-        setTimeout(() => {
-          im.parentElement
-            ?.querySelector('.vistaview-image-lowres')
-            ?.classList.add('vistaview-image--hidden');
-        }, 500);
+          im.classList.add('vistaview-image-loaded');
+          im.width = im.naturalWidth;
+          im.height = im.naturalHeight;
+          if (alreadyDone) {
+            const { width, height } = getFullSizeDim(im);
+            im.style.width = `${width}px`;
+            im.style.height = `${height}px`;
+          } else {
+            setTimeout(() => {
+              const { width, height } = getFullSizeDim(im);
+              im.style.width = `${width}px`;
+              im.style.height = `${height}px`;
+            }, 333);
+          }
+          setTimeout(() => {
+            im.parentElement
+              ?.querySelector('.vistaview-image-lowres')
+              ?.classList.add('vistaview-image--hidden');
+          }, 500);
 
-        if (img.parentElement?.matches('.vistaview-item--active')) {
-          this.updateZoomButtonsVisibility();
-        }
-      };
+          if (img.parentElement?.matches('.vistaview-item--active')) {
+            this.updateZoomButtonsVisibility();
+          }
+        };
 
       // on loaded
       if (im.complete && im.naturalWidth > 0) {
-        onLoaded();
+        onLoaded(true)();
       } else {
-        im.onload = onLoaded;
+        im.onload = onLoaded(false);
       }
     });
   }

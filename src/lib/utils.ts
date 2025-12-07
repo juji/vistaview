@@ -57,14 +57,6 @@ export function isNotZeroCssValue(value?: string): false | string | undefined {
   );
 }
 
-export function getRenderedSize(image: HTMLImageElement): { width: number; height: number } {
-  const rect = image.getBoundingClientRect();
-  return {
-    width: rect.width,
-    height: rect.height,
-  };
-}
-
 export function getFittedSize(img: HTMLImageElement): {
   width: number;
   height: number;
