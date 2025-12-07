@@ -7,7 +7,7 @@ export type { VistaViewImage, VistaViewOptionsBase };
 export { DefaultOptions, getDownloadButton };
 
 export type VistaViewOptions = {
-  elements?: string | NodeListOf<HTMLElement> | VistaViewImage[];
+  elements: string | NodeListOf<HTMLElement> | VistaViewImage[];
 } & VistaViewOptionsBase;
 
 export type VistaViewInterface = {

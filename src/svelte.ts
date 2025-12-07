@@ -4,10 +4,7 @@ import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vis
 
 export type { VistaViewOptions, VistaViewInterface, VistaViewImage };
 
-type UseVistaViewOptions = Omit<VistaViewOptions, 'parent'>;
-
 type UseVistaViewReturn = {
-  init: (container: HTMLElement) => void;
   open: (startIndex?: number) => void;
   close: () => void;
   next: () => void;
@@ -16,18 +13,14 @@ type UseVistaViewReturn = {
   view: (index: number) => void;
 };
 
-export function useVistaView(options: UseVistaViewOptions = {}): UseVistaViewReturn {
-  let instance: VistaViewInterface | null = null;
+export function useVistaView(options: VistaViewOptions): UseVistaViewReturn {
+  const instance = vistaView(options);
 
   onDestroy(() => {
     instance?.destroy();
-    instance = null;
   });
 
   return {
-    init: (container: HTMLElement) => {
-      instance = vistaView({ parent: container, ...options });
-    },
     open: (i = 0) => instance?.open(i),
     close: () => instance?.close(),
     next: () => instance?.next(),

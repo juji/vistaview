@@ -1,19 +1,14 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { vistaView } from './vistaview';
 import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vistaview';
 
 export type { VistaViewOptions, VistaViewInterface, VistaViewImage };
 
-type UseVistaViewOptions = Omit<VistaViewOptions, 'parent'>;
-
-export function useVistaView(options: UseVistaViewOptions = {}) {
-  const container: Ref<HTMLElement | null> = ref(null);
+export function useVistaView(options: VistaViewOptions) {
   let instance: VistaViewInterface | null = null;
 
   onMounted(() => {
-    if (container.value) {
-      instance = vistaView({ parent: container.value, ...options });
-    }
+    instance = vistaView(options);
   });
 
   onUnmounted(() => {
@@ -22,7 +17,6 @@ export function useVistaView(options: UseVistaViewOptions = {}) {
   });
 
   return {
-    container,
     open: (i?: number) => instance?.open(i),
     close: () => instance?.close(),
     next: () => instance?.next(),

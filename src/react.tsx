@@ -4,10 +4,7 @@ import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vis
 
 export type { VistaViewOptions, VistaViewInterface, VistaViewImage };
 
-type UseVistaViewOptions = Omit<VistaViewOptions, 'parent'>;
-
 type UseVistaViewReturn = {
-  ref: React.RefObject<HTMLDivElement | null>;
   open: (startIndex?: number) => void;
   close: () => void;
   next: () => void;
@@ -16,13 +13,11 @@ type UseVistaViewReturn = {
   view: (index: number) => void;
 };
 
-export function useVistaView(options: UseVistaViewOptions = {}): UseVistaViewReturn {
-  const ref = useRef<HTMLDivElement>(null);
+export function useVistaView(options: VistaViewOptions): UseVistaViewReturn {
   const instance = useRef<VistaViewInterface | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-    instance.current = vistaView({ parent: ref.current, ...options });
+    instance.current = vistaView(options);
     return () => {
       instance.current?.destroy();
       instance.current = null;
@@ -30,7 +25,6 @@ export function useVistaView(options: UseVistaViewOptions = {}): UseVistaViewRet
   }, []);
 
   return {
-    ref,
     open: useCallback((i = 0) => instance.current?.open(i), []),
     close: useCallback(() => instance.current?.close(), []),
     next: useCallback(() => instance.current?.next(), []),
@@ -40,19 +34,32 @@ export function useVistaView(options: UseVistaViewOptions = {}): UseVistaViewRet
   };
 }
 
-type VistaViewProps = UseVistaViewOptions & {
+type VistaViewProps = VistaViewOptions & {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  selector: string;
 };
 
 export function VistaView({
   children,
   className,
   style,
+  selector,
   ...options
 }: VistaViewProps): React.ReactElement {
-  const { ref } = useVistaView(options);
+  const ref = useRef<HTMLDivElement>(null);
+  const instance = useRef<VistaViewInterface | null>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    instance.current = vistaView({ ...options, elements: ref.current.querySelectorAll(selector) });
+    return () => {
+      instance.current?.destroy();
+      instance.current = null;
+    };
+  }, []);
+
   return (
     <div ref={ref} className={className} style={style}>
       {children}
