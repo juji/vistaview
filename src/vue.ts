@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref, defineComponent, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
 import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vistaview';
 
@@ -25,3 +25,34 @@ export function useVistaView(options: VistaViewOptions) {
     view: (i: number) => instance?.view(i),
   };
 }
+
+export const VistaView = defineComponent({
+  name: 'VistaView',
+  props: {
+    selector: {
+      type: String as PropType<string>,
+      required: true,
+    },
+    class: String,
+  },
+  setup(props, { slots, attrs }) {
+    const container = ref<HTMLElement | null>(null);
+    let instance: VistaViewInterface | null = null;
+
+    onMounted(() => {
+      if (!container.value) return;
+      if (!props.selector) throw new Error('VistaView: selector is required');
+      instance = vistaView({
+        ...attrs,
+        elements: container.value.querySelectorAll(props.selector),
+      } as VistaViewOptions);
+    });
+
+    onUnmounted(() => {
+      instance?.destroy();
+      instance = null;
+    });
+
+    return () => h('div', { ref: container, class: props.class }, slots.default?.());
+  },
+});
