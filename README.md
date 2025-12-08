@@ -97,6 +97,7 @@ vistaView({
   zoomStep: 500, // Pixels to zoom per step (default: 500)
   maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
   touchSpeedThreshold: 1, // Swipe speed threshold for navigation (default: 1)
+  preloads: 1, // Number of adjacent images to preload on each side (default: 1)
 
   // Control placement (defaults shown)
   controls: {
