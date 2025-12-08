@@ -67,6 +67,25 @@ export class VistaView {
   private userSetup: UserSetupFunction | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
+  private defaultElmSetup: UserSetupFunction = ({ htmlElements: { to } }) => {
+    to.forEach((elm) => {
+      elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+      elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+    });
+  };
+
+  private defaultTransition: UserTransitionFunction = ({
+    htmlElements: { to: elms },
+    images: { to: images },
+    container,
+  }) => {
+    container.innerHTML = '';
+    elms.forEach((elm) => {
+      this.imageContainerElm!.appendChild(elm);
+    });
+    return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
+  };
+
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
     this.currentIndex._vistaView = this;
@@ -143,43 +162,28 @@ export class VistaView {
 
     this.navActive = false;
 
+    const transitionParams = {
+      htmlElements: { from: this.currentItems, to: elms },
+      images: { from: this.currentImages, to: images },
+      index: { from: beforeIndex, to: afterIndex },
+      via: this.currentIndex.via,
+      container: this.imageContainerElm,
+    };
+
     if (this.userSetup) {
-      this.userSetup({
-        htmlElements: { from: this.currentItems, to: elms },
-        images: { from: this.currentImages, to: images },
-        index: { from: beforeIndex, to: afterIndex },
-        via: this.currentIndex.via,
-        container: this.imageContainerElm,
-      });
+      this.userSetup(transitionParams);
     } else {
-      elms.forEach((elm) => {
-        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
-      });
+      this.defaultElmSetup(transitionParams);
     }
 
     // do the swap, this is where the animation would go
-    let currentImage;
-    if (this.userTransition) {
-      currentImage = await this.userTransition({
-        htmlElements: { from: this.currentItems, to: elms },
-        images: { from: this.currentImages, to: images },
-        index: { from: beforeIndex, to: afterIndex },
-        via: this.currentIndex.via,
-        container: this.imageContainerElm,
-      });
-    } else {
-      // default swap: simply replace
-      this.imageContainerElm.innerHTML = '';
-      elms.forEach((elm) => {
-        this.imageContainerElm!.appendChild(elm);
-      });
-      currentImage = images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
-    }
+    const currentImage = this.userTransition
+      ? await this.userTransition(transitionParams)
+      : this.defaultTransition(transitionParams);
 
     this.navActive = true;
 
-    this.setInitialDimPos(currentImage);
+    this.setInitialDimPos(currentImage as VistaViewImageIndexed);
 
     this.currentImages = images;
     this.currentItems = elms;
@@ -459,21 +463,22 @@ export class VistaView {
     this.currentImages = this.getImages(images);
     const elms = this.currentImages.map((img, i) => vistaViewItem(img, positions[i]));
     this.currentItems = elms;
+
+    const setupParams = {
+      htmlElements: { from: null, to: this.currentItems },
+      images: { from: null, to: this.currentImages },
+      index: { from: null, to: startIndex },
+      via: this.currentIndex.via,
+      container: this.imageContainerElm,
+    };
+
     if (this.userSetup) {
-      this.userSetup({
-        htmlElements: { from: null, to: this.currentItems },
-        images: { from: null, to: this.currentImages },
-        index: { from: null, to: startIndex },
-        via: this.currentIndex.via,
-        container: this.imageContainerElm,
-      });
+      this.userSetup(setupParams);
     } else {
-      this.currentItems.forEach((elm) => {
-        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
-      });
+      this.defaultElmSetup(setupParams);
     }
 
+    // insert
     this.imageContainerElm.innerHTML = '';
     this.currentItems.forEach((elm) => {
       this.imageContainerElm!.appendChild(elm);

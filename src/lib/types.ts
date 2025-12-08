@@ -63,6 +63,8 @@ export type UserFunctionParams = {
   container: HTMLElement;
 };
 
-export type UserTransitionFunction = (params: UserFunctionParams) => Promise<VistaViewImageIndexed>;
+export type UserTransitionFunction = (
+  params: UserFunctionParams
+) => VistaViewImageIndexed | Promise<VistaViewImageIndexed>;
 
 export type UserSetupFunction = (params: UserFunctionParams) => void;
