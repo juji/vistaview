@@ -86,6 +86,8 @@ vistaView({
 ## Options
 
 ```ts
+import { vistaView, vistaViewDownload } from 'vistaview'
+
 vistaView({
   // Required: specify elements (string selector, NodeList, or array)
   elements: string | NodeList | VistaViewImage[],
@@ -102,7 +104,7 @@ vistaView({
   // Control placement (defaults shown)
   controls: {
     topLeft: ['indexDisplay'],
-    topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
+    topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],
     topCenter: [],
     bottomLeft: [],
     bottomCenter: ['description'],
@@ -118,7 +120,7 @@ vistaView({
 | `indexDisplay`        | Shows current image index (e.g., "1 / 5") |
 | `zoomIn`              | Zoom into the image                       |
 | `zoomOut`             | Zoom out of the image                     |
-| `getDownloadButton()` | Download the current image                |
+| `vistaViewDownload()` | Download the current image                |
 | `close`               | Close the lightbox                        |
 | `description`         | Shows the image alt text                  |
 
@@ -127,7 +129,7 @@ vistaView({
 Controls are merged with defaults—only the positions you specify are replaced. Provide an object with `name`, `icon`, and `onClick`:
 
 ```js
-import { vistaView, getDownloadButton } from 'vistaview';
+import { vistaView, vistaViewDownload } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
@@ -135,7 +137,7 @@ vistaView({
     topRight: [
       'zoomIn',
       'zoomOut',
-      getDownloadButton(), // Example: Built-in download helper
+      vistaViewDownload(), // Example: Built-in download helper
       {
         name: 'share',
         icon: '<svg>...</svg>',

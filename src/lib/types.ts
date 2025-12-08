@@ -49,7 +49,6 @@ export type VistaViewDefaultControls =
   | 'indexDisplay'
   | 'zoomIn'
   | 'zoomOut'
-  | 'download'
   | 'close'
   | 'description';
 

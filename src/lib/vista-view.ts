@@ -1,4 +1,4 @@
-import { vistaViewComponent, getDownloadButton, vistaViewItem } from './components';
+import { vistaViewComponent, vistaViewItem, vistaViewDownload } from './components';
 
 import {
   getElmProperties,
@@ -30,7 +30,7 @@ export const DefaultOptions = {
   keyboardListeners: true,
   controls: {
     topLeft: ['indexDisplay'],
-    topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
+    topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],
     bottomCenter: ['description'],
   } as VistaViewOptions['controls'],
 };

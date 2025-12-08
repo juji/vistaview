@@ -1,10 +1,10 @@
 import { VistaView, DefaultOptions } from './lib/vista-view';
-import { getDownloadButton } from './lib/components';
+import { vistaViewDownload } from './lib/components';
 import type { VistaViewImage, VistaViewOptions as VistaViewOptionsBase } from './lib/types';
 import './style.css';
 
 export type { VistaViewImage, VistaViewOptionsBase };
-export { DefaultOptions, getDownloadButton };
+export { DefaultOptions, vistaViewDownload };
 
 export type VistaViewOptions = {
   elements: string | NodeListOf<HTMLElement> | VistaViewImage[];

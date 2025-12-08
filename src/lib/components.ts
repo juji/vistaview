@@ -11,10 +11,10 @@ const chevronLeft = `<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>`;
 const chevronRight = `<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>`;
 const zoomInIcon = `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>`;
 const zoomOutIcon = `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="8" x2="14" y1="11" y2="11"/></svg>`;
-const downloadIcon = `<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`;
 const closeIcon = `<svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+const downloadIcon = `<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`;
 
-export function getDownloadButton(): VistaViewCustomControl {
+export function vistaViewDownload(): VistaViewCustomControl {
   return {
     name: 'download',
     icon: downloadIcon,
