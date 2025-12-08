@@ -549,6 +549,7 @@ export class VistaView {
   }
 
   private loadImages() {
+    // return;
     if (!this.rootElm) return;
 
     // set dimension on highres images
