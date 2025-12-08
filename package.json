@@ -99,8 +99,5 @@
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"
-  },
-  "dependencies": {
-    "isomorphic-dompurify": "^2.33.0"
   }
 }

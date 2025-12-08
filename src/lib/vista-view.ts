@@ -1,12 +1,6 @@
 import { vistaViewComponent, getDownloadButton, vistaViewItem } from './components';
 
-import {
-  createTrustedHtml,
-  getElmProperties,
-  getFittedSize,
-  getFullSizeDim,
-  isNotZeroCssValue,
-} from './utils';
+import { getElmProperties, getFittedSize, getFullSizeDim, isNotZeroCssValue } from './utils';
 
 import type {
   UserTransitionFunction,
@@ -29,6 +23,7 @@ export const DefaultOptions = {
   zoomStep: 500,
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
+  preloads: 1,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
@@ -335,7 +330,21 @@ export class VistaView {
   }
 
   private getCurrentIndexes(currentIndex: number): number[] {
-    return [currentIndex];
+    const preloads = this.options.preloads!;
+    const total = this.elements.length;
+
+    return total < 1 || !preloads
+      ? [currentIndex]
+      : [
+          ...new Set([
+            ...Array.from(
+              { length: preloads },
+              (_, i) => (((currentIndex - preloads + i) % total) + total) % total
+            ),
+            currentIndex,
+            ...Array.from({ length: preloads }, (_, i) => (currentIndex + 1 + i) % total),
+          ]),
+        ];
   }
 
   private setKeyboardListeners(): void {
@@ -395,16 +404,19 @@ export class VistaView {
 
     this.currentIndex._value = startIndex;
 
+    // set images and current items
+    const activeIndexes = this.getCurrentIndexes(this.currentIndex.value);
+    this.currentImages = this.getImages(activeIndexes);
+    const elms = this.currentImages.map((img) => vistaViewItem(img));
+    this.currentItems = elms;
+
     // create and append the component to body
     document.body.prepend(
-      createTrustedHtml(
-        vistaViewComponent({
-          elements: this.currentImages,
-          controls: this.options.controls,
-          isReducedMotion: this.isReducedMotion,
-          active: this.currentIndex.value,
-        })
-      )
+      vistaViewComponent({
+        controls: this.options.controls,
+        isReducedMotion: this.isReducedMotion,
+        children: this.currentItems,
+      })
     );
 
     // set root element
@@ -414,14 +426,6 @@ export class VistaView {
       GlobalVistaState.somethingOpened = null;
       throw new Error('Failed to create VistaView element');
     }
-
-    // set images and current items
-    const activeIndexes = this.getCurrentIndexes(this.currentIndex.value);
-    this.currentImages = this.getImages(activeIndexes);
-    const elms = this.currentImages.map((img) => vistaViewItem(img));
-    this.imageContainerElm.innerHTML = '';
-    elms.forEach((elm) => this.imageContainerElm!.appendChild(elm));
-    this.currentItems = elms;
 
     // set buttons' event listeners
     this.rootElm
@@ -490,8 +494,11 @@ export class VistaView {
     }
 
     // set initial dimension and position
-    const centerElm = this.currentImages[1] || this.currentImages[0];
-    this.setInitialDimPos(centerElm);
+    this.setInitialDimPos(
+      this.currentImages[
+        this.currentImages.length === 1 ? 0 : Math.floor(this.currentImages.length / 2)
+      ]
+    );
 
     // set on event handlers
     this.setResizeListeners();

@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="./dev.css">
 </head>
 <body>
-  <!-- <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+  <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
     <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Development Demo</div>
   </h1>
   <div class="container" style="max-width: 800px; margin: 0 auto;">
@@ -69,7 +69,7 @@
       </a>
     </div>
 
-  </div> -->
+  </div>
 
   <!-- <h1 style="position: sticky; top: 0; z-index: 1; background: #000">
     <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - Image only</div>
@@ -206,7 +206,7 @@
     <button id="button-clicker">Click to Open Image Viewer</button>
   </div> -->
 
-  </div><h1 style="position: sticky; top: 0; z-index: 1; background: #000">
+  <!-- </div><h1 style="position: sticky; top: 0; z-index: 1; background: #000">
     <div style="max-width: 800px; margin: 0 auto; padding: 1rem;">VistaView Library - many</div>
   </h1>
   <div class="container" style="max-width: 800px; margin: 0 auto;">
@@ -215,7 +215,7 @@
       
     </div>
 
-  </div>
+  </div> -->
 
 
   <script type="module">
@@ -224,9 +224,9 @@
     // VistaView demo functionality
     // const imageGrid = document.getElementById('image-grid');
     
-    // vistaView({
-    //   elements: '#image-grid-init a',
-    // });
+    vistaView({
+      elements: '#image-grid-init a',
+    });
     
     // const imageGridImageOnly = document.getElementById('image-grid-image-only');
     // vistaView({
@@ -273,18 +273,18 @@
     //   open(0);
     // })
     
-    document.getElementById('image-grid-many').innerHTML = Array.from({ length: 9 }, (_, i) => `
-      <a href="https://picsum.photos/seed/${i}/1200/1800"
-         target="_blank"
-         data-vistaview-width="1200"
-         data-vistaview-height="1800">
-        <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">
-      </a>
-    `).join('');
+    // document.getElementById('image-grid-many').innerHTML = Array.from({ length: 9 }, (_, i) => `
+    //   <a href="https://picsum.photos/seed/${i}/1200/1800"
+    //      target="_blank"
+    //      data-vistaview-width="1200"
+    //      data-vistaview-height="1800">
+    //     <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">
+    //   </a>
+    // `).join('');
 
-    vistaView({
-      elements: '#image-grid-many a',
-    });
+    // vistaView({
+    //   elements: '#image-grid-many a',
+    // });
 
   </script>
 </body>

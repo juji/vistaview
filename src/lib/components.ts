@@ -4,6 +4,7 @@ import type {
   VistaViewImageIndexed,
   VistaViewOptions,
 } from './types';
+import { createTrustedHtml } from './utils';
 
 // Optimized SVG icons - common attributes applied via CSS
 const chevronLeft = `<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>`;
@@ -62,14 +63,16 @@ export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
   const div = document.createElement('div');
   div.className = 'vistaview-item';
   div.dataset.vistaviewIndex = el.index.toString();
-  div.innerHTML = `<img class="vistaview-image-lowres"
+  const inner = createTrustedHtml(`<img class="vistaview-image-lowres"
     style="${fit ? `object-fit:${fit};` : ''}${w ? `width:${w};` : ''}${h ? `height:${h};` : ''}"
     src="${el.thumb || el.src}" 
     alt="${el.alt || ''}"
+    data-vistaview-index="${el.index}"
     ${nw ? `width="${nw}"` : ''}
     ${nh ? `height="${nh}"` : ''}
   />
-  <img class="vistaview-image-highres" src="${el.src}" alt="${el.alt || ''}" />`;
+  <img class="vistaview-image-highres" src="${el.src}" alt="${el.alt || ''}" />`);
+  div.appendChild(inner);
 
   return div;
 }
@@ -77,22 +80,30 @@ export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
 export function vistaViewComponent({
   controls,
   isReducedMotion,
+  children,
 }: {
-  elements: VistaViewImageIndexed[];
   controls: VistaViewOptions['controls'];
   isReducedMotion: boolean;
-  active: number;
-}): string {
+  children: HTMLDivElement[];
+}): DocumentFragment {
   const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
 
-  return `<div class="vistaview-root${isReducedMotion ? ' vistaview--reduced-motion' : ''}" id="vistaview-root">
-  <div class="vistaview-container">
-  <div class="vistaview-image-container"></div>
-  <div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
-  <div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
-  <div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
-  <div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
-  </div>
-  </div>`;
+  const html = createTrustedHtml(
+    `<div class="vistaview-root${isReducedMotion ? ' vistaview--reduced-motion' : ''}" id="vistaview-root">
+    <div class="vistaview-container">
+    <div class="vistaview-image-container"></div>
+    <div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
+    <div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
+    <div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
+    <div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
+    </div>
+    </div>`
+  );
+
+  const container = html.querySelector('.vistaview-image-container');
+  children.forEach((child) => {
+    container!.appendChild(child);
+  });
+  return html;
 }
