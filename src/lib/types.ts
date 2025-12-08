@@ -31,6 +31,7 @@ export type VistaViewOptions = {
   maxZoomLevel?: number;
   touchSpeedThreshold?: number;
   preloads?: number;
+  keyboardListeners?: boolean;
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];

@@ -27,6 +27,7 @@ export const DefaultOptions = {
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
   preloads: 1,
+  keyboardListeners: true,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', getDownloadButton(), 'close'],
@@ -795,7 +796,7 @@ export class VistaView {
 
     // set on event handlers
     this.setResizeListeners();
-    this.setKeyboardListeners();
+    if (this.options.keyboardListeners) this.setKeyboardListeners();
 
     // for single image, hide next/prev buttons and index-display
     if (this.elements.length === 1) {
