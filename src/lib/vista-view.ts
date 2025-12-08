@@ -94,10 +94,7 @@ export class VistaView {
     to &&
       to.forEach((elm) => {
         const pos = Number(elm.dataset.vistaviewPos);
-        if (pos < 0) {
-          elm.style.zIndex = '1';
-          elm.style.left = 100 * pos + '%';
-        } else if (pos > 0) {
+        if (pos !== 0) {
           elm.style.zIndex = '1';
           elm.style.left = 100 * pos + '%';
         } else {
@@ -118,13 +115,11 @@ export class VistaView {
     const elms =
       next && htmlFrom
         ? htmlFrom.filter((v) => {
-            const pos = Number(v.dataset.vistaviewPos);
-            return pos >= 0;
+            return v.dataset.vistaviewPos === '0' || v.dataset.vistaviewPos === '1';
           })
         : prev && htmlFrom
           ? htmlFrom.filter((v) => {
-              const pos = Number(v.dataset.vistaviewPos);
-              return pos <= 0;
+              return v.dataset.vistaviewPos === '0' || v.dataset.vistaviewPos === '-1';
             })
           : null;
 
