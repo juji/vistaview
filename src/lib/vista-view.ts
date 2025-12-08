@@ -3,6 +3,7 @@ import { vistaViewComponent, getDownloadButton, vistaViewItem } from './componen
 import { getElmProperties, getFittedSize, getFullSizeDim, isNotZeroCssValue } from './utils';
 
 import type {
+  UserCloseFunction,
   UserSetupFunction,
   UserTransitionFunction,
   VistaViewCustomControl,
@@ -63,15 +64,26 @@ export class VistaView {
   private navActive = true;
 
   private onResizeHandler: (() => void) | null = null;
-  private userTransition: UserTransitionFunction | null = null;
-  private userSetup: UserSetupFunction | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
-  private defaultElmSetup: UserSetupFunction = ({ htmlElements: { to } }) => {
-    to.forEach((elm) => {
-      elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-      elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
-    });
+  private userSetup: UserSetupFunction | null = null;
+  private userTransition: UserTransitionFunction | null = null;
+  private userClose: UserCloseFunction | null = null;
+
+  private defaultElmSetup: UserSetupFunction = ({
+    htmlElements: { to },
+    index: { to: indexTo },
+    elements,
+  }) => {
+    if (elements instanceof NodeList && indexTo) {
+      elements.forEach((el) => (el.style.opacity = '1'));
+      elements[indexTo]!.style.opacity = '0';
+    }
+    to &&
+      to.forEach((elm) => {
+        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+      });
   };
 
   private defaultTransition: UserTransitionFunction = ({
@@ -79,11 +91,19 @@ export class VistaView {
     images: { to: images },
     container,
   }) => {
+    if (!images) throw new Error('VistaView: images is null in defaultTransition()');
     container.innerHTML = '';
-    elms.forEach((elm) => {
-      this.imageContainerElm!.appendChild(elm);
-    });
+    elms &&
+      elms.forEach((elm) => {
+        this.imageContainerElm!.appendChild(elm);
+      });
     return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
+  };
+
+  private defaultClose: UserCloseFunction = ({ elements }) => {
+    if (elements instanceof NodeList) {
+      elements.forEach((el) => (el.style.opacity = '1'));
+    }
   };
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
@@ -168,6 +188,7 @@ export class VistaView {
       index: { from: beforeIndex, to: afterIndex },
       via: this.currentIndex.via,
       container: this.imageContainerElm,
+      elements: this.elements,
     };
 
     if (this.userSetup) {
@@ -470,6 +491,7 @@ export class VistaView {
       index: { from: null, to: startIndex },
       via: this.currentIndex.via,
       container: this.imageContainerElm,
+      elements: this.elements,
     };
 
     if (this.userSetup) {
@@ -587,6 +609,22 @@ export class VistaView {
           (this.options.animationDurationBase || 300) + 33
         );
       });
+    }
+
+    // user close
+    const closeParams = {
+      htmlElements: { from: this.currentItems, to: null },
+      images: { from: this.currentImages, to: null },
+      index: { from: this.currentIndex.value!, to: null },
+      container: this.imageContainerElm!,
+      elements: this.elements,
+      via: { prev: false, next: false },
+    };
+
+    if (this.userClose) {
+      this.userClose(closeParams);
+    } else {
+      this.defaultClose(closeParams);
     }
 
     document.body.removeChild(this.rootElm!);
