@@ -39,9 +39,9 @@ export type VistaViewOptions = {
     bottomLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     bottomRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
   };
-  onImageView?: (params: UserFunctionParams) => void;
-  onOpen?: (params: UserFunctionParams) => void;
-  onClose?: (params: UserFunctionParams) => void;
+  onImageView?: (params: VistaViewData) => void;
+  onOpen?: (params: VistaViewData) => void;
+  onClose?: (params: VistaViewData) => void;
 };
 
 export type VistaViewDefaultControls =
@@ -58,7 +58,7 @@ export type VistaViewCustomControl = {
   onClick: (v: VistaViewImageIndexed) => void | Promise<void>;
 };
 
-export type UserFunctionParams = {
+export type VistaViewData = {
   htmlElements: { from: HTMLElement[] | null; to: HTMLElement[] | null };
   images: { from: VistaViewImageIndexed[] | null; to: VistaViewImageIndexed[] | null };
   index: { from: number | null; to: number | null };
@@ -69,8 +69,8 @@ export type UserFunctionParams = {
 };
 
 export type UserTransitionFunction = (
-  params: UserFunctionParams
+  params: VistaViewData
 ) => VistaViewImageIndexed | Promise<VistaViewImageIndexed>;
 
-export type UserSetupFunction = (params: UserFunctionParams) => void;
-export type UserCloseFunction = (params: UserFunctionParams) => void;
+export type UserSetupFunction = (params: VistaViewData) => void;
+export type UserCloseFunction = (params: VistaViewData) => void;
