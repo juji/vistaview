@@ -3,9 +3,9 @@ import { vistaViewComponent, getDownloadButton, vistaViewItem } from './componen
 import { getElmProperties, getFittedSize, getFullSizeDim, isNotZeroCssValue } from './utils';
 
 import type {
-  UserCloseFunction,
-  UserSetupFunction,
-  UserTransitionFunction,
+  VistaViewCloseFunction,
+  VistaViewSetupFunction,
+  VistaViewTransitionFunction,
   VistaViewCustomControl,
   VistaViewImage,
   VistaViewImageIndexed,
@@ -67,11 +67,11 @@ export class VistaView {
   private onResizeHandler: (() => void) | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
-  private userSetup: UserSetupFunction | null = null;
-  private userTransition: UserTransitionFunction | null = null;
-  private userClose: UserCloseFunction | null = null;
+  private userSetup: VistaViewSetupFunction | null = null;
+  private userTransition: VistaViewTransitionFunction | null = null;
+  private userClose: VistaViewCloseFunction | null = null;
 
-  private defaultElmSetup: UserSetupFunction = ({
+  private defaultElmSetup: VistaViewSetupFunction = ({
     htmlElements: { to },
     index: { to: indexTo },
     elements,
@@ -87,7 +87,7 @@ export class VistaView {
       });
   };
 
-  private defaultTransition: UserTransitionFunction = ({
+  private defaultTransition: VistaViewTransitionFunction = ({
     htmlElements: { to: elms },
     images: { to: images },
     container,
@@ -101,7 +101,7 @@ export class VistaView {
     return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
   };
 
-  private defaultClose: UserCloseFunction = ({ elements }) => {
+  private defaultClose: VistaViewCloseFunction = ({ elements }) => {
     if (elements instanceof NodeList) {
       elements.forEach((el) => (el.style.opacity = '1'));
     }

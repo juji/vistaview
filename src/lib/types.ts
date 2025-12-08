@@ -68,9 +68,9 @@ export type VistaViewData = {
   isReducedMotion: boolean;
 };
 
-export type UserTransitionFunction = (
+export type VistaViewTransitionFunction = (
   params: VistaViewData
 ) => VistaViewImageIndexed | Promise<VistaViewImageIndexed>;
 
-export type UserSetupFunction = (params: VistaViewData) => void;
-export type UserCloseFunction = (params: VistaViewData) => void;
+export type VistaViewSetupFunction = (params: VistaViewData) => void;
+export type VistaViewCloseFunction = (params: VistaViewData) => void;
