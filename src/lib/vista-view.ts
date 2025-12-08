@@ -21,8 +21,8 @@ import type {
 export const DefaultOptions = {
   detectReducedMotion: true,
   // debug, don't remove
-  // animationDurationBase: 1000,
-  animationDurationBase: 333,
+  animationDurationBase: 1000,
+  // animationDurationBase: 333,
   zoomStep: 500,
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
@@ -375,10 +375,13 @@ export class VistaView {
       ? parseInt(highresImage.dataset.vistaviewInitialWidth)
       : 0;
 
-    highresImage.classList.add('vistaview-image--zooming-out');
-    setTimeout(() => {
+    const removeZoomOutClass = (e: Event) => {
+      if (e.target !== highresImage) return;
       highresImage.classList.remove('vistaview-image--zooming-out');
-    }, 333);
+      highresImage.removeEventListener('transitionend', removeZoomOutClass);
+    };
+    highresImage.addEventListener('transitionend', removeZoomOutClass);
+    highresImage.classList.add('vistaview-image--zooming-out');
 
     // calculate new width/height
     if (width && minWidth && width > minWidth) {
@@ -478,29 +481,25 @@ export class VistaView {
 
     const _t = this;
     function onImageLoaded() {
-      setTimeout(
-        () => {
-          const zoomInBtn = _t.rootElm?.querySelector(
-            'button.vistaview-zoom-in-btn'
-          ) as HTMLButtonElement | null;
+      const zoomInBtn = _t.rootElm?.querySelector(
+        'button.vistaview-zoom-in-btn'
+      ) as HTMLButtonElement | null;
 
-          const zoomOutBtn = _t.rootElm?.querySelector(
-            'button.vistaview-zoom-out-btn'
-          ) as HTMLButtonElement | null;
+      const zoomOutBtn = _t.rootElm?.querySelector(
+        'button.vistaview-zoom-out-btn'
+      ) as HTMLButtonElement | null;
 
-          const currentWidth = highresImage.width;
-          const maxWidth = highresImage.naturalWidth * _t.options.maxZoomLevel!;
-          const canZoom = currentWidth < maxWidth && maxWidth > 0;
+      // Use assigned style width instead of current animated width
+      const currentWidth = parseInt(highresImage.style.width) || highresImage.width;
+      const maxWidth = highresImage.naturalWidth * _t.options.maxZoomLevel!;
+      const canZoom = currentWidth < maxWidth && maxWidth > 0;
 
-          if (zoomInBtn) {
-            zoomInBtn.style.display = canZoom ? '' : 'none';
-          }
-          if (zoomOutBtn) {
-            zoomOutBtn.style.display = canZoom ? '' : 'none';
-          }
-        },
-        (_t.options.animationDurationBase || 0) + 300
-      );
+      if (zoomInBtn) {
+        zoomInBtn.style.display = canZoom ? '' : 'none';
+      }
+      if (zoomOutBtn) {
+        zoomOutBtn.style.display = canZoom ? '' : 'none';
+      }
     }
 
     // Check if zoom is possible: current width < maxWidth (naturalWidth * maxZoomLevel)
