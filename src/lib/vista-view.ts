@@ -115,9 +115,10 @@ export class VistaView {
 
     // get images,
     // check if it's already loaded, if yes, set dimensions right away
-    const activeIndexes = this.getCurrentIndexes(afterIndex);
+    const { images: activeIndexes, positions: activePositions } =
+      this.getCurrentIndexes(afterIndex);
     const images = this.getImages(activeIndexes);
-    const elms = images.map((img) => vistaViewItem(img));
+    const elms = images.map((img, i) => vistaViewItem(img, activePositions[i]));
     elms.forEach((elm, i) => {
       const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
       const thumb = images[i].imageElm;
@@ -154,13 +155,17 @@ export class VistaView {
     } else {
       // default swap: simply replace
       this.imageContainerElm.innerHTML = '';
-      elms.forEach((elm) => this.imageContainerElm!.appendChild(elm));
-      currentImage = images[0];
+      elms.forEach((elm) => {
+        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+        this.imageContainerElm!.appendChild(elm);
+      });
+      currentImage = images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
     }
 
-    this.setInitialDimPos(currentImage);
-
     this.navActive = true;
+
+    this.setInitialDimPos(currentImage);
 
     this.currentImages = images;
     this.currentItems = elms;
@@ -329,22 +334,31 @@ export class VistaView {
       (this.currentImages[1] || this.currentImages[0]).alt || '';
   }
 
-  private getCurrentIndexes(currentIndex: number): number[] {
+  private getCurrentIndexes(currentIndex: number): { images: number[]; positions: number[] } {
     const preloads = this.options.preloads!;
     const total = this.elements.length;
 
-    return total < 1 || !preloads
-      ? [currentIndex]
-      : [
-          ...new Set([
-            ...Array.from(
-              { length: preloads },
-              (_, i) => (((currentIndex - preloads + i) % total) + total) % total
-            ),
-            currentIndex,
-            ...Array.from({ length: preloads }, (_, i) => (currentIndex + 1 + i) % total),
-          ]),
-        ];
+    const images =
+      total < 1 || !preloads
+        ? [currentIndex]
+        : [
+            ...new Set([
+              ...Array.from(
+                { length: preloads },
+                (_, i) => (((currentIndex - preloads + i) % total) + total) % total
+              ),
+              currentIndex,
+              ...Array.from({ length: preloads }, (_, i) => (currentIndex + 1 + i) % total),
+            ]),
+          ];
+
+    const positions =
+      total < 1 || !preloads ? [0] : images.map((_, i) => i - Math.floor(images.length / 2));
+
+    return {
+      images,
+      positions,
+    };
   }
 
   private setKeyboardListeners(): void {
@@ -378,7 +392,10 @@ export class VistaView {
 
   private setResizeListeners(): void {
     this.onResizeHandler = () => {
-      const center = this.currentImages[1] || this.currentImages[0];
+      const center =
+        this.currentImages[
+          this.currentImages.length === 1 ? 0 : Math.floor(this.currentImages.length / 2)
+        ];
       this.setInitialDimPos(center);
       const highresImages = this.rootElm?.querySelectorAll(
         '.vistaview-image-highres.vistaview-image-loaded'
@@ -405,9 +422,9 @@ export class VistaView {
     this.currentIndex._value = startIndex;
 
     // set images and current items
-    const activeIndexes = this.getCurrentIndexes(this.currentIndex.value);
-    this.currentImages = this.getImages(activeIndexes);
-    const elms = this.currentImages.map((img) => vistaViewItem(img));
+    const { images, positions } = this.getCurrentIndexes(this.currentIndex.value);
+    this.currentImages = this.getImages(images);
+    const elms = this.currentImages.map((img, i) => vistaViewItem(img, positions[i]));
     this.currentItems = elms;
 
     // create and append the component to body
@@ -415,7 +432,11 @@ export class VistaView {
       vistaViewComponent({
         controls: this.options.controls,
         isReducedMotion: this.isReducedMotion,
-        children: this.currentItems,
+        children: this.currentItems.map((elm) => {
+          elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+          elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+          return elm;
+        }),
       })
     );
 

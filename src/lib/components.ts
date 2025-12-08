@@ -52,7 +52,7 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
   return `<button data-vistaview-custom-control="${control.name}">${control.icon}</button>`;
 }
 
-export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
+export function vistaViewItem(el: VistaViewImageIndexed, positionalIndex?: number): HTMLDivElement {
   const comp = el.imageElm ? getComputedStyle(el.imageElm) : null;
   const fit = comp?.objectFit || '';
   const nw = el.imageElm?.naturalWidth || '';
@@ -62,12 +62,12 @@ export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
 
   const div = document.createElement('div');
   div.className = 'vistaview-item';
+  div.dataset.vistaviewPos = `${positionalIndex !== undefined ? positionalIndex : ''}`;
   div.dataset.vistaviewIndex = el.index.toString();
   const inner = createTrustedHtml(`<img class="vistaview-image-lowres"
     style="${fit ? `object-fit:${fit};` : ''}${w ? `width:${w};` : ''}${h ? `height:${h};` : ''}"
     src="${el.thumb || el.src}" 
     alt="${el.alt || ''}"
-    data-vistaview-index="${el.index}"
     ${nw ? `width="${nw}"` : ''}
     ${nh ? `height="${nh}"` : ''}
   />
