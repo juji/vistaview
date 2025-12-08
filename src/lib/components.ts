@@ -24,7 +24,7 @@ export function getDownloadButton(): VistaViewCustomControl {
       const finalUrl = response.url; // This is the redirected URL
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = finalUrl.split('/').pop()?.split('?')[0] || 'download';
+      link.download = finalUrl.split('/').pop()?.split('?')[0].split('#')[0] || 'download';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
