@@ -3,18 +3,13 @@ import { vistaViewComponent, getDownloadButton, vistaViewItem } from './componen
 import { getElmProperties, getFittedSize, getFullSizeDim, isNotZeroCssValue } from './utils';
 
 import type {
+  UserSetupFunction,
   UserTransitionFunction,
   VistaViewCustomControl,
   VistaViewImage,
   VistaViewImageIndexed,
   VistaViewOptions,
 } from './types';
-
-export const GlobalVistaState = {
-  somethingOpened: null,
-} as {
-  somethingOpened: null | VistaView;
-};
 
 export const DefaultOptions = {
   detectReducedMotion: true,
@@ -31,12 +26,16 @@ export const DefaultOptions = {
   } as VistaViewOptions['controls'],
 };
 
+export const GlobalVistaState: { somethingOpened: VistaView | null } = {
+  somethingOpened: null,
+};
+
 export class VistaView {
   private options: VistaViewOptions;
   private elements: NodeListOf<HTMLElement> | VistaViewImage[];
   private isReducedMotion: boolean;
   private currentIndex = {
-    _value: 0,
+    _value: null as number | null,
     _vistaView: null as VistaView | null,
     _via: { next: false, prev: false },
     set value(v: number) {
@@ -44,7 +43,7 @@ export class VistaView {
       this._value = v;
       this._vistaView?.swap(beforeIndex, this._value);
     },
-    get value() {
+    get value(): number | null {
       return this._value;
     },
     get via() {
@@ -59,12 +58,13 @@ export class VistaView {
   private rootElm: HTMLElement | null = null;
   private imageContainerElm: HTMLElement | null = null;
   private customControls: { [key: string]: VistaViewCustomControl } = {};
-  private currentImages: VistaViewImageIndexed[] = [];
-  private currentItems: HTMLDivElement[] = [];
+  private currentImages: VistaViewImageIndexed[] | null = null;
+  private currentItems: HTMLDivElement[] | null = null;
   private navActive = true;
 
   private onResizeHandler: (() => void) | null = null;
   private userTransition: UserTransitionFunction | null = null;
+  private userSetup: UserSetupFunction | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
@@ -96,9 +96,10 @@ export class VistaView {
     }
   }
 
-  private async swap(beforeIndex: number, afterIndex: number): Promise<void> {
+  private async swap(beforeIndex: number | null, afterIndex: number): Promise<void> {
     if (!GlobalVistaState.somethingOpened) return;
     if (beforeIndex === afterIndex) return;
+    if (beforeIndex === null) return;
     if (this.elements.length === 1) return;
 
     if (!this.imageContainerElm) {
@@ -142,6 +143,21 @@ export class VistaView {
 
     this.navActive = false;
 
+    if (this.userSetup) {
+      this.userSetup({
+        htmlElements: { from: this.currentItems, to: elms },
+        images: { from: this.currentImages, to: images },
+        index: { from: beforeIndex, to: afterIndex },
+        via: this.currentIndex.via,
+        container: this.imageContainerElm,
+      });
+    } else {
+      elms.forEach((elm) => {
+        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+      });
+    }
+
     // do the swap, this is where the animation would go
     let currentImage;
     if (this.userTransition) {
@@ -156,8 +172,6 @@ export class VistaView {
       // default swap: simply replace
       this.imageContainerElm.innerHTML = '';
       elms.forEach((elm) => {
-        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
         this.imageContainerElm!.appendChild(elm);
       });
       currentImage = images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
@@ -270,7 +284,7 @@ export class VistaView {
       const im = img as HTMLImageElement;
 
       // set large image initial dimensions
-      const el = this.currentImages[i];
+      const el = this.currentImages![i];
       const thumb = el.imageElm;
       const sizes = { w: 0, h: 0 };
       if (thumb) {
@@ -326,12 +340,12 @@ export class VistaView {
   private setIndexDisplay(): void {
     if (this.elements.length === 1) return;
     this.rootElm!.querySelector('.vistaview-index-display')!.textContent =
-      `${this.currentIndex.value + 1} / ${this.elements.length}`;
+      `${this.currentIndex.value! + 1} / ${this.elements.length}`;
   }
 
   private setCurrentDescription(): void {
     this.rootElm!.querySelector('.vistaview-description')!.textContent =
-      (this.currentImages[1] || this.currentImages[0]).alt || '';
+      (this.currentImages![1] || this.currentImages![0]).alt || '';
   }
 
   private getCurrentIndexes(currentIndex: number): { images: number[]; positions: number[] } {
@@ -393,8 +407,8 @@ export class VistaView {
   private setResizeListeners(): void {
     this.onResizeHandler = () => {
       const center =
-        this.currentImages[
-          this.currentImages.length === 1 ? 0 : Math.floor(this.currentImages.length / 2)
+        this.currentImages![
+          this.currentImages!.length === 1 ? 0 : Math.floor(this.currentImages!.length / 2)
         ];
       this.setInitialDimPos(center);
       const highresImages = this.rootElm?.querySelectorAll(
@@ -416,27 +430,19 @@ export class VistaView {
   }
 
   open(startIndex: number = 0): void {
-    if (GlobalVistaState.somethingOpened) return;
+    if (GlobalVistaState.somethingOpened) {
+      console.error('VistaView: another instance is already opened. Returning.');
+      return;
+    }
     GlobalVistaState.somethingOpened = this;
 
     this.currentIndex._value = startIndex;
-
-    // set images and current items
-    const { images, positions } = this.getCurrentIndexes(this.currentIndex.value);
-    this.currentImages = this.getImages(images);
-    const elms = this.currentImages.map((img, i) => vistaViewItem(img, positions[i]));
-    this.currentItems = elms;
 
     // create and append the component to body
     document.body.prepend(
       vistaViewComponent({
         controls: this.options.controls,
         isReducedMotion: this.isReducedMotion,
-        children: this.currentItems.map((elm) => {
-          elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-          elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
-          return elm;
-        }),
       })
     );
 
@@ -446,6 +452,26 @@ export class VistaView {
     if (!this.rootElm || !this.imageContainerElm) {
       GlobalVistaState.somethingOpened = null;
       throw new Error('Failed to create VistaView element');
+    }
+
+    // set images and current items
+    const { images, positions } = this.getCurrentIndexes(startIndex);
+    this.currentImages = this.getImages(images);
+    const elms = this.currentImages.map((img, i) => vistaViewItem(img, positions[i]));
+    this.currentItems = elms;
+    if (this.userSetup) {
+      this.userSetup({
+        htmlElements: { from: null, to: this.currentItems },
+        images: { from: null, to: this.currentImages },
+        index: { from: null, to: startIndex },
+        via: this.currentIndex.via,
+        container: this.imageContainerElm,
+      });
+    } else {
+      this.currentItems.forEach((elm) => {
+        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
+        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+      });
     }
 
     // set buttons' event listeners
@@ -483,7 +509,7 @@ export class VistaView {
           this.customControls[
             (e.currentTarget as HTMLButtonElement).dataset.vistaviewCustomControl!
           ];
-        const currentImage = this.currentImages.find(
+        const currentImage = this.currentImages!.find(
           (img) => img.index === this.currentIndex.value
         );
         if (control && currentImage) {
@@ -538,26 +564,31 @@ export class VistaView {
     this.setIndexDisplay();
   }
 
-  close(noWait?: boolean): void {
+  async close(noWait?: boolean): Promise<void> {
     if (GlobalVistaState.somethingOpened !== this) return;
 
     this.rootElm?.classList.add('vistaview--closing');
-    if (noWait) {
-      document.body.removeChild(this.rootElm!);
-      this.rootElm = null;
-    } else {
-      new Promise<void>((resolve) => {
+
+    if (!noWait) {
+      await new Promise<void>((resolve) => {
         setTimeout(
           () => {
             resolve();
           },
           (this.options.animationDurationBase || 300) + 33
         );
-      }).then(() => {
-        document.body.removeChild(this.rootElm!);
-        this.rootElm = null;
       });
     }
+
+    document.body.removeChild(this.rootElm!);
+
+    this.currentIndex._value = null;
+    this.currentIndex._via = { next: false, prev: false };
+    this.rootElm = null;
+    this.imageContainerElm = null;
+    this.currentImages = null;
+    this.currentItems = null;
+    this.navActive = true;
 
     if (this.onResizeHandler) {
       window.removeEventListener('resize', this.onResizeHandler);
@@ -573,7 +604,7 @@ export class VistaView {
   }
 
   destroy(): void {
-    this.close();
+    this.close(true);
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el, index) => {
         el.removeEventListener('click', this.onClickElements[index]);
@@ -595,15 +626,15 @@ export class VistaView {
 
   next(): void {
     if (GlobalVistaState.somethingOpened !== this) return;
-    this.view(this.currentIndex.value + 1, { next: true, prev: false });
+    this.view(this.currentIndex.value! + 1, { next: true, prev: false });
   }
 
   prev(): void {
     if (GlobalVistaState.somethingOpened !== this) return;
-    this.view(this.currentIndex.value - 1, { next: false, prev: true });
+    this.view(this.currentIndex.value! - 1, { next: false, prev: true });
   }
 
   getCurrentIndex(): number {
-    return GlobalVistaState.somethingOpened === this ? this.currentIndex.value : -1;
+    return GlobalVistaState.somethingOpened === this ? this.currentIndex.value! : -1;
   }
 }

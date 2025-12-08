@@ -55,14 +55,14 @@ export type VistaViewCustomControl = {
   onClick: (v: VistaViewImageIndexed) => void | Promise<void>;
 };
 
-export type UserTransitionFunctionParams = {
-  htmlElements: { from: HTMLElement[]; to: HTMLElement[] };
-  images: { from: VistaViewImageIndexed[]; to: VistaViewImageIndexed[] };
-  index: { from: number; to: number };
+export type UserFunctionParams = {
+  htmlElements: { from: HTMLElement[] | null; to: HTMLElement[] };
+  images: { from: VistaViewImageIndexed[] | null; to: VistaViewImageIndexed[] };
+  index: { from: number | null; to: number };
   via: { next: boolean; prev: boolean };
   container: HTMLElement;
 };
 
-export type UserTransitionFunction = (
-  params: UserTransitionFunctionParams
-) => Promise<VistaViewImageIndexed>;
+export type UserTransitionFunction = (params: UserFunctionParams) => Promise<VistaViewImageIndexed>;
+
+export type UserSetupFunction = (params: UserFunctionParams) => void;

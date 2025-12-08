@@ -80,11 +80,9 @@ export function vistaViewItem(el: VistaViewImageIndexed, positionalIndex?: numbe
 export function vistaViewComponent({
   controls,
   isReducedMotion,
-  children,
 }: {
   controls: VistaViewOptions['controls'];
   isReducedMotion: boolean;
-  children: HTMLDivElement[];
 }): DocumentFragment {
   const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
@@ -101,9 +99,5 @@ export function vistaViewComponent({
     </div>`
   );
 
-  const container = html.querySelector('.vistaview-image-container');
-  children.forEach((child) => {
-    container!.appendChild(child);
-  });
   return html;
 }
