@@ -193,19 +193,6 @@
   margin: 0;
   padding: 0;
 
-  &[data-vistaview-order='-1'] {
-    z-index: 1;
-    opacity: 0;
-  }
-  &[data-vistaview-order='0'] {
-    z-index: 2;
-    opacity: 1;
-  }
-  &[data-vistaview-order='1'] {
-    z-index: 1;
-    opacity: 0;
-  }
-
   img.vistaview-image-lowres {
     position: absolute;
     top: 50%;

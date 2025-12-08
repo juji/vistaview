@@ -136,7 +136,7 @@ export class VistaView {
       }
       elms[elms.length - 1].addEventListener('transitionend', onTransitionEnd);
       elms.forEach((elm) => {
-        elm.style.transition = `translate ${options.animationDurationBase}ms ease-out`;
+        elm.style.transition = `translate ${options.animationDurationBase! * 0.5}ms ease-out`;
         elm.style.translate = next ? '-100%' : prev ? '100%' : '0%';
       });
     });
