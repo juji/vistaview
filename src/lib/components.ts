@@ -36,20 +36,20 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
-        return `<button class="vvw-zoom-in-btn">${zoomInIcon}</button>`;
+        return `<button class="vistaview-zoom-in-btn">${zoomInIcon}</button>`;
       case 'zoomOut':
-        return `<button disabled class="vvw-zoom-out-btn">${zoomOutIcon}</button>`;
+        return `<button disabled class="vistaview-zoom-out-btn">${zoomOutIcon}</button>`;
       case 'close':
-        return `<button class="vvw-close-btn">${closeIcon}</button>`;
+        return `<button class="vistaview-close-btn">${closeIcon}</button>`;
       case 'indexDisplay':
-        return `<div class="vvw-index-display"></div>`;
+        return `<div class="vistaview-index-display"></div>`;
       case 'description':
-        return `<div class="vvw-description"></div>`;
+        return `<div class="vistaview-description"></div>`;
       default:
         return '';
     }
   }
-  return `<button data-vvw-custom-control="${control.name}">${control.icon}</button>`;
+  return `<button data-vistaview-custom-control="${control.name}">${control.icon}</button>`;
 }
 
 export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
@@ -61,17 +61,17 @@ export function vistaViewItem(el: VistaViewImageIndexed): HTMLDivElement {
   const h = comp?.height || '';
 
   const div = document.createElement('div');
-  div.className = 'vvw-item';
-  div.dataset.vvwIndex = el.index.toString();
-  const inner = createTrustedHtml(`<img class="vvw-image-lowres"
+  div.className = 'vistaview-item';
+  div.dataset.vistaviewIndex = el.index.toString();
+  const inner = createTrustedHtml(`<img class="vistaview-image-lowres"
     style="${fit ? `object-fit:${fit};` : ''}${w ? `width:${w};` : ''}${h ? `height:${h};` : ''}"
     src="${el.thumb || el.src}" 
     alt="${el.alt || ''}"
-    data-vvw-index="${el.index}"
+    data-vistaview-index="${el.index}"
     ${nw ? `width="${nw}"` : ''}
     ${nh ? `height="${nh}"` : ''}
   />
-  <img class="vvw-image-highres" src="${el.src}" alt="${el.alt || ''}" />`);
+  <img class="vistaview-image-highres" src="${el.src}" alt="${el.alt || ''}" />`);
   div.appendChild(inner);
 
   return div;
@@ -90,18 +90,18 @@ export function vistaViewComponent({
     arr ? arr.map(convertControlToHtml).join('') : '';
 
   const html = createTrustedHtml(
-    `<div class="vvw-root${isReducedMotion ? ' vvw--reduced-motion' : ''}" id="vvw-root">
-    <div class="vvw-container">
-    <div class="vvw-image-container"></div>
-    <div class="vvw-top-bar vvw-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
-    <div class="vvw-bottom-bar vvw-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
-    <div class="vvw-prev-btn vvw-ui"><button>${chevronLeft}</button></div>
-    <div class="vvw-next-btn vvw-ui"><button>${chevronRight}</button></div>
+    `<div class="vistaview-root${isReducedMotion ? ' vistaview--reduced-motion' : ''}" id="vistaview-root">
+    <div class="vistaview-container">
+    <div class="vistaview-image-container"></div>
+    <div class="vistaview-top-bar vistaview-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
+    <div class="vistaview-bottom-bar vistaview-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
+    <div class="vistaview-prev-btn vistaview-ui"><button>${chevronLeft}</button></div>
+    <div class="vistaview-next-btn vistaview-ui"><button>${chevronRight}</button></div>
     </div>
     </div>`
   );
 
-  const container = html.querySelector('.vvw-image-container');
+  const container = html.querySelector('.vistaview-image-container');
   children.forEach((child) => {
     container!.appendChild(child);
   });

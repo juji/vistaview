@@ -24,10 +24,10 @@ npm install vistaview
 
 ```html
 <div id="gallery">
-  <a href="/images/photo1-full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+  <a href="/images/photo1-full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
     <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
   </a>
-  <a href="/images/photo2-full.jpg" data-vvw-width="1280" data-vvw-height="720">
+  <a href="/images/photo2-full.jpg" data-vistaview-width="1280" data-vistaview-height="720">
     <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
   </a>
 </div>
@@ -48,9 +48,9 @@ npm install vistaview
 <div id="gallery">
   <img
     src="/images/thumb1.jpg"
-    data-vvw-src="/images/full1.jpg"
-    data-vvw-width="1920"
-    data-vvw-height="1080"
+    data-vistaview-src="/images/full1.jpg"
+    data-vistaview-width="1920"
+    data-vistaview-height="1080"
     alt="Photo 1"
   />
 </div>
@@ -154,23 +154,23 @@ VistaView uses CSS custom properties for easy theming:
 
 ```css
 :root {
-  --vvw-bg-color: #000000;
-  --vvw-text-color: #ffffff;
-  --vvw-background-blur: 10px;
-  --vvw-background-opacity: 0.8;
-  --vvw-animation-duration: 333;
+  --vistaview-bg-color: #000000;
+  --vistaview-text-color: #ffffff;
+  --vistaview-background-blur: 10px;
+  --vistaview-background-opacity: 0.8;
+  --vistaview-animation-duration: 333;
 }
 ```
 
 ## Data Attributes
 
-| Attribute           | Description                                |
-| ------------------- | ------------------------------------------ |
-| `data-vvw-src`      | Full-size image URL (for `<img>` elements) |
-| `data-vvw-width`    | Full-size image width in pixels            |
-| `data-vvw-height`   | Full-size image height in pixels           |
-| `data-vvw-alt`      | Alt text for the image                     |
-| `data-vvw-smallsrc` | Thumbnail URL (optional)                   |
+| Attribute                 | Description                                |
+| ------------------------- | ------------------------------------------ |
+| `data-vistaview-src`      | Full-size image URL (for `<img>` elements) |
+| `data-vistaview-width`    | Full-size image width in pixels            |
+| `data-vistaview-height`   | Full-size image height in pixels           |
+| `data-vistaview-alt`      | Alt text for the image                     |
+| `data-vistaview-smallsrc` | Thumbnail URL (optional)                   |
 
 ## Keyboard Navigation
 

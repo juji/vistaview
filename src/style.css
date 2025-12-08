@@ -1,102 +1,102 @@
 :root {
-  --vvw-bg-color: #000000;
-  --vvw-text-color: #ffffff;
-  --vvw-background-blur: 10px;
-  --vvw-background-opacity: 0.8;
+  --vistaview-bg-color: #000000;
+  --vistaview-text-color: #ffffff;
+  --vistaview-background-blur: 10px;
+  --vistaview-background-opacity: 0.8;
 
-  --vvw-initial-z-index: 1;
-  --vvw-destination-z-index: 2147483647;
-  --vvw-animation-duration: 333;
-  --vvw-center-x: 50%;
-  --vvw-center-y: 50%;
+  --vistaview-initial-z-index: 1;
+  --vistaview-destination-z-index: 2147483647;
+  --vistaview-animation-duration: 333;
+  --vistaview-center-x: 50%;
+  --vistaview-center-y: 50%;
 
   /* calculated */
-  --vvw-container-initial-width: 0;
-  --vvw-container-initial-height: 0;
-  --vvw-container-initial-top: 0;
-  --vvw-container-initial-left: 0;
-  --vvw-image-border-radius: 0px;
-  --vvw-current-index: 0;
-  --vvw-number-elements: 0;
+  --vistaview-container-initial-width: 0;
+  --vistaview-container-initial-height: 0;
+  --vistaview-container-initial-top: 0;
+  --vistaview-container-initial-left: 0;
+  --vistaview-image-border-radius: 0px;
+  --vistaview-current-index: 0;
+  --vistaview-number-elements: 0;
 }
 
-@keyframes vvw-pos-in {
+@keyframes vistaview-pos-in {
   0% {
-    top: var(--vvw-container-initial-top);
-    left: var(--vvw-container-initial-left);
+    top: var(--vistaview-container-initial-top);
+    left: var(--vistaview-container-initial-left);
   }
   100% {
-    top: var(--vvw-center-y);
-    left: var(--vvw-center-x);
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
   }
 }
 
-@keyframes vvw-pos-out {
+@keyframes vistaview-pos-out {
   0% {
-    top: var(--vvw-center-y);
-    left: var(--vvw-center-x);
+    top: var(--vistaview-center-y);
+    left: var(--vistaview-center-x);
   }
   100% {
-    top: var(--vvw-container-initial-top);
-    left: var(--vvw-container-initial-left);
+    top: var(--vistaview-container-initial-top);
+    left: var(--vistaview-container-initial-left);
   }
 }
 
-@keyframes vvw-anim-in {
+@keyframes vistaview-anim-in {
   0% {
-    width: var(--vvw-container-initial-width);
-    height: var(--vvw-container-initial-height);
-    background: rgb(from var(--vvw-bg-color) r g b / 0);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
-    border-radius: var(--vvw-image-border-radius);
-    z-index: var(--vvw-initial-z-index);
+    border-radius: var(--vistaview-image-border-radius);
+    z-index: var(--vistaview-initial-z-index);
   }
   50% {
-    width: calc(var(--vvw-container-initial-width) - 42px);
-    height: calc(var(--vvw-container-initial-height) - 42px);
-    background: rgb(from var(--vvw-bg-color) r g b / 0);
+    width: calc(var(--vistaview-container-initial-width) - 42px);
+    height: calc(var(--vistaview-container-initial-height) - 42px);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
     border-radius: 0px;
-    z-index: var(--vvw-initial-z-index);
+    z-index: var(--vistaview-initial-z-index);
   }
   100% {
-    z-index: var(--vvw-destination-z-index);
+    z-index: var(--vistaview-destination-z-index);
     width: 100%;
     height: 100%;
-    background: rgb(from var(--vvw-bg-color) r g b / var(--vvw-background-opacity));
-    backdrop-filter: blur(var(--vvw-background-blur));
+    background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
+    backdrop-filter: blur(var(--vistaview-background-blur));
     border-radius: 0px;
   }
 }
 
-@keyframes vvw-anim-out {
+@keyframes vistaview-anim-out {
   0% {
-    z-index: var(--vvw-destination-z-index);
+    z-index: var(--vistaview-destination-z-index);
     width: 100%;
     height: 100%;
-    background: rgb(from var(--vvw-bg-color) r g b / var(--vvw-background-opacity));
-    backdrop-filter: blur(var(--vvw-background-blur));
+    background: rgb(from var(--vistaview-bg-color) r g b / var(--vistaview-background-opacity));
+    backdrop-filter: blur(var(--vistaview-background-blur));
     border-radius: 0px;
   }
   50% {
-    width: var(--vvw-container-initial-width);
-    height: var(--vvw-container-initial-height);
-    background: rgb(from var(--vvw-bg-color) r g b / 0);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
-    border-radius: var(--vvw-image-border-radius);
-    z-index: var(--vvw-initial-z-index);
+    border-radius: var(--vistaview-image-border-radius);
+    z-index: var(--vistaview-initial-z-index);
   }
   100% {
-    width: var(--vvw-container-initial-width);
-    height: var(--vvw-container-initial-height);
-    background: rgb(from var(--vvw-bg-color) r g b / 0);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
-    border-radius: var(--vvw-image-border-radius);
-    z-index: var(--vvw-initial-z-index);
+    border-radius: var(--vistaview-image-border-radius);
+    z-index: var(--vistaview-initial-z-index);
   }
 }
 
-@keyframes vvw-ui-anim-in {
+@keyframes vistaview-ui-anim-in {
   0% {
     opacity: 0;
   }
@@ -107,7 +107,7 @@
     opacity: 1;
   }
 }
-@keyframes vvw-ui-anim-out {
+@keyframes vistaview-ui-anim-out {
   0% {
     opacity: 1;
   }
@@ -119,7 +119,7 @@
   }
 }
 
-@keyframes vvw-pulse {
+@keyframes vistaview-pulse {
   0% {
     opacity: 1;
     border-radius: 3px;
@@ -136,7 +136,7 @@
   }
 }
 
-@keyframes vvw-simple-pulse {
+@keyframes vistaview-simple-pulse {
   0% {
     opacity: 1;
   }
@@ -148,21 +148,21 @@
   }
 }
 
-.vvw-root {
+.vistaview-root {
   position: fixed;
   display: none;
   isolation: isolate;
   overflow: hidden;
   translate: -50% -50%;
 
-  width: var(--vvw-container-initial-width);
-  height: var(--vvw-container-initial-height);
-  top: var(--vvw-container-initial-top);
-  left: var(--vvw-container-initial-left);
-  border-radius: var(--vvw-image-border-radius);
+  width: var(--vistaview-container-initial-width);
+  height: var(--vistaview-container-initial-height);
+  top: var(--vistaview-container-initial-top);
+  left: var(--vistaview-container-initial-left);
+  border-radius: var(--vistaview-image-border-radius);
 }
 
-.vvw-container {
+.vistaview-container {
   position: relative;
   width: 100%;
   height: 100%;
@@ -172,7 +172,7 @@
   padding: 0;
 }
 
-.vvw-image-container {
+.vistaview-image-container {
   position: relative;
   top: 0;
   left: 0;
@@ -183,7 +183,7 @@
   overflow: hidden;
 }
 
-.vvw-item {
+.vistaview-item {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -192,36 +192,36 @@
   margin: 0;
   padding: 0;
 
-  &[data-vvw-order='-1'] {
+  &[data-vistaview-order='-1'] {
     z-index: 1;
     opacity: 0;
   }
-  &[data-vvw-order='0'] {
+  &[data-vistaview-order='0'] {
     z-index: 2;
     opacity: 1;
   }
-  &[data-vvw-order='1'] {
+  &[data-vistaview-order='1'] {
     z-index: 1;
     opacity: 0;
   }
 
-  img.vvw-image-lowres {
+  img.vistaview-image-lowres {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation: vvw-pulse 1s ease-in-out infinite;
+    animation: vistaview-pulse 1s ease-in-out infinite;
 
-    &:has(+ img.vvw-image-loaded) {
+    &:has(+ img.vistaview-image-loaded) {
       animation: none;
     }
 
-    &.vvw-image--hidden {
+    &.vistaview-image--hidden {
       opacity: 0;
     }
   }
 
-  img.vvw-image-highres {
+  img.vistaview-image-highres {
     --pointer-diff-x: 0px;
     --pointer-diff-y: 0px;
 
@@ -233,19 +233,19 @@
     object-fit: cover;
     opacity: 0;
     transition:
-      width calc(var(--vvw-animation-duration) * 1ms) ease
-        calc(var(--vvw-animation-duration) * 0.3ms),
-      height calc(var(--vvw-animation-duration) * 1ms) ease
-        calc(var(--vvw-animation-duration) * 0.3ms),
-      opacity calc(var(--vvw-animation-duration) * 1ms) ease 0ms;
+      width calc(var(--vistaview-animation-duration) * 1ms) ease
+        calc(var(--vistaview-animation-duration) * 0.3ms),
+      height calc(var(--vistaview-animation-duration) * 1ms) ease
+        calc(var(--vistaview-animation-duration) * 0.3ms),
+      opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0ms;
     max-width: 100%;
     max-height: 100%;
 
-    &.vvw-image--zooming {
+    &.vistaview-image--zooming {
       transition:
-        width calc(var(--vvw-animation-duration) * 1ms) ease 0s,
-        height calc(var(--vvw-animation-duration) * 1ms) ease 0s,
-        opacity calc(var(--vvw-animation-duration) * 1ms) ease 0s;
+        width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s;
       max-width: unset;
       max-height: unset;
       cursor: grab;
@@ -255,22 +255,22 @@
       }
     }
 
-    &.vvw-image--zooming-out {
+    &.vistaview-image--zooming-out {
       transition:
-        width calc(var(--vvw-animation-duration) * 1ms) ease 0s,
-        height calc(var(--vvw-animation-duration) * 1ms) ease 0s,
-        opacity calc(var(--vvw-animation-duration) * 1ms) ease 0s,
+        width calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        height calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
+        opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0s,
         top 300ms ease 0s,
         left 300ms ease 0s;
     }
 
-    &.vvw-image-loaded {
+    &.vistaview-image-loaded {
       opacity: 1;
     }
   }
 }
 
-.vvw-ui {
+.vistaview-ui {
   opacity: 0;
 
   button {
@@ -287,22 +287,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--vvw-bg-color);
-    color: var(--vvw-text-color);
+    background-color: var(--vistaview-bg-color);
+    color: var(--vistaview-text-color);
 
     &:disabled {
-      color: rgb(from var(--vvw-text-color) r g b / 0.5);
+      color: rgb(from var(--vistaview-text-color) r g b / 0.5);
       cursor: not-allowed;
     }
     &:hover {
-      background-color: hsl(from var(--vvw-bg-color) h s calc(l + 20));
+      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 20));
     }
     &:active {
-      background-color: hsl(from var(--vvw-bg-color) h s calc(l + 40));
+      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 40));
     }
 
-    &.vvw-button--loading {
-      animation: vvw-simple-pulse 500ms ease-in-out infinite;
+    &.vistaview-button--loading {
+      animation: vistaview-simple-pulse 500ms ease-in-out infinite;
     }
 
     svg {
@@ -316,7 +316,7 @@
     }
   }
 
-  &.vvw-prev-btn {
+  &.vistaview-prev-btn {
     position: absolute;
     top: 50%;
     left: 0;
@@ -327,7 +327,7 @@
     z-index: 2;
   }
 
-  &.vvw-next-btn {
+  &.vistaview-next-btn {
     position: absolute;
     top: 50%;
     right: 0;
@@ -338,8 +338,8 @@
     z-index: 2;
   }
 
-  &.vvw-top-bar,
-  &.vvw-bottom-bar {
+  &.vistaview-top-bar,
+  &.vistaview-bottom-bar {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -353,18 +353,18 @@
       display: flex;
     }
 
-    .vvw-index-display {
+    .vistaview-index-display {
       font-size: 16px;
       padding: 8px;
-      background-color: var(--vvw-bg-color);
-      color: var(--vvw-text-color);
+      background-color: var(--vistaview-bg-color);
+      color: var(--vistaview-text-color);
     }
 
-    .vvw-description {
+    .vistaview-description {
       font-size: 14px;
       padding: 8px 15px;
-      background-color: var(--vvw-bg-color);
-      color: var(--vvw-text-color);
+      background-color: var(--vistaview-bg-color);
+      color: var(--vistaview-text-color);
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -372,7 +372,7 @@
     }
   }
 
-  &.vvw-bottom-bar {
+  &.vistaview-bottom-bar {
     bottom: 0px;
     top: unset;
   }
@@ -381,55 +381,55 @@
 /* 
 vistaview is initialized, with initial position and size
  */
-.vvw-root.vvw--initialized {
+.vistaview-root.vistaview--initialized {
   display: block;
   animation:
-    vvw-anim-in calc(var(--vvw-animation-duration) * 1ms) ease-in forwards,
-    vvw-pos-in calc(var(--vvw-animation-duration) * 0.6ms) ease-out forwards;
-  .vvw-ui {
-    animation: vvw-ui-anim-in calc(var(--vvw-animation-duration) * 1ms) ease-out
-      calc(var(--vvw-animation-duration) * 1ms) forwards;
+    vistaview-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-in forwards,
+    vistaview-pos-in calc(var(--vistaview-animation-duration) * 0.6ms) ease-out forwards;
+  .vistaview-ui {
+    animation: vistaview-ui-anim-in calc(var(--vistaview-animation-duration) * 1ms) ease-out
+      calc(var(--vistaview-animation-duration) * 1ms) forwards;
   }
 }
 
-.vvw-root.vvw--closing {
+.vistaview-root.vistaview--closing {
   animation:
-    vvw-pos-out calc(var(--vvw-animation-duration) * 0.8ms) cubic-bezier(0.7, -0.4, 0.8, 0.6)
-      forwards,
-    vvw-anim-out calc(var(--vvw-animation-duration) * 1ms) ease-out forwards;
+    vistaview-pos-out calc(var(--vistaview-animation-duration) * 0.8ms)
+      cubic-bezier(0.7, -0.4, 0.8, 0.6) forwards,
+    vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 
-  .vvw-ui {
+  .vistaview-ui {
     display: none;
   }
 
-  img.vvw-image-lowres {
-    border-radius: var(--vvw-image-border-radius);
-    &.vvw-image--hidden {
+  img.vistaview-image-lowres {
+    border-radius: var(--vistaview-image-border-radius);
+    &.vistaview-image--hidden {
       opacity: 1;
     }
   }
 
-  img.vvw-image-highres {
-    width: var(--vvw-fitted-width) !important;
-    height: var(--vvw-fitted-height) !important;
+  img.vistaview-image-highres {
+    width: var(--vistaview-fitted-width) !important;
+    height: var(--vistaview-fitted-height) !important;
     transition:
-      width calc(var(--vvw-animation-duration) * 0.5ms) ease 0ms,
-      height calc(var(--vvw-animation-duration) * 0.5ms) ease 0ms,
-      opacity calc(var(--vvw-animation-duration) * 0.5ms) ease
-        calc(var(--vvw-animation-duration) * 0.5ms);
+      width calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+      height calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
+      opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease
+        calc(var(--vistaview-animation-duration) * 0.5ms);
 
-    &.vvw-image-loaded {
+    &.vistaview-image-loaded {
       opacity: 0;
     }
   }
 }
 
-.vvw--none {
+.vistaview--none {
   display: none !important;
 }
 
-.vvw--reduced-motion,
-.vvw--reduced-motion * {
+.vistaview--reduced-motion,
+.vistaview--reduced-motion * {
   animation-name: none !important;
   animation-duration: 0ms !important;
   transition-duration: 0ms !important;

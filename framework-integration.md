@@ -16,7 +16,7 @@ function Gallery() {
 
   return (
     <div ref={ref}>
-      <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </div>
@@ -27,7 +27,7 @@ function Gallery() {
 function Gallery2() {
   return (
     <VistaView>
-      <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </VistaView>
@@ -74,7 +74,7 @@ const { container, open, close, next, prev, getCurrentIndex } = useVistaView();
 
 <template>
   <div ref="container">
-    <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+    <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
       <img src="/images/thumb.jpg" alt="Photo" />
     </a>
   </div>
@@ -123,7 +123,7 @@ const { init, open, close, next, prev, getCurrentIndex } = useVistaView();
 </script>
 
 <div use:init>
-  <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+  <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
 </div>
@@ -192,7 +192,7 @@ function Gallery() {
 
   return (
     <div ref={init}>
-      <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </div>
@@ -261,7 +261,7 @@ No framework? No problem:
 
 ```html
 <div id="gallery">
-  <a href="/images/full.jpg" data-vvw-width="1920" data-vvw-height="1080">
+  <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
 </div>

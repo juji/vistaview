@@ -34,10 +34,10 @@ function checkElementsCorrectness(
   if (els) {
     for (let i = 0; i < els.length; i++) {
       const el = els[i];
-      let src = el.dataset.vvwSrc || el.getAttribute('href') || el.getAttribute('src') || '';
+      let src = el.dataset.vistaviewSrc || el.getAttribute('href') || el.getAttribute('src') || '';
 
       if (!src) {
-        return `Element at index ${i} is missing 'src' / 'data-vvw-src' / 'href' attribute.`;
+        return `Element at index ${i} is missing 'src' / 'data-vistaview-src' / 'href' attribute.`;
       }
     }
   } else {

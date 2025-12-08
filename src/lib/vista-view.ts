@@ -119,17 +119,17 @@ export class VistaView {
     const images = this.getImages(activeIndexes);
     const elms = images.map((img) => vistaViewItem(img));
     elms.forEach((elm, i) => {
-      const im = elm.querySelector('.vvw-image-highres') as HTMLImageElement;
+      const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
       const thumb = images[i].imageElm;
 
       if (im.complete && im.naturalWidth > 0) {
         const { width: tWidth, height: tHeight } = getFittedSize(thumb as HTMLImageElement);
         if (tWidth && tHeight) {
-          im.style.setProperty('--vvw-fitted-width', `${tWidth}px`);
-          im.style.setProperty('--vvw-fitted-height', `${tHeight}px`);
+          im.style.setProperty('--vistaview-fitted-width', `${tWidth}px`);
+          im.style.setProperty('--vistaview-fitted-height', `${tHeight}px`);
         }
-        im.classList.add('vvw-image-loaded');
-        elm.querySelector('.vvw-image-lowres')?.classList.add('vvw-image--hidden');
+        im.classList.add('vistaview-image-loaded');
+        elm.querySelector('.vistaview-image-lowres')?.classList.add('vistaview-image--hidden');
 
         const { width, height } = getFullSizeDim(im);
         im.style.width = `${width}px`;
@@ -189,9 +189,9 @@ export class VistaView {
         const hasImage = elm.querySelector('img') as HTMLImageElement | undefined;
         const hrefAttr = elm.getAttribute('href') || '';
         const srcAttr = elm.getAttribute('src') || '';
-        const src = elm.dataset.vvwSrc || hrefAttr || srcAttr || hasImage?.src || '';
-        const alt = elm.dataset.vvwAlt || elm.getAttribute('alt') || hasImage?.alt || '';
-        const thumb = elm.dataset.vvwThumb || hasImage?.src || hrefAttr || srcAttr || '';
+        const src = elm.dataset.vistaviewSrc || hrefAttr || srcAttr || hasImage?.src || '';
+        const alt = elm.dataset.vistaviewAlt || elm.getAttribute('alt') || hasImage?.alt || '';
+        const thumb = elm.dataset.vistaviewThumb || hasImage?.src || hrefAttr || srcAttr || '';
         return {
           index: activeIndexes[i],
           src,
@@ -216,13 +216,13 @@ export class VistaView {
     const left = (anchorProps?.left || imageProps?.left || 0) + width / 2;
     const top = (anchorProps?.top || imageProps?.top || 0) + height / 2;
 
-    this.rootElm.style.setProperty('--vvw-container-initial-width', width + 'px');
-    this.rootElm.style.setProperty('--vvw-container-initial-height', height + 'px');
-    this.rootElm.style.setProperty('--vvw-container-initial-top', top + 'px');
-    this.rootElm.style.setProperty('--vvw-container-initial-left', left + 'px');
+    this.rootElm.style.setProperty('--vistaview-container-initial-width', width + 'px');
+    this.rootElm.style.setProperty('--vistaview-container-initial-height', height + 'px');
+    this.rootElm.style.setProperty('--vistaview-container-initial-top', top + 'px');
+    this.rootElm.style.setProperty('--vistaview-container-initial-left', left + 'px');
 
     this.rootElm.style.setProperty(
-      '--vvw-image-border-radius',
+      '--vistaview-image-border-radius',
       isNotZeroCssValue(anchorProps?.borderRadius) ||
         isNotZeroCssValue(imageProps?.borderRadius) ||
         '0px'
@@ -231,15 +231,15 @@ export class VistaView {
 
   private updateZoomButtonsVisibility(): void {
     const highresImage = this.rootElm?.querySelector(
-      '.vvw-item--active .vvw-image-highres'
+      '.vistaview-item--active .vistaview-image-highres'
     ) as HTMLImageElement;
     if (!highresImage) return;
 
     const zoomInBtn = this.rootElm?.querySelector(
-      'button.vvw-zoom-in-button'
+      'button.vistaview-zoom-in-button'
     ) as HTMLButtonElement | null;
     const zoomOutBtn = this.rootElm?.querySelector(
-      'button.vvw-zoom-out-button'
+      'button.vistaview-zoom-out-button'
     ) as HTMLButtonElement | null;
 
     // Check if zoom is possible: current width < maxWidth (naturalWidth * maxZoomLevel)
@@ -259,7 +259,7 @@ export class VistaView {
     if (!this.rootElm) return;
     // set dimension on highres images
     const highresImages = this.rootElm.querySelectorAll(
-      '.vvw-image-highres:not(.vvw-image-loaded)'
+      '.vistaview-image-highres:not(.vistaview-image-loaded)'
     );
     highresImages.forEach((img, i) => {
       const im = img as HTMLImageElement;
@@ -280,11 +280,11 @@ export class VistaView {
           if (sizes.w && sizes.h) {
             im.style.width = `${sizes.w}px`;
             im.style.height = `${sizes.h}px`;
-            im.style.setProperty('--vvw-fitted-width', `${sizes.w}px`);
-            im.style.setProperty('--vvw-fitted-height', `${sizes.h}px`);
+            im.style.setProperty('--vistaview-fitted-width', `${sizes.w}px`);
+            im.style.setProperty('--vistaview-fitted-height', `${sizes.h}px`);
           }
 
-          im.classList.add('vvw-image-loaded');
+          im.classList.add('vistaview-image-loaded');
           im.width = im.naturalWidth;
           im.height = im.naturalHeight;
           if (alreadyDone) {
@@ -300,11 +300,11 @@ export class VistaView {
           }
           setTimeout(() => {
             im.parentElement
-              ?.querySelector('.vvw-image-lowres')
-              ?.classList.add('vvw-image--hidden');
+              ?.querySelector('.vistaview-image-lowres')
+              ?.classList.add('vistaview-image--hidden');
           }, 500);
 
-          if (img.parentElement?.matches('.vvw-item--active')) {
+          if (img.parentElement?.matches('.vistaview-item--active')) {
             this.updateZoomButtonsVisibility();
           }
         };
@@ -320,12 +320,12 @@ export class VistaView {
 
   private setIndexDisplay(): void {
     if (this.elements.length === 1) return;
-    this.rootElm!.querySelector('.vvw-index-display')!.textContent =
+    this.rootElm!.querySelector('.vistaview-index-display')!.textContent =
       `${this.currentIndex.value + 1} / ${this.elements.length}`;
   }
 
   private setCurrentDescription(): void {
-    this.rootElm!.querySelector('.vvw-description')!.textContent =
+    this.rootElm!.querySelector('.vistaview-description')!.textContent =
       (this.currentImages[1] || this.currentImages[0]).alt || '';
   }
 
@@ -380,13 +380,15 @@ export class VistaView {
     this.onResizeHandler = () => {
       const center = this.currentImages[1] || this.currentImages[0];
       this.setInitialDimPos(center);
-      const highresImages = this.rootElm?.querySelectorAll('.vvw-image-highres.vvw-image-loaded');
+      const highresImages = this.rootElm?.querySelectorAll(
+        '.vistaview-image-highres.vistaview-image-loaded'
+      );
       highresImages?.forEach((img) => {
         const im = img as HTMLImageElement;
         const { width, height } = getFullSizeDim(im);
-        if (im.classList.contains('vvw-image--zooming')) {
-          im.dataset.vvwInitialWidth = width.toString();
-          im.dataset.vvwInitialHeight = height.toString();
+        if (im.classList.contains('vistaview-image--zooming')) {
+          im.dataset.vistaviewInitialWidth = width.toString();
+          im.dataset.vistaviewInitialHeight = height.toString();
         } else {
           im.style.width = `${width}px`;
           im.style.height = `${height}px`;
@@ -418,24 +420,28 @@ export class VistaView {
     );
 
     // set root element
-    this.rootElm = document.querySelector('#vvw-root');
-    this.imageContainerElm = this.rootElm?.querySelector('.vvw-image-container') || null;
+    this.rootElm = document.querySelector('#vistaview-root');
+    this.imageContainerElm = this.rootElm?.querySelector('.vistaview-image-container') || null;
     if (!this.rootElm || !this.imageContainerElm) {
       GlobalVistaState.somethingOpened = null;
       throw new Error('Failed to create VistaView element');
     }
 
     // set buttons' event listeners
-    this.rootElm.querySelector('.vvw-close-btn')?.addEventListener('click', () => this.close());
-    this.rootElm.querySelector('.vvw-zoom-in-btn')?.addEventListener('click', () => this.zoomIn());
     this.rootElm
-      .querySelector('.vvw-zoom-out-btn')
+      .querySelector('.vistaview-close-btn')
+      ?.addEventListener('click', () => this.close());
+    this.rootElm
+      .querySelector('.vistaview-zoom-in-btn')
+      ?.addEventListener('click', () => this.zoomIn());
+    this.rootElm
+      .querySelector('.vistaview-zoom-out-btn')
       ?.addEventListener('click', () => this.zoomOut());
     this.rootElm
-      .querySelector('.vvw-prev-btn>button')
+      .querySelector('.vistaview-prev-btn>button')
       ?.addEventListener('click', () => this.prev());
     this.rootElm
-      .querySelector('.vvw-next-btn>button')
+      .querySelector('.vistaview-next-btn>button')
       ?.addEventListener('click', () => this.next());
 
     // set custom controls' event listeners
@@ -450,18 +456,20 @@ export class VistaView {
       if (typeof c !== 'string') this.customControls[c.name] = c;
     });
 
-    this.rootElm.querySelectorAll(`button[data-vvw-custom-control]`).forEach((btn) => {
+    this.rootElm.querySelectorAll(`button[data-vistaview-custom-control]`).forEach((btn) => {
       (btn as HTMLButtonElement).addEventListener('click', (e: MouseEvent) => {
         const control =
-          this.customControls[(e.currentTarget as HTMLButtonElement).dataset.vvwCustomControl!];
+          this.customControls[
+            (e.currentTarget as HTMLButtonElement).dataset.vistaviewCustomControl!
+          ];
         const currentImage = this.currentImages.find(
           (img) => img.index === this.currentIndex.value
         );
         if (control && currentImage) {
           if (control.onClick.constructor.name === 'AsyncFunction') {
-            btn.classList.add('vvw-button--loading');
+            btn.classList.add('vistaview-button--loading');
             (control.onClick(currentImage) as Promise<void>).finally(() => {
-              btn.classList.remove('vvw-button--loading');
+              btn.classList.remove('vistaview-button--loading');
             });
           } else {
             control.onClick(currentImage);
@@ -473,13 +481,16 @@ export class VistaView {
     // add options
     if (this.options.animationDurationBase) {
       this.rootElm.style.setProperty(
-        '--vvw-animation-duration',
+        '--vistaview-animation-duration',
         `${this.options.animationDurationBase}`
       );
     }
 
     if (this.options.initialZIndex !== undefined) {
-      this.rootElm.style.setProperty('--vvw-initial-z-index', `${this.options.initialZIndex}`);
+      this.rootElm.style.setProperty(
+        '--vistaview-initial-z-index',
+        `${this.options.initialZIndex}`
+      );
     }
 
     // set initial dimension and position
@@ -495,12 +506,12 @@ export class VistaView {
 
     // for single image, hide next/prev buttons and index-display
     if (this.elements.length === 1) {
-      this.rootElm.querySelector('.vvw-prev-btn')?.classList.add('vvw-ui--none');
-      this.rootElm.querySelector('.vvw-next-btn')?.classList.add('vvw-ui--none');
-      this.rootElm.querySelector('.vvw-index-display')?.classList.add('vvw-ui--none');
+      this.rootElm.querySelector('.vistaview-prev-btn')?.classList.add('vistaview-ui--none');
+      this.rootElm.querySelector('.vistaview-next-btn')?.classList.add('vistaview-ui--none');
+      this.rootElm.querySelector('.vistaview-index-display')?.classList.add('vistaview-ui--none');
     }
 
-    this.rootElm && this.rootElm.classList.add('vvw--initialized');
+    this.rootElm && this.rootElm.classList.add('vistaview--initialized');
     this.loadImages();
     this.setCurrentDescription();
     this.setIndexDisplay();
@@ -509,7 +520,7 @@ export class VistaView {
   close(noWait?: boolean): void {
     if (GlobalVistaState.somethingOpened !== this) return;
 
-    this.rootElm?.classList.add('vvw--closing');
+    this.rootElm?.classList.add('vistaview--closing');
     if (noWait) {
       document.body.removeChild(this.rootElm!);
       this.rootElm = null;
