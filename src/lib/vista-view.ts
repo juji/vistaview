@@ -84,28 +84,68 @@ export class VistaView {
     index: { to: indexTo },
     elements,
   }) => {
+    // set opacity of the current selected image
     if (elements instanceof NodeList && indexTo !== null) {
       elements.forEach((el) => (el.style.opacity = '1'));
       elements[indexTo]!.style.opacity = '0';
     }
+
+    //
     to &&
       to.forEach((elm) => {
-        elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
-        elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
+        const pos = Number(elm.dataset.vistaviewPos);
+        if (pos < 0) {
+          elm.style.zIndex = '1';
+          elm.style.left = 100 * pos + '%';
+        } else if (pos > 0) {
+          elm.style.zIndex = '1';
+          elm.style.left = 100 * pos + '%';
+        } else {
+          elm.style.zIndex = '2';
+        }
       });
   };
 
-  private defaultTransition: VistaViewTransitionFunction = ({
-    htmlElements: { to: elms },
+  private defaultTransition: VistaViewTransitionFunction = async ({
+    htmlElements: { from: htmlFrom, to: htmlTo },
     images: { to: images },
     container,
+    via: { next, prev },
+    options,
   }) => {
     if (!images) throw new Error('VistaView: images is null in defaultTransition()');
-    container.innerHTML = '';
-    elms &&
+
+    const elms =
+      next && htmlFrom
+        ? htmlFrom.filter((v) => {
+            const pos = Number(v.dataset.vistaviewPos);
+            return pos >= 0;
+          })
+        : prev && htmlFrom
+          ? htmlFrom.filter((v) => {
+              const pos = Number(v.dataset.vistaviewPos);
+              return pos <= 0;
+            })
+          : null;
+
+    if (!elms) throw new Error('VistaView: elms is null in defaultTransition()');
+
+    await new Promise<number>((r) => {
+      function onTransitionEnd() {
+        container.innerHTML = '';
+        htmlTo &&
+          htmlTo.forEach((elm) => {
+            container!.appendChild(elm);
+          });
+        r(0);
+      }
+      elms[elms.length - 1].addEventListener('transitionend', onTransitionEnd);
       elms.forEach((elm) => {
-        this.imageContainerElm!.appendChild(elm);
+        elm.style.transition = `translate ${options.animationDurationBase}ms ease-out`;
+        elm.style.translate = next ? '-100%' : prev ? '100%' : '0%';
       });
+    });
+
     return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
   };
 
@@ -207,6 +247,7 @@ export class VistaView {
       isReducedMotion: this.isReducedMotion,
       navActive: this.navActive,
       isZoomed: this.isZoomed,
+      options: this.options,
     };
 
     if (this.userSetup) {
@@ -218,7 +259,7 @@ export class VistaView {
     // do the swap, this is where the animation would go
     const currentImage = this.userTransition
       ? await this.userTransition(transitionParams)
-      : this.defaultTransition(transitionParams);
+      : await this.defaultTransition(transitionParams);
 
     this.navActive = true;
 
@@ -710,6 +751,7 @@ export class VistaView {
       isReducedMotion: this.isReducedMotion,
       navActive: this.navActive,
       isZoomed: this.isZoomed,
+      options: this.options,
     };
 
     if (this.userSetup) {
@@ -845,6 +887,7 @@ export class VistaView {
       isReducedMotion: this.isReducedMotion,
       navActive: this.navActive,
       isZoomed: this.isZoomed,
+      options: this.options,
     };
 
     if (this.userClose) {

@@ -69,6 +69,7 @@ export type VistaViewData = {
   isReducedMotion: boolean;
   navActive: boolean;
   isZoomed: HTMLImageElement | false;
+  options: VistaViewOptions;
 };
 
 export type VistaViewTransitionFunction = (
