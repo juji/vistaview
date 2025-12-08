@@ -564,12 +564,12 @@ export class VistaView {
     this.setIndexDisplay();
   }
 
-  async close(noWait?: boolean): Promise<void> {
+  async close(wait: boolean = true): Promise<void> {
     if (GlobalVistaState.somethingOpened !== this) return;
 
     this.rootElm?.classList.add('vistaview--closing');
 
-    if (!noWait) {
+    if (wait) {
       await new Promise<void>((resolve) => {
         setTimeout(
           () => {
@@ -604,7 +604,7 @@ export class VistaView {
   }
 
   destroy(): void {
-    this.close(true);
+    this.close(false);
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el, index) => {
         el.removeEventListener('click', this.onClickElements[index]);
