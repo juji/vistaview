@@ -21,8 +21,8 @@ import type {
 export const DefaultOptions = {
   detectReducedMotion: true,
   // debug, don't remove
-  animationDurationBase: 1000,
-  // animationDurationBase: 333,
+  // animationDurationBase: 1000,
+  animationDurationBase: 333,
   zoomStep: 500,
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
@@ -820,7 +820,8 @@ export class VistaView {
       this.rootElm?.classList.add('vistaview--closing');
       await new Promise<void>((resolve) => {
         let wait: ReturnType<typeof setTimeout>;
-        this.rootElm?.addEventListener('transitionend', () => {
+        this.rootElm?.addEventListener('transitionend', (e: Event) => {
+          if (e.currentTarget !== this.rootElm) return;
           if (wait) clearTimeout(wait);
           wait = setTimeout(() => {
             resolve();
