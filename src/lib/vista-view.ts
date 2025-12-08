@@ -1,6 +1,12 @@
 import { vistaViewComponent, getDownloadButton, vistaViewItem } from './components';
 
-import { getElmProperties, getFittedSize, getFullSizeDim, isNotZeroCssValue } from './utils';
+import {
+  getElmProperties,
+  getFittedSize,
+  getFullSizeDim,
+  getMaxMinZoomLevels,
+  isNotZeroCssValue,
+} from './utils';
 
 import type {
   VistaViewCloseFunction,
@@ -63,6 +69,7 @@ export class VistaView {
   private currentImages: VistaViewImageIndexed[] | null = null;
   private currentItems: HTMLDivElement[] | null = null;
   private navActive = true;
+  private isZoomed: HTMLImageElement | false = false;
 
   private onResizeHandler: (() => void) | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
@@ -107,6 +114,10 @@ export class VistaView {
     }
   };
 
+  private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
+
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
     this.currentIndex._vistaView = this;
@@ -150,7 +161,7 @@ export class VistaView {
     this.setIndexDisplay();
 
     // Normalize image before viewing another image
-    this.normalizeZoom();
+    this.clearZoom();
 
     // get images,
     // check if it's already loaded, if yes, set dimensions right away
@@ -217,16 +228,198 @@ export class VistaView {
     this.options.onImageView?.(transitionParams);
   }
 
+  //
+  private setZoomed(image: HTMLImageElement | false): void {
+    if (this.isZoomed === image) return;
+
+    // this needs to be first
+    // basically remove event listeners from previous zoomed image
+    if (this.isZoomed) {
+      let img = this.isZoomed;
+      img.classList.remove('vistaview-image--zooming');
+
+      if (this.onZoomedPointerDown) {
+        img.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
+        this.onZoomedPointerDown = null;
+      }
+      if (this.onZoomedPointerMove) {
+        img.parentElement?.removeEventListener('pointermove', this.onZoomedPointerMove!);
+        this.onZoomedPointerMove = null;
+      }
+      if (this.onZoomedPointerUp) {
+        img.parentElement?.removeEventListener('pointerup', this.onZoomedPointerUp!);
+        this.onZoomedPointerUp = null;
+      }
+      img?.style.removeProperty('--pointer-diff-x');
+      img?.style.removeProperty('--pointer-diff-y');
+      setTimeout(() => {
+        img?.classList.remove('vistaview-image--zooming');
+      }, 500);
+
+      if (!image) return;
+    }
+
+    if (image) {
+      this.isZoomed = image;
+
+      image.classList.add('vistaview-image--zooming');
+
+      image?.style.setProperty('--pointer-diff-x', `0px`);
+      image?.style.setProperty('--pointer-diff-y', `0px`);
+
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let diffX = 0;
+      let diffY = 0;
+      let localDiffX = 0;
+      let localDiffY = 0;
+
+      // set new listeners
+      this.onZoomedPointerDown = (e: PointerEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        startX = e.pageX;
+        startY = e.pageY;
+        image!.setPointerCapture(e.pointerId);
+      };
+
+      this.onZoomedPointerMove = (e: PointerEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        localDiffX = e.pageX - startX;
+        localDiffY = e.pageY - startY;
+
+        const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
+        const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
+        const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(
+          imageWidth,
+          imageHeight
+        );
+        const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
+        const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
+        localDiffX = pointerDiffX - diffX;
+        localDiffY = pointerDiffY - diffY;
+
+        image?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
+        image?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
+      };
+
+      this.onZoomedPointerUp = (e: PointerEvent) => {
+        isDragging = false;
+        image!.releasePointerCapture(e.pointerId);
+        diffX += localDiffX;
+        diffY += localDiffY;
+        localDiffX = 0;
+        localDiffY = 0;
+      };
+
+      // add listeners
+      image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
+      image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
+      image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
+
+      return;
+    }
+  }
+
   private zoomIn(): void {
-    // TODO
+    const highresImage = this.rootElm?.querySelector(
+      '[data-vistaview-pos="0"] .vistaview-image-highres'
+    ) as HTMLImageElement;
+    const width = highresImage.width;
+    const height = highresImage.height;
+
+    // store initial width/height if not set
+    if (!highresImage.dataset.vistaviewInitialWidth) {
+      highresImage.dataset.vistaviewInitialWidth = width.toString();
+    }
+    if (!highresImage.dataset.vistaviewInitialHeight) {
+      highresImage.dataset.vistaviewInitialHeight = height.toString();
+    }
+
+    this.setZoomed(highresImage);
+
+    // calculate new width/height
+    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
+    if (width && maxWidth && width < maxWidth) {
+      const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
+      highresImage!.style.width = `${newWidth}px`;
+      const newHeight = (newWidth / width) * height;
+      highresImage!.style.height = `${newHeight}px`;
+      this.rootElm?.querySelector('button.vistaview-zoom-out-btn')?.removeAttribute('disabled');
+
+      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+
+      // set counter zoom panning limits
+      if (newWidth === maxWidth) {
+        this.rootElm
+          ?.querySelector('button.vistaview-zoom-in-btn')
+          ?.setAttribute('disabled', 'true');
+      }
+    }
   }
 
   private zoomOut(): void {
-    // TODO
+    const highresImage = this.rootElm?.querySelector(
+      '[data-vistaview-pos="0"] .vistaview-image-highres'
+    ) as HTMLImageElement;
+    const width = highresImage.width;
+    const height = highresImage.height;
+
+    // get min width
+    const minWidth = highresImage.dataset.vistaviewInitialWidth
+      ? parseInt(highresImage.dataset.vistaviewInitialWidth)
+      : 0;
+
+    highresImage.classList.add('vistaview-image--zooming-out');
+    setTimeout(() => {
+      highresImage.classList.remove('vistaview-image--zooming-out');
+    }, 333);
+
+    // calculate new width/height
+    if (width && minWidth && width > minWidth) {
+      const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
+      highresImage!.style.width = `${newWidth}px`;
+
+      const newHeight = (newWidth / width) * height;
+      highresImage!.style.height = `${newHeight}px`;
+      this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.removeAttribute('disabled');
+      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+
+      // set counter zoom panning limits
+      const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(newWidth, newHeight);
+      let pointerDiffX = parseInt(
+        highresImage?.style.getPropertyValue('--pointer-diff-x').replace('px', '') || '0'
+      );
+      let pointerDiffY = parseInt(
+        highresImage?.style.getPropertyValue('--pointer-diff-y').replace('px', '') || '0'
+      );
+      pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, pointerDiffX));
+      pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, pointerDiffY));
+
+      highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
+      highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
+
+      // when reached min zoom level
+      if (newWidth === minWidth) {
+        this.rootElm
+          ?.querySelector('button.vistaview-zoom-out-btn')
+          ?.setAttribute('disabled', 'true');
+        highresImage.removeAttribute('data-vistaview-current-width');
+        highresImage.removeAttribute('data-vistaview-current-height');
+        highresImage.removeAttribute('data-vistaview-initial-width');
+        highresImage.removeAttribute('data-vistaview-initial-height');
+        this.setZoomed(false);
+      }
+    }
   }
 
-  private normalizeZoom(): void {
-    // TODO
+  private clearZoom(): void {
+    // TODO, i don't think we need to do anything here for now
   }
 
   private getImages(activeIndexes: number[]): VistaViewImageIndexed[] {
@@ -671,6 +864,13 @@ export class VistaView {
     if (this.onKeyDown) {
       window.removeEventListener('keydown', this.onKeyDown);
       this.onKeyDown = null;
+    }
+
+    if (this.onZoomedPointerDown || this.onZoomedPointerMove || this.onZoomedPointerUp) {
+      this.setZoomed(false);
+      this.onZoomedPointerDown = null;
+      this.onZoomedPointerMove = null;
+      this.onZoomedPointerUp = null;
     }
 
     GlobalVistaState.somethingOpened = null;
