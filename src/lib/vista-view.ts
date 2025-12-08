@@ -16,6 +16,7 @@ export const DefaultOptions = {
   detectReducedMotion: true,
   // debug, don't remove
   // animationDurationBase: 1000,
+  animationDurationBase: 333,
   zoomStep: 500,
   maxZoomLevel: 2,
   touchSpeedThreshold: 1,
@@ -177,6 +178,10 @@ export class VistaView {
         im.style.height = `${height}px`;
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
+
+        if (im.parentElement?.matches('[data-vistaview-pos="0"]')) {
+          this.updateZoomButtonsVisibility();
+        }
       }
     });
 
@@ -189,6 +194,7 @@ export class VistaView {
       via: this.currentIndex.via,
       container: this.imageContainerElm,
       elements: this.elements,
+      isReducedMotion: this.isReducedMotion,
     };
 
     if (this.userSetup) {
@@ -275,36 +281,55 @@ export class VistaView {
 
   private updateZoomButtonsVisibility(): void {
     const highresImage = this.rootElm?.querySelector(
-      '.vistaview-item--active .vistaview-image-highres'
+      '[data-vistaview-pos="0"] img.vistaview-image-highres'
     ) as HTMLImageElement;
     if (!highresImage) return;
 
-    const zoomInBtn = this.rootElm?.querySelector(
-      'button.vistaview-zoom-in-button'
-    ) as HTMLButtonElement | null;
-    const zoomOutBtn = this.rootElm?.querySelector(
-      'button.vistaview-zoom-out-button'
-    ) as HTMLButtonElement | null;
+    console.log('updateZoomButtonsVisibility', highresImage);
+
+    const _t = this;
+    function onImageLoaded() {
+      setTimeout(
+        () => {
+          const zoomInBtn = _t.rootElm?.querySelector(
+            'button.vistaview-zoom-in-btn'
+          ) as HTMLButtonElement | null;
+
+          const zoomOutBtn = _t.rootElm?.querySelector(
+            'button.vistaview-zoom-out-btn'
+          ) as HTMLButtonElement | null;
+
+          const currentWidth = highresImage.width;
+          const maxWidth = highresImage.naturalWidth * _t.options.maxZoomLevel!;
+          const canZoom = currentWidth < maxWidth && maxWidth > 0;
+
+          if (zoomInBtn) {
+            zoomInBtn.style.display = canZoom ? '' : 'none';
+          }
+          if (zoomOutBtn) {
+            zoomOutBtn.style.display = canZoom ? '' : 'none';
+          }
+        },
+        (_t.options.animationDurationBase || 0) + 300
+      );
+    }
 
     // Check if zoom is possible: current width < maxWidth (naturalWidth * maxZoomLevel)
-    const currentWidth = highresImage.width;
-    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
-    const canZoom = currentWidth < maxWidth && maxWidth > 0;
-
-    if (zoomInBtn) {
-      zoomInBtn.style.display = canZoom ? '' : 'none';
-    }
-    if (zoomOutBtn) {
-      zoomOutBtn.style.display = canZoom ? '' : 'none';
+    if (highresImage.complete && highresImage.naturalWidth > 0) {
+      onImageLoaded();
+    } else {
+      highresImage.addEventListener('load', onImageLoaded);
     }
   }
 
   private loadImages() {
     if (!this.rootElm) return;
+
     // set dimension on highres images
     const highresImages = this.rootElm.querySelectorAll(
       '.vistaview-image-highres:not(.vistaview-image-loaded)'
     );
+
     highresImages.forEach((img, i) => {
       const im = img as HTMLImageElement;
 
@@ -348,7 +373,7 @@ export class VistaView {
               ?.classList.add('vistaview-image--hidden');
           }, 500);
 
-          if (img.parentElement?.matches('.vistaview-item--active')) {
+          if (img.parentElement?.matches('[data-vistaview-pos="0"]')) {
             this.updateZoomButtonsVisibility();
           }
         };
@@ -492,6 +517,7 @@ export class VistaView {
       via: this.currentIndex.via,
       container: this.imageContainerElm,
       elements: this.elements,
+      isReducedMotion: this.isReducedMotion,
     };
 
     if (this.userSetup) {
@@ -619,6 +645,7 @@ export class VistaView {
       container: this.imageContainerElm!,
       elements: this.elements,
       via: { prev: false, next: false },
+      isReducedMotion: this.isReducedMotion,
     };
 
     if (this.userClose) {

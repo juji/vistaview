@@ -62,6 +62,7 @@ export type UserFunctionParams = {
   via: { next: boolean; prev: boolean };
   container: HTMLElement;
   elements: NodeListOf<HTMLElement> | VistaViewImage[];
+  isReducedMotion: boolean;
 };
 
 export type UserTransitionFunction = (
