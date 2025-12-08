@@ -472,6 +472,10 @@ export class VistaView {
         elm.style.opacity = elm.dataset.vistaviewPos === '0' ? '1' : '0';
         elm.style.zIndex = elm.dataset.vistaviewPos === '0' ? '2' : '1';
       });
+      this.imageContainerElm.innerHTML = '';
+      this.currentItems.forEach((elm) => {
+        this.imageContainerElm!.appendChild(elm);
+      });
     }
 
     // set buttons' event listeners
