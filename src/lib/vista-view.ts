@@ -75,7 +75,7 @@ export class VistaView {
     index: { to: indexTo },
     elements,
   }) => {
-    if (elements instanceof NodeList && indexTo) {
+    if (elements instanceof NodeList && indexTo !== null) {
       elements.forEach((el) => (el.style.opacity = '1'));
       elements[indexTo]!.style.opacity = '0';
     }
