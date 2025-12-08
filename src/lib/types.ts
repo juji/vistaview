@@ -39,6 +39,9 @@ export type VistaViewOptions = {
     bottomLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     bottomRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
   };
+  onImageView?: (params: UserFunctionParams) => void;
+  onOpen?: (params: UserFunctionParams) => void;
+  onClose?: (params: UserFunctionParams) => void;
 };
 
 export type VistaViewDefaultControls =

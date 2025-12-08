@@ -211,13 +211,12 @@ export class VistaView {
     this.navActive = true;
 
     this.setInitialDimPos(currentImage as VistaViewImageIndexed);
-
     this.currentImages = images;
     this.currentItems = elms;
-
     this.loadImages();
-
     this.setCurrentDescription();
+
+    this.options.onImageView?.(transitionParams);
   }
 
   private zoomIn(): void {
@@ -620,6 +619,9 @@ export class VistaView {
     this.loadImages();
     this.setCurrentDescription();
     this.setIndexDisplay();
+
+    this.options.onOpen?.(setupParams);
+    this.options.onImageView?.(setupParams);
   }
 
   async close(wait = true): Promise<void> {
@@ -654,6 +656,7 @@ export class VistaView {
       this.defaultClose(closeParams);
     }
 
+    this.options.onClose?.(closeParams);
     document.body.removeChild(this.rootElm!);
 
     this.currentIndex._value = null;
