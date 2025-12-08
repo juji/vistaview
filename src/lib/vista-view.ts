@@ -564,7 +564,7 @@ export class VistaView {
     this.setIndexDisplay();
   }
 
-  async close(wait: boolean = true): Promise<void> {
+  async close(wait = true) {
     if (GlobalVistaState.somethingOpened !== this) return;
 
     if (wait) {
