@@ -820,12 +820,13 @@ export class VistaView {
     if (wait) {
       this.rootElm?.classList.add('vistaview--closing');
       await new Promise<void>((resolve) => {
-        setTimeout(
-          () => {
+        let wait: ReturnType<typeof setTimeout>;
+        this.rootElm?.addEventListener('transitionend', () => {
+          if (wait) clearTimeout(wait);
+          wait = setTimeout(() => {
             resolve();
-          },
-          (this.options.animationDurationBase || 300) + 33
-        );
+          }, 333);
+        });
       });
     }
 
