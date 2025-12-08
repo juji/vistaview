@@ -106,24 +106,24 @@ export class VistaView {
   private defaultTransition: VistaViewTransitionFunction = async ({
     htmlElements: { from: htmlFrom, to: htmlTo },
     images: { to: images },
+    // index: { from: fromIndex, to: toIndex },
     container,
     via: { next, prev },
     options,
   }) => {
     if (!images) throw new Error('VistaView: images is null in defaultTransition()');
 
-    const elms =
-      next && htmlFrom
-        ? htmlFrom.filter((v) => {
-            return v.dataset.vistaviewPos === '0' || v.dataset.vistaviewPos === '1';
-          })
-        : prev && htmlFrom
-          ? htmlFrom.filter((v) => {
-              return v.dataset.vistaviewPos === '0' || v.dataset.vistaviewPos === '-1';
-            })
-          : null;
+    const elms = htmlFrom!.filter((v) => {
+      return (
+        v.dataset.vistaviewPos === '0' ||
+        (next ? v.dataset.vistaviewPos === '1' : v.dataset.vistaviewPos === '-1')
+      );
+    });
 
-    if (!elms) throw new Error('VistaView: elms is null in defaultTransition()');
+    // non adjacent transition ??
+    // const adjacent = Math.abs(toIndex! - fromIndex!) === 1 ||
+    //   (fromIndex === 0 && toIndex === images.length -1) ||
+    //   (fromIndex === images.length -1 && toIndex === 0);
 
     await new Promise<number>((r) => {
       function onTransitionEnd() {
