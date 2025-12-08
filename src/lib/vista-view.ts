@@ -567,9 +567,8 @@ export class VistaView {
   async close(wait: boolean = true): Promise<void> {
     if (GlobalVistaState.somethingOpened !== this) return;
 
-    this.rootElm?.classList.add('vistaview--closing');
-
     if (wait) {
+      this.rootElm?.classList.add('vistaview--closing');
       await new Promise<void>((resolve) => {
         setTimeout(
           () => {
