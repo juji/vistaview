@@ -205,6 +205,8 @@ export class VistaView {
       container: this.imageContainerElm,
       elements: this.elements,
       isReducedMotion: this.isReducedMotion,
+      navActive: this.navActive,
+      isZoomed: this.isZoomed,
     };
 
     if (this.userSetup) {
@@ -706,6 +708,8 @@ export class VistaView {
       container: this.imageContainerElm,
       elements: this.elements,
       isReducedMotion: this.isReducedMotion,
+      navActive: this.navActive,
+      isZoomed: this.isZoomed,
     };
 
     if (this.userSetup) {
@@ -839,6 +843,8 @@ export class VistaView {
       elements: this.elements,
       via: { prev: false, next: false },
       isReducedMotion: this.isReducedMotion,
+      navActive: this.navActive,
+      isZoomed: this.isZoomed,
     };
 
     if (this.userClose) {
