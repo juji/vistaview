@@ -146,8 +146,6 @@ export class VistaView {
       throw new Error('VistaView: imageContainerElm is null in swap()');
     }
 
-    console.log('swap', beforeIndex, '->', afterIndex);
-
     //
     this.setIndexDisplay();
 
@@ -283,8 +281,6 @@ export class VistaView {
       '[data-vistaview-pos="0"] img.vistaview-image-highres'
     ) as HTMLImageElement;
     if (!highresImage) return;
-
-    console.log('updateZoomButtonsVisibility', highresImage);
 
     const _t = this;
     function onImageLoaded() {
