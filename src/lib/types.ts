@@ -1,3 +1,5 @@
+import type { VistaView } from './vista-view';
+
 export type VistaViewElmProps = {
   objectFit: string;
   borderRadius: string;
@@ -76,4 +78,5 @@ export type VistaViewTransitionFunction = (
 ) => VistaViewImageIndexed | Promise<VistaViewImageIndexed>;
 
 export type VistaViewSetupFunction = (params: VistaViewData) => void;
-export type VistaViewCloseFunction = (params: VistaViewData) => void;
+export type VistaViewCloseFunction = (vistaView: VistaView) => void;
+export type VistaViewInitFunction = (vistaView: VistaView) => void;

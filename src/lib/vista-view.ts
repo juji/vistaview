@@ -16,7 +16,10 @@ import type {
   VistaViewImage,
   VistaViewImageIndexed,
   VistaViewOptions,
+  VistaViewInitFunction,
 } from './types';
+
+import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
 
 export const DefaultOptions = {
   detectReducedMotion: true,
@@ -25,7 +28,7 @@ export const DefaultOptions = {
   animationDurationBase: 333,
   zoomStep: 500,
   maxZoomLevel: 2,
-  touchSpeedThreshold: 1,
+  touchSpeedThreshold: 0.7,
   preloads: 1,
   keyboardListeners: true,
   controls: {
@@ -40,10 +43,10 @@ export const GlobalVistaState: { somethingOpened: VistaView | null } = {
 };
 
 export class VistaView {
-  private options: VistaViewOptions;
-  private elements: NodeListOf<HTMLElement> | VistaViewImage[];
-  private isReducedMotion: boolean;
-  private currentIndex = {
+  options: VistaViewOptions;
+  elements: NodeListOf<HTMLElement> | VistaViewImage[];
+  isReducedMotion: boolean;
+  currentIndex = {
     _value: null as number | null,
     _vistaView: null as VistaView | null,
     _via: { next: false, prev: false },
@@ -63,92 +66,23 @@ export class VistaView {
     },
   };
 
+  rootElm: HTMLElement | null = null;
+  imageContainerElm: HTMLElement | null = null;
+  customControls: { [key: string]: VistaViewCustomControl } = {};
+  currentImages: VistaViewImageIndexed[] | null = null;
+  currentItems: HTMLDivElement[] | null = null;
+  navActive = true;
+  isZoomed: HTMLImageElement | false = false;
+
   private onClickElements: ((e: PointerEvent) => void)[] = [];
-  private rootElm: HTMLElement | null = null;
-  private imageContainerElm: HTMLElement | null = null;
-  private customControls: { [key: string]: VistaViewCustomControl } = {};
-  private currentImages: VistaViewImageIndexed[] | null = null;
-  private currentItems: HTMLDivElement[] | null = null;
-  private navActive = true;
-  private isZoomed: HTMLImageElement | false = false;
 
   private onResizeHandler: (() => void) | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
-  private userSetup: VistaViewSetupFunction | null = null;
-  private userTransition: VistaViewTransitionFunction | null = null;
-  private userClose: VistaViewCloseFunction | null = null;
-
-  private defaultElmSetup: VistaViewSetupFunction = ({
-    htmlElements: { to },
-    index: { to: indexTo },
-    elements,
-  }) => {
-    // set opacity of the current selected image
-    if (elements instanceof NodeList && indexTo !== null) {
-      elements.forEach((el) => (el.style.opacity = '1'));
-      elements[indexTo]!.style.opacity = '0';
-    }
-
-    //
-    to &&
-      to.forEach((elm) => {
-        const pos = Number(elm.dataset.vistaviewPos);
-        if (pos !== 0) {
-          elm.style.zIndex = '1';
-          elm.style.left = 100 * pos + '%';
-        } else {
-          elm.style.zIndex = '2';
-        }
-      });
-  };
-
-  private defaultTransition: VistaViewTransitionFunction = async ({
-    htmlElements: { from: htmlFrom, to: htmlTo },
-    images: { to: images },
-    // index: { from: fromIndex, to: toIndex },
-    container,
-    via: { next, prev },
-    options,
-  }) => {
-    if (!images) throw new Error('VistaView: images is null in defaultTransition()');
-
-    const elms = htmlFrom!.filter((v) => {
-      return (
-        v.dataset.vistaviewPos === '0' ||
-        (next ? v.dataset.vistaviewPos === '1' : v.dataset.vistaviewPos === '-1')
-      );
-    });
-
-    // non adjacent transition ??
-    // const adjacent = Math.abs(toIndex! - fromIndex!) === 1 ||
-    //   (fromIndex === 0 && toIndex === images.length -1) ||
-    //   (fromIndex === images.length -1 && toIndex === 0);
-
-    await new Promise<number>((r) => {
-      function onTransitionEnd() {
-        container.innerHTML = '';
-        htmlTo &&
-          htmlTo.forEach((elm) => {
-            container!.appendChild(elm);
-          });
-        r(0);
-      }
-      elms[elms.length - 1].addEventListener('transitionend', onTransitionEnd);
-      elms.forEach((elm) => {
-        elm.style.transition = `translate ${options.animationDurationBase! * 0.5}ms ease-out`;
-        elm.style.translate = next ? '-100%' : prev ? '100%' : '0%';
-      });
-    });
-
-    return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
-  };
-
-  private defaultClose: VistaViewCloseFunction = ({ elements }) => {
-    if (elements instanceof NodeList) {
-      elements.forEach((el) => (el.style.opacity = '1'));
-    }
-  };
+  private userSetup: VistaViewSetupFunction = defaultSetup;
+  private userTransition: VistaViewTransitionFunction = defaultTransition;
+  private userClose: VistaViewCloseFunction = defaultClose;
+  private userInit: VistaViewInitFunction = defaultInit;
 
   private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
@@ -245,16 +179,10 @@ export class VistaView {
       options: this.options,
     };
 
-    if (this.userSetup) {
-      this.userSetup(transitionParams);
-    } else {
-      this.defaultElmSetup(transitionParams);
-    }
+    this.userSetup(transitionParams);
 
     // do the swap, this is where the animation would go
-    const currentImage = this.userTransition
-      ? await this.userTransition(transitionParams)
-      : await this.defaultTransition(transitionParams);
+    const currentImage = await this.userTransition(transitionParams);
 
     this.navActive = true;
 
@@ -294,6 +222,8 @@ export class VistaView {
       setTimeout(() => {
         img?.classList.remove('vistaview-image--zooming');
       }, 500);
+
+      this.isZoomed = false;
 
       if (!image) return;
     }
@@ -750,11 +680,7 @@ export class VistaView {
       options: this.options,
     };
 
-    if (this.userSetup) {
-      this.userSetup(setupParams);
-    } else {
-      this.defaultElmSetup(setupParams);
-    }
+    this.userSetup(setupParams);
 
     // insert
     this.imageContainerElm.innerHTML = '';
@@ -851,6 +777,7 @@ export class VistaView {
     this.setCurrentDescription();
     this.setIndexDisplay();
 
+    this.userInit(this);
     this.options.onOpen?.(setupParams);
     this.options.onImageView?.(setupParams);
   }
@@ -886,11 +813,7 @@ export class VistaView {
       options: this.options,
     };
 
-    if (this.userClose) {
-      this.userClose(closeParams);
-    } else {
-      this.defaultClose(closeParams);
-    }
+    this.userClose(this);
 
     this.options.onClose?.(closeParams);
     document.body.removeChild(this.rootElm!);

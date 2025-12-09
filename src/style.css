@@ -174,9 +174,13 @@
 }
 
 .vistaview-image-container {
+  --vistaview-pointer-diff-x: 0px;
+  --vistaview-pointer-diff-y: 0px;
   position: relative;
   top: 0;
   left: 0;
+  /* transform: translateX(var(--vistaview-pointer-diff-x)); */
+  /* translate: var(--vistaview-pointer-diff-x) 0; */
   margin: 0;
   padding: 0;
   width: 100%;
@@ -192,6 +196,7 @@
   left: 0;
   margin: 0;
   padding: 0;
+  translate: var(--vistaview-pointer-diff-x) 0;
 
   img.vistaview-image-lowres {
     position: absolute;
