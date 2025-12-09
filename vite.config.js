@@ -35,7 +35,7 @@ export default defineConfig({
           formats: ['es', 'cjs'],
         },
         cssCodeSplit: false,
-        rolldownOptions: {
+        rollupOptions: {
           external: ['react', 'react/jsx-runtime', 'vue', 'svelte', 'solid-js'],
           output: {
             globals: {
