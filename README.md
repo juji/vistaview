@@ -94,6 +94,7 @@ vistaView({
   maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
   touchSpeedThreshold: 0.7, // Swipe speed threshold for navigation (default: 0.7)
   preloads: 1, // Number of adjacent images to preload on each side (default: 1)
+  keyboardListeners: true, // Enable keyboard navigation (default: true)
 
   // Control placement (defaults shown)
   controls: {
@@ -104,6 +105,17 @@ vistaView({
     bottomCenter: ['description'],
     bottomRight: [],
   },
+
+  // Events
+  onOpen: (data) => {},      // Called when lightbox opens
+  onClose: (data) => {},     // Called when lightbox closes
+  onImageView: (data) => {}, // Called when viewing an image (including on open)
+
+  // Custom behavior functions (advanced)
+  initFunction: (vistaView) => {},       // Custom initialization
+  setupFunction: (data) => {},           // Custom setup when navigating
+  transitionFunction: (data) => image,   // Custom transition animation
+  closeFunction: (vistaView) => {},      // Custom cleanup on close
 });
 ```
 
@@ -143,6 +155,39 @@ vistaView({
     ],
   },
 });
+```
+
+## Exported Types & Functions
+
+VistaView exports all types for TypeScript users, plus default behavior functions for customization:
+
+```ts
+import {
+  vistaView,
+  vistaViewDownload,
+  DefaultOptions,
+  // Default behavior functions (can be used as starting points)
+  defaultInit,
+  defaultSetup,
+  defaultTransition,
+  defaultClose,
+  setTouchActions,
+  removeTouchActions,
+} from 'vistaview';
+
+import type {
+  VistaViewParams, // Full options including `elements`
+  VistaViewOptions, // Base options (without `elements`)
+  VistaViewImage, // Image object: { src, alt?, thumb? }
+  VistaViewImageIndexed, // Image with index and DOM references
+  VistaViewInterface, // Return type from vistaView()
+  VistaViewData, // Data passed to events/functions
+  VistaViewSetupFunction, // Type for setupFunction
+  VistaViewTransitionFunction, // Type for transitionFunction
+  VistaViewCloseFunction, // Type for closeFunction
+  VistaViewInitFunction, // Type for initFunction
+  VistaViewCustomControl, // Custom control definition
+} from 'vistaview';
 ```
 
 ## Styling
