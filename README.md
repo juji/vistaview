@@ -23,8 +23,13 @@ npm install vistaview
 For quick prototyping or non-bundler environments, use the UMD build via CDN:
 
 ```html
+<!-- unpkg -->
 <link rel="stylesheet" href="https://unpkg.com/vistaview/dist/vistaview.css" />
 <script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+
+<!-- or jsDelivr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.css" />
+<script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
 
 <script>
   // VistaView is available globally
