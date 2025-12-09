@@ -18,6 +18,22 @@ A lightweight, modern image lightbox library for the web. Zero dependencies, fra
 npm install vistaview
 ```
 
+### Using CDN (UMD)
+
+For quick prototyping or non-bundler environments, use the UMD build via CDN:
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/vistaview.css" />
+<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+
+<script>
+  // VistaView is available globally
+  VistaView.vistaView({
+    elements: '#gallery a',
+  });
+</script>
+```
+
 ## Quick Start
 
 ### Using anchor elements (recommended)
