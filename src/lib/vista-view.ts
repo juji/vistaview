@@ -76,6 +76,7 @@ export class VistaView {
   isZoomed: HTMLImageElement | false = false;
 
   private onClickElements: ((e: PointerEvent) => void)[] = [];
+  private defaultOnClickHandler: (e: PointerEvent) => void = (e) => e.preventDefault();
 
   private onResizeHandler: (() => void) | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
@@ -131,9 +132,7 @@ export class VistaView {
           e.preventDefault();
           this.open(index);
         });
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-        });
+        el.addEventListener('click', this.defaultOnClickHandler);
         el.addEventListener('pointerup', this.onClickElements[index]);
       });
     }
@@ -887,6 +886,7 @@ export class VistaView {
     this.close(false);
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el, index) => {
+        el.removeEventListener('click', this.defaultOnClickHandler);
         el.removeEventListener('pointerup', this.onClickElements[index]);
       });
     }
