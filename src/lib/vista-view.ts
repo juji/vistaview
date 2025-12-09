@@ -131,7 +131,10 @@ export class VistaView {
           e.preventDefault();
           this.open(index);
         });
-        el.addEventListener('click', this.onClickElements[index]);
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+        el.addEventListener('pointerup', this.onClickElements[index]);
       });
     }
   }
@@ -884,7 +887,7 @@ export class VistaView {
     this.close(false);
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el, index) => {
-        el.removeEventListener('click', this.onClickElements[index]);
+        el.removeEventListener('pointerup', this.onClickElements[index]);
       });
     }
   }
