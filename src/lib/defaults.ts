@@ -22,6 +22,8 @@ export function setTouchActions(vistaView: VistaView): void {
   let initX = 0;
   let initY = 0;
   let lastX = 0;
+  let lastY = 0;
+  let horizontal: boolean | null = null;
   let initTouchTime = 0;
   let isActive = false;
 
@@ -33,6 +35,7 @@ export function setTouchActions(vistaView: VistaView): void {
     initX = e.pageX;
     initY = e.pageY;
     lastX = e.pageX;
+    lastY = e.pageY;
     initTouchTime = Date.now();
   };
 
@@ -44,8 +47,14 @@ export function setTouchActions(vistaView: VistaView): void {
     const diffX = e.pageX - initX;
     const diffY = e.pageY - initY;
     lastX = e.pageX;
-    container.style.setProperty('--vistaview-pointer-diff-x', `${diffX}px`);
-    container.style.setProperty('--vistaview-pointer-diff-y', `${diffY}px`);
+    lastY = e.pageY;
+    if (Math.abs(diffX) >= Math.abs(diffY) && (horizontal === null || horizontal === true)) {
+      container.style.setProperty('--vistaview-pointer-diff-x', `${diffX}px`);
+      horizontal = true;
+    } else if (Math.abs(diffY) > Math.abs(diffX) && (horizontal === null || horizontal === false)) {
+      container.style.setProperty('--vistaview-pointer-diff-y', `${diffY}px`);
+      horizontal = false;
+    }
   };
 
   onPointerUp = (e: PointerEvent) => {
@@ -58,8 +67,10 @@ export function setTouchActions(vistaView: VistaView): void {
     const images = Array.from(container.querySelectorAll('.vistaview-item'));
 
     const distanceX = lastX - initX;
+    const distanceY = lastY - initY;
     const timeDiff = Date.now() - initTouchTime;
-    const speed = distanceX / timeDiff; // touch speed
+    const speedX = distanceX / timeDiff; // touch speed
+    const speedY = distanceY / timeDiff; // touch speed
     const threshold = vistaView.options.touchSpeedThreshold || 0.7;
 
     const zeroIndex = images.find(
@@ -78,30 +89,33 @@ export function setTouchActions(vistaView: VistaView): void {
       });
     }
 
-    function setTranslate(translateX: string) {
+    function setTranslate(translateX: string = '0%', translateY: string = '0%') {
       images.forEach((elm) => {
         (elm as HTMLDivElement).style.transition =
           `translate ${vistaView.options.animationDurationBase! * 0.5}ms ease-out`;
-        (elm as HTMLDivElement).style.translate = translateX;
+        (elm as HTMLDivElement).style.translate = `${translateX} ${translateY}`;
       });
     }
 
-    if (speed < -threshold || speed > threshold) {
+    if (speedX < -threshold || speedX > threshold) {
       // going somewhere
       images[0].addEventListener('transitionend', () => {
         vistaView.isReducedMotion = true;
         containerOff();
         vistaView.view(
-          speed < -threshold ? (index + 1) % totalImage : (index - 1 + totalImage) % totalImage,
+          speedX < -threshold ? (index + 1) % totalImage : (index - 1 + totalImage) % totalImage,
           {
-            next: speed < -threshold,
-            prev: speed > threshold,
+            next: speedX < -threshold,
+            prev: speedX > threshold,
           }
         );
         vistaView.isReducedMotion = originalReducedMotion;
       });
 
-      setTranslate(speed < -threshold ? '-100%' : '100%');
+      setTranslate(speedX < -threshold ? '-100%' : '100%');
+    } else if (speedY < -threshold || speedY > threshold) {
+      vistaView.close();
+      setTranslate('0%', '0%');
     } else {
       // not going anywwwhere
       images[0].addEventListener('transitionend', containerOff);

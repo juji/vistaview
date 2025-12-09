@@ -196,7 +196,7 @@
   left: 0;
   margin: 0;
   padding: 0;
-  translate: var(--vistaview-pointer-diff-x) 0;
+  translate: var(--vistaview-pointer-diff-x) var(--vistaview-pointer-diff-y);
 
   img.vistaview-image-lowres {
     position: absolute;
