@@ -24,10 +24,10 @@ npm install vistaview
 
 ```html
 <div id="gallery">
-  <a href="/images/photo1-full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+  <a href="/images/photo1-full.jpg">
     <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
   </a>
-  <a href="/images/photo2-full.jpg" data-vistaview-width="1280" data-vistaview-height="720">
+  <a href="/images/photo2-full.jpg">
     <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
   </a>
 </div>
@@ -46,13 +46,7 @@ npm install vistaview
 
 ```html
 <div id="gallery">
-  <img
-    src="/images/thumb1.jpg"
-    data-vistaview-src="/images/full1.jpg"
-    data-vistaview-width="1920"
-    data-vistaview-height="1080"
-    alt="Photo 1"
-  />
+  <img src="/images/thumb1.jpg" data-vistaview-src="/images/full1.jpg" alt="Photo 1" />
 </div>
 ```
 
@@ -77,8 +71,8 @@ vistaView({
 ```js
 vistaView({
   elements: [
-    { src: '/images/photo1.jpg', width: 1920, height: 1080, alt: 'Photo 1' },
-    { src: '/images/photo2.jpg', width: 1280, height: 720, alt: 'Photo 2' },
+    { src: '/images/photo1.jpg', thumb: '/images/thumb1.jpg', alt: 'Photo 1' },
+    { src: '/images/photo2.jpg', thumb: '/images/thumb2.jpg', alt: 'Photo 2' },
   ],
 });
 ```
@@ -167,13 +161,11 @@ VistaView uses CSS custom properties for easy theming:
 
 ## Data Attributes
 
-| Attribute                 | Description                                |
-| ------------------------- | ------------------------------------------ |
-| `data-vistaview-src`      | Full-size image URL (for `<img>` elements) |
-| `data-vistaview-width`    | Full-size image width in pixels            |
-| `data-vistaview-height`   | Full-size image height in pixels           |
-| `data-vistaview-alt`      | Alt text for the image                     |
-| `data-vistaview-smallsrc` | Thumbnail URL (optional)                   |
+| Attribute              | Description                                |
+| ---------------------- | ------------------------------------------ |
+| `data-vistaview-src`   | Full-size image URL (for `<img>` elements) |
+| `data-vistaview-alt`   | Alt text for the image                     |
+| `data-vistaview-thumb` | Thumbnail URL (optional)                   |
 
 ## Keyboard Navigation
 
@@ -193,78 +185,29 @@ VistaView works in all modern browsers (Chrome, Firefox, Safari, Edge).
 
 VistaView provides official bindings for popular frameworks:
 
-### React
+- **React** — `useVistaView` hook and `<VistaView>` component
+- **Vue 3** — `useVistaView` composable and `<VistaView>` component
+- **Svelte** — `useVistaView` hook
+- **Solid** — `useVistaView` hook and `<VistaView>` component
+- **Angular** — Manual setup example
+- **Vanilla JS** — Works out of the box
+
+👉 **[See full framework integration guide](./framework-integration.md)**
+
+### Quick Example (React)
 
 ```tsx
-import { useVistaView, VistaView } from 'vistaview/react';
+import { useVistaView } from 'vistaview/react';
+import 'vistaview/style.css';
 
-// Using the hook
 function Gallery() {
-  const { open } = useVistaView({ elements: '#gallery a' });
-  return <div id="gallery">...</div>;
-}
-
-// Using the component
-function Gallery() {
+  const { open, close, next, prev } = useVistaView({ elements: '#gallery a' });
   return (
-    <VistaView selector="a">
+    <div id="gallery">
       <a href="/full.jpg">
-        <img src="/thumb.jpg" />
+        <img src="/thumb.jpg" alt="Photo" />
       </a>
-    </VistaView>
-  );
-}
-```
-
-### Vue
-
-```vue
-<script setup>
-import { useVistaView, VistaView } from 'vistaview/vue';
-
-// Using the hook
-const { open } = useVistaView({ elements: '#gallery a' });
-</script>
-
-<template>
-  <!-- Using the component -->
-  <VistaView selector="a">
-    <a href="/full.jpg"><img src="/thumb.jpg" /></a>
-  </VistaView>
-</template>
-```
-
-### Svelte
-
-```svelte
-<script>
-import { useVistaView } from 'vistaview/svelte';
-
-const { open } = useVistaView({ elements: '#gallery a' });
-</script>
-
-<div id="gallery">...</div>
-```
-
-### Solid
-
-```tsx
-import { useVistaView, VistaView } from 'vistaview/solid';
-
-// Using the hook
-function Gallery() {
-  const { open } = useVistaView({ elements: '#gallery a' });
-  return <div id="gallery">...</div>;
-}
-
-// Using the component
-function Gallery() {
-  return (
-    <VistaView selector="a">
-      <a href="/full.jpg">
-        <img src="/thumb.jpg" />
-      </a>
-    </VistaView>
+    </div>
   );
 }
 ```

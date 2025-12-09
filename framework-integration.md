@@ -12,11 +12,13 @@ import 'vistaview/style.css';
 
 // Option 1: Use the hook
 function Gallery() {
-  const { ref, open, close, next, prev, getCurrentIndex } = useVistaView();
+  const { open, close, next, prev, getCurrentIndex, view } = useVistaView({
+    elements: '#gallery a',
+  });
 
   return (
-    <div ref={ref}>
-      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+    <div id="gallery">
+      <a href="/images/full.jpg">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </div>
@@ -26,8 +28,8 @@ function Gallery() {
 // Option 2: Use the component
 function Gallery2() {
   return (
-    <VistaView>
-      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+    <VistaView selector="a" className="gallery">
+      <a href="/images/full.jpg">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </VistaView>
@@ -50,7 +52,7 @@ function Gallery({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!ref.current) return;
-    instanceRef.current = vistaView({ parent: ref.current });
+    instanceRef.current = vistaView({ elements: ref.current.querySelectorAll('a') });
     return () => {
       instanceRef.current?.destroy();
     };
@@ -62,22 +64,33 @@ function Gallery({ children }: { children: React.ReactNode }) {
 
 ## Vue 3
 
-VistaView ships with a built-in Vue composable:
+VistaView ships with a built-in Vue composable and component:
 
 ```vue
 <script setup>
-import { useVistaView } from 'vistaview/vue';
+import { useVistaView, VistaView } from 'vistaview/vue';
 import 'vistaview/style.css';
 
-const { container, open, close, next, prev, getCurrentIndex } = useVistaView();
+// Option 1: Use the composable
+const { open, close, next, prev, getCurrentIndex, view } = useVistaView({
+  elements: '#gallery a',
+});
 </script>
 
 <template>
-  <div ref="container">
-    <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+  <!-- Option 1: With the composable -->
+  <div id="gallery">
+    <a href="/images/full.jpg">
       <img src="/images/thumb.jpg" alt="Photo" />
     </a>
   </div>
+
+  <!-- Option 2: Use the component -->
+  <VistaView selector="a" class="gallery">
+    <a href="/images/full.jpg">
+      <img src="/images/thumb.jpg" alt="Photo" />
+    </a>
+  </VistaView>
 </template>
 ```
 
@@ -95,7 +108,7 @@ const container = ref(null);
 let instance = null;
 
 onMounted(() => {
-  instance = vistaView({ parent: container.value });
+  instance = vistaView({ elements: container.value.querySelectorAll('a') });
 });
 
 onUnmounted(() => {
@@ -119,11 +132,13 @@ VistaView ships with a built-in Svelte hook:
 import { useVistaView } from 'vistaview/svelte';
 import 'vistaview/style.css';
 
-const { init, open, close, next, prev, getCurrentIndex } = useVistaView();
+const { open, close, next, prev, getCurrentIndex, view } = useVistaView({
+  elements: '#gallery a',
+});
 </script>
 
-<div use:init>
-  <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+<div id="gallery">
+  <a href="/images/full.jpg">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
 </div>
@@ -141,7 +156,7 @@ let container;
 let instance;
 
 onMount(() => {
-  instance = vistaView({ parent: container });
+  instance = vistaView({ elements: container.querySelectorAll('a') });
 });
 
 onDestroy(() => {
@@ -166,7 +181,7 @@ let container;
 let instance;
 
 onMount(() => {
-  instance = vistaView({ parent: container });
+  instance = vistaView({ elements: container.querySelectorAll('a') });
 });
 
 onDestroy(() => {
@@ -181,21 +196,35 @@ onDestroy(() => {
 
 ## Solid
 
-VistaView ships with a built-in Solid hook:
+VistaView ships with a built-in Solid hook and component:
 
 ```tsx
-import { useVistaView } from 'vistaview/solid';
+import { useVistaView, VistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
 
+// Option 1: Use the hook
 function Gallery() {
-  const { init, open, close, next, prev, getCurrentIndex } = useVistaView();
+  const { open, close, next, prev, getCurrentIndex, view } = useVistaView({
+    elements: '#gallery a',
+  });
 
   return (
-    <div ref={init}>
-      <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+    <div id="gallery">
+      <a href="/images/full.jpg">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
     </div>
+  );
+}
+
+// Option 2: Use the component
+function Gallery2() {
+  return (
+    <VistaView selector="a" class="gallery">
+      <a href="/images/full.jpg">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </VistaView>
   );
 }
 ```
@@ -204,15 +233,19 @@ function Gallery() {
 
 ```tsx
 import { onMount, onCleanup, type ParentProps } from 'solid-js';
-import { vistaView } from 'vistaview';
+import { vistaView, type VistaViewInterface } from 'vistaview';
 import 'vistaview/style.css';
 
 function Gallery(props: ParentProps) {
   let container: HTMLDivElement | undefined;
+  let instance: VistaViewInterface | null = null;
 
   onMount(() => {
-    const instance = vistaView({ parent: container! });
-    onCleanup(() => instance.destroy());
+    instance = vistaView({ elements: container!.querySelectorAll('a') });
+  });
+
+  onCleanup(() => {
+    instance?.destroy();
   });
 
   return <div ref={container}>{props.children}</div>;
@@ -238,7 +271,9 @@ export class GalleryComponent implements AfterViewInit, OnDestroy {
   private instance: VistaViewInterface | null = null;
 
   ngAfterViewInit() {
-    this.instance = vistaView({ parent: this.container.nativeElement });
+    this.instance = vistaView({
+      elements: this.container.nativeElement.querySelectorAll('a'),
+    });
   }
 
   ngOnDestroy() {
@@ -261,7 +296,7 @@ No framework? No problem:
 
 ```html
 <div id="gallery">
-  <a href="/images/full.jpg" data-vistaview-width="1920" data-vistaview-height="1080">
+  <a href="/images/full.jpg">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
 </div>
@@ -270,8 +305,17 @@ No framework? No problem:
   import { vistaView } from 'vistaview';
   import 'vistaview/style.css';
 
-  const { open, close, destroy } = vistaView({
-    parent: document.getElementById('gallery'),
+  const gallery = vistaView({
+    elements: '#gallery a',
   });
+
+  // Methods available:
+  // gallery.open(index)
+  // gallery.close()
+  // gallery.next()
+  // gallery.prev()
+  // gallery.view(index)
+  // gallery.getCurrentIndex()
+  // gallery.destroy()
 </script>
 ```
