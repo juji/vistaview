@@ -78,7 +78,8 @@
     "build": "tsc && vite build && BUILD_UMD=true vite build",
     "preview": "vite preview",
     "prepare": "husky",
-    "test": "echo \"no test specified\""
+    "test": "echo \"no test specified\"",
+    "tunnel": "cloudflared tunnel --url http://localhost:5173"
   },
   "lint-staged": {
     "*.{js,ts,css,json,md}": "prettier --write"

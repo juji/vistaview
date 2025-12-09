@@ -10,6 +10,7 @@ import type { VistaView } from './vista-view';
 let onPointerDown: ((e: PointerEvent) => void) | null = null;
 let onPointerMove: ((e: PointerEvent) => void) | null = null;
 let onPointerUp: ((e: PointerEvent) => void) | null = null;
+let onPointerCancel: ((e: PointerEvent) => void) | null = null;
 
 // touch actions
 export function setTouchActions(vistaView: VistaView): void {
@@ -37,6 +38,9 @@ export function setTouchActions(vistaView: VistaView): void {
     lastX = e.pageX;
     lastY = e.pageY;
     initTouchTime = Date.now();
+    horizontal = null;
+    // Capture pointer for reliable tracking on mobile
+    container.setPointerCapture(e.pointerId);
   };
 
   onPointerMove = (e: PointerEvent) => {
@@ -57,9 +61,29 @@ export function setTouchActions(vistaView: VistaView): void {
     }
   };
 
+  onPointerCancel = (e: PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Release pointer capture
+    container.releasePointerCapture(e.pointerId);
+    if (vistaView.isZoomed !== false) return;
+    if (!isActive) return;
+    isActive = false;
+    horizontal = null;
+    const images = Array.from(container.querySelectorAll('.vistaview-item'));
+    container.style.removeProperty('--vistaview-pointer-diff-x');
+    container.style.removeProperty('--vistaview-pointer-diff-y');
+    images.forEach((elm) => {
+      (elm as HTMLDivElement).style.transition = '';
+      (elm as HTMLDivElement).style.translate = '';
+    });
+  };
+
   onPointerUp = (e: PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // Release pointer capture
+    container.releasePointerCapture(e.pointerId);
     if (vistaView.isZoomed !== false) return;
     if (!isActive) return;
     isActive = false;
@@ -71,7 +95,8 @@ export function setTouchActions(vistaView: VistaView): void {
     const timeDiff = Date.now() - initTouchTime;
     const speedX = distanceX / timeDiff; // touch speed
     const speedY = distanceY / timeDiff; // touch speed
-    const threshold = vistaView.options.touchSpeedThreshold || 0.7;
+    const threshold = vistaView.options.touchSpeedThreshold || 0.5;
+    // const threshold = 0.5
 
     const zeroIndex = images.find(
       (el) => (el as HTMLDivElement).dataset.vistaviewPos === '0'
@@ -114,6 +139,7 @@ export function setTouchActions(vistaView: VistaView): void {
 
       setTranslate(speedX < -threshold ? '-100%' : '100%');
     } else if (speedY < -threshold || speedY > threshold) {
+      // y detected, close
       vistaView.close();
       setTranslate('0%', '0%');
     } else {
@@ -126,6 +152,7 @@ export function setTouchActions(vistaView: VistaView): void {
   container.addEventListener('pointermove', onPointerMove);
   container.addEventListener('pointerup', onPointerUp);
   container.addEventListener('pointerdown', onPointerDown);
+  container.addEventListener('pointercancel', onPointerCancel);
 }
 
 export function removeTouchActions(vistaView: VistaView): void {
@@ -135,6 +162,7 @@ export function removeTouchActions(vistaView: VistaView): void {
   if (onPointerMove) elm.removeEventListener('pointermove', onPointerMove);
   if (onPointerUp) elm.removeEventListener('pointerup', onPointerUp);
   if (onPointerDown) elm.removeEventListener('pointerdown', onPointerDown);
+  if (onPointerCancel) elm.removeEventListener('pointercancel', onPointerCancel);
 }
 
 // default user init

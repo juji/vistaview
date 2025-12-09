@@ -6,6 +6,9 @@ import dts from 'vite-plugin-dts';
 const isUMD = process.env.BUILD_UMD === 'true';
 
 export default defineConfig({
+  server: {
+    allowedHosts: ['.trycloudflare.com'],
+  },
   plugins: [
     dts({
       insertTypesEntry: true,
