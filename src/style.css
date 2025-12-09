@@ -52,12 +52,20 @@
     z-index: var(--vistaview-initial-z-index);
   }
   50% {
-    width: calc(var(--vistaview-container-initial-width) - 42px);
-    height: calc(var(--vistaview-container-initial-height) - 42px);
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
     background: rgb(from var(--vistaview-bg-color) r g b / 0);
     backdrop-filter: blur(0px);
     border-radius: 0px;
     z-index: var(--vistaview-initial-z-index);
+  }
+  75% {
+    width: var(--vistaview-container-initial-width);
+    height: var(--vistaview-container-initial-height);
+    background: rgb(from var(--vistaview-bg-color) r g b / 0);
+    backdrop-filter: blur(0px);
+    border-radius: 0px;
+    z-index: var(--vistaview-destination-z-index);
   }
   100% {
     z-index: var(--vistaview-destination-z-index);
