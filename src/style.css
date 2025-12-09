@@ -406,7 +406,9 @@ vistaview is initialized, with initial position and size
       cubic-bezier(0.7, -0.4, 0.8, 0.6) forwards,
     vistaview-anim-out calc(var(--vistaview-animation-duration) * 1ms) ease-out forwards;
 
-  .vistaview-ui {
+  .vistaview-ui,
+  .vistaview-ui.vistaview-prev-btn,
+  .vistaview-ui.vistaview-next-btn {
     display: none;
   }
 
