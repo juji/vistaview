@@ -34,6 +34,7 @@ export type VistaViewOptions = {
   touchSpeedThreshold?: number;
   preloads?: number;
   keyboardListeners?: boolean;
+  arrowOnSmallScreens?: boolean;
 
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];

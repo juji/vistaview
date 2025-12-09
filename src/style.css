@@ -372,6 +372,20 @@
   }
 }
 
+.vistaview-root.vistaview-no-arrows-sm {
+  .vistaview-ui.vistaview-prev-btn,
+  .vistaview-ui.vistaview-next-btn {
+    display: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    .vistaview-ui.vistaview-prev-btn,
+    .vistaview-ui.vistaview-next-btn {
+      display: flex;
+    }
+  }
+}
+
 /* 
 vistaview is initialized, with initial position and size
  */
@@ -424,6 +438,7 @@ vistaview is initialized, with initial position and size
 
 .vistaview--reduced-motion,
 .vistaview--reduced-motion * {
+  --vistaview-animation-duration: 0;
   animation-name: none !important;
   animation-duration: 0ms !important;
   transition-duration: 0ms !important;

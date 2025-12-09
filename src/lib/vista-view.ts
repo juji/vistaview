@@ -31,6 +31,7 @@ export const DefaultOptions = {
   touchSpeedThreshold: 0.5,
   preloads: 1,
   keyboardListeners: true,
+  arrowOnSmallScreens: false,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],
@@ -675,6 +676,10 @@ export class VistaView {
     if (!this.rootElm || !this.imageContainerElm) {
       GlobalVistaState.somethingOpened = null;
       throw new Error('Failed to create VistaView element');
+    }
+
+    if (!this.options.arrowOnSmallScreens) {
+      this.rootElm.classList.add('vistaview-no-arrows-sm');
     }
 
     // set images and current items
