@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { vistaView } from './vistaview';
-import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vistaview';
+import type { VistaViewParams, VistaViewInterface, VistaViewImage } from './vistaview';
 
-export type { VistaViewOptions, VistaViewInterface, VistaViewImage };
+export type { VistaViewParams, VistaViewInterface, VistaViewImage };
 
 type UseVistaViewReturn = {
   open: (startIndex?: number) => void;
@@ -13,7 +13,7 @@ type UseVistaViewReturn = {
   view: (index: number) => void;
 };
 
-export function useVistaView(options: VistaViewOptions): UseVistaViewReturn {
+export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
   const instance = useRef<VistaViewInterface | null>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function useVistaView(options: VistaViewOptions): UseVistaViewReturn {
   };
 }
 
-type VistaViewProps = VistaViewOptions & {
+type VistaViewProps = VistaViewParams & {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;

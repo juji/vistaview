@@ -12,7 +12,7 @@ let onPointerMove: ((e: PointerEvent) => void) | null = null;
 let onPointerUp: ((e: PointerEvent) => void) | null = null;
 
 // touch actions
-function setTouchActions(vistaView: VistaView): void {
+export function setTouchActions(vistaView: VistaView): void {
   removeTouchActions(vistaView);
 
   const container = vistaView.imageContainerElm as HTMLElement;
@@ -114,7 +114,7 @@ function setTouchActions(vistaView: VistaView): void {
   container.addEventListener('pointerdown', onPointerDown);
 }
 
-function removeTouchActions(vistaView: VistaView): void {
+export function removeTouchActions(vistaView: VistaView): void {
   const elm = vistaView.imageContainerElm;
   if (!elm) return;
 

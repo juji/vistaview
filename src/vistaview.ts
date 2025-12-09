@@ -1,14 +1,33 @@
 import { VistaView, DefaultOptions } from './lib/vista-view';
 import { vistaViewDownload } from './lib/components';
-import type { VistaViewImage, VistaViewOptions as VistaViewOptionsBase } from './lib/types';
+
+import {
+  setTouchActions,
+  removeTouchActions,
+  defaultClose,
+  defaultInit,
+  defaultSetup,
+  defaultTransition,
+} from './lib/defaults';
+
+import type { VistaViewImage, VistaViewOptions } from './lib/types';
+
 import './style.css';
 
-export type { VistaViewImage, VistaViewOptionsBase };
+export type * from './lib/types';
 export { DefaultOptions, vistaViewDownload };
+export {
+  setTouchActions,
+  removeTouchActions,
+  defaultClose,
+  defaultInit,
+  defaultSetup,
+  defaultTransition,
+};
 
-export type VistaViewOptions = {
+export type VistaViewParams = {
   elements: string | NodeListOf<HTMLElement> | VistaViewImage[];
-} & VistaViewOptionsBase;
+} & VistaViewOptions;
 
 export type VistaViewInterface = {
   open: (startIndex?: number) => void;
@@ -53,7 +72,7 @@ function checkElementsCorrectness(
   return els || (elements as VistaViewImage[]);
 }
 
-export function vistaView({ elements, ...opts }: VistaViewOptions): VistaViewInterface | null {
+export function vistaView({ elements, ...opts }: VistaViewParams): VistaViewInterface | null {
   if (!elements) throw new Error('No elements');
 
   let elms = checkElementsCorrectness(elements);

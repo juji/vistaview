@@ -1,10 +1,10 @@
 import { onMounted, onUnmounted, ref, defineComponent, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
-import type { VistaViewOptions, VistaViewInterface, VistaViewImage } from './vistaview';
+import type { VistaViewParams, VistaViewInterface, VistaViewImage } from './vistaview';
 
-export type { VistaViewOptions, VistaViewInterface, VistaViewImage };
+export type { VistaViewParams, VistaViewInterface, VistaViewImage };
 
-export function useVistaView(options: VistaViewOptions) {
+export function useVistaView(options: VistaViewParams) {
   let instance: VistaViewInterface | null = null;
 
   onMounted(() => {
@@ -45,7 +45,7 @@ export const VistaView = defineComponent({
       instance = vistaView({
         ...attrs,
         elements: container.value.querySelectorAll(props.selector),
-      } as VistaViewOptions);
+      } as VistaViewParams);
     });
 
     onUnmounted(() => {
