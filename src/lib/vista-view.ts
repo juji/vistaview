@@ -897,6 +897,7 @@ export class VistaView {
     this.close(false);
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el) => {
+        el.dataset.vistaviewIndex && delete el.dataset.vistaviewIndex;
         el.removeEventListener('click', this.defaultOnClickHandler);
         el.removeEventListener('pointerup', this.onClickElements);
       });
