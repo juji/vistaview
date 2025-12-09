@@ -75,7 +75,11 @@ export class VistaView {
   navActive = true;
   isZoomed: HTMLImageElement | false = false;
 
-  private onClickElements: ((e: PointerEvent) => void)[] = [];
+  private onClickElements: (e: PointerEvent) => void = (e) => {
+    e.preventDefault();
+    const someHtml = e.currentTarget as HTMLElement;
+    someHtml.dataset.vistaviewIndex && this.open(parseInt(someHtml.dataset.vistaviewIndex));
+  };
   private defaultOnClickHandler: (e: PointerEvent) => void = (e) => e.preventDefault();
 
   private onResizeHandler: (() => void) | null = null;
@@ -89,8 +93,6 @@ export class VistaView {
   private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
-
-  // private imageLoadings: { [key: string]: boolean } = {};
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -128,12 +130,9 @@ export class VistaView {
     // set click listeners on elements
     if (this.elements instanceof NodeList) {
       this.elements.forEach((el, index) => {
-        this.onClickElements.push((e: PointerEvent) => {
-          e.preventDefault();
-          this.open(index);
-        });
+        el.dataset.vistaviewIndex = index.toString();
         el.addEventListener('click', this.defaultOnClickHandler);
-        el.addEventListener('pointerup', this.onClickElements[index]);
+        el.addEventListener('pointerup', this.onClickElements);
       });
     }
   }
@@ -160,11 +159,16 @@ export class VistaView {
       this.getCurrentIndexes(afterIndex);
     const images = this.getImages(activeIndexes);
     const elms = images.map((img, i) => vistaViewItem(img, activePositions[i]));
+
     elms.forEach((elm, i) => {
       const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
+      const index = activeIndexes[i];
       const thumb = images[i].imageElm;
 
-      if (im.complete && im.naturalWidth > 0) {
+      const item = this.rootElm?.querySelector(`.vistaview-item[data-vistaview-index="${index}"]`);
+      const itemImage = item?.querySelector('.vistaview-image-highres.vistaview-image-loaded');
+
+      if (itemImage) {
         const { width: tWidth, height: tHeight } = getFittedSize(thumb as HTMLImageElement);
         if (tWidth && tHeight) {
           im.style.setProperty('--vistaview-fitted-width', `${tWidth}px`);
@@ -176,8 +180,8 @@ export class VistaView {
         const { width, height } = getFullSizeDim(im);
         im.style.width = `${width}px`;
         im.style.height = `${height}px`;
-        im.width = im.naturalWidth;
-        im.height = im.naturalHeight;
+        im.width = (itemImage as HTMLImageElement).naturalWidth;
+        im.height = (itemImage as HTMLImageElement).naturalHeight;
 
         if (im.parentElement?.matches('[data-vistaview-pos="0"]')) {
           this.updateZoomButtonsVisibility();
@@ -522,11 +526,7 @@ export class VistaView {
       }
 
       const onLoaded = () => {
-        // wait for .vistaview--opened exist (animation end)
-        const timeoutId = setInterval(() => {
-          if (!this.rootElm?.classList.contains('vistaview--opened')) return;
-          clearInterval(timeoutId);
-
+        const setSizes = () => {
           if (sizes.w && sizes.h) {
             im.style.width = `${sizes.w}px`;
             im.style.height = `${sizes.h}px`;
@@ -553,7 +553,18 @@ export class VistaView {
           if (img.parentElement?.matches('[data-vistaview-pos="0"]')) {
             this.updateZoomButtonsVisibility();
           }
-        }, 100);
+        };
+
+        // wait for .vistaview--opened exist (animation end)
+        if (this.rootElm?.classList.contains('vistaview--opened')) {
+          setSizes();
+        } else {
+          const timeoutId = setInterval(() => {
+            if (!this.rootElm?.classList.contains('vistaview--opened')) return;
+            clearInterval(timeoutId);
+            setSizes();
+          }, 50);
+        }
       };
 
       // on loaded
@@ -885,9 +896,9 @@ export class VistaView {
   destroy(): void {
     this.close(false);
     if (this.elements instanceof NodeList) {
-      this.elements.forEach((el, index) => {
+      this.elements.forEach((el) => {
         el.removeEventListener('click', this.defaultOnClickHandler);
-        el.removeEventListener('pointerup', this.onClickElements[index]);
+        el.removeEventListener('pointerup', this.onClickElements);
       });
     }
   }
