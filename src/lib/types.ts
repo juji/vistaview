@@ -34,6 +34,7 @@ export type VistaViewOptions = {
   touchSpeedThreshold?: number;
   preloads?: number;
   keyboardListeners?: boolean;
+
   controls?: {
     topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
@@ -42,9 +43,17 @@ export type VistaViewOptions = {
     bottomLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
     bottomRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
   };
+
+  // events
   onImageView?: (params: VistaViewData) => void;
   onOpen?: (params: VistaViewData) => void;
   onClose?: (params: VistaViewData) => void;
+
+  // uesr defined functions
+  transitionFunction?: VistaViewTransitionFunction;
+  setupFunction?: VistaViewSetupFunction;
+  closeFunction?: VistaViewCloseFunction;
+  initFunction?: VistaViewInitFunction;
 };
 
 export type VistaViewDefaultControls =

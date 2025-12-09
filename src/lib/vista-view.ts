@@ -102,6 +102,22 @@ export class VistaView {
       },
     };
 
+    if (this.options.initFunction) {
+      this.userInit = this.options.initFunction;
+    }
+
+    if (this.options.transitionFunction) {
+      this.userTransition = this.options.transitionFunction;
+    }
+
+    if (this.options.closeFunction) {
+      this.userClose = this.options.closeFunction;
+    }
+
+    if (this.options.initFunction) {
+      this.userInit = this.options.initFunction;
+    }
+
     // detect reduced motion
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
