@@ -278,6 +278,43 @@ function Gallery() {
 }
 ```
 
+## Last built
+
+```
+vite v6.4.1 building for production...
+transforming...
+✓ 10 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/vistaview.css   9.25 kB │ gzip: 1.64 kB
+dist/svelte.js       0.54 kB │ gzip: 0.27 kB
+dist/solid.js        1.11 kB │ gzip: 0.52 kB
+dist/vue.js          1.29 kB │ gzip: 0.56 kB
+dist/react.js        1.54 kB │ gzip: 0.57 kB
+dist/vistaview.js   33.64 kB │ gzip: 8.49 kB
+[vite:dts] Declaration files built in 1534ms.
+
+dist/vistaview.css   9.25 kB │ gzip: 1.64 kB
+dist/svelte.cjs      0.48 kB │ gzip: 0.29 kB
+dist/solid.cjs       0.92 kB │ gzip: 0.50 kB
+dist/vue.cjs         1.00 kB │ gzip: 0.51 kB
+dist/react.cjs       1.25 kB │ gzip: 0.52 kB
+dist/vistaview.cjs  26.72 kB │ gzip: 7.56 kB
+✓ built in 1.77s
+vite v6.4.1 building for production...
+transforming...
+✓ 6 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/vistaview.css      9.25 kB │ gzip: 1.64 kB
+dist/vistaview.umd.js  26.88 kB │ gzip: 7.66 kB
+[vite:dts] Declaration files built in 1525ms.
+```
+
 ## License
 
 MIT
