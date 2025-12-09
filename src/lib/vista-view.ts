@@ -141,7 +141,9 @@ export class VistaView {
     if (!GlobalVistaState.somethingOpened) return;
     if (beforeIndex === afterIndex) return;
     if (beforeIndex === null) return;
-    if (this.elements.length === 1) return;
+    // if (this.elements.length === 1) return;
+
+    console.log('Swapping from', beforeIndex, 'to', afterIndex);
 
     if (!this.imageContainerElm) {
       throw new Error('VistaView: imageContainerElm is null in swap()');
@@ -160,35 +162,42 @@ export class VistaView {
     const images = this.getImages(activeIndexes);
     const elms = images.map((img, i) => vistaViewItem(img, activePositions[i]));
 
-    elms.forEach((elm, i) => {
-      const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
-      const index = activeIndexes[i];
-      const thumb = images[i].imageElm;
+    // elms.forEach((elm, i) => {
+    //   const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
+    //   // const index = activeIndexes[i];
+    //   const thumb = images[i].imageElm;
 
-      const item = this.rootElm?.querySelector(`.vistaview-item[data-vistaview-index="${index}"]`);
-      const itemImage = item?.querySelector('.vistaview-image-highres.vistaview-image-loaded');
+    // const { width: tWidth, height: tHeight } = getFittedSize(thumb as HTMLImageElement);
+    // if (tWidth && tHeight) {
+    //   im.style.setProperty('--vistaview-fitted-width', `${tWidth}px`);
+    //   im.style.setProperty('--vistaview-fitted-height', `${tHeight}px`);
+    // }
 
-      if (itemImage) {
-        const { width: tWidth, height: tHeight } = getFittedSize(thumb as HTMLImageElement);
-        if (tWidth && tHeight) {
-          im.style.setProperty('--vistaview-fitted-width', `${tWidth}px`);
-          im.style.setProperty('--vistaview-fitted-height', `${tHeight}px`);
-        }
-        im.classList.add('vistaview-image-loaded');
-        elm.querySelector('.vistaview-image-lowres')?.classList.add('vistaview-image--hidden');
+    // const item = this.rootElm?.querySelector(`.vistaview-item[data-vistaview-index="${index}"]`);
+    // const itemImage = item?.querySelector('.vistaview-image-highres.vistaview-image-loaded') as HTMLImageElement;
 
-        const { width, height } = getFullSizeDim(im);
-        im.style.width = `${width}px`;
-        im.style.height = `${height}px`;
-        im.width = (itemImage as HTMLImageElement).naturalWidth;
-        im.height = (itemImage as HTMLImageElement).naturalHeight;
+    // if (itemImage) {
+    //   im.classList.add('vistaview-image-loaded');
+    //   if(itemImage.classList.contains('vistaview-image-settled')) {
+    //     im.classList.add('vistaview-image-settled');
+    //   }
 
-        if (im.parentElement?.matches('[data-vistaview-pos="0"]')) {
-          this.updateZoomButtonsVisibility();
-        }
-      }
-    });
+    //   elm.querySelector('.vistaview-image-lowres')
+    //   ?.classList.add('vistaview-image--hidden');
 
+    //   const { width, height } = getFullSizeDim(im);
+    //   im.style.width = `${width}px`;
+    //   im.style.height = `${height}px`;
+    //   im.width = (itemImage as HTMLImageElement).naturalWidth;
+    //   im.height = (itemImage as HTMLImageElement).naturalHeight;
+
+    //   if (im.parentElement?.matches('[data-vistaview-pos="0"]')) {
+    //     this.updateZoomButtonsVisibility();
+    //   }
+    // }
+    // });
+
+    console.log('swap prepared');
     this.navActive = false;
 
     const transitionParams = {
@@ -209,6 +218,26 @@ export class VistaView {
     // do the swap, this is where the animation would go
     const currentImage = await this.userTransition(transitionParams);
 
+    console.log('swap completed');
+    this.imageContainerElm!.innerHTML = '';
+    elms!.forEach((elm) => {
+      // console.log('appending elm', elm.outerHTML);
+
+      const positionalIndex = elm.dataset.vistaviewPos;
+      const itemIndex = elm.dataset.vistaviewIndex;
+
+      if (positionalIndex === '0') {
+        // ensure the last elements attributes are used
+        const lastElm = this.currentItems!.find((v) => v.dataset.vistaviewIndex === itemIndex)!;
+        const currentImage = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
+        const lastElmImage = lastElm.querySelector('.vistaview-image-highres') as HTMLImageElement;
+        currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
+        currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
+        this.imageContainerElm!.appendChild(elm);
+      } else {
+        this.imageContainerElm!.appendChild(elm);
+      }
+    });
     this.navActive = true;
 
     this.setInitialDimPos(currentImage as VistaViewImageIndexed);
@@ -216,6 +245,7 @@ export class VistaView {
     this.currentItems = elms;
     this.loadImages();
     this.setCurrentDescription();
+    this.updateZoomButtonsVisibility();
 
     this.options.onImageView?.(transitionParams);
   }
@@ -539,16 +569,32 @@ export class VistaView {
           im.height = im.naturalHeight;
 
           setTimeout(() => {
+            let transitionNum = 0;
+            const onImageTransitionEnd = () => {
+              transitionNum++;
+              if (transitionNum < 3) return;
+              im.removeEventListener('transitionend', onImageTransitionEnd);
+              im.parentElement
+                ?.querySelector('.vistaview-image-lowres')
+                ?.classList.add('vistaview-image--hidden');
+              im.classList.add('vistaview-image-settled');
+            };
+            im.addEventListener('transitionend', onImageTransitionEnd);
             const { width, height } = getFullSizeDim(im);
             im.style.width = `${width}px`;
             im.style.height = `${height}px`;
-          }, 333);
 
-          setTimeout(() => {
-            im.parentElement
-              ?.querySelector('.vistaview-image-lowres')
-              ?.classList.add('vistaview-image--hidden');
-          }, 500);
+            if (sizes.w && sizes.h && width === sizes.w && height === sizes.h) {
+              // no transition, directly set settled
+              im.parentElement
+                ?.querySelector('.vistaview-image-lowres')
+                ?.classList.add('vistaview-image--hidden');
+              im.classList.add('vistaview-image-settled');
+            } else {
+              im.style.width = `${width}px`;
+              im.style.height = `${height}px`;
+            }
+          }, 100);
 
           if (img.parentElement?.matches('[data-vistaview-pos="0"]')) {
             this.updateZoomButtonsVisibility();

@@ -102,7 +102,6 @@ export function setTouchActions(vistaView: VistaView): void {
       (el) => (el as HTMLDivElement).dataset.vistaviewPos === '0'
     ) as HTMLDivElement;
     const index = Number(zeroIndex.dataset.vistaviewIndex);
-    const originalReducedMotion = vistaView.isReducedMotion;
 
     function containerOff() {
       images[0].removeEventListener('transitionend', containerOff);
@@ -125,7 +124,6 @@ export function setTouchActions(vistaView: VistaView): void {
     if (speedX < -threshold || speedX > threshold) {
       // going somewhere
       images[0].addEventListener('transitionend', () => {
-        vistaView.isReducedMotion = true;
         containerOff();
         vistaView.view(
           speedX < -threshold ? (index + 1) % totalImage : (index - 1 + totalImage) % totalImage,
@@ -134,7 +132,6 @@ export function setTouchActions(vistaView: VistaView): void {
             prev: speedX > threshold,
           }
         );
-        vistaView.isReducedMotion = originalReducedMotion;
       });
 
       setTranslate(speedX < -threshold ? '-100%' : '100%');
@@ -206,19 +203,16 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
   htmlElements: { from: htmlFrom, to: htmlTo },
   images: { to: images },
   via: { next, prev },
-  container,
   options,
   isReducedMotion,
   // index: { from: fromIndex, to: toIndex },
 }) => {
+  console.log('defaultTransition called');
   if (!images) throw new Error('VistaView: images is null in defaultTransition()');
 
   if (isReducedMotion) {
+    console.log('reduced motion, no transition');
     // no animation, just swap
-    container.innerHTML = '';
-    htmlTo!.forEach((elm) => {
-      container!.appendChild(elm);
-    });
     return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
   }
 
@@ -235,18 +229,72 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
   //   (fromIndex === images.length -1 && toIndex === 0);
 
   await new Promise<number>((r) => {
-    function onTransitionEnd() {
-      container.innerHTML = '';
-      htmlTo!.forEach((elm) => {
-        container!.appendChild(elm);
-      });
-      r(0);
-    }
+    let transitionEnded = 0;
+    const onTransitionEnd = (e: Event) => {
+      e.currentTarget!.removeEventListener('transitionend', onTransitionEnd);
+      transitionEnded++;
+      if (transitionEnded < elms.length) return;
 
-    elms[elms.length - 1].addEventListener('transitionend', onTransitionEnd);
+      // find vistaViewIndex for elm with zero pos
+      const zeroPos = htmlTo?.find((elm) => elm.dataset.vistaviewPos === '0');
+      const vistaViewIndex = zeroPos ? Number(zeroPos.dataset.vistaviewIndex) : 0;
+
+      // find current image element with the same index
+      const currentElm = elms.find((elm) => Number(elm.dataset.vistaviewIndex) === vistaViewIndex);
+      const currentImage = currentElm?.querySelector(
+        '.vistaview-image-highres'
+      ) as HTMLImageElement;
+
+      // the image is non-existent, return immediately
+      if (!currentImage) {
+        console.log('current image not found');
+        r(0);
+        return;
+      }
+
+      // if the image is not loaded yet, return immediately
+      if (!currentImage.classList.contains('vistaview-image-loaded')) {
+        console.log('current image not loaded yet');
+        r(0);
+        return;
+      }
+
+      zeroPos?.classList.add('vistaview-image-loaded');
+
+      // the image is settled, return immediately
+      if (currentImage.classList.contains('vistaview-image-settled')) {
+        console.log('current image already settled');
+        zeroPos?.classList.add('vistaview-image-settled');
+        r(0);
+        return;
+      }
+
+      // wait for the image to have .vistaview-image-settled
+      let limit = 0;
+      console.log('waiting for image to be settled...');
+      const interval = setInterval(() => {
+        limit++;
+
+        if (limit > 50) {
+          // 50 tries, 1 second max
+          console.log('timeout waiting for image to be settled');
+          clearInterval(interval);
+          r(0);
+          return;
+        }
+
+        if (currentImage.classList.contains('vistaview-image-settled')) {
+          console.log('image settled');
+          clearInterval(interval);
+          r(0);
+        }
+      }, 20);
+    };
+
     elms.forEach((elm) => {
       elm.style.transition = `translate ${options.animationDurationBase! * 0.5}ms ease-out`;
       elm.style.translate = next ? '-100%' : prev ? '100%' : '0%';
+      elm.addEventListener('transitionend', onTransitionEnd);
     });
   });
 
