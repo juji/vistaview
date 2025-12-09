@@ -204,7 +204,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation: vistaview-pulse 1s ease-in-out infinite;
+    /* animation: vistaview-pulse 1s ease-in-out infinite; */
 
     &:has(+ img.vistaview-image-loaded) {
       animation: none;
@@ -219,6 +219,7 @@
     --pointer-diff-x: 0px;
     --pointer-diff-y: 0px;
 
+    cursor: zoom-in;
     display: block;
     position: absolute;
     top: calc(50% + var(--pointer-diff-y));

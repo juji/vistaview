@@ -89,6 +89,8 @@ export class VistaView {
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
+  // private imageLoadings: { [key: string]: boolean } = {};
+
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
     this.currentIndex._vistaView = this;
@@ -517,9 +519,12 @@ export class VistaView {
         sizes.h = Math.min(thumb.height, height);
       }
 
-      const onLoaded =
-        (alreadyDone: boolean = false) =>
-        () => {
+      const onLoaded = () => {
+        // wait for .vistaview--opened exist (animation end)
+        const timeoutId = setInterval(() => {
+          if (!this.rootElm?.classList.contains('vistaview--opened')) return;
+          clearInterval(timeoutId);
+
           if (sizes.w && sizes.h) {
             im.style.width = `${sizes.w}px`;
             im.style.height = `${sizes.h}px`;
@@ -530,17 +535,13 @@ export class VistaView {
           im.classList.add('vistaview-image-loaded');
           im.width = im.naturalWidth;
           im.height = im.naturalHeight;
-          if (alreadyDone) {
+
+          setTimeout(() => {
             const { width, height } = getFullSizeDim(im);
             im.style.width = `${width}px`;
             im.style.height = `${height}px`;
-          } else {
-            setTimeout(() => {
-              const { width, height } = getFullSizeDim(im);
-              im.style.width = `${width}px`;
-              im.style.height = `${height}px`;
-            }, 333);
-          }
+          }, 333);
+
           setTimeout(() => {
             im.parentElement
               ?.querySelector('.vistaview-image-lowres')
@@ -550,13 +551,14 @@ export class VistaView {
           if (img.parentElement?.matches('[data-vistaview-pos="0"]')) {
             this.updateZoomButtonsVisibility();
           }
-        };
+        }, 100);
+      };
 
       // on loaded
       if (im.complete && im.naturalWidth > 0) {
-        onLoaded(true)();
+        onLoaded();
       } else {
-        im.onload = onLoaded(false);
+        im.onload = onLoaded;
       }
     });
   }
@@ -707,6 +709,17 @@ export class VistaView {
     this.imageContainerElm.innerHTML = '';
     this.currentItems.forEach((elm) => {
       this.imageContainerElm!.appendChild(elm);
+    });
+
+    // add class to root when animation is done
+    let animationCount = 0;
+    this.rootElm.addEventListener('animationend', (e: Event) => {
+      if (e.currentTarget !== this.rootElm) return;
+      animationCount++;
+      // Wait for both animations to complete (vistaview-anim-in and vistaview-pos-in)
+      if (animationCount >= 2) {
+        this.rootElm?.classList.add('vistaview--opened');
+      }
     });
 
     // set buttons' event listeners
