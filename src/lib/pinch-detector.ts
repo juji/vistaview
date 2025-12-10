@@ -5,6 +5,7 @@ export interface PinchGestureState {
   scale: number;
   center: { x: number; y: number };
   direction: 'in' | 'out' | null;
+  touches: TouchList | null;
 }
 
 export class PinchDetector {
@@ -15,6 +16,7 @@ export class PinchDetector {
     scale: 1,
     center: { x: 0, y: 0 },
     direction: null,
+    touches: null,
   };
 
   private element: HTMLElement;
@@ -55,6 +57,7 @@ export class PinchDetector {
       this.pinchState.scale = 1;
       this.pinchState.center = this.getTouchCenter(e.touches);
       this.pinchState.direction = null;
+      this.pinchState.touches = e.touches;
       this.pinchStartListeners.forEach((listener) => listener(this.pinchState));
     }
   };
