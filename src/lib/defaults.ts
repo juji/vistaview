@@ -225,7 +225,6 @@ export const defaultTransition: VistaViewTransitionFunction = async (
   //   (fromIndex === 0 && toIndex === images.length -1) ||
   //   (fromIndex === images.length -1 && toIndex === 0);
 
-  console.log('defaultTransition called');
   if (!images) throw new Error('VistaView: images is null in defaultTransition()');
 
   const elms = htmlFrom!.filter((v) => {
@@ -236,7 +235,6 @@ export const defaultTransition: VistaViewTransitionFunction = async (
   });
 
   if (isReducedMotion) {
-    console.log('reduced motion, no transition');
     // no animation, just swap
     return;
   }
@@ -245,14 +243,12 @@ export const defaultTransition: VistaViewTransitionFunction = async (
     let transitionEnded = 0;
 
     if (abortSignal.aborted) {
-      console.log('transition aborted before start');
       j(new VistaViewTransitionAbortedError('Transition aborted'));
       return;
     }
 
     const onTransitionEnd = (e: Event) => {
       if (abortSignal.aborted) {
-        console.log('transition aborted before start');
         j(new VistaViewTransitionAbortedError('Transition aborted'));
         return;
       }
@@ -281,7 +277,6 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
       // if the image is not loaded yet, return immediately
       if (!currentImage.classList.contains('vistaview-image-loaded')) {
-        console.log('current image not loaded yet');
         r(0);
         return;
       }
@@ -290,7 +285,6 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
       // the image is settled, return immediately
       if (currentImage.classList.contains('vistaview-image-settled')) {
-        console.log('current image already settled');
         zeroPos?.classList.add('vistaview-image-settled');
         r(0);
         return;
@@ -298,10 +292,8 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
       // wait for the image to have .vistaview-image-settled
       let limit = 0;
-      console.log('waiting for image to be settled...');
       const interval = setInterval(() => {
         if (abortSignal.aborted) {
-          console.log('transition aborted during wait');
           clearInterval(interval);
           j(new VistaViewTransitionAbortedError('Transition aborted'));
           return;
@@ -311,14 +303,12 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
         // wait for max time
         if (limit > (options.animationDurationBase! / 20) * 1.5) {
-          console.log('timeout waiting for image to be settled');
           clearInterval(interval);
           r(0);
           return;
         }
 
         if (currentImage.classList.contains('vistaview-image-settled')) {
-          console.log('image settled');
           zeroPos?.classList.add('vistaview-image-settled');
           clearInterval(interval);
           r(0);

@@ -152,7 +152,6 @@ export class VistaView {
     if (beforeIndex === null) return;
     // if (this.elements.length === 1) return;
 
-    console.log('Swapping from', beforeIndex, 'to', afterIndex);
     if (this.transitionAbortController) {
       this.transitionAbortController.abort();
     }
@@ -173,9 +172,6 @@ export class VistaView {
       this.getCurrentIndexes(afterIndex);
     const images = this.getImages(activeIndexes);
     const elms = images.map((img, i) => vistaViewItem(img, activePositions[i]));
-
-    console.log('swap prepared');
-    // this.navActive = false;
 
     const transitionParams = {
       htmlElements: { from: this.currentItems, to: elms },
@@ -204,11 +200,8 @@ export class VistaView {
       }
     }
 
-    console.log('swap completed');
     this.imageContainerElm!.innerHTML = '';
     elms!.forEach((elm) => {
-      // console.log('appending elm', elm.outerHTML);
-
       const positionalIndex = elm.dataset.vistaviewPos;
       const itemIndex = elm.dataset.vistaviewIndex;
 
