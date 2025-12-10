@@ -339,9 +339,14 @@ export class VistaView {
   private setZoomed(image: HTMLImageElement | false): void {
     if (this.isZoomed === image) return;
 
+    let raf: number | null = null;
+    let speedScale = 15;
+    let backToCenterEase = 5;
+
     // this needs to be first
     // basically remove event listeners from previous zoomed image
     if (this.isZoomed) {
+      if (raf) cancelAnimationFrame(raf);
       let img = this.isZoomed;
       img.classList.remove('vistaview-image--zooming');
 
@@ -383,14 +388,54 @@ export class VistaView {
       let diffY = 0;
       let localDiffX = 0;
       let localDiffY = 0;
+      let initTime = 0;
+
+      function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
+        raf = requestAnimationFrame(() => {
+          const img = image as HTMLImageElement;
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          const bounds = img.getBoundingClientRect();
+          const isUp = bounds.bottom < centerY;
+          const isDown = bounds.top > centerY;
+          const isLeft = bounds.right < centerX;
+          const isRight = bounds.left > centerX;
+
+          if (Math.abs(speedX) < 0.01 && Math.abs(speedY) < 0.01) {
+            return;
+          }
+          diffX += speedX;
+          diffY += speedY;
+          if (isUp) {
+            diffY += (centerY - bounds.bottom) / backToCenterEase;
+          }
+          if (isDown) {
+            diffY -= (bounds.top - centerY) / backToCenterEase;
+          }
+          if (isLeft) {
+            diffX += (centerX - bounds.right) / backToCenterEase;
+          }
+          if (isRight) {
+            diffX -= (bounds.left - centerX) / backToCenterEase;
+          }
+          img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
+          img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
+          animateTranslation({
+            speedX: speedX * 0.9,
+            speedY: speedY * 0.9,
+          });
+        });
+      }
 
       // set new listeners
       this.onZoomedPointerDown = (e: PointerEvent) => {
+        if (raf) cancelAnimationFrame(raf);
         e.preventDefault();
         e.stopPropagation();
         isDragging = true;
         startX = e.pageX;
         startY = e.pageY;
+        initTime = performance.now();
         image!.setPointerCapture(e.pointerId);
       };
 
@@ -400,28 +445,37 @@ export class VistaView {
         localDiffX = e.pageX - startX;
         localDiffY = e.pageY - startY;
 
-        const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
-        const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
-        const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(
-          imageWidth,
-          imageHeight
-        );
-        const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
-        const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
-        localDiffX = pointerDiffX - diffX;
-        localDiffY = pointerDiffY - diffY;
+        // const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
+        // const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
+        // const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(
+        //   imageWidth,
+        //   imageHeight
+        // );
+        // const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
+        // const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
+        // localDiffX = pointerDiffX - diffX;
+        // localDiffY = pointerDiffY - diffY;
+        const pointerDiffX = localDiffX + diffX;
+        const pointerDiffY = localDiffY + diffY;
 
         image?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
         image?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
       };
 
       this.onZoomedPointerUp = (e: PointerEvent) => {
+        console.log(e.pageX, e.pageY);
         isDragging = false;
         image!.releasePointerCapture(e.pointerId);
         diffX += localDiffX;
         diffY += localDiffY;
         localDiffX = 0;
         localDiffY = 0;
+
+        let timeDiff = performance.now() - initTime;
+        if (timeDiff === 0) return;
+        let speedY = (e.pageY - startY) / timeDiff;
+        let speedX = (e.pageX - startX) / timeDiff;
+        animateTranslation({ speedX: speedX * speedScale, speedY: speedY * speedScale });
       };
 
       // add listeners
