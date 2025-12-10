@@ -392,6 +392,10 @@ export class VistaView {
 
       function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
         raf = requestAnimationFrame(() => {
+          if (Math.abs(speedX) < 0.01 && Math.abs(speedY) < 0.01) {
+            return;
+          }
+
           const img = image as HTMLImageElement;
           const centerX = window.innerWidth / 2;
           const centerY = window.innerHeight / 2;
@@ -401,9 +405,6 @@ export class VistaView {
           const isLeft = bounds.right < centerX;
           const isRight = bounds.left > centerX;
 
-          if (Math.abs(speedX) < 0.01 && Math.abs(speedY) < 0.01) {
-            return;
-          }
           diffX += speedX;
           diffY += speedY;
           if (isUp) {
