@@ -290,25 +290,25 @@ dist/svelte.js       0.54 kB │ gzip: 0.27 kB
 dist/solid.js        1.11 kB │ gzip: 0.52 kB
 dist/vue.js          1.29 kB │ gzip: 0.56 kB
 dist/react.js        1.54 kB │ gzip: 0.57 kB
-dist/vistaview.js   39.37 kB │ gzip: 9.83 kB
-[vite:dts] Declaration files built in 667ms.
+dist/vistaview.js   37.98 kB │ gzip: 9.60 kB
+[vite:dts] Declaration files built in 650ms.
 
 dist/vistaview.css  10.11 kB │ gzip: 1.78 kB
 dist/svelte.cjs      0.48 kB │ gzip: 0.29 kB
 dist/solid.cjs       0.92 kB │ gzip: 0.50 kB
 dist/vue.cjs         1.00 kB │ gzip: 0.51 kB
 dist/react.cjs       1.25 kB │ gzip: 0.52 kB
-dist/vistaview.cjs  30.62 kB │ gzip: 8.51 kB
-✓ built in 791ms
+dist/vistaview.cjs  29.56 kB │ gzip: 8.30 kB
+✓ built in 765ms
 vite v6.4.1 building for production...
 ✓ 6 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/vistaview.css     10.11 kB │ gzip: 1.78 kB
-dist/vistaview.umd.js  30.78 kB │ gzip: 8.62 kB
-[vite:dts] Declaration files built in 660ms.
+dist/vistaview.umd.js  29.71 kB │ gzip: 8.41 kB
+[vite:dts] Declaration files built in 645ms.
 
-✓ built in 753ms
+✓ built in 731ms
 ```
 
 ## License
