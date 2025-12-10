@@ -242,8 +242,6 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
   await new Promise<number>((r, j) => {
     let transitionEnded = 0;
-    // let imageLoaded = 0;
-    // let imageLength = 0;
     let returned = false;
 
     if (abortSignal.aborted) {
