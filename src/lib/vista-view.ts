@@ -569,7 +569,7 @@ export class VistaView {
 
       const onLoaded = () => {
         // skip if it's an ending image
-        if (im.parentElement?.matches('.vistaview-image--ending')) {
+        if (im.parentElement?.classList.contains('vistaview-image--ending')) {
           return;
         }
 
@@ -587,7 +587,7 @@ export class VistaView {
 
           setTimeout(() => {
             // skip if it's an ending image
-            if (im.parentElement?.matches('.vistaview-image--ending')) {
+            if (im.parentElement?.classList.contains('vistaview-image--ending')) {
               return;
             }
 
@@ -595,20 +595,14 @@ export class VistaView {
             const onImageTransitionEnd = () => {
               transitionNum++;
               if (transitionNum < 3) return;
+
               im.removeEventListener('transitionend', onImageTransitionEnd);
-              // skip if it's an ending image
-              if(im.parentElement?.matches('.vistaview-image--ending')){
-                return;
-              }
               im.parentElement
                 ?.querySelector('.vistaview-image-lowres')
                 ?.classList.add('vistaview-image--hidden');
               im.classList.add('vistaview-image-settled');
             };
-            im.addEventListener('transitionend', onImageTransitionEnd);
             const { width, height } = getFullSizeDim(im);
-            im.style.width = `${width}px`;
-            im.style.height = `${height}px`;
 
             if (sizes.w && sizes.h && width === sizes.w && height === sizes.h) {
               // no transition, directly set settled
@@ -617,6 +611,7 @@ export class VistaView {
                 ?.classList.add('vistaview-image--hidden');
               im.classList.add('vistaview-image-settled');
             } else {
+              im.addEventListener('transitionend', onImageTransitionEnd);
               im.style.width = `${width}px`;
               im.style.height = `${height}px`;
             }
