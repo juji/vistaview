@@ -368,7 +368,7 @@ export class VistaView {
     }
   }
 
-  private zoomOut(): void {
+  zoomOut(): void {
     const highresImage = this.rootElm?.querySelector(
       '[data-vistaview-pos="0"] .vistaview-image-highres'
     ) as HTMLImageElement;
