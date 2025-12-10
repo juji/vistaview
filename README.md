@@ -113,7 +113,7 @@ vistaView({
   detectReducedMotion: true, // Respect prefers-reduced-motion (default: true)
   zoomStep: 500, // Pixels to zoom per step (default: 500)
   maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
-  touchSpeedThreshold: 0.7, // Swipe speed threshold for navigation (default: 0.7)
+  touchSpeedThreshold: 0.5, // Swipe speed threshold for navigation (default: 0.5)
   preloads: 1, // Number of adjacent images to preload on each side (default: 1)
   keyboardListeners: true, // Enable keyboard navigation (default: true)
 
