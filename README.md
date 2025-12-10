@@ -285,30 +285,30 @@ vite v6.4.1 building for production...
 ✓ 10 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css  10.11 kB │ gzip: 1.78 kB
+dist/vistaview.css  10.34 kB │ gzip: 1.85 kB
 dist/svelte.js       0.54 kB │ gzip: 0.27 kB
 dist/solid.js        1.11 kB │ gzip: 0.52 kB
 dist/vue.js          1.29 kB │ gzip: 0.56 kB
 dist/react.js        1.54 kB │ gzip: 0.57 kB
-dist/vistaview.js   37.98 kB │ gzip: 9.60 kB
-[vite:dts] Declaration files built in 650ms.
+dist/vistaview.js   38.18 kB │ gzip: 9.66 kB
+[vite:dts] Declaration files built in 1277ms.
 
-dist/vistaview.css  10.11 kB │ gzip: 1.78 kB
+dist/vistaview.css  10.34 kB │ gzip: 1.85 kB
 dist/svelte.cjs      0.48 kB │ gzip: 0.29 kB
 dist/solid.cjs       0.92 kB │ gzip: 0.50 kB
 dist/vue.cjs         1.00 kB │ gzip: 0.51 kB
 dist/react.cjs       1.25 kB │ gzip: 0.52 kB
-dist/vistaview.cjs  29.56 kB │ gzip: 8.30 kB
-✓ built in 765ms
+dist/vistaview.cjs  29.71 kB │ gzip: 8.34 kB
+✓ built in 1.41s
 vite v6.4.1 building for production...
 ✓ 6 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css     10.11 kB │ gzip: 1.78 kB
-dist/vistaview.umd.js  29.71 kB │ gzip: 8.41 kB
-[vite:dts] Declaration files built in 645ms.
+dist/vistaview.css     10.34 kB │ gzip: 1.85 kB
+dist/vistaview.umd.js  29.87 kB │ gzip: 8.45 kB
+[vite:dts] Declaration files built in 667ms.
 
-✓ built in 731ms
+✓ built in 756ms
 ```
 
 ## License
