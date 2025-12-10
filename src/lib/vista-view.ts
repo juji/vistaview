@@ -189,6 +189,13 @@ export class VistaView {
 
     this.userSetup(transitionParams);
 
+    // before transition
+    // add add --ending class to current items
+    // to prevent loading images from animating
+    this.currentItems?.forEach((element) => {
+      element.classList.add('vistaview-image--ending');
+    });
+
     // do the swap, this is where the animation would go
     const abortKey =
       Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -217,6 +224,12 @@ export class VistaView {
         currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
         currentImage.classList.remove('vistaview-image--zooming');
         currentImage.classList.remove('vistaview-image-settled');
+        if (
+          lastElmImage.classList.contains('vistaview-image-loaded') &&
+          !lastElmImage.classList.contains('vistaview-image-settled')
+        ) {
+          currentImage.classList.remove('vistaview-image-loaded');
+        }
       }
       // else{
       //   console.warn('VistaView: lastElmImage not found during swap().');
@@ -555,6 +568,11 @@ export class VistaView {
       }
 
       const onLoaded = () => {
+        // skip if it's an ending image
+        if (im.parentElement?.matches('.vistaview-image--ending')) {
+          return;
+        }
+
         const setSizes = () => {
           if (sizes.w && sizes.h) {
             im.style.width = `${sizes.w}px`;
@@ -568,11 +586,20 @@ export class VistaView {
           im.height = im.naturalHeight;
 
           setTimeout(() => {
+            // skip if it's an ending image
+            if (im.parentElement?.matches('.vistaview-image--ending')) {
+              return;
+            }
+
             let transitionNum = 0;
             const onImageTransitionEnd = () => {
               transitionNum++;
               if (transitionNum < 3) return;
               im.removeEventListener('transitionend', onImageTransitionEnd);
+              // skip if it's an ending image
+              if(im.parentElement?.matches('.vistaview-image--ending')){
+                return;
+              }
               im.parentElement
                 ?.querySelector('.vistaview-image-lowres')
                 ?.classList.add('vistaview-image--hidden');
