@@ -153,6 +153,8 @@ export function setTouchActions(vistaView: VistaView): void {
       // not going anywwwhere
       images[0].addEventListener('transitionend', containerOff);
       setTranslate('0%');
+      // do zoom
+      speedX === 0 && speedY === 0 && vistaView.zoomIn();
     }
   };
 

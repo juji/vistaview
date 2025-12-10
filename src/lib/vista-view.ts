@@ -330,7 +330,7 @@ export class VistaView {
     }
   }
 
-  private zoomIn(): void {
+  zoomIn(): void {
     const highresImage = this.rootElm?.querySelector(
       '[data-vistaview-pos="0"] .vistaview-image-highres'
     ) as HTMLImageElement;
