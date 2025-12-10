@@ -219,19 +219,8 @@ export class PinchDetector {
   private pinchMoveListeners: ((state: PinchGestureState) => void)[] = [];
   private pinchEndListeners: ((state: PinchGestureState) => void)[] = [];
 
-  constructor(
-    element: HTMLElement,
-    onPinchStart?: (state: PinchGestureState) => void,
-    onPinchMove?: (state: PinchGestureState) => void,
-    onPinchEnd?: (state: PinchGestureState) => void
-  ) {
+  constructor(element: HTMLElement) {
     this.element = element;
-
-    // Add initial listeners if provided
-    if (onPinchStart) this.pinchStartListeners.push(onPinchStart);
-    if (onPinchMove) this.pinchMoveListeners.push(onPinchMove);
-    if (onPinchEnd) this.pinchEndListeners.push(onPinchEnd);
-
     this.attachEventListeners();
   }
 
