@@ -447,37 +447,28 @@ export class VistaView {
         localDiffX = e.pageX - startX;
         localDiffY = e.pageY - startY;
 
-        // const imageWidth = parseInt(image?.dataset.vistaviewCurrentWidth || '0');
-        // const imageHeight = parseInt(image?.dataset.vistaviewCurrentHeight || '0');
-        // const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(
-        //   imageWidth,
-        //   imageHeight
-        // );
-        // const pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, diffX + localDiffX));
-        // const pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, diffY + localDiffY));
-        // localDiffX = pointerDiffX - diffX;
-        // localDiffY = pointerDiffY - diffY;
-        const pointerDiffX = localDiffX + diffX;
-        const pointerDiffY = localDiffY + diffY;
-
-        image?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
-        image?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
+        image?.style.setProperty('--pointer-diff-x', `${localDiffX + diffX}px`);
+        image?.style.setProperty('--pointer-diff-y', `${localDiffY + diffY}px`);
       };
 
       this.onZoomedPointerUp = (e: PointerEvent) => {
-        console.log(e.pageX, e.pageY);
         isDragging = false;
         image!.releasePointerCapture(e.pointerId);
         diffX += localDiffX;
         diffY += localDiffY;
+
+        if (localDiffX === 0 && localDiffY === 0) {
+          this.zoomIn();
+        } else {
+          let timeDiff = performance.now() - initTime;
+          if (timeDiff === 0) return;
+          let speedY = (e.pageY - startY) / timeDiff;
+          let speedX = (e.pageX - startX) / timeDiff;
+          animateTranslation({ speedX: speedX * speedScale, speedY: speedY * speedScale });
+        }
+
         localDiffX = 0;
         localDiffY = 0;
-
-        let timeDiff = performance.now() - initTime;
-        if (timeDiff === 0) return;
-        let speedY = (e.pageY - startY) / timeDiff;
-        let speedX = (e.pageX - startX) / timeDiff;
-        animateTranslation({ speedX: speedX * speedScale, speedY: speedY * speedScale });
       };
 
       // add listeners
