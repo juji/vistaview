@@ -231,11 +231,7 @@ export class VistaView {
       images: { from: this.currentImages, to: images },
       index: { from: beforeIndex, to: afterIndex },
       via: this.currentIndex.via,
-      container: this.imageContainerElm,
-      elements: this.elements,
-      isReducedMotion: this.isReducedMotion,
-      isZoomed: this.isZoomed,
-      options: this.options,
+      vistaView: this,
     };
 
     this.userSetup(transitionParams);
@@ -273,9 +269,8 @@ export class VistaView {
         currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
         currentImage.classList.remove('vistaview-image--zooming');
 
-        // this smoehow doesn't work.
-        // some elements, while loading don't have widtha and height
-        // making width and height zero
+        // this doesn't work.
+        // some elements, while loading don't have width and height
         // const dim = lastElmImage.getBoundingClientRect();
         // currentImage.style.width = `${dim.width}px`;
         // currentImage.style.height = `${dim.height}px`;
@@ -833,11 +828,7 @@ export class VistaView {
       images: { from: null, to: this.currentImages },
       index: { from: null, to: startIndex },
       via: this.currentIndex.via,
-      container: this.imageContainerElm,
-      elements: this.elements,
-      isReducedMotion: this.isReducedMotion,
-      isZoomed: this.isZoomed,
-      options: this.options,
+      vistaView: this,
     };
 
     this.userSetup(setupParams);
@@ -971,12 +962,8 @@ export class VistaView {
       htmlElements: { from: this.currentItems, to: null },
       images: { from: this.currentImages, to: null },
       index: { from: this.currentIndex.value!, to: null },
-      container: this.imageContainerElm!,
-      elements: this.elements,
       via: { prev: false, next: false },
-      isReducedMotion: this.isReducedMotion,
-      isZoomed: this.isZoomed,
-      options: this.options,
+      vistaView: this,
     };
 
     this.userClose(this);

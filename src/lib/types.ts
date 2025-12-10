@@ -75,11 +75,7 @@ export type VistaViewData = {
   images: { from: VistaViewImageIndexed[] | null; to: VistaViewImageIndexed[] | null };
   index: { from: number | null; to: number | null };
   via: { next: boolean; prev: boolean };
-  container: HTMLElement;
-  elements: NodeListOf<HTMLElement> | VistaViewImage[];
-  isReducedMotion: boolean;
-  isZoomed: HTMLImageElement | false;
-  options: VistaViewOptions;
+  vistaView: VistaView;
 };
 
 export type VistaViewTransitionFunction = (
