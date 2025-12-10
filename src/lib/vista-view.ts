@@ -223,13 +223,17 @@ export class VistaView {
         currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
         currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
         currentImage.classList.remove('vistaview-image--zooming');
-        currentImage.classList.remove('vistaview-image-settled');
-        if (
-          lastElmImage.classList.contains('vistaview-image-loaded') &&
-          !lastElmImage.classList.contains('vistaview-image-settled')
-        ) {
-          currentImage.classList.remove('vistaview-image-loaded');
-        }
+
+        // okay, how about animating images while in transtition?
+        // for now, we don't do anything about it
+        // currentImage.classList.remove('vistaview-image-settled');
+        // if (
+        //   lastElmImage.classList.contains('vistaview-image-loaded') &&
+        //   !lastElmImage.classList.contains('vistaview-image-settled')
+        // ) {
+        //   currentImage.classList.remove('vistaview-image-loaded');
+        //   currentImage.classList.remove('vistaview-image-settled');
+        // }
       }
       // else{
       //   console.warn('VistaView: lastElmImage not found during swap().');
