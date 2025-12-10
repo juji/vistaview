@@ -239,7 +239,7 @@ export class VistaView {
     if (this.loadImageTimeout) clearTimeout(this.loadImageTimeout);
     this.loadImageTimeout = setTimeout(() => {
       this.loadImages();
-    }, 100);
+    }, 333);
   }
 
   //
