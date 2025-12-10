@@ -389,7 +389,7 @@ export class VistaView {
       let initTime = 0;
       let speedScale = 15;
       let backToCenterEase = 5;
-      let speedDecay = 0.9;
+      let speedDecay = 0.1;
 
       function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
         raf = requestAnimationFrame(() => {
@@ -423,8 +423,8 @@ export class VistaView {
           img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
           img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
           animateTranslation({
-            speedX: speedX * speedDecay,
-            speedY: speedY * speedDecay,
+            speedX: speedX * (1 - speedDecay),
+            speedY: speedY * (1 - speedDecay),
           });
         });
       }
