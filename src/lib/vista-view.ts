@@ -149,8 +149,6 @@ export class VistaView {
     }
   }
 
-  private loadImageTimeout: ReturnType<typeof setTimeout> | null = null;
-
   private setFullSizeImageDim(im: HTMLImageElement): void {
     const dim = im.getBoundingClientRect();
     const { width, height } = getFullSizeDim(im);
@@ -179,6 +177,33 @@ export class VistaView {
     }
   }
 
+  // weird on iphones
+  // private loadImageWaiting = (img: HTMLImageElement): Promise<void> => {
+  //   return new Promise((resolve) => {
+  //     const observer = new MutationObserver((mutations) => {
+  //       mutations.forEach((mutation) => {
+  //         if (
+  //           mutation.type === 'attributes' &&
+  //           mutation.attributeName === 'class' &&
+  //           (mutation.target as HTMLElement).classList.contains('vistaview-image-settled')
+  //         ) {
+  //           console.log('vistaview-image-settled detected')
+  //           resolve()
+  //         }
+  //       });
+
+  //       // Start observing
+  //       observer.observe(img, {
+  //         attributes: true,
+  //         attributeOldValue: true,
+  //         attributeFilter: ['class']
+  //       });
+  //     });
+
+  //   });
+  // };
+
+  private loadImageTimeout: ReturnType<typeof setTimeout> | null = null;
   private async swap(beforeIndex: number | null, afterIndex: number): Promise<void> {
     if (!GlobalVistaState.somethingOpened) return;
     if (beforeIndex === afterIndex) return;
@@ -220,9 +245,9 @@ export class VistaView {
     // before transition
     // add add --ending class to current items
     // to prevent loading images from animating
-    this.currentItems?.forEach((element) => {
-      element.classList.add('vistaview-image--ending');
-    });
+    // this.currentItems?.forEach((element) => {
+    //   element.classList.add('vistaview-image--ending');
+    // });
 
     // do the swap, this is where the animation would go
     const abortKey =
@@ -235,8 +260,6 @@ export class VistaView {
         console.warn(error);
       }
     }
-
-    delete this.transitionAbortControllers[abortKey];
 
     const indexZero = elms!.find((elm) => elm.dataset.vistaviewPos === '0');
     if (indexZero) {
@@ -252,22 +275,45 @@ export class VistaView {
         currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
         currentImage.classList.remove('vistaview-image--zooming');
 
-        // okay, how about animating images while in transtition?
-        // for now, we don't do anything about it
-        // it wil appear janky if the last image was still transitioning to settled state
+        // this smoehow doesn't work.
+        // some elements, while loading don't have widtha and height
+        // making width and height zero
+        // const dim = lastElmImage.getBoundingClientRect();
+        // currentImage.style.width = `${dim.width}px`;
+        // currentImage.style.height = `${dim.height}px`;
+
+        // how about preserving attributes while in transtition?
+        // this will make it janky... it will stop the smoothness of transition
         if (
           lastElmImage.classList.contains('vistaview-image-loaded') &&
           !lastElmImage.classList.contains('vistaview-image-settled')
         ) {
           const dim = lastElmImage.getBoundingClientRect();
-          currentImage.dataset.vistaviewCurrentWidth = dim.width.toString();
-          currentImage.dataset.vistaviewCurrentHeight = dim.height.toString();
           currentImage.style.width = `${dim.width}px`;
           currentImage.style.height = `${dim.height}px`;
         }
+
+        // okay, we wait for the image to be settled
+        // but this is weird on iphones
+        // so we go back to the last approach
+        // if (
+        //   lastElmImage.classList.contains('vistaview-image-loaded') &&
+        //   !lastElmImage.classList.contains('vistaview-image-settled')
+        // ) {
+        //   console.log('waiting for vistaview-image-settled')
+        //   await this.loadImageWaiting(lastElmImage).then(() => {
+        //     if(!this.transitionAbortControllers[abortKey]) return;
+        //     if(this.transitionAbortControllers[abortKey].signal.aborted) return;
+        //     const dim = lastElmImage.getBoundingClientRect();
+        //     currentImage.style.width = `${dim.width}px`;
+        //     currentImage.style.height = `${dim.height}px`;
+        //     currentImage.classList.add('vistaview-image-settled');
+        //   });
+        // }
       }
     }
 
+    delete this.transitionAbortControllers[abortKey];
     this.imageContainerElm!.innerHTML = '';
     elms!.forEach((elm) => {
       const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
@@ -610,9 +656,9 @@ export class VistaView {
 
       const onLoaded = () => {
         // skip if it's an ending image
-        if (im.parentElement?.classList.contains('vistaview-image--ending')) {
-          return;
-        }
+        // if (im.parentElement?.classList.contains('vistaview-image--ending')) {
+        //   return;
+        // }
 
         const setSizes = () => {
           if (sizes.w && sizes.h) {
@@ -628,9 +674,9 @@ export class VistaView {
 
           setTimeout(() => {
             // skip if it's an ending image
-            if (im.parentElement?.classList.contains('vistaview-image--ending')) {
-              return;
-            }
+            // if (im.parentElement?.classList.contains('vistaview-image--ending')) {
+            //   return;
+            // }
 
             this.setFullSizeImageDim(im);
           }, 100);
