@@ -135,7 +135,7 @@ vistaView({
   // Custom behavior functions (advanced)
   initFunction: (vistaView) => {},       // Custom initialization
   setupFunction: (data) => {},           // Custom setup when navigating
-  transitionFunction: (data) => image,   // Custom transition animation
+  transitionFunction: (data, abortSignal) => void,   // Custom transition animation
   closeFunction: (vistaView) => {},      // Custom cleanup on close
 });
 ```
