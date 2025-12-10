@@ -61,6 +61,9 @@ export class VistaView {
     set value(v: number) {
       const beforeIndex = this._value;
       this._value = v;
+      for (const key in this._vistaView?.transitionAbortControllers) {
+        this._vistaView?.transitionAbortControllers[key].abort();
+      }
       this._vistaView?.swap(beforeIndex, this._value);
     },
     get value(): number | null {
@@ -101,7 +104,7 @@ export class VistaView {
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
-  private transitionAbortController: AbortController | null = null;
+  private transitionAbortControllers: { [key: string]: AbortController } = {};
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -146,15 +149,13 @@ export class VistaView {
     }
   }
 
+  private loadImageTimeout: ReturnType<typeof setTimeout> | null = null;
+
   private async swap(beforeIndex: number | null, afterIndex: number): Promise<void> {
     if (!GlobalVistaState.somethingOpened) return;
     if (beforeIndex === afterIndex) return;
     if (beforeIndex === null) return;
     // if (this.elements.length === 1) return;
-
-    if (this.transitionAbortController) {
-      this.transitionAbortController.abort();
-    }
 
     if (!this.imageContainerElm) {
       throw new Error('VistaView: imageContainerElm is null in swap()');
@@ -189,47 +190,56 @@ export class VistaView {
     this.userSetup(transitionParams);
 
     // do the swap, this is where the animation would go
-    this.transitionAbortController = new AbortController();
-
+    const abortKey =
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    this.transitionAbortControllers[abortKey] = new AbortController();
     try {
-      await this.userTransition(transitionParams, this.transitionAbortController.signal);
+      await this.userTransition(transitionParams, this.transitionAbortControllers[abortKey].signal);
     } catch (error) {
-      if (error instanceof VistaViewTransitionAbortedError) {
-      } else {
-        console.error(error);
+      if (!(error instanceof VistaViewTransitionAbortedError)) {
+        console.warn(error);
       }
+    }
+
+    delete this.transitionAbortControllers[abortKey];
+
+    const indexZero = elms!.find((elm) => elm.dataset.vistaviewPos === '0');
+    if (indexZero) {
+      const itemIndex = indexZero.dataset.vistaviewIndex;
+      // ensure the last elements attributes are used
+      const lastElm = this.currentItems!.find((v) => v.dataset.vistaviewIndex === itemIndex)!;
+      const lastElmImage = lastElm?.querySelector('.vistaview-image-highres') as HTMLImageElement;
+      if (lastElmImage) {
+        const currentImage = indexZero.querySelector(
+          '.vistaview-image-highres'
+        ) as HTMLImageElement;
+        currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
+        currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
+        currentImage.classList.remove('vistaview-image--zooming');
+        currentImage.classList.remove('vistaview-image-settled');
+      }
+      // else{
+      //   console.warn('VistaView: lastElmImage not found during swap().');
+      // }
     }
 
     this.imageContainerElm!.innerHTML = '';
     elms!.forEach((elm) => {
-      const positionalIndex = elm.dataset.vistaviewPos;
-      const itemIndex = elm.dataset.vistaviewIndex;
-
-      if (positionalIndex === '0') {
-        // ensure the last elements attributes are used
-        const lastElm = this.currentItems!.find((v) => v.dataset.vistaviewIndex === itemIndex)!;
-        const currentImage = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
-        const lastElmImage = lastElm?.querySelector('.vistaview-image-highres') as HTMLImageElement;
-        if (lastElmImage) {
-          currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
-          currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
-        }
-        this.imageContainerElm!.appendChild(elm);
-      } else {
-        this.imageContainerElm!.appendChild(elm);
-      }
+      this.imageContainerElm!.appendChild(elm);
     });
-
-    // this.navActive = true;
 
     this.setInitialDimPos();
     this.currentImages = images;
     this.currentItems = elms;
-    this.loadImages();
     this.setCurrentDescription();
     this.updateZoomButtonsVisibility();
-
     this.options.onImageView?.(transitionParams);
+
+    // prevent multiple loading when rapidly navigating
+    if (this.loadImageTimeout) clearTimeout(this.loadImageTimeout);
+    this.loadImageTimeout = setTimeout(() => {
+      this.loadImages();
+    }, 100);
   }
 
   //
@@ -917,10 +927,10 @@ export class VistaView {
       this.onZoomedPointerUp = null;
     }
 
-    if (this.transitionAbortController) {
-      this.transitionAbortController.abort();
-      this.transitionAbortController = null;
+    for (const key in this.transitionAbortControllers) {
+      this.transitionAbortControllers[key].abort();
     }
+    this.transitionAbortControllers = {};
 
     GlobalVistaState.somethingOpened = null;
   }

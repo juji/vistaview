@@ -229,17 +229,17 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
   if (!images) throw new Error('VistaView: images is null in defaultTransition()');
 
+  if (isReducedMotion) {
+    // no animation, just swap
+    return;
+  }
+
   const elms = htmlFrom!.filter((v) => {
     return (
       v.dataset.vistaviewPos === '0' ||
       (next ? v.dataset.vistaviewPos === '1' : v.dataset.vistaviewPos === '-1')
     );
   });
-
-  if (isReducedMotion) {
-    // no animation, just swap
-    return;
-  }
 
   await new Promise<number>((r, j) => {
     let transitionEnded = 0;
@@ -251,8 +251,7 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 
     const onTransitionEnd = (e: Event) => {
       if (abortSignal.aborted) {
-        j(new VistaViewTransitionAbortedError('Transition aborted'));
-        return;
+        return j(new VistaViewTransitionAbortedError('Transition aborted'));
       }
 
       e.currentTarget!.removeEventListener('transitionend', onTransitionEnd);
@@ -270,26 +269,20 @@ export const defaultTransition: VistaViewTransitionFunction = async (
       ) as HTMLImageElement;
 
       // the image is non-existent, return immediately
+      // this is probably because rapid navigation, so just return
       if (!currentImage) {
-        // this is probably because rapid navigation, so just return
         // but the error needs to be thrown
-        j(new Error('current image element not found'));
-        return;
+        return j(new Error('current image element not found'));
       }
 
       // if the image is not loaded yet, return immediately
       if (!currentImage.classList.contains('vistaview-image-loaded')) {
-        r(0);
-        return;
+        return r(0);
       }
-
-      zeroPos?.classList.add('vistaview-image-loaded');
 
       // the image is settled, return immediately
       if (currentImage.classList.contains('vistaview-image-settled')) {
-        zeroPos?.classList.add('vistaview-image-settled');
-        r(0);
-        return;
+        return r(0);
       }
 
       // wait for the image to have .vistaview-image-settled
@@ -297,8 +290,7 @@ export const defaultTransition: VistaViewTransitionFunction = async (
       const interval = setInterval(() => {
         if (abortSignal.aborted) {
           clearInterval(interval);
-          j(new VistaViewTransitionAbortedError('Transition aborted'));
-          return;
+          return j(new VistaViewTransitionAbortedError('Transition aborted'));
         }
 
         limit++;
@@ -306,14 +298,13 @@ export const defaultTransition: VistaViewTransitionFunction = async (
         // wait for max time
         if (limit > (options.animationDurationBase! / 20) * 1.5) {
           clearInterval(interval);
-          r(0);
-          return;
+          return r(0);
         }
 
         if (currentImage.classList.contains('vistaview-image-settled')) {
           zeroPos?.classList.add('vistaview-image-settled');
           clearInterval(interval);
-          r(0);
+          return r(0);
         }
       }, 20);
     };
