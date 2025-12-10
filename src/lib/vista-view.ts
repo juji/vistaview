@@ -340,8 +340,6 @@ export class VistaView {
     if (this.isZoomed === image) return;
 
     let raf: number | null = null;
-    let speedScale = 15;
-    let backToCenterEase = 5;
 
     // this needs to be first
     // basically remove event listeners from previous zoomed image
@@ -389,6 +387,9 @@ export class VistaView {
       let localDiffX = 0;
       let localDiffY = 0;
       let initTime = 0;
+      let speedScale = 15;
+      let backToCenterEase = 5;
+      let speedDecay = 0.9;
 
       function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
         raf = requestAnimationFrame(() => {
@@ -422,8 +423,8 @@ export class VistaView {
           img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
           img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
           animateTranslation({
-            speedX: speedX * 0.9,
-            speedY: speedY * 0.9,
+            speedX: speedX * speedDecay,
+            speedY: speedY * speedDecay,
           });
         });
       }
