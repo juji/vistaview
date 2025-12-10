@@ -151,6 +151,34 @@ export class VistaView {
 
   private loadImageTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  private setFullSizeImageDim(im: HTMLImageElement): void {
+    const dim = im.getBoundingClientRect();
+    const { width, height } = getFullSizeDim(im);
+    if (width === dim.width && height === dim.height) {
+      im.parentElement
+        ?.querySelector('.vistaview-image-lowres')
+        ?.classList.add('vistaview-image--hidden');
+      im.classList.add('vistaview-image-settled');
+    } else {
+      let transitionNum = 0;
+      const onImageTransitionEnd = () => {
+        transitionNum++;
+        if (transitionNum < 3) return;
+
+        im.removeEventListener('transitionend', onImageTransitionEnd);
+        im.parentElement
+          ?.querySelector('.vistaview-image-lowres')
+          ?.classList.add('vistaview-image--hidden');
+        im.classList.add('vistaview-image-settled');
+      };
+      requestAnimationFrame(() => {
+        im.addEventListener('transitionend', onImageTransitionEnd);
+        im.style.width = `${width}px`;
+        im.style.height = `${height}px`;
+      });
+    }
+  }
+
   private async swap(beforeIndex: number | null, afterIndex: number): Promise<void> {
     if (!GlobalVistaState.somethingOpened) return;
     if (beforeIndex === afterIndex) return;
@@ -227,23 +255,31 @@ export class VistaView {
         // okay, how about animating images while in transtition?
         // for now, we don't do anything about it
         // it wil appear janky if the last image was still transitioning to settled state
-        // currentImage.classList.remove('vistaview-image-settled');
-        // if (
-        //   lastElmImage.classList.contains('vistaview-image-loaded') &&
-        //   !lastElmImage.classList.contains('vistaview-image-settled')
-        // ) {
-        //   currentImage.classList.remove('vistaview-image-loaded');
-        //   currentImage.classList.remove('vistaview-image-settled');
-        // }
+        if (
+          lastElmImage.classList.contains('vistaview-image-loaded') &&
+          !lastElmImage.classList.contains('vistaview-image-settled')
+        ) {
+          const dim = lastElmImage.getBoundingClientRect();
+          currentImage.dataset.vistaviewCurrentWidth = dim.width.toString();
+          currentImage.dataset.vistaviewCurrentHeight = dim.height.toString();
+          currentImage.style.width = `${dim.width}px`;
+          currentImage.style.height = `${dim.height}px`;
+        }
       }
-      // else{
-      //   console.warn('VistaView: lastElmImage not found during swap().');
-      // }
     }
 
     this.imageContainerElm!.innerHTML = '';
     elms!.forEach((elm) => {
+      const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
+      const loaded = im.classList.contains('vistaview-image-loaded') ? true : false;
+      const settled = im.classList.contains('vistaview-image-settled') ? true : false;
       this.imageContainerElm!.appendChild(elm);
+
+      if (loaded && !settled) {
+        this.setFullSizeImageDim(im);
+      } else if (loaded && settled) {
+        elm?.querySelector('.vistaview-image-lowres')?.classList.add('vistaview-image--hidden');
+      }
     });
 
     this.setInitialDimPos();
@@ -596,30 +632,7 @@ export class VistaView {
               return;
             }
 
-            let transitionNum = 0;
-            const onImageTransitionEnd = () => {
-              transitionNum++;
-              if (transitionNum < 3) return;
-
-              im.removeEventListener('transitionend', onImageTransitionEnd);
-              im.parentElement
-                ?.querySelector('.vistaview-image-lowres')
-                ?.classList.add('vistaview-image--hidden');
-              im.classList.add('vistaview-image-settled');
-            };
-            const { width, height } = getFullSizeDim(im);
-
-            if (sizes.w && sizes.h && width === sizes.w && height === sizes.h) {
-              // no transition, directly set settled
-              im.parentElement
-                ?.querySelector('.vistaview-image-lowres')
-                ?.classList.add('vistaview-image--hidden');
-              im.classList.add('vistaview-image-settled');
-            } else {
-              im.addEventListener('transitionend', onImageTransitionEnd);
-              im.style.width = `${width}px`;
-              im.style.height = `${height}px`;
-            }
+            this.setFullSizeImageDim(im);
           }, 100);
 
           if (img.parentElement?.matches('[data-vistaview-pos="0"]')) {
