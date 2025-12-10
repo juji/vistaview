@@ -19,6 +19,8 @@ import type {
   VistaViewInitFunction,
 } from './types';
 
+import { PinchDetector } from './pinch-detector';
+
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
 
 export class VistaViewTransitionAbortedError extends Error {
@@ -84,6 +86,8 @@ export class VistaView {
   currentItems: HTMLDivElement[] | null = null;
   isZoomed: HTMLImageElement | false = false;
 
+  private pinchDetector: PinchDetector | null = null;
+
   private onClickElements: (e: PointerEvent) => void = (e) => {
     e.preventDefault();
     const someHtml = e.currentTarget as HTMLElement;
@@ -137,6 +141,9 @@ export class VistaView {
 
     // detect reduced motion
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    //
+    this.pinchDetector = new PinchDetector(document.body);
 
     // set click listeners on elements
     if (this.elements instanceof NodeList) {
@@ -431,6 +438,7 @@ export class VistaView {
 
       // set new listeners
       this.onZoomedPointerDown = (e: PointerEvent) => {
+        if (this.pinchDetector?.isPinching()) return;
         if (raf) cancelAnimationFrame(raf);
         e.preventDefault();
         e.stopPropagation();
@@ -442,6 +450,7 @@ export class VistaView {
       };
 
       this.onZoomedPointerMove = (e: PointerEvent) => {
+        if (this.pinchDetector?.isPinching()) return;
         if (!isDragging) return;
         e.preventDefault();
         localDiffX = e.pageX - startX;
@@ -452,6 +461,7 @@ export class VistaView {
       };
 
       this.onZoomedPointerUp = (e: PointerEvent) => {
+        if (!isDragging) return;
         isDragging = false;
         image!.releasePointerCapture(e.pointerId);
         diffX += localDiffX;
@@ -575,6 +585,82 @@ export class VistaView {
         this.setZoomed(false);
       }
     }
+  }
+
+  private zoomStart() {
+    const highresImage = this.rootElm?.querySelector(
+      '[data-vistaview-pos="0"] .vistaview-image-highres'
+    ) as HTMLImageElement;
+    const width = highresImage.width;
+    const height = highresImage.height;
+
+    // store initial width/height if not set
+    if (!highresImage.dataset.vistaviewInitialWidth) {
+      highresImage.dataset.vistaviewInitialWidth = width.toString();
+    }
+    if (!highresImage.dataset.vistaviewInitialHeight) {
+      highresImage.dataset.vistaviewInitialHeight = height.toString();
+    }
+
+    this.setZoomed(highresImage);
+  }
+
+  private zoomScale(scale: number) {
+    const highresImage = this.rootElm?.querySelector(
+      '[data-vistaview-pos="0"] .vistaview-image-highres'
+    ) as HTMLImageElement;
+
+    const initialWidth = highresImage.dataset.vistaviewInitialWidth
+      ? parseInt(highresImage.dataset.vistaviewInitialWidth)
+      : 0;
+
+    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
+    const currentWidth = highresImage.width;
+
+    let newWidth = initialWidth * scale;
+    newWidth = Math.min(Math.max(newWidth, initialWidth), maxWidth);
+    const newHeight = (newWidth / currentWidth) * highresImage.height;
+
+    highresImage!.style.width = `${newWidth}px`;
+    highresImage!.style.height = `${newHeight}px`;
+
+    if (newHeight <= maxWidth && newWidth > initialWidth) {
+      this.setZoomed(highresImage);
+    }
+
+    if (newWidth === maxWidth) {
+      this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.setAttribute('disabled', 'true');
+    } else {
+      this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.removeAttribute('disabled');
+    }
+
+    if (newWidth === initialWidth) {
+      this.rootElm
+        ?.querySelector('button.vistaview-zoom-out-btn')
+        ?.setAttribute('disabled', 'true');
+      this.setZoomed(false);
+    } else {
+      this.rootElm?.querySelector('button.vistaview-zoom-out-btn')?.removeAttribute('disabled');
+    }
+
+    highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+    highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+  }
+
+  private setupPinchDetector() {
+    this.pinchDetector?.onPinchStart((state) => {
+      console.log('Pinch started:', state);
+      this.zoomStart();
+    });
+
+    this.pinchDetector?.onPinchMove((state) => {
+      console.log('Pinch moved:', state);
+      this.zoomScale(state.scale);
+    });
+
+    this.pinchDetector?.onPinchEnd((state) => {
+      console.log('Pinch ended:', state);
+    });
   }
 
   private clearZoom(): void {
@@ -985,6 +1071,7 @@ export class VistaView {
     this.loadImages();
     this.setCurrentDescription();
     this.setIndexDisplay();
+    this.setupPinchDetector();
 
     this.userInit(this);
     this.options.onOpen?.(setupParams);
@@ -1050,6 +1137,8 @@ export class VistaView {
       this.transitionAbortControllers[key].abort();
     }
     this.transitionAbortControllers = {};
+
+    this.pinchDetector?.cleanup();
 
     GlobalVistaState.somethingOpened = null;
   }
