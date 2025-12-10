@@ -82,7 +82,6 @@ export class VistaView {
   customControls: { [key: string]: VistaViewCustomControl } = {};
   currentImages: VistaViewImageIndexed[] | null = null;
   currentItems: HTMLDivElement[] | null = null;
-  navActive = true;
   isZoomed: HTMLImageElement | false = false;
 
   private onClickElements: (e: PointerEvent) => void = (e) => {
@@ -235,7 +234,6 @@ export class VistaView {
       container: this.imageContainerElm,
       elements: this.elements,
       isReducedMotion: this.isReducedMotion,
-      navActive: this.navActive,
       isZoomed: this.isZoomed,
       options: this.options,
     };
@@ -838,7 +836,6 @@ export class VistaView {
       container: this.imageContainerElm,
       elements: this.elements,
       isReducedMotion: this.isReducedMotion,
-      navActive: this.navActive,
       isZoomed: this.isZoomed,
       options: this.options,
     };
@@ -978,7 +975,6 @@ export class VistaView {
       elements: this.elements,
       via: { prev: false, next: false },
       isReducedMotion: this.isReducedMotion,
-      navActive: this.navActive,
       isZoomed: this.isZoomed,
       options: this.options,
     };
@@ -994,7 +990,6 @@ export class VistaView {
     this.imageContainerElm = null;
     this.currentImages = null;
     this.currentItems = null;
-    this.navActive = true;
 
     if (this.onResizeHandler) {
       window.removeEventListener('resize', this.onResizeHandler);
@@ -1034,7 +1029,6 @@ export class VistaView {
 
   view(index: number, state?: { next: boolean; prev: boolean }): void {
     if (GlobalVistaState.somethingOpened !== this) return;
-    if (!this.navActive) return;
 
     if (index < 0) index = this.elements.length - 1;
     if (index >= this.elements.length) index = 0;
