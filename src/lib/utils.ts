@@ -215,9 +215,9 @@ export class PinchDetector {
   };
 
   private element: HTMLElement;
-  private onPinchStart?: (state: PinchGestureState) => void;
-  private onPinchMove?: (state: PinchGestureState) => void;
-  private onPinchEnd?: (state: PinchGestureState) => void;
+  private pinchStartListeners: ((state: PinchGestureState) => void)[] = [];
+  private pinchMoveListeners: ((state: PinchGestureState) => void)[] = [];
+  private pinchEndListeners: ((state: PinchGestureState) => void)[] = [];
 
   constructor(
     element: HTMLElement,
@@ -226,9 +226,11 @@ export class PinchDetector {
     onPinchEnd?: (state: PinchGestureState) => void
   ) {
     this.element = element;
-    this.onPinchStart = onPinchStart;
-    this.onPinchMove = onPinchMove;
-    this.onPinchEnd = onPinchEnd;
+
+    // Add initial listeners if provided
+    if (onPinchStart) this.pinchStartListeners.push(onPinchStart);
+    if (onPinchMove) this.pinchMoveListeners.push(onPinchMove);
+    if (onPinchEnd) this.pinchEndListeners.push(onPinchEnd);
 
     this.attachEventListeners();
   }
@@ -261,7 +263,7 @@ export class PinchDetector {
       this.pinchState.scale = 1;
       this.pinchState.center = this.getTouchCenter(e.touches);
       this.pinchState.direction = null;
-      this.onPinchStart?.(this.pinchState);
+      this.pinchStartListeners.forEach((listener) => listener(this.pinchState));
     }
   };
 
@@ -279,13 +281,13 @@ export class PinchDetector {
         this.pinchState.direction = 'in'; // Pinch in = zoom out
       }
 
-      this.onPinchMove?.(this.pinchState);
+      this.pinchMoveListeners.forEach((listener) => listener(this.pinchState));
     }
   };
 
   private onTouchEnd = (e: TouchEvent) => {
     if (this.pinchState.isActive && e.touches.length < 2) {
-      this.onPinchEnd?.(this.pinchState);
+      this.pinchEndListeners.forEach((listener) => listener(this.pinchState));
       this.pinchState.isActive = false;
       this.pinchState.startDistance = 0;
       this.pinchState.currentDistance = 0;
@@ -306,6 +308,11 @@ export class PinchDetector {
     this.element.removeEventListener('touchmove', this.onTouchMove);
     this.element.removeEventListener('touchend', this.onTouchEnd);
     this.element.removeEventListener('touchcancel', this.onTouchEnd);
+
+    // Clear all listeners
+    this.pinchStartListeners.length = 0;
+    this.pinchMoveListeners.length = 0;
+    this.pinchEndListeners.length = 0;
   }
 
   public isPinching(): boolean {
@@ -314,5 +321,35 @@ export class PinchDetector {
 
   public getState(): PinchGestureState {
     return { ...this.pinchState };
+  }
+
+  public onPinchStart(listener: (state: PinchGestureState) => void): () => void {
+    this.pinchStartListeners.push(listener);
+    return () => {
+      const index = this.pinchStartListeners.indexOf(listener);
+      if (index > -1) {
+        this.pinchStartListeners.splice(index, 1);
+      }
+    };
+  }
+
+  public onPinchMove(listener: (state: PinchGestureState) => void): () => void {
+    this.pinchMoveListeners.push(listener);
+    return () => {
+      const index = this.pinchMoveListeners.indexOf(listener);
+      if (index > -1) {
+        this.pinchMoveListeners.splice(index, 1);
+      }
+    };
+  }
+
+  public onPinchEnd(listener: (state: PinchGestureState) => void): () => void {
+    this.pinchEndListeners.push(listener);
+    return () => {
+      const index = this.pinchEndListeners.indexOf(listener);
+      if (index > -1) {
+        this.pinchEndListeners.splice(index, 1);
+      }
+    };
   }
 }
