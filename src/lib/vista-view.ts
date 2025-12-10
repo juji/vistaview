@@ -226,6 +226,7 @@ export class VistaView {
 
         // okay, how about animating images while in transtition?
         // for now, we don't do anything about it
+        // it wil appear janky if the last image was still transitioning to settled state
         // currentImage.classList.remove('vistaview-image-settled');
         // if (
         //   lastElmImage.classList.contains('vistaview-image-loaded') &&
