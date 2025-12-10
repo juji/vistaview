@@ -172,7 +172,7 @@ export function removeTouchActions(vistaView: VistaView): void {
   if (onPointerCancel) elm.removeEventListener('pointercancel', onPointerCancel);
 }
 
-// default user init
+// default init
 // called when the viewer is opened
 // can be used to set up custom controls or other initializations
 // for this instance, we setup pointer events
@@ -180,7 +180,7 @@ export const defaultInit = (vistaView: VistaView) => {
   setTouchActions(vistaView);
 };
 
-// default user setup
+// default setup
 // sets up the initial positions and styles of the images
 // when the viewer is opened or when navigating between images
 export const defaultSetup: VistaViewSetupFunction = ({
@@ -207,7 +207,7 @@ export const defaultSetup: VistaViewSetupFunction = ({
     });
 };
 
-// default user transition
+// default transition
 // performs a simple slide transition between images
 export const defaultTransition: VistaViewTransitionFunction = async (
   {
@@ -334,8 +334,9 @@ export const defaultTransition: VistaViewTransitionFunction = async (
   });
 };
 
-// default user close
+// default close
 // resets the styles of the images when the viewer is closed
+// and removes pointer event listeners
 export const defaultClose: VistaViewCloseFunction = (vistaView) => {
   if (vistaView.elements instanceof NodeList) {
     vistaView.elements.forEach((el) => (el.style.opacity = '1'));
