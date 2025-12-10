@@ -282,37 +282,33 @@ function Gallery() {
 
 ```
 vite v6.4.1 building for production...
-transforming...
 ✓ 10 modules transformed.
-rendering chunks...
 
 [vite:dts] Start generate declaration files...
-computing gzip size...
-dist/vistaview.css   9.25 kB │ gzip: 1.64 kB
+dist/vistaview.css   9.76 kB │ gzip: 1.69 kB
 dist/svelte.js       0.54 kB │ gzip: 0.27 kB
 dist/solid.js        1.11 kB │ gzip: 0.52 kB
 dist/vue.js          1.29 kB │ gzip: 0.56 kB
 dist/react.js        1.54 kB │ gzip: 0.57 kB
-dist/vistaview.js   33.64 kB │ gzip: 8.49 kB
-[vite:dts] Declaration files built in 1534ms.
+dist/vistaview.js   38.13 kB │ gzip: 9.48 kB
+[vite:dts] Declaration files built in 650ms.
 
-dist/vistaview.css   9.25 kB │ gzip: 1.64 kB
+dist/vistaview.css   9.76 kB │ gzip: 1.69 kB
 dist/svelte.cjs      0.48 kB │ gzip: 0.29 kB
 dist/solid.cjs       0.92 kB │ gzip: 0.50 kB
 dist/vue.cjs         1.00 kB │ gzip: 0.51 kB
 dist/react.cjs       1.25 kB │ gzip: 0.52 kB
-dist/vistaview.cjs  26.72 kB │ gzip: 7.56 kB
-✓ built in 1.77s
+dist/vistaview.cjs  30.30 kB │ gzip: 8.42 kB
+✓ built in 771ms
 vite v6.4.1 building for production...
-transforming...
 ✓ 6 modules transformed.
-rendering chunks...
 
 [vite:dts] Start generate declaration files...
-computing gzip size...
-dist/vistaview.css      9.25 kB │ gzip: 1.64 kB
-dist/vistaview.umd.js  26.88 kB │ gzip: 7.66 kB
-[vite:dts] Declaration files built in 1525ms.
+dist/vistaview.css      9.76 kB │ gzip: 1.69 kB
+dist/vistaview.umd.js  30.45 kB │ gzip: 8.53 kB
+[vite:dts] Declaration files built in 654ms.
+
+✓ built in 740ms
 ```
 
 ## License
