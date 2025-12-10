@@ -21,6 +21,13 @@ import type {
 
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
 
+export class VistaViewTransitionAbortedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'VistaViewTransitionAbortedError';
+  }
+}
+
 export const DefaultOptions = {
   detectReducedMotion: true,
   // debug, don't remove
@@ -94,6 +101,8 @@ export class VistaView {
   private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
+  private transitionAbortController: AbortController | null = null;
+
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
     this.currentIndex._vistaView = this;
@@ -144,6 +153,9 @@ export class VistaView {
     // if (this.elements.length === 1) return;
 
     console.log('Swapping from', beforeIndex, 'to', afterIndex);
+    if (this.transitionAbortController) {
+      this.transitionAbortController.abort();
+    }
 
     if (!this.imageContainerElm) {
       throw new Error('VistaView: imageContainerElm is null in swap()');
@@ -162,43 +174,8 @@ export class VistaView {
     const images = this.getImages(activeIndexes);
     const elms = images.map((img, i) => vistaViewItem(img, activePositions[i]));
 
-    // elms.forEach((elm, i) => {
-    //   const im = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
-    //   // const index = activeIndexes[i];
-    //   const thumb = images[i].imageElm;
-
-    // const { width: tWidth, height: tHeight } = getFittedSize(thumb as HTMLImageElement);
-    // if (tWidth && tHeight) {
-    //   im.style.setProperty('--vistaview-fitted-width', `${tWidth}px`);
-    //   im.style.setProperty('--vistaview-fitted-height', `${tHeight}px`);
-    // }
-
-    // const item = this.rootElm?.querySelector(`.vistaview-item[data-vistaview-index="${index}"]`);
-    // const itemImage = item?.querySelector('.vistaview-image-highres.vistaview-image-loaded') as HTMLImageElement;
-
-    // if (itemImage) {
-    //   im.classList.add('vistaview-image-loaded');
-    //   if(itemImage.classList.contains('vistaview-image-settled')) {
-    //     im.classList.add('vistaview-image-settled');
-    //   }
-
-    //   elm.querySelector('.vistaview-image-lowres')
-    //   ?.classList.add('vistaview-image--hidden');
-
-    //   const { width, height } = getFullSizeDim(im);
-    //   im.style.width = `${width}px`;
-    //   im.style.height = `${height}px`;
-    //   im.width = (itemImage as HTMLImageElement).naturalWidth;
-    //   im.height = (itemImage as HTMLImageElement).naturalHeight;
-
-    //   if (im.parentElement?.matches('[data-vistaview-pos="0"]')) {
-    //     this.updateZoomButtonsVisibility();
-    //   }
-    // }
-    // });
-
     console.log('swap prepared');
-    this.navActive = false;
+    // this.navActive = false;
 
     const transitionParams = {
       htmlElements: { from: this.currentItems, to: elms },
@@ -216,7 +193,16 @@ export class VistaView {
     this.userSetup(transitionParams);
 
     // do the swap, this is where the animation would go
-    const currentImage = await this.userTransition(transitionParams);
+    this.transitionAbortController = new AbortController();
+
+    try {
+      await this.userTransition(transitionParams, this.transitionAbortController.signal);
+    } catch (error) {
+      if (error instanceof VistaViewTransitionAbortedError) {
+      } else {
+        console.error(error);
+      }
+    }
 
     console.log('swap completed');
     this.imageContainerElm!.innerHTML = '';
@@ -230,17 +216,20 @@ export class VistaView {
         // ensure the last elements attributes are used
         const lastElm = this.currentItems!.find((v) => v.dataset.vistaviewIndex === itemIndex)!;
         const currentImage = elm.querySelector('.vistaview-image-highres') as HTMLImageElement;
-        const lastElmImage = lastElm.querySelector('.vistaview-image-highres') as HTMLImageElement;
-        currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
-        currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
+        const lastElmImage = lastElm?.querySelector('.vistaview-image-highres') as HTMLImageElement;
+        if (lastElmImage) {
+          currentImage.setAttribute('class', lastElmImage.getAttribute('class') || '');
+          currentImage.setAttribute('style', lastElmImage.getAttribute('style') || '');
+        }
         this.imageContainerElm!.appendChild(elm);
       } else {
         this.imageContainerElm!.appendChild(elm);
       }
     });
-    this.navActive = true;
 
-    this.setInitialDimPos(currentImage as VistaViewImageIndexed);
+    // this.navActive = true;
+
+    this.setInitialDimPos();
     this.currentImages = images;
     this.currentItems = elms;
     this.loadImages();
@@ -473,8 +462,15 @@ export class VistaView {
     });
   }
 
-  private setInitialDimPos(centerElm: VistaViewImageIndexed): void {
+  private setInitialDimPos(): void {
     if (!this.rootElm) return;
+
+    // get center elm
+    const index = (this.rootElm.querySelector('[data-vistaview-pos="0"]') as HTMLElement)?.dataset
+      .vistaviewIndex;
+    const centerElm = this.currentImages?.find((img) => img.index === Number(index)) || null;
+
+    if (!centerElm) return;
 
     const imageProps = centerElm.imageElm ? getElmProperties(centerElm.imageElm) : undefined;
     const anchorProps = centerElm.anchorElm ? getElmProperties(centerElm.anchorElm) : undefined;
@@ -691,11 +687,7 @@ export class VistaView {
 
   private setResizeListeners(): void {
     this.onResizeHandler = () => {
-      const center =
-        this.currentImages![
-          this.currentImages!.length === 1 ? 0 : Math.floor(this.currentImages!.length / 2)
-        ];
-      this.setInitialDimPos(center);
+      this.setInitialDimPos();
       const highresImages = this.rootElm?.querySelectorAll(
         '.vistaview-image-highres.vistaview-image-loaded'
       );
@@ -848,11 +840,7 @@ export class VistaView {
     }
 
     // set initial dimension and position
-    this.setInitialDimPos(
-      this.currentImages[
-        this.currentImages.length === 1 ? 0 : Math.floor(this.currentImages.length / 2)
-      ]
-    );
+    this.setInitialDimPos();
 
     // set on event handlers
     this.setResizeListeners();
@@ -934,6 +922,11 @@ export class VistaView {
       this.onZoomedPointerDown = null;
       this.onZoomedPointerMove = null;
       this.onZoomedPointerUp = null;
+    }
+
+    if (this.transitionAbortController) {
+      this.transitionAbortController.abort();
+      this.transitionAbortController = null;
     }
 
     GlobalVistaState.somethingOpened = null;

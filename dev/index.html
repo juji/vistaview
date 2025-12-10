@@ -274,7 +274,7 @@
     // })
     
     document.getElementById('image-grid-many').innerHTML = [
-      ...Array.from({ length: 8 }, (_, i) => `
+      ...Array.from({ length: (9 * 10) - 1 }, (_, i) => `
       <a href="https://picsum.photos/seed/${i}/1200/1800"
          target="_blank">
         <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">

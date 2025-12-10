@@ -5,6 +5,7 @@ import type {
 } from './types';
 
 import type { VistaView } from './vista-view';
+import { VistaViewTransitionAbortedError } from './vista-view';
 
 // pointer evvents
 let onPointerDown: ((e: PointerEvent) => void) | null = null;
@@ -123,18 +124,27 @@ export function setTouchActions(vistaView: VistaView): void {
 
     if (speedX < -threshold || speedX > threshold) {
       // going somewhere
-      images[0].addEventListener('transitionend', () => {
-        containerOff();
-        vistaView.view(
-          speedX < -threshold ? (index + 1) % totalImage : (index - 1 + totalImage) % totalImage,
-          {
-            next: speedX < -threshold,
-            prev: speedX > threshold,
-          }
-        );
-      });
+      function gotoNewImage() {
+        images[0].removeEventListener('transitionend', gotoNewImage);
 
+        // just be, but with timeout to allow transitionend to complete
+        setTimeout(() => {
+          // turn on reduced motion for the transition
+          const originalReducedMotion = vistaView.isReducedMotion;
+          vistaView.isReducedMotion = true;
+          containerOff();
+          vistaView.view(
+            speedX < -threshold ? (index + 1) % totalImage : (index - 1 + totalImage) % totalImage,
+            {
+              next: speedX < -threshold,
+              prev: speedX > threshold,
+            }
+          );
+          vistaView.isReducedMotion = originalReducedMotion;
+        }, 100);
+      }
       setTranslate(speedX < -threshold ? '-100%' : '100%');
+      images[0].addEventListener('transitionend', gotoNewImage);
     } else if (speedY < -threshold || speedY > threshold) {
       // y detected, close
       vistaView.close();
@@ -199,22 +209,24 @@ export const defaultSetup: VistaViewSetupFunction = ({
 
 // default user transition
 // performs a simple slide transition between images
-export const defaultTransition: VistaViewTransitionFunction = async ({
-  htmlElements: { from: htmlFrom, to: htmlTo },
-  images: { to: images },
-  via: { next, prev },
-  options,
-  isReducedMotion,
-  // index: { from: fromIndex, to: toIndex },
-}) => {
+export const defaultTransition: VistaViewTransitionFunction = async (
+  {
+    htmlElements: { from: htmlFrom, to: htmlTo },
+    images: { to: images },
+    via: { next, prev },
+    options,
+    isReducedMotion,
+    // index: { from: fromIndex, to: toIndex },
+  },
+  abortSignal
+) => {
+  // non adjacent transition ??
+  // const adjacent = Math.abs(toIndex! - fromIndex!) === 1 ||
+  //   (fromIndex === 0 && toIndex === images.length -1) ||
+  //   (fromIndex === images.length -1 && toIndex === 0);
+
   console.log('defaultTransition called');
   if (!images) throw new Error('VistaView: images is null in defaultTransition()');
-
-  if (isReducedMotion) {
-    console.log('reduced motion, no transition');
-    // no animation, just swap
-    return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
-  }
 
   const elms = htmlFrom!.filter((v) => {
     return (
@@ -223,14 +235,28 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
     );
   });
 
-  // non adjacent transition ??
-  // const adjacent = Math.abs(toIndex! - fromIndex!) === 1 ||
-  //   (fromIndex === 0 && toIndex === images.length -1) ||
-  //   (fromIndex === images.length -1 && toIndex === 0);
+  if (isReducedMotion) {
+    console.log('reduced motion, no transition');
+    // no animation, just swap
+    return;
+  }
 
-  await new Promise<number>((r) => {
+  await new Promise<number>((r, j) => {
     let transitionEnded = 0;
+
+    if (abortSignal.aborted) {
+      console.log('transition aborted before start');
+      j(new VistaViewTransitionAbortedError('Transition aborted'));
+      return;
+    }
+
     const onTransitionEnd = (e: Event) => {
+      if (abortSignal.aborted) {
+        console.log('transition aborted before start');
+        j(new VistaViewTransitionAbortedError('Transition aborted'));
+        return;
+      }
+
       e.currentTarget!.removeEventListener('transitionend', onTransitionEnd);
       transitionEnded++;
       if (transitionEnded < elms.length) return;
@@ -247,8 +273,9 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
 
       // the image is non-existent, return immediately
       if (!currentImage) {
-        console.log('current image not found');
-        r(0);
+        // this is probably because rapid navigation, so just return
+        // but the error needs to be thrown
+        j(new Error('current image element not found'));
         return;
       }
 
@@ -273,10 +300,17 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
       let limit = 0;
       console.log('waiting for image to be settled...');
       const interval = setInterval(() => {
+        if (abortSignal.aborted) {
+          console.log('transition aborted during wait');
+          clearInterval(interval);
+          j(new VistaViewTransitionAbortedError('Transition aborted'));
+          return;
+        }
+
         limit++;
 
-        if (limit > 50) {
-          // 50 tries, 1 second max
+        // wait for max time
+        if (limit > (options.animationDurationBase! / 20) * 1.5) {
           console.log('timeout waiting for image to be settled');
           clearInterval(interval);
           r(0);
@@ -285,6 +319,7 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
 
         if (currentImage.classList.contains('vistaview-image-settled')) {
           console.log('image settled');
+          zeroPos?.classList.add('vistaview-image-settled');
           clearInterval(interval);
           r(0);
         }
@@ -297,8 +332,6 @@ export const defaultTransition: VistaViewTransitionFunction = async ({
       elm.addEventListener('transitionend', onTransitionEnd);
     });
   });
-
-  return images[images.length === 1 ? 0 : Math.floor(images.length / 2)];
 };
 
 // default user close

@@ -84,8 +84,9 @@ export type VistaViewData = {
 };
 
 export type VistaViewTransitionFunction = (
-  params: VistaViewData
-) => VistaViewImageIndexed | Promise<VistaViewImageIndexed>;
+  params: VistaViewData,
+  abortSignal: AbortSignal
+) => Promise<void>;
 
 export type VistaViewSetupFunction = (params: VistaViewData) => void;
 export type VistaViewCloseFunction = (vistaView: VistaView) => void;

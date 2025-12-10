@@ -1,4 +1,4 @@
-import { VistaView, DefaultOptions } from './lib/vista-view';
+import { VistaView, DefaultOptions, VistaViewTransitionAbortedError } from './lib/vista-view';
 import { vistaViewDownload } from './lib/components';
 
 import {
@@ -15,7 +15,7 @@ import type { VistaViewImage, VistaViewOptions } from './lib/types';
 import './style.css';
 
 export type * from './lib/types';
-export { DefaultOptions, vistaViewDownload };
+export { DefaultOptions, vistaViewDownload, VistaViewTransitionAbortedError };
 export {
   setTouchActions,
   removeTouchActions,
