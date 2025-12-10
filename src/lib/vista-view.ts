@@ -388,7 +388,7 @@ export class VistaView {
       let localDiffY = 0;
       let initTime = 0;
       let speedScale = 15;
-      let backToCenterEase = 5;
+      let centeringDamping = 5;
       let speedDecay = 0.1;
 
       function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
@@ -409,16 +409,16 @@ export class VistaView {
           diffX += speedX;
           diffY += speedY;
           if (isUp) {
-            diffY += (centerY - bounds.bottom) / backToCenterEase;
+            diffY += (centerY - bounds.bottom) / centeringDamping;
           }
           if (isDown) {
-            diffY -= (bounds.top - centerY) / backToCenterEase;
+            diffY -= (bounds.top - centerY) / centeringDamping;
           }
           if (isLeft) {
-            diffX += (centerX - bounds.right) / backToCenterEase;
+            diffX += (centerX - bounds.right) / centeringDamping;
           }
           if (isRight) {
-            diffX -= (bounds.left - centerX) / backToCenterEase;
+            diffX -= (bounds.left - centerX) / centeringDamping;
           }
           img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
           img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
