@@ -149,6 +149,18 @@
   }
 }
 
+@keyframes vistaview-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .vistaview-root {
   position: fixed;
   display: none;
@@ -205,6 +217,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
     animation: vistaview-pulse 1s ease-in-out infinite;
+    background: linear-gradient(45deg, #1a1a1a, #333, #1a1a1a, #555);
+    background-size: 400% 400%;
+    animation:
+      vistaview-pulse 1s ease-in-out infinite,
+      vistaview-gradient 3s ease-in-out infinite;
 
     &:has(+ img.vistaview-image-loaded) {
       animation: none;
