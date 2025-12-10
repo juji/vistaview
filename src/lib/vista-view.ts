@@ -696,6 +696,10 @@ export class VistaView {
         onLoaded();
       } else {
         im.onload = onLoaded;
+        im.onerror = () => {
+          console.error('VistaView: failed to load image ' + im.src);
+          im.parentElement?.classList.add('vistaview-image-load-failed');
+        };
       }
     });
   }
