@@ -73,4 +73,14 @@ export class VistaViewPointers {
   ) {
     this.listeners.push(listener);
   }
+
+  removeEventListener(
+    listener: (
+      event: VistaViewPointerEvent,
+      pointer: VistaViewPointer | undefined,
+      pointers: { [key: string]: VistaViewPointer }
+    ) => void
+  ) {
+    this.listeners = this.listeners.filter((l) => l !== listener);
+  }
 }
