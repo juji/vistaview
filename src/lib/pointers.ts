@@ -9,13 +9,15 @@ export type VistaViewPointerListenerArgs = {
   event: VistaViewPointerEvent;
   pointer: VistaViewPointer | undefined;
   domEvent: PointerEvent;
+  pointers: VistaViewPointer[];
+  length: number;
 };
 
 export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => void;
 
 export class VistaViewPointers {
-  pointers: VistaViewPointer[] = [];
-  length = 0;
+  private pointers: VistaViewPointer[] = [];
+  private length = 0;
   private elm: HTMLElement;
   private listeners: VistaViewPointerListener[] = [];
 
@@ -39,6 +41,8 @@ export class VistaViewPointers {
         event: 'down',
         pointer: pointer,
         domEvent: e,
+        pointers: this.pointers,
+        length: this.length,
       })
     );
   }
@@ -55,6 +59,8 @@ export class VistaViewPointers {
         event: 'move',
         pointer: pointer,
         domEvent: e,
+        pointers: this.pointers,
+        length: this.length,
       })
     );
   }
@@ -71,6 +77,8 @@ export class VistaViewPointers {
         event: 'up',
         pointer: pointer,
         domEvent: e,
+        pointers: this.pointers,
+        length: this.length,
       })
     );
   }
@@ -88,6 +96,8 @@ export class VistaViewPointers {
         event: 'cancel',
         pointer: pointer,
         domEvent: e,
+        pointers: this.pointers,
+        length: this.length,
       })
     );
   }
