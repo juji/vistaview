@@ -15,6 +15,7 @@ export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => v
 
 export class VistaViewPointers {
   pointers: VistaViewPointer[] = [];
+  length = 0;
   private elm: HTMLElement;
   private listeners: VistaViewPointerListener[] = [];
 
@@ -29,11 +30,14 @@ export class VistaViewPointers {
   }
 
   private onPointerDown(e: PointerEvent) {
-    this.pointers[e.pointerId] = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    if (!this.listeners.length) return;
+    const pointer = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    this.pointers.push(pointer);
+    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'down',
-        pointer: this.pointers[e.pointerId],
+        pointer: pointer,
         domEvent: e,
       })
     );
@@ -61,6 +65,7 @@ export class VistaViewPointers {
     if (pointerIndex !== -1) {
       this.pointers.splice(pointerIndex, 1);
     }
+    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'up',
@@ -77,6 +82,7 @@ export class VistaViewPointers {
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
     }
+    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'cancel',
@@ -100,6 +106,7 @@ export class VistaViewPointers {
     this.elm.removeEventListener('pointercancel', this.onPointerCancel);
 
     this.pointers = [];
+    this.length = 0;
   }
 
   addEventListener(listener: VistaViewPointerListener) {
