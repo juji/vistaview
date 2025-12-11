@@ -8,7 +8,6 @@ export type VistaViewPointerEvent = 'down' | 'move' | 'up' | 'cancel';
 export type VistaViewPointerListenerArgs = {
   event: VistaViewPointerEvent;
   pointer: VistaViewPointer | undefined;
-  pointers: VistaViewPointer[];
   domEvent: PointerEvent;
 };
 
@@ -16,11 +15,17 @@ export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => v
 
 export class VistaViewPointers {
   pointers: VistaViewPointer[] = [];
-  elm: HTMLElement;
-  listeners: VistaViewPointerListener[] = [];
+  private elm: HTMLElement;
+  private listeners: VistaViewPointerListener[] = [];
 
   constructor(elm: HTMLElement) {
     this.elm = elm;
+  }
+
+  getPointerDistance(p1: VistaViewPointer, p2: VistaViewPointer): number {
+    const dx = p1.x - p2.x;
+    const dy = p1.y - p2.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   private onPointerDown(e: PointerEvent) {
@@ -29,7 +34,6 @@ export class VistaViewPointers {
       l({
         event: 'down',
         pointer: this.pointers[e.pointerId],
-        pointers: this.pointers,
         domEvent: e,
       })
     );
@@ -46,7 +50,6 @@ export class VistaViewPointers {
       l({
         event: 'move',
         pointer: pointer,
-        pointers: this.pointers,
         domEvent: e,
       })
     );
@@ -62,7 +65,6 @@ export class VistaViewPointers {
       l({
         event: 'up',
         pointer: pointer,
-        pointers: this.pointers,
         domEvent: e,
       })
     );
@@ -79,7 +81,6 @@ export class VistaViewPointers {
       l({
         event: 'cancel',
         pointer: pointer,
-        pointers: this.pointers,
         domEvent: e,
       })
     );
