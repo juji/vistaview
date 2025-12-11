@@ -4,16 +4,18 @@ export type VistaViewPointer = {
   id: number | string;
 };
 
+export type VistaViewPointerListener = (
+  event: VistaViewPointerEvent,
+  pointer: VistaViewPointer | undefined,
+  pointers: { [key: string]: VistaViewPointer }
+) => void;
+
 export type VistaViewPointerEvent = 'down' | 'move' | 'up' | 'cancel';
 
 export class VistaViewPointers {
   pointers: { [key: string]: VistaViewPointer } = {};
   elm: HTMLElement;
-  listeners: ((
-    event: VistaViewPointerEvent,
-    pointer: VistaViewPointer,
-    pointers: { [key: string]: VistaViewPointer }
-  ) => void)[] = [];
+  listeners: VistaViewPointerListener[] = [];
 
   constructor(elm: HTMLElement) {
     this.elm = elm;
@@ -64,23 +66,11 @@ export class VistaViewPointers {
     this.pointers = {};
   }
 
-  addEventListener(
-    listener: (
-      event: VistaViewPointerEvent,
-      pointer: VistaViewPointer | undefined,
-      pointers: { [key: string]: VistaViewPointer }
-    ) => void
-  ) {
+  addEventListener(listener: VistaViewPointerListener) {
     this.listeners.push(listener);
   }
 
-  removeEventListener(
-    listener: (
-      event: VistaViewPointerEvent,
-      pointer: VistaViewPointer | undefined,
-      pointers: { [key: string]: VistaViewPointer }
-    ) => void
-  ) {
+  removeEventListener(listener: VistaViewPointerListener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 }
