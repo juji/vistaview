@@ -492,121 +492,6 @@ export class VistaView {
     }
   }
 
-  setSize({
-    image,
-    width,
-    height,
-    xDisplacement = 0,
-    yDisplacement = 0,
-    minWidth,
-    maxWidth,
-    minHeight,
-    maxHeight,
-  }: {
-    image: HTMLImageElement;
-    width: number;
-    height: number;
-    xDisplacement?: number;
-    yDisplacement?: number;
-    minWidth: number;
-    maxWidth: number;
-    minHeight: number;
-    maxHeight: number;
-  }): void {
-    // if(width === minWidth) {
-    //   this.setZoomed(false);
-    // }else{
-    //   this.setZoomed(image);
-    // }
-
-    if (width <= minWidth) {
-      image.style.width = `${minWidth}px`;
-      image.style.height = `${minHeight}px`;
-      image.style.setProperty('--x-displacement', `0px`);
-      image.style.setProperty('--y-displacement', `0px`);
-    } else {
-      if (xDisplacement !== undefined) {
-        image.style.setProperty('--x-displacement', `${xDisplacement}px`);
-      }
-
-      if (yDisplacement !== undefined) {
-        image.style.setProperty('--y-displacement', `${yDisplacement}px`);
-      }
-
-      if (width >= maxWidth) {
-        image.style.width = `${maxWidth}px`;
-        image.style.height = `${maxHeight}px`;
-      } else {
-        image.style.width = `${width}px`;
-        image.style.height = `${height}px`;
-      }
-    }
-
-    // const highresImage = this.rootElm?.querySelector(
-    //   '[data-vistaview-pos="0"] .vistaview-image-highres'
-    // ) as HTMLImageElement;
-
-    // if(!highresImage) return;
-
-    // // store initial width/height if not set
-    // if (
-    //   !highresImage.dataset.vistaviewInitialWidth ||
-    //   !highresImage.dataset.vistaviewInitialHeight
-    // ) {
-    //   const dim = highresImage.getBoundingClientRect();
-    //   highresImage.dataset.vistaviewInitialWidth = dim.width.toString();
-    //   highresImage.dataset.vistaviewInitialHeight = dim.height.toString();
-    // }
-
-    // const initialWidth = highresImage.dataset.vistaviewInitialWidth
-    //   ? parseInt(highresImage.dataset.vistaviewInitialWidth)
-    //   : 0;
-    // const initialHeight = highresImage.dataset.vistaviewInitialHeight
-    //   ? parseInt(highresImage.dataset.vistaviewInitialHeight)
-    //   : 0;
-
-    // const maxRatio = this.options.maxZoomLevel!;
-
-    // console.log('ratioDiff', ratioDiff);
-    // const maxWidth = parseInt(highresImage.getAttribute('width')!) * maxRatio
-    // const currentWidthRatio = highresImage.width / maxWidth;
-    // const minRatio = initialWidth / maxWidth;
-    // const newWidthRatio = Math.min(Math.max(currentWidthRatio + ratioDiff, minRatio), maxRatio!);
-
-    // const newWidth = Math.max(initialWidth, Math.min(maxWidth * newWidthRatio, maxWidth * maxRatio));
-    // const newHeight = newWidth / initialWidth * initialHeight;
-
-    // if(newWidth === maxWidth * maxRatio) {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-in-btn')
-    //     ?.setAttribute('disabled', 'true');
-    // } else {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-in-btn')
-    //     ?.removeAttribute('disabled');
-    // }
-
-    // if(newWidth === initialWidth) {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-out-btn')
-    //     ?.setAttribute('disabled', 'true');
-    //   this.setZoomed(false);
-    // } else {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-out-btn')
-    //     ?.removeAttribute('disabled');
-    // }
-
-    // if(newWidth === initialWidth) {
-    //   this.setZoomed(false);
-    // }else{
-    //   this.setZoomed(highresImage);
-    // }
-
-    // highresImage.style.width = `${newWidth}px`;
-    // highresImage.style.height = `${newHeight}px`;
-  }
-
   zoomIn(): void {
     const highresImage = this.rootElm?.querySelector(
       '[data-vistaview-pos="0"] .vistaview-image-highres'
@@ -966,6 +851,22 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
   }
 
+  private setSize({
+    image,
+    scale,
+    translate,
+  }: {
+    image: HTMLImageElement;
+    translate?: { x: number; y: number };
+    scale: number;
+  }): void {
+    if (translate) {
+      image.style.transform = `translate(${translate.x || 0}px, ${translate.y || 0}px) scale(${scale})`;
+    } else {
+      image.style.transform = `translate(0px, 0px) scale(${scale})`;
+    }
+  }
+
   private setPointerListener = () => {
     let lastDown: number | null = null;
     let lastDistance = 0;
@@ -973,15 +874,21 @@ export class VistaView {
 
     let currentImage = {
       centroid: { x: 0, y: 0 },
+      scale: 1,
+      translate: { x: 0, y: 0 },
       image: null as HTMLImageElement | null,
-      initialWidth: 0,
-      initialHeight: 0,
-      initialTop: 0,
-      initialLeft: 0,
-      maxWidth: 0,
-      minWidth: 0,
-      minHeight: 0,
-      maxHeight: 0,
+      initial: {
+        w: 0,
+        h: 0,
+        top: 0,
+        left: 0,
+      },
+      sizes: {
+        maxW: 0,
+        maxH: 0,
+        minW: 0,
+        minH: 0,
+      },
     };
 
     return (e: VistaViewPointerListenerArgs) => {
@@ -1002,33 +909,25 @@ export class VistaView {
           if (!image) return;
 
           image.classList.add('vistaview-image--touch-zoom');
-          if (!image.dataset.vistaviewInitialWidth) {
-            image.dataset.vistaviewInitialWidth = image.width.toString();
-          }
-          if (!image.dataset.vistaviewInitialHeight) {
-            image.dataset.vistaviewInitialHeight = image.height.toString();
-          }
 
           const rect = image.getBoundingClientRect();
           currentImage = {
-            centroid: this.pointers.getCentroid() as { x: number; y: number },
             image: image,
-            initialWidth: image ? image.width : 0,
-            initialHeight: image ? image.height : 0,
-            initialTop: rect.top,
-            initialLeft: rect.left,
-            maxWidth: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
-            minWidth: image
-              ? image.dataset.vistaviewInitialWidth
-                ? parseInt(image.dataset.vistaviewInitialWidth)
-                : 0
-              : 0,
-            maxHeight: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
-            minHeight: image
-              ? image.dataset.vistaviewInitialHeight
-                ? parseInt(image.dataset.vistaviewInitialHeight)
-                : 0
-              : 0,
+            centroid: this.pointers.getCentroid() as { x: number; y: number },
+            initial: {
+              w: rect.width,
+              h: rect.height,
+              top: rect.top,
+              left: rect.left,
+            },
+            scale: currentImage.scale,
+            translate: currentImage.translate,
+            sizes: {
+              maxW: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
+              maxH: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
+              minW: currentImage.sizes.minW || image.width,
+              minH: currentImage.sizes.minH || image.height,
+            },
           };
         }
       } else if (e.event === 'move') {
@@ -1041,39 +940,68 @@ export class VistaView {
           if (ratio === lastRatio) return;
 
           lastRatio = ratio;
-          const width = currentImage.initialWidth * ratio;
-          const height = currentImage.initialHeight * ratio;
-          const { image, ...rest } = currentImage;
+          const width = currentImage.initial.w * ratio;
+          const height = currentImage.initial.h * ratio;
+          const finalWidth = Math.max(
+            Math.min(width, currentImage.sizes.maxW),
+            currentImage.sizes.minW
+          );
+          const finalHeight = Math.max(
+            Math.min(height, currentImage.sizes.maxH),
+            currentImage.sizes.minH
+          );
+
+          // allow scaling beyond min/max width for smoother zooming experience
+          const scale = width / currentImage.sizes.minW;
+          currentImage.scale = finalWidth / currentImage.sizes.minW;
+          const { image } = currentImage;
 
           // Calculate displacement to keep centroid point fixed
-          // const rect = image.getBoundingClientRect();
-          const distanceToTop = currentImage.centroid.y - currentImage.initialTop;
-          const distanceToLeft = currentImage.centroid.x - currentImage.initialLeft;
+          const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
+          const distanceToLeft = currentImage.centroid.x - currentImage.initial.left;
 
           // Scale distances by ratio to get new distances
           const newDistanceToTop = distanceToTop * ratio;
           const newDistanceToLeft = distanceToLeft * ratio;
 
-          // Calculate new position
+          // Calculate new position to keep centroid fixed
           const newTop = currentImage.centroid.y - newDistanceToTop;
           const newLeft = currentImage.centroid.x - newDistanceToLeft;
 
-          // Convert to displacement from center
+          // Convert to translate values (displacement from center)
           const viewportCenterX = window.innerWidth / 2;
           const viewportCenterY = window.innerHeight / 2;
           const newCenterX = newLeft + width / 2;
           const newCenterY = newTop + height / 2;
 
-          const xDisplacement = newCenterX - viewportCenterX;
-          const yDisplacement = newCenterY - viewportCenterY;
+          // Get current centroid and adjust for any movement during gesture
+          const newCentroid = this.pointers.getCentroid() as { x: number; y: number };
+          const translate = {
+            x: newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x),
+            y: newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y),
+          };
+
+          // Calculate constrained ratio and positions for final translate
+          const constrainedRatio = finalWidth / currentImage.initial.w;
+          const finalDistanceToTop = distanceToTop * constrainedRatio;
+          const finalDistanceToLeft = distanceToLeft * constrainedRatio;
+          const finalNewTop = currentImage.centroid.y - finalDistanceToTop;
+          const finalNewLeft = currentImage.centroid.x - finalDistanceToLeft;
+          const finalCenterX = finalNewLeft + finalWidth / 2;
+          const finalCenterY = finalNewTop + finalHeight / 2;
+
+          currentImage.translate =
+            currentImage.scale == 1
+              ? { x: 0, y: 0 }
+              : {
+                  x: finalCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x),
+                  y: finalCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y),
+                };
 
           this.setSize({
             image,
-            width,
-            height,
-            xDisplacement,
-            yDisplacement,
-            ...rest,
+            scale,
+            translate,
           });
         }
       } else if (e.event === 'up') {
@@ -1086,13 +1014,18 @@ export class VistaView {
         }
 
         if (e.pointers.length < 2) {
-          // currentImage.currentHeight = currentImage.image ? currentImage.image.height : 0;
-          // currentImage.currentWidth = currentImage.image ? currentImage.image.width : 0;
+          if (currentImage.image) {
+            const rect = currentImage.image.getBoundingClientRect();
+            currentImage.initial = {
+              w: rect.width,
+              h: rect.height,
+              top: rect.top,
+              left: rect.left,
+            };
 
-          // this.recordCurrentWidth()
-          this.rootElm
-            ?.querySelector('[data-vistaview-pos="0"] .vistaview-image-highres')
-            ?.classList.remove('vistaview-image--touch-zoom');
+            currentImage.image.classList.remove('vistaview-image--touch-zoom');
+            currentImage.image.style.transform = `translate(${currentImage.translate.x}px, ${currentImage.translate.y}px) scale(${currentImage.scale})`;
+          }
         }
       } else if (e.event === 'cancel') {
         // this.pointers.onPointerCancel(e.originalEvent);

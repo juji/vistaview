@@ -248,18 +248,17 @@
   }
 
   img.vistaview-image-highres {
-    --x-displacement: 0px;
-    --y-displacement: 0px;
-
     cursor: zoom-in;
     display: block;
     position: absolute;
-    top: calc(50% + var(--y-displacement));
-    left: calc(50% + var(--x-displacement));
+    top: 50%;
+    left: 50%;
     translate: -50% -50%;
+    transform: translate(0px, 0px) scale(1);
     object-fit: cover;
     opacity: 0;
     transition:
+      transform 222ms ease 0ms,
       width calc(var(--vistaview-animation-duration) * 1ms) ease
         calc(var(--vistaview-animation-duration) * 0.3ms),
       height calc(var(--vistaview-animation-duration) * 1ms) ease
@@ -267,10 +266,7 @@
       opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0ms;
 
     &.vistaview-image--zooming {
-      transition:
-        width 222ms ease 0s,
-        height 222ms ease 0s,
-        opacity 222ms ease 0s;
+      transition: transform 222ms ease 0ms;
       cursor: grab;
       &:active {
         cursor: grabbing;
@@ -278,21 +274,11 @@
     }
 
     &.vistaview-image--zooming-out {
-      transition:
-        width 222ms ease 0s,
-        height 222ms ease 0s,
-        opacity 222ms ease 0s,
-        top 300ms ease 0s,
-        left 300ms ease 0s;
+      transition: transform 222ms ease 0ms;
     }
 
     &.vistaview-image--touch-zoom {
-      transition:
-        width 222ms ease-out 0s,
-        height 222ms ease-out 0s,
-        opacity 222ms ease-out 0s,
-        top 222ms ease-out 0s,
-        left 222ms ease-out 0s;
+      transition: none;
     }
 
     &.vistaview-image-loaded {
