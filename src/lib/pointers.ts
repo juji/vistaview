@@ -4,16 +4,18 @@ export type VistaViewPointer = {
   id: number | string;
 };
 
-export type VistaViewPointerListener = (
-  event: VistaViewPointerEvent,
-  pointer: VistaViewPointer | undefined,
-  pointers: { [key: string]: VistaViewPointer }
-) => void;
-
 export type VistaViewPointerEvent = 'down' | 'move' | 'up' | 'cancel';
+export type VistaViewPointerListenerArgs = {
+  event: VistaViewPointerEvent;
+  pointer: VistaViewPointer | undefined;
+  pointers: VistaViewPointer[];
+  domEvent: PointerEvent;
+};
+
+export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => void;
 
 export class VistaViewPointers {
-  pointers: { [key: string]: VistaViewPointer } = {};
+  pointers: VistaViewPointer[] = [];
   elm: HTMLElement;
   listeners: VistaViewPointerListener[] = [];
 
@@ -23,31 +25,64 @@ export class VistaViewPointers {
 
   private onPointerDown(e: PointerEvent) {
     this.pointers[e.pointerId] = { x: e.clientX, y: e.clientY, id: e.pointerId };
-    this.listeners.forEach((l) => l('down', this.pointers[e.pointerId], this.pointers));
+    this.listeners.forEach((l) =>
+      l({
+        event: 'down',
+        pointer: this.pointers[e.pointerId],
+        pointers: this.pointers,
+        domEvent: e,
+      })
+    );
   }
 
   private onPointerMove(e: PointerEvent) {
-    const pointer = this.pointers[e.pointerId];
+    if (!this.listeners.length) return;
+    const pointer = this.pointers.find((p) => p.id === e.pointerId);
     if (pointer) {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
     }
-    this.listeners.forEach((l) => l('move', this.pointers[e.pointerId], this.pointers));
+    this.listeners.forEach((l) =>
+      l({
+        event: 'move',
+        pointer: pointer,
+        pointers: this.pointers,
+        domEvent: e,
+      })
+    );
   }
   private onPointerUp(e: PointerEvent) {
-    const pointer = this.pointers[e.pointerId];
-    if (pointer) {
-      delete this.pointers[e.pointerId];
+    if (!this.listeners.length) return;
+    const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
+    const pointer = this.pointers[pointerIndex];
+    if (pointerIndex !== -1) {
+      this.pointers.splice(pointerIndex, 1);
     }
-    this.listeners.forEach((l) => l('up', pointer, this.pointers));
+    this.listeners.forEach((l) =>
+      l({
+        event: 'up',
+        pointer: pointer,
+        pointers: this.pointers,
+        domEvent: e,
+      })
+    );
   }
 
   private onPointerCancel(e: PointerEvent) {
-    const pointer = this.pointers[e.pointerId];
+    if (!this.listeners.length) return;
+    const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
+    const pointer = this.pointers[pointerIndex];
     if (pointer) {
-      delete this.pointers[e.pointerId];
+      this.pointers.splice(pointerIndex, 1);
     }
-    this.listeners.forEach((l) => l('cancel', pointer, this.pointers));
+    this.listeners.forEach((l) =>
+      l({
+        event: 'cancel',
+        pointer: pointer,
+        pointers: this.pointers,
+        domEvent: e,
+      })
+    );
   }
 
   startListeners() {
@@ -63,7 +98,7 @@ export class VistaViewPointers {
     this.elm.removeEventListener('pointerup', this.onPointerUp);
     this.elm.removeEventListener('pointercancel', this.onPointerCancel);
 
-    this.pointers = {};
+    this.pointers = [];
   }
 
   addEventListener(listener: VistaViewPointerListener) {
