@@ -10,14 +10,12 @@ export type VistaViewPointerListenerArgs = {
   pointer: VistaViewPointer | undefined;
   domEvent: PointerEvent;
   pointers: VistaViewPointer[];
-  length: number;
 };
 
 export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => void;
 
 export class VistaViewPointers {
   private pointers: VistaViewPointer[] = [];
-  private length = 0;
   private elm: HTMLElement;
   private listeners: VistaViewPointerListener[] = [];
 
@@ -35,14 +33,12 @@ export class VistaViewPointers {
     if (!this.listeners.length) return;
     const pointer = { x: e.clientX, y: e.clientY, id: e.pointerId };
     this.pointers.push(pointer);
-    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'down',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        length: this.length,
       })
     );
   }
@@ -60,7 +56,6 @@ export class VistaViewPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        length: this.length,
       })
     );
   }
@@ -71,14 +66,12 @@ export class VistaViewPointers {
     if (pointerIndex !== -1) {
       this.pointers.splice(pointerIndex, 1);
     }
-    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'up',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        length: this.length,
       })
     );
   }
@@ -90,14 +83,12 @@ export class VistaViewPointers {
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
     }
-    this.length = this.pointers.length;
     this.listeners.forEach((l) =>
       l({
         event: 'cancel',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        length: this.length,
       })
     );
   }
@@ -116,7 +107,6 @@ export class VistaViewPointers {
     this.elm.removeEventListener('pointercancel', this.onPointerCancel);
 
     this.pointers = [];
-    this.length = 0;
   }
 
   addEventListener(listener: VistaViewPointerListener) {
