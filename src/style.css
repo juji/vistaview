@@ -255,6 +255,7 @@
     left: 50%;
     translate: -50% -50%;
     transform: translate(0px, 0px) scale(1);
+    transform-origin: center center;
     object-fit: cover;
     opacity: 0;
     transition:
