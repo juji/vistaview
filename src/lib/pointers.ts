@@ -19,17 +19,16 @@ export class VistaViewPointers {
   private elm: HTMLElement;
   private listeners: VistaViewPointerListener[] = [];
 
-  constructor(elm: HTMLElement) {
+  constructor(elm: HTMLElement, listeners?: VistaViewPointerListener[], startListeners = true) {
+    console.log('VistaViewPointers initialized');
     this.elm = elm;
+    if (listeners) {
+      this.listeners = listeners;
+    }
+    if (startListeners) this.startListeners();
   }
 
-  getPointerDistance(p1: VistaViewPointer, p2: VistaViewPointer): number {
-    const dx = p1.x - p2.x;
-    const dy = p1.y - p2.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  private onPointerDown(e: PointerEvent) {
+  private onPointerDown = (e: PointerEvent) => {
     if (!this.listeners.length) return;
     const pointer = { x: e.clientX, y: e.clientY, id: e.pointerId };
     this.pointers.push(pointer);
@@ -41,9 +40,9 @@ export class VistaViewPointers {
         pointers: this.pointers,
       })
     );
-  }
+  };
 
-  private onPointerMove(e: PointerEvent) {
+  private onPointerMove = (e: PointerEvent) => {
     if (!this.listeners.length) return;
     const pointer = this.pointers.find((p) => p.id === e.pointerId);
     if (pointer) {
@@ -58,8 +57,9 @@ export class VistaViewPointers {
         pointers: this.pointers,
       })
     );
-  }
-  private onPointerUp(e: PointerEvent) {
+  };
+
+  private onPointerUp = (e: PointerEvent) => {
     if (!this.listeners.length) return;
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
@@ -74,9 +74,9 @@ export class VistaViewPointers {
         pointers: this.pointers,
       })
     );
-  }
+  };
 
-  private onPointerCancel(e: PointerEvent) {
+  private onPointerCancel = (e: PointerEvent) => {
     if (!this.listeners.length) return;
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
@@ -91,9 +91,10 @@ export class VistaViewPointers {
         pointers: this.pointers,
       })
     );
-  }
+  };
 
   startListeners() {
+    console.log('VistaViewPointers: startListeners');
     this.elm.addEventListener('pointerdown', this.onPointerDown);
     this.elm.addEventListener('pointermove', this.onPointerMove);
     this.elm.addEventListener('pointerup', this.onPointerUp);
@@ -115,5 +116,27 @@ export class VistaViewPointers {
 
   removeEventListener(listener: VistaViewPointerListener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  getPointerDistance(p1: VistaViewPointer, p2: VistaViewPointer): number {
+    const dx = p1.x - p2.x;
+    const dy = p1.y - p2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  getCentroid(): { x: number; y: number } | null {
+    if (this.pointers.length === 0) return null;
+    const sum = this.pointers.reduce(
+      (acc, p) => {
+        acc.x += p.x;
+        acc.y += p.y;
+        return acc;
+      },
+      { x: 0, y: 0 }
+    );
+    return {
+      x: sum.x / this.pointers.length,
+      y: sum.y / this.pointers.length,
+    };
   }
 }

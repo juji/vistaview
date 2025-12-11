@@ -181,8 +181,8 @@ export function removeTouchActions(vistaView: VistaView): void {
 // called when the viewer is opened
 // can be used to set up custom controls or other initializations
 // for this instance, we setup pointer events
-export const defaultInit = (vistaView: VistaView) => {
-  setTouchActions(vistaView);
+export const defaultInit = (_vistaView: VistaView) => {
+  // setTouchActions(vistaView);
 };
 
 // default setup
@@ -280,5 +280,5 @@ export const defaultClose: VistaViewCloseFunction = (vistaView) => {
   if (vistaView.elements instanceof NodeList) {
     vistaView.elements.forEach((el) => (el.style.opacity = '1'));
   }
-  removeTouchActions(vistaView);
+  // removeTouchActions(vistaView);
 };

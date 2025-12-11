@@ -20,7 +20,6 @@ import type {
 } from './types';
 
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
-import { VistaViewPointers, type VistaViewPointerListenerArgs } from './pointers';
 
 export class VistaViewTransitionAbortedError extends Error {
   constructor(message: string) {
@@ -100,13 +99,11 @@ export class VistaView {
   private userClose: VistaViewCloseFunction = defaultClose;
   private userInit: VistaViewInitFunction = defaultInit;
 
-  // private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
-  // private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
-  // private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
-  private onZoomedPointerListener: null | ((e: VistaViewPointerListenerArgs) => void) = null;
+  private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
+  private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
 
   private transitionAbortControllers: { [key: string]: AbortController } = {};
-  private pointers: VistaViewPointers | null = null;
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -351,10 +348,18 @@ export class VistaView {
       let img = this.isZoomed;
       img.classList.remove('vistaview-image--zooming');
 
-      if (this.onZoomedPointerListener) {
-        this.pointers?.removeEventListener(this.onZoomedPointerListener);
+      if (this.onZoomedPointerDown) {
+        img.parentElement?.removeEventListener('pointerdown', this.onZoomedPointerDown!);
+        this.onZoomedPointerDown = null;
       }
-
+      if (this.onZoomedPointerMove) {
+        img.parentElement?.removeEventListener('pointermove', this.onZoomedPointerMove!);
+        this.onZoomedPointerMove = null;
+      }
+      if (this.onZoomedPointerUp) {
+        img.parentElement?.removeEventListener('pointerup', this.onZoomedPointerUp!);
+        this.onZoomedPointerUp = null;
+      }
       img?.style.removeProperty('--pointer-diff-x');
       img?.style.removeProperty('--pointer-diff-y');
       setTimeout(() => {
@@ -369,7 +374,7 @@ export class VistaView {
     if (image) {
       this.isZoomed = image;
 
-      // image.classList.add('vistaview-image--zooming');
+      image.classList.add('vistaview-image--zooming');
 
       image?.style.setProperty('--pointer-diff-x', `0px`);
       image?.style.setProperty('--pointer-diff-y', `0px`);
@@ -425,7 +430,7 @@ export class VistaView {
       }
 
       // set new listeners
-      const _onZoomedPointerDown = (e: PointerEvent) => {
+      this.onZoomedPointerDown = (e: PointerEvent) => {
         if (raf) cancelAnimationFrame(raf);
         e.preventDefault();
         e.stopPropagation();
@@ -436,7 +441,7 @@ export class VistaView {
         image!.setPointerCapture(e.pointerId);
       };
 
-      const _onZoomedPointerMove = (e: PointerEvent) => {
+      this.onZoomedPointerMove = (e: PointerEvent) => {
         if (!isDragging) return;
         e.preventDefault();
         localDiffX = e.pageX - startX;
@@ -446,7 +451,7 @@ export class VistaView {
         image?.style.setProperty('--pointer-diff-y', `${localDiffY + diffY}px`);
       };
 
-      const _onZoomedPointerUp = (e: PointerEvent) => {
+      this.onZoomedPointerUp = (e: PointerEvent) => {
         isDragging = false;
         image!.releasePointerCapture(e.pointerId);
         diffX += localDiffX;
@@ -466,145 +471,13 @@ export class VistaView {
         localDiffY = 0;
       };
 
-      this.onZoomedPointerListener = (e: VistaViewPointerListenerArgs) => {
-        if (!this.isZoomed || this.isZoomed !== image) return;
-        if (e.pointers.length > 1) return; // ignore multi-touch
-        switch (e.event) {
-          case 'down':
-            _onZoomedPointerDown(e.domEvent);
-            return;
-          case 'move':
-            _onZoomedPointerMove(e.domEvent);
-            return;
-          case 'up':
-            _onZoomedPointerUp(e.domEvent);
-            return;
-        }
-      };
-
       // add listeners
-      // image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
-      // image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
-      // image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
-      this.pointers?.addEventListener(this.onZoomedPointerListener);
+      image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
+      image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
+      image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
 
       return;
     }
-  }
-
-  setSize({
-    image,
-    width,
-    height,
-    xDisplacement = 0,
-    yDisplacement = 0,
-    minWidth,
-    maxWidth,
-    minHeight,
-    maxHeight,
-  }: {
-    image: HTMLImageElement;
-    width: number;
-    height: number;
-    xDisplacement?: number;
-    yDisplacement?: number;
-    minWidth: number;
-    maxWidth: number;
-    minHeight: number;
-    maxHeight: number;
-  }): void {
-    // if(width === minWidth) {
-    //   this.setZoomed(false);
-    // }else{
-    //   this.setZoomed(image);
-    // }
-
-    if (width <= minWidth) {
-      image.style.width = `${minWidth}px`;
-      image.style.height = `${minHeight}px`;
-      image.style.setProperty('--x-displacement', `0px`);
-      image.style.setProperty('--y-displacement', `0px`);
-    } else {
-      if (xDisplacement !== undefined) {
-        image.style.setProperty('--x-displacement', `${xDisplacement}px`);
-      }
-
-      if (yDisplacement !== undefined) {
-        image.style.setProperty('--y-displacement', `${yDisplacement}px`);
-      }
-
-      if (width >= maxWidth) {
-        image.style.width = `${maxWidth}px`;
-        image.style.height = `${maxHeight}px`;
-      } else {
-        image.style.width = `${width}px`;
-        image.style.height = `${height}px`;
-      }
-    }
-
-    // const highresImage = this.rootElm?.querySelector(
-    //   '[data-vistaview-pos="0"] .vistaview-image-highres'
-    // ) as HTMLImageElement;
-
-    // if(!highresImage) return;
-
-    // // store initial width/height if not set
-    // if (
-    //   !highresImage.dataset.vistaviewInitialWidth ||
-    //   !highresImage.dataset.vistaviewInitialHeight
-    // ) {
-    //   const dim = highresImage.getBoundingClientRect();
-    //   highresImage.dataset.vistaviewInitialWidth = dim.width.toString();
-    //   highresImage.dataset.vistaviewInitialHeight = dim.height.toString();
-    // }
-
-    // const initialWidth = highresImage.dataset.vistaviewInitialWidth
-    //   ? parseInt(highresImage.dataset.vistaviewInitialWidth)
-    //   : 0;
-    // const initialHeight = highresImage.dataset.vistaviewInitialHeight
-    //   ? parseInt(highresImage.dataset.vistaviewInitialHeight)
-    //   : 0;
-
-    // const maxRatio = this.options.maxZoomLevel!;
-
-    // console.log('ratioDiff', ratioDiff);
-    // const maxWidth = parseInt(highresImage.getAttribute('width')!) * maxRatio
-    // const currentWidthRatio = highresImage.width / maxWidth;
-    // const minRatio = initialWidth / maxWidth;
-    // const newWidthRatio = Math.min(Math.max(currentWidthRatio + ratioDiff, minRatio), maxRatio!);
-
-    // const newWidth = Math.max(initialWidth, Math.min(maxWidth * newWidthRatio, maxWidth * maxRatio));
-    // const newHeight = newWidth / initialWidth * initialHeight;
-
-    // if(newWidth === maxWidth * maxRatio) {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-in-btn')
-    //     ?.setAttribute('disabled', 'true');
-    // } else {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-in-btn')
-    //     ?.removeAttribute('disabled');
-    // }
-
-    // if(newWidth === initialWidth) {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-out-btn')
-    //     ?.setAttribute('disabled', 'true');
-    //   this.setZoomed(false);
-    // } else {
-    //   this.rootElm
-    //     ?.querySelector('button.vistaview-zoom-out-btn')
-    //     ?.removeAttribute('disabled');
-    // }
-
-    // if(newWidth === initialWidth) {
-    //   this.setZoomed(false);
-    // }else{
-    //   this.setZoomed(highresImage);
-    // }
-
-    // highresImage.style.width = `${newWidth}px`;
-    // highresImage.style.height = `${newHeight}px`;
   }
 
   zoomIn(): void {
@@ -966,140 +839,6 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
   }
 
-  private setPointerListener = () => {
-    let lastDown: number | null = null;
-    let lastDistance = 0;
-    let lastRatio = 0;
-
-    let currentImage = {
-      centroid: { x: 0, y: 0 },
-      image: null as HTMLImageElement | null,
-      initialWidth: 0,
-      initialHeight: 0,
-      initialTop: 0,
-      initialLeft: 0,
-      maxWidth: 0,
-      minWidth: 0,
-      minHeight: 0,
-      maxHeight: 0,
-    };
-
-    return (e: VistaViewPointerListenerArgs) => {
-      if (!this.pointers) return;
-      if (!this.rootElm) return;
-
-      if (e.event === 'down') {
-        if (e.pointers.length === 1) {
-          lastDown = performance.now();
-        }
-
-        if (e.pointers.length >= 2) {
-          lastDown = null;
-          lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
-          const image = this.rootElm.querySelector(
-            '[data-vistaview-pos="0"] .vistaview-image-highres'
-          ) as HTMLImageElement;
-          if (!image) return;
-
-          image.classList.add('vistaview-image--touch-zoom');
-          if (!image.dataset.vistaviewInitialWidth) {
-            image.dataset.vistaviewInitialWidth = image.width.toString();
-          }
-          if (!image.dataset.vistaviewInitialHeight) {
-            image.dataset.vistaviewInitialHeight = image.height.toString();
-          }
-
-          const rect = image.getBoundingClientRect();
-          currentImage = {
-            centroid: this.pointers.getCentroid() as { x: number; y: number },
-            image: image,
-            initialWidth: image ? image.width : 0,
-            initialHeight: image ? image.height : 0,
-            initialTop: rect.top,
-            initialLeft: rect.left,
-            maxWidth: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
-            minWidth: image
-              ? image.dataset.vistaviewInitialWidth
-                ? parseInt(image.dataset.vistaviewInitialWidth)
-                : 0
-              : 0,
-            maxHeight: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
-            minHeight: image
-              ? image.dataset.vistaviewInitialHeight
-                ? parseInt(image.dataset.vistaviewInitialHeight)
-                : 0
-              : 0,
-          };
-        }
-      } else if (e.event === 'move') {
-        if (e.pointers.length >= 2) {
-          if (!currentImage.image) return;
-          const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
-          const ratio = distance / lastDistance;
-
-          // avoid excessive calls
-          if (ratio === lastRatio) return;
-
-          lastRatio = ratio;
-          const width = currentImage.initialWidth * ratio;
-          const height = currentImage.initialHeight * ratio;
-          const { image, ...rest } = currentImage;
-
-          // Calculate displacement to keep centroid point fixed
-          // const rect = image.getBoundingClientRect();
-          const distanceToTop = currentImage.centroid.y - currentImage.initialTop;
-          const distanceToLeft = currentImage.centroid.x - currentImage.initialLeft;
-
-          // Scale distances by ratio to get new distances
-          const newDistanceToTop = distanceToTop * ratio;
-          const newDistanceToLeft = distanceToLeft * ratio;
-
-          // Calculate new position
-          const newTop = currentImage.centroid.y - newDistanceToTop;
-          const newLeft = currentImage.centroid.x - newDistanceToLeft;
-
-          // Convert to displacement from center
-          const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = window.innerHeight / 2;
-          const newCenterX = newLeft + width / 2;
-          const newCenterY = newTop + height / 2;
-
-          const xDisplacement = newCenterX - viewportCenterX;
-          const yDisplacement = newCenterY - viewportCenterY;
-
-          this.setSize({
-            image,
-            width,
-            height,
-            xDisplacement,
-            yDisplacement,
-            ...rest,
-          });
-        }
-      } else if (e.event === 'up') {
-        if (e.pointers.length === 1 && lastDown) {
-          // const time = lastDown ? performance.now() - lastDown : null;
-          // if(time !== null && time < 300) {
-          //   // treat as click
-          //   this.zoomIn();
-          // }
-        }
-
-        if (e.pointers.length < 2) {
-          // currentImage.currentHeight = currentImage.image ? currentImage.image.height : 0;
-          // currentImage.currentWidth = currentImage.image ? currentImage.image.width : 0;
-
-          // this.recordCurrentWidth()
-          this.rootElm
-            ?.querySelector('[data-vistaview-pos="0"] .vistaview-image-highres')
-            ?.classList.remove('vistaview-image--touch-zoom');
-        }
-      } else if (e.event === 'cancel') {
-        // this.pointers.onPointerCancel(e.originalEvent);
-      }
-    };
-  };
-
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.error('VistaView: another instance is already opened. Returning.');
@@ -1247,9 +986,6 @@ export class VistaView {
     this.setCurrentDescription();
     this.setIndexDisplay();
 
-    // set pointer events
-    this.pointers = new VistaViewPointers(this.rootElm, [this.setPointerListener()]);
-
     this.userInit(this);
     this.options.onOpen?.(setupParams);
     this.options.onImageView?.(setupParams);
@@ -1303,18 +1039,17 @@ export class VistaView {
       this.onKeyDown = null;
     }
 
-    if (this.onZoomedPointerListener) {
+    if (this.onZoomedPointerDown || this.onZoomedPointerMove || this.onZoomedPointerUp) {
       this.setZoomed(false);
-      this.onZoomedPointerListener = null;
+      this.onZoomedPointerDown = null;
+      this.onZoomedPointerMove = null;
+      this.onZoomedPointerUp = null;
     }
 
     for (const key in this.transitionAbortControllers) {
       this.transitionAbortControllers[key].abort();
     }
     this.transitionAbortControllers = {};
-
-    this.pointers?.removeListeners();
-    this.pointers = null;
 
     GlobalVistaState.somethingOpened = null;
   }
