@@ -1,5 +1,7 @@
 # VistaView
 
+⚠️ **This is still in development, do not use**
+
 A lightweight, modern image lightbox library for the web. Zero dependencies, framework-agnostic, and highly customizable.
 
 ## Features
