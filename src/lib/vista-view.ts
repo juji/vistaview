@@ -425,7 +425,7 @@ export class VistaView {
       }
 
       // set new listeners
-      const _onZoomedPointerDown = (e: PointerEvent) => {
+      const onZoomedPointerDown = (e: PointerEvent) => {
         if (raf) cancelAnimationFrame(raf);
         e.preventDefault();
         e.stopPropagation();
@@ -436,7 +436,7 @@ export class VistaView {
         image!.setPointerCapture(e.pointerId);
       };
 
-      const _onZoomedPointerMove = (e: PointerEvent) => {
+      const onZoomedPointerMove = (e: PointerEvent) => {
         if (!isDragging) return;
         e.preventDefault();
         localDiffX = e.pageX - startX;
@@ -446,7 +446,7 @@ export class VistaView {
         image?.style.setProperty('--pointer-diff-y', `${localDiffY + diffY}px`);
       };
 
-      const _onZoomedPointerUp = (e: PointerEvent) => {
+      const onZoomedPointerUp = (e: PointerEvent) => {
         isDragging = false;
         image!.releasePointerCapture(e.pointerId);
         diffX += localDiffX;
@@ -471,13 +471,13 @@ export class VistaView {
         if (e.pointers.length > 1) return; // ignore multi-touch
         switch (e.event) {
           case 'down':
-            _onZoomedPointerDown(e.domEvent);
+            onZoomedPointerDown(e.domEvent);
             return;
           case 'move':
-            _onZoomedPointerMove(e.domEvent);
+            onZoomedPointerMove(e.domEvent);
             return;
           case 'up':
-            _onZoomedPointerUp(e.domEvent);
+            onZoomedPointerUp(e.domEvent);
             return;
         }
       };
