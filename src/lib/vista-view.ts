@@ -873,7 +873,7 @@ export class VistaView {
     }
   }
 
-  // Calculate displacement to keep centroid point fixed
+  // Calculate displacement to keep centroid point fixed (scale around point)
   private calculateTranslate(
     currentImage: VistaViewCurrentImage,
     ratio: number,
@@ -881,34 +881,37 @@ export class VistaView {
     height: number,
     newCentroid: { x: number; y: number }
   ) {
-    const distanceToTop =
-      currentImage.centroid!.y - currentImage.initial.top + currentImage.accumTranslate.y;
-    const distanceToLeft =
-      currentImage.centroid!.x - currentImage.initial.left + currentImage.accumTranslate.x;
+    // initial.top/left from getBoundingClientRect() already includes visual position
+    // so we don't add accumTranslate here (it would double-count)
+    const distanceToTop = currentImage.centroid!.y - currentImage.initial.top;
+    const distanceToLeft = currentImage.centroid!.x - currentImage.initial.left;
 
     // Scale distances by ratio to get new distances
     const newDistanceToTop = distanceToTop * ratio;
     const newDistanceToLeft = distanceToLeft * ratio;
 
-    // Calculate new position to keep centroid fixed
+    // Calculate new top-left position to keep centroid fixed
     const newTop = currentImage.centroid!.y - newDistanceToTop;
     const newLeft = currentImage.centroid!.x - newDistanceToLeft;
 
-    // Convert to translate values (displacement from center)
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportCenterY = window.innerHeight / 2;
+    // Calculate new image center position
     const newCenterX = newLeft + width / 2;
     const newCenterY = newTop + height / 2;
 
-    // Get current centroid and adjust for any movement during gesture
+    // Current image center (from getBoundingClientRect)
+    const currentCenterX = currentImage.initial.left + currentImage.initial.w / 2;
+    const currentCenterY = currentImage.initial.top + currentImage.initial.h / 2;
+
+    // Translation is the difference between new center and current center,
+    // plus adjustment for finger movement during gesture
     const translate = {
       x:
         Math.round(
-          (newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid!.x)) * 100
+          (newCenterX - currentCenterX + (newCentroid.x - currentImage.centroid!.x)) * 100
         ) / 100,
       y:
         Math.round(
-          (newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid!.y)) * 100
+          (newCenterY - currentCenterY + (newCentroid.y - currentImage.centroid!.y)) * 100
         ) / 100,
     };
 
@@ -1025,8 +1028,6 @@ export class VistaView {
             finalHeight,
             newCentroid
           );
-
-          console.log('Final translate:', finalTranslate);
 
           currentImage.scale = finalRatio;
 
