@@ -871,9 +871,13 @@ export class VistaView {
     }
   }
 
-  private calculateTranslate(currentImage: any, ratio: number, width: number, height: number) {
-    // console.log('positions', currentImage.initial.top, currentImage.initial.left);
-
+  private calculateFinalTranslate(
+    currentImage: any,
+    ratio: number,
+    width: number,
+    height: number,
+    newCentroid: { x: number; y: number }
+  ) {
     // Calculate displacement to keep centroid point fixed
     const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
     const distanceToLeft = currentImage.centroid.x - currentImage.initial.left;
@@ -893,7 +897,6 @@ export class VistaView {
     const newCenterY = newTop + height / 2;
 
     // Get current centroid and adjust for any movement during gesture
-    const newCentroid = this.pointers!.getCentroid() as { x: number; y: number };
     const translate = {
       x:
         Math.round(newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x) * 100) /
@@ -902,17 +905,8 @@ export class VistaView {
         Math.round(newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y) * 100) /
         100,
     };
-    // const translate = {
-    //   x:
-    //     Math.round((newCentroid.x - currentImage.centroid.x) * 100) /
-    //     100,
-    //   y:
-    //     Math.round((newCentroid.y - currentImage.centroid.y) * 100) /
-    //     100,
-    // };
 
     return translate;
-    // return{ x: 0, y: 0 };
   }
 
   private setPointerListener = () => {
@@ -1023,11 +1017,12 @@ export class VistaView {
           };
 
           // temp: use translate as finalTranslate
-          const finalTranslate = this.calculateTranslate(
+          const finalTranslate = this.calculateFinalTranslate(
             currentImage,
             finalRatio,
             finalWidth,
-            finalHeight
+            finalHeight,
+            newCentroid
           );
 
           console.log('ratio:', ratio, 'finalRatio:', finalRatio);
