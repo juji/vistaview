@@ -447,7 +447,6 @@ vistaview is initialized, with initial position and size
     width: var(--vistaview-fitted-width) !important;
     height: var(--vistaview-fitted-height) !important;
     transition:
-      transform calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
       width calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
       height calc(var(--vistaview-animation-duration) * 0.5ms) ease 0ms,
       opacity calc(var(--vistaview-animation-duration) * 0.5ms) ease
