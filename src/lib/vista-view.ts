@@ -1,13 +1,14 @@
 import { vistaViewComponent, vistaViewItem, vistaViewDownload } from './components';
 
 import {
-  fifo,
   getElmProperties,
   getFittedSize,
   getFullSizeDim,
   getMaxMinZoomLevels,
   isNotZeroCssValue,
 } from './utils';
+
+import { fifo } from './fifo';
 
 import type {
   VistaViewCloseFunction,
@@ -1032,24 +1033,28 @@ export class VistaView {
             // currentImage.image!.style.removeProperty('opacity');
             // currentImage.image.classList.remove('vistaview-image--touch-zoom');
 
-            currentImage.image!.classList.remove('vistaview-image--touch-zoom');
             if (currentImage.stop) {
-              // this.close();
-              currentImage.image!.style.opacity = '1';
-              // currentImage.image!.style.removeProperty('opacity');
-              currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
-                '--vistaview-fitted-width'
-              );
-              currentImage.image!.style.height = currentImage.image!.style.getPropertyValue(
-                '--vistaview-fitted-height'
-              );
-              currentImage.scale =
-                parseFloat(currentImage.image.style.width.replace('px', '')) /
-                currentImage.sizes.minW;
-              currentImage.image.style.transform = `translate3d(0px, 0px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
-              currentImage.image.addEventListener(
-                'transitionend',
-                () => {
+              fifo(() => {
+                console.log('closing after touch zoom out');
+
+                const rect = currentImage.image!.getBoundingClientRect();
+                currentImage.image!.style.width = rect.width + 'px';
+                currentImage.image!.style.height = rect.height + 'px';
+                currentImage.image!.style.transform = currentImage.image!.style.transform.replace(
+                  /scale3d\([0-9.]+, [0-9.]+, 1\)/,
+                  'scale3d(1, 1, 1)'
+                );
+
+                requestAnimationFrame(() => {
+                  currentImage.image!.classList.add('vistaview-image--touch-zoom-out');
+                  currentImage.image!.style.opacity = '1';
+                  currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
+                    '--vistaview-fitted-width'
+                  );
+                  currentImage.image!.style.height = currentImage.image!.style.getPropertyValue(
+                    '--vistaview-fitted-height'
+                  );
+                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0) scale3d(1, 1, 1)`;
                   currentImage.image!.addEventListener(
                     'transitionend',
                     () => {
@@ -1057,11 +1062,39 @@ export class VistaView {
                     },
                     { once: true }
                   );
-                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0) scale3d(1, 1, 1)`;
-                },
-                { once: true }
-              );
+                });
+              }, 'closing after touch zoom out');
+              // this.close();
+              // currentImage.image!.style.removeProperty('opacity');
+              // currentImage.image.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(1, 1, 1)`;
+              // currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
+              //   '--vistaview-fitted-width'
+              // );
+              // currentImage.image!.style.height = currentImage.image!.style.getPropertyValue(
+              //   '--vistaview-fitted-height'
+              // );
+              // currentImage.scale =
+              //   parseFloat(currentImage.image.style.width.replace('px', '')) /
+              //   currentImage.sizes.minW;
+              // currentImage.image!.classList.add('vistaview-image--touch-zoom');
+              // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
+              // currentImage.image.addEventListener(
+              //   'transitionend',
+              //   () => {
+              //     currentImage.image!.addEventListener(
+              //       'transitionend',
+              //       () => {
+              //         this.close();
+              //       },
+              //       { once: true }
+              //     );
+              //     currentImage.image!.style.transform = `translate3d(0px, 0px, 0) scale3d(1, 1, 1)`;
+              //   },
+              //   { once: true }
+              // );
             } else {
+              console.log('resetting after touch zoom in');
+              currentImage.image!.classList.remove('vistaview-image--touch-zoom');
               fifo(() => {
                 function swapDimensions() {
                   requestAnimationFrame(() => {
@@ -1097,7 +1130,7 @@ export class VistaView {
                 if (lastTransform === nextTransform) {
                   swapDimensions();
                 }
-              });
+              }, 'resetting after touch zoom in');
             }
           }
         }

@@ -231,6 +231,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transform-origin: center center;
     animation: vistaview-pulse 1s ease-in-out infinite;
     background: linear-gradient(45deg, #1a1a1a, #333, #1a1a1a, #555);
     background-size: 400% 400%;
@@ -266,7 +267,7 @@
         calc(var(--vistaview-animation-duration) * 0.3ms),
       opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0ms;
 
-    &.vistaview-image--zooming {
+    /* &.vistaview-image--zooming {
       transition: transform 222ms ease 0ms;
       cursor: grab;
       &:active {
@@ -276,10 +277,18 @@
 
     &.vistaview-image--zooming-out {
       transition: transform 222ms ease 0ms;
-    }
+    } */
 
     &.vistaview-image--touch-zoom {
       transition: none;
+    }
+
+    &.vistaview-image--touch-zoom-out {
+      transition:
+        opacity 333ms ease 0ms,
+        transform 333ms ease 0ms,
+        width 333ms ease 0ms,
+        height 333ms ease 0ms;
     }
 
     &.vistaview-image-loaded {
