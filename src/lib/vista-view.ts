@@ -907,6 +907,7 @@ export class VistaView {
     let currentImage = {
       centroid: { x: 0, y: 0 },
       scale: 1,
+      stop: false,
       translate: { x: 0, y: 0 },
       image: null as HTMLImageElement | null,
       initial: {
@@ -952,6 +953,7 @@ export class VistaView {
               top: rect.top,
               left: rect.left,
             },
+            stop: false,
             scale: currentImage.scale,
             translate: currentImage.translate,
             sizes: {
@@ -989,6 +991,7 @@ export class VistaView {
             width,
             height
           );
+
           const { scale: finalScale, translate: finalTranslate } = this.calculateScaleTranslate(
             currentImage,
             finalWidth / currentImage.initial.w,
@@ -998,10 +1001,16 @@ export class VistaView {
 
           currentImage.scale = finalScale;
           currentImage.translate = finalScale === 1 ? { x: 0, y: 0 } : finalTranslate;
-          const { image } = currentImage;
+          currentImage.stop = scale < 0.33;
+
+          if (currentImage.stop) {
+            currentImage.image.style.opacity = '0.33';
+          } else {
+            currentImage.image.style.removeProperty('opacity');
+          }
 
           this.setSize({
-            image,
+            image: currentImage.image,
             scale,
             translate,
           });
@@ -1026,7 +1035,12 @@ export class VistaView {
             };
 
             currentImage.image.classList.remove('vistaview-image--touch-zoom');
-            currentImage.image.style.transform = `translate(${currentImage.translate.x}px, ${currentImage.translate.y}px) scale(${currentImage.scale})`;
+            if (currentImage.stop) {
+              currentImage.image.style.display = 'none';
+              this.close();
+            } else {
+              currentImage.image.style.transform = `translate(${currentImage.translate.x}px, ${currentImage.translate.y}px) scale(${currentImage.scale})`;
+            }
           }
         }
       } else if (e.event === 'cancel') {
