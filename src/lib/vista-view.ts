@@ -20,6 +20,7 @@ import type {
   VistaViewImageIndexed,
   VistaViewOptions,
   VistaViewInitFunction,
+  VistaViewCurrentImage,
 } from './types';
 
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
@@ -872,24 +873,26 @@ export class VistaView {
     }
   }
 
-  private calculateFinalTranslate(
-    currentImage: any,
+  // Calculate displacement to keep centroid point fixed
+  private calculateTranslate(
+    currentImage: VistaViewCurrentImage,
     ratio: number,
     width: number,
     height: number,
     newCentroid: { x: number; y: number }
   ) {
-    // Calculate displacement to keep centroid point fixed
-    const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
-    const distanceToLeft = currentImage.centroid.x - currentImage.initial.left;
+    const distanceToTop =
+      currentImage.centroid!.y - currentImage.initial.top + currentImage.accumTranslate.y;
+    const distanceToLeft =
+      currentImage.centroid!.x - currentImage.initial.left + currentImage.accumTranslate.x;
 
     // Scale distances by ratio to get new distances
     const newDistanceToTop = distanceToTop * ratio;
     const newDistanceToLeft = distanceToLeft * ratio;
 
     // Calculate new position to keep centroid fixed
-    const newTop = currentImage.centroid.y - newDistanceToTop;
-    const newLeft = currentImage.centroid.x - newDistanceToLeft;
+    const newTop = currentImage.centroid!.y - newDistanceToTop;
+    const newLeft = currentImage.centroid!.x - newDistanceToLeft;
 
     // Convert to translate values (displacement from center)
     const viewportCenterX = window.innerWidth / 2;
@@ -901,11 +904,11 @@ export class VistaView {
     const translate = {
       x:
         Math.round(
-          (newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x)) * 100
+          (newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid!.x)) * 100
         ) / 100,
       y:
         Math.round(
-          (newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y)) * 100
+          (newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid!.y)) * 100
         ) / 100,
     };
 
@@ -917,12 +920,13 @@ export class VistaView {
     let lastDistance = 0;
     let lastRatio = 0;
 
-    let currentImage = {
-      centroid: null as { x: number; y: number } | null,
+    let currentImage: VistaViewCurrentImage = {
+      centroid: null,
       scale: 1,
       stop: false,
       translate: { x: 0, y: 0 },
-      image: null as HTMLImageElement | null,
+      accumTranslate: { x: 0, y: 0 },
+      image: null,
       initial: {
         w: 0,
         h: 0,
@@ -969,6 +973,7 @@ export class VistaView {
             stop: false,
             scale: 1,
             translate: { x: 0, y: 0 },
+            accumTranslate: currentImage.accumTranslate,
             sizes: {
               maxW: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
               maxH: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
@@ -1004,14 +1009,14 @@ export class VistaView {
           // calculate translate, get current centroid
           const newCentroid = this.pointers!.getCentroid()!;
 
-          const translate = this.calculateFinalTranslate(
+          const translate = this.calculateTranslate(
             currentImage,
             ratio,
             width,
             height,
             newCentroid
           );
-          const finalTranslate = this.calculateFinalTranslate(
+          const finalTranslate = this.calculateTranslate(
             currentImage,
             finalRatio,
             finalWidth,
@@ -1115,18 +1120,9 @@ export class VistaView {
                   currentImage.image!.style.width = `${currentImage.initial.w}px`;
                   currentImage.image!.style.height = `${currentImage.initial.h}px`;
 
-                  const translateTop =
-                    (currentImage.image!.dataset.vistaViewTranslateTop
-                      ? parseFloat(currentImage.image!.dataset.vistaViewTranslateTop)
-                      : 0) + currentImage.translate.x;
-                  const translateLeft =
-                    (currentImage.image!.dataset.vistaViewTranslateLeft
-                      ? parseFloat(currentImage.image!.dataset.vistaViewTranslateLeft)
-                      : 0) + currentImage.translate.y;
-
-                  currentImage.image!.dataset.vistaViewTranslateTop = `${translateTop}`;
-                  currentImage.image!.dataset.vistaViewTranslateLeft = `${translateLeft}`;
-                  currentImage.image!.style.translate = `calc(-50% + ${translateTop}px) calc(-50% + ${translateLeft}px)`;
+                  currentImage.accumTranslate.x += currentImage.translate.x;
+                  currentImage.accumTranslate.y += currentImage.translate.y;
+                  currentImage.image!.style.translate = `calc(-50% + ${currentImage.accumTranslate.x}px) calc(-50% + ${currentImage.accumTranslate.y}px)`;
                   currentImage.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
                   currentImage.translate = { x: 0, y: 0 };
                   // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
