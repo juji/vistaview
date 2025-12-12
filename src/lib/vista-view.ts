@@ -1,6 +1,7 @@
 import { vistaViewComponent, vistaViewItem, vistaViewDownload } from './components';
 
 import {
+  fifo,
   getElmProperties,
   getFittedSize,
   getFullSizeDim,
@@ -893,9 +894,9 @@ export class VistaView {
     scale: number;
   }): void {
     if (translate) {
-      image.style.transform = `translate(${translate.x || 0}px, ${translate.y || 0}px) scale(${scale})`;
+      image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0) scale3d(${scale}, ${scale}, 1)`;
     } else {
-      image.style.transform = `translate(0px, 0px) scale(${scale})`;
+      image.style.transform = `translate3d(0px, 0px, 0) scale3d(${scale}, ${scale}, 1)`;
     }
   }
 
@@ -934,6 +935,7 @@ export class VistaView {
         }
 
         if (e.pointers.length >= 2) {
+          console.log('touch zoom start');
           lastDown = null;
           lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const image = this.rootElm.querySelector(
@@ -954,7 +956,7 @@ export class VistaView {
               left: rect.left,
             },
             stop: false,
-            scale: currentImage.scale,
+            scale: 1,
             translate: currentImage.translate,
             sizes: {
               maxW: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
@@ -967,6 +969,7 @@ export class VistaView {
       } else if (e.event === 'move') {
         if (e.pointers.length >= 2) {
           if (!currentImage.image) return;
+          console.log('touch zoom move');
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = distance / lastDistance;
 
@@ -1001,7 +1004,7 @@ export class VistaView {
 
           currentImage.scale = finalScale;
           currentImage.translate = finalScale === 1 ? { x: 0, y: 0 } : finalTranslate;
-          currentImage.stop = scale < 0.33;
+          currentImage.stop = scale < 0.5;
 
           if (currentImage.stop) {
             currentImage.image.style.opacity = '0.33';
@@ -1026,17 +1029,14 @@ export class VistaView {
 
         if (e.pointers.length < 2) {
           if (currentImage.image) {
-            const rect = currentImage.image.getBoundingClientRect();
-            currentImage.initial = {
-              w: rect.width,
-              h: rect.height,
-              top: rect.top,
-              left: rect.left,
-            };
+            // currentImage.image!.style.removeProperty('opacity');
+            // currentImage.image.classList.remove('vistaview-image--touch-zoom');
 
-            currentImage.image.classList.remove('vistaview-image--touch-zoom');
-            currentImage.image!.style.removeProperty('opacity');
+            currentImage.image!.classList.remove('vistaview-image--touch-zoom');
             if (currentImage.stop) {
+              // this.close();
+              currentImage.image!.style.opacity = '1';
+              // currentImage.image!.style.removeProperty('opacity');
               currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
                 '--vistaview-fitted-width'
               );
@@ -1046,7 +1046,7 @@ export class VistaView {
               currentImage.scale =
                 parseFloat(currentImage.image.style.width.replace('px', '')) /
                 currentImage.sizes.minW;
-              currentImage.image.style.transform = `translate(0px, 0px) scale(${currentImage.scale})`;
+              currentImage.image.style.transform = `translate3d(0px, 0px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
               currentImage.image.addEventListener(
                 'transitionend',
                 () => {
@@ -1057,12 +1057,62 @@ export class VistaView {
                     },
                     { once: true }
                   );
-                  currentImage.image!.style.transform = `translate(0px, 0px) scale(1)`;
+                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0) scale3d(1, 1, 1)`;
                 },
                 { once: true }
               );
             } else {
-              currentImage.image.style.transform = `translate(${currentImage.translate.x}px, ${currentImage.translate.y}px) scale(${currentImage.scale})`;
+              fifo(() => {
+                function swapDimensions() {
+                  requestAnimationFrame(() => {
+                    // currentImage.image!.classList.add('vistaview-image--touch-zoom');
+                    // const rect = currentImage.image!.getBoundingClientRect();
+                    // currentImage.initial = {
+                    //   w: rect.width,
+                    //   h: rect.height,
+                    //   top: rect.top,
+                    //   left: rect.left,
+                    // };
+                    console.log('resetting to initial');
+                    // need to reset width/height to current before resetting transform
+                    // but we have a problem!!!
+                    currentImage.initial.w = currentImage.initial.w * currentImage.scale;
+                    currentImage.initial.h = currentImage.initial.h * currentImage.scale;
+                    currentImage.scale = 1;
+                    console.log('new initial w/h:', currentImage.initial.w, currentImage.initial.h);
+                    currentImage.image!.style.width = `${currentImage.initial.w}px`;
+                    currentImage.image!.style.height = `${currentImage.initial.h}px`;
+                    currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(1, 1, 1)`;
+                    // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
+                  });
+                }
+
+                currentImage.image!.addEventListener(
+                  'transitionend',
+                  () => {
+                    swapDimensions();
+                  },
+                  { once: true }
+                );
+                // console.log(currentImage.image.style.transform)
+                // console.log(`translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`)
+                const lastTransform = currentImage.image!.style.transform;
+                console.log('lastTransform:', lastTransform);
+                currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
+                // currentImage.image!.style.width = `${currentImage.initial.w * currentImage.scale}px`;
+                // currentImage.image!.style.height = `${currentImage.initial.h * currentImage.scale}px`;
+                // currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(1, 1, 1)`;
+                // currentImage.scale = 1
+                // currentImage.initial.w = currentImage.initial.w * currentImage.scale
+                // currentImage.initial.h = currentImage.initial.h * currentImage.scale
+                const currentTransform = currentImage.image!.style.transform;
+                console.log('currentTransform:', currentTransform);
+                console.log('the same?', lastTransform === currentTransform);
+                if (lastTransform === currentTransform) {
+                  currentImage.image!.classList.add('vistaview-image--touch-zoom');
+                  swapDimensions();
+                }
+              });
             }
           }
         }

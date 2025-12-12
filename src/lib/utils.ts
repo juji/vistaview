@@ -194,3 +194,25 @@ export function getMaxMinZoomLevels(
     minDiffX,
   };
 }
+
+// FIFO function execution control
+// Ensures that the function is not called more than once in the specified wait time.
+let fifoLastCall = 0;
+export function fifo(func: () => void, wait: number = 1000): void {
+  const now = Date.now();
+  const timeSinceLastCall = now - fifoLastCall;
+
+  const invoke = () => {
+    fifoLastCall = Date.now();
+    func();
+  };
+
+  if (!fifoLastCall) {
+    invoke();
+    return;
+  }
+
+  if (timeSinceLastCall >= wait) {
+    invoke();
+  }
+}
