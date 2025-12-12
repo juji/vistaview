@@ -998,6 +998,7 @@ export class VistaView {
 
           const width = currentImage.initial.w * ratio;
           const height = currentImage.initial.h * ratio;
+
           const finalWidth = Math.max(
             Math.min(width, currentImage.sizes.maxW),
             currentImage.sizes.minW
@@ -1013,14 +1014,15 @@ export class VistaView {
               : Math.round((finalWidth / currentImage.initial.w) * 100) / 100;
 
           // calculate translate, get current centroid
-          // const newCentroid = this.pointers!.getCentroid()!;
+          const newCentroid = this.pointers!.getCentroid()!;
 
-          const translate = this.calculateTranslate(currentImage, ratio, width, height);
-          // const translate = {
-          //   x: newCentroid.x - currentImage.centroid.x,
-          //   y: newCentroid.y - currentImage.centroid.y,
-          // }
+          // const translate = this.calculateTranslate(currentImage, ratio, width, height);
+          const translate = {
+            x: newCentroid.x - currentImage.centroid.x,
+            y: newCentroid.y - currentImage.centroid.y,
+          };
 
+          // temp: use translate as finalTranslate
           const finalTranslate = this.calculateTranslate(
             currentImage,
             finalRatio,
@@ -1031,14 +1033,19 @@ export class VistaView {
           console.log('ratio:', ratio, 'finalRatio:', finalRatio);
 
           currentImage.scale = finalRatio;
+          // currentImage.translate =
+          //   finalRatio === 1
+          //     ? { x: 0, y: 0 }
+          //     : {
+          //         x: translate.x,
+          //         y: translate.y,
+          //       };
           currentImage.translate =
-            finalRatio === 1
+            finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH
               ? { x: 0, y: 0 }
-              : {
-                  x: translate.x,
-                  y: translate.y,
-                };
-          currentImage.translate = finalTranslate;
+              : finalTranslate;
+
+          console.log('fionalTranslate:', currentImage.translate);
           currentImage.stop = width / currentImage.sizes.minW < 0.5;
 
           if (currentImage.stop) {
