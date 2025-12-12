@@ -20,7 +20,6 @@ export class VistaViewPointers {
   private listeners: VistaViewPointerListener[] = [];
 
   constructor(elm: HTMLElement, listeners?: VistaViewPointerListener[], startListeners = true) {
-    console.log('VistaViewPointers initialized');
     this.elm = elm;
     if (listeners) {
       this.listeners = listeners;
@@ -94,7 +93,6 @@ export class VistaViewPointers {
   };
 
   startListeners() {
-    console.log('VistaViewPointers: startListeners');
     this.elm.addEventListener('pointerdown', this.onPointerDown);
     this.elm.addEventListener('pointermove', this.onPointerMove);
     this.elm.addEventListener('pointerup', this.onPointerUp);
