@@ -899,9 +899,9 @@ export class VistaView {
     scale: number;
   }): void {
     if (translate) {
-      image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0) scale3d(${scale}, ${scale}, 1)`;
+      image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0px) scale3d(${scale}, ${scale}, 1)`;
     } else {
-      image.style.transform = `translate3d(0px, 0px, 0) scale3d(${scale}, ${scale}, 1)`;
+      image.style.transform = `translate3d(0px, 0px, 0px) scale3d(${scale}, ${scale}, 1)`;
     }
   }
 
