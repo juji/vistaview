@@ -1065,17 +1065,7 @@ export class VistaView {
               fifo(() => {
                 function swapDimensions() {
                   requestAnimationFrame(() => {
-                    // currentImage.image!.classList.add('vistaview-image--touch-zoom');
-                    // const rect = currentImage.image!.getBoundingClientRect();
-                    // currentImage.initial = {
-                    //   w: rect.width,
-                    //   h: rect.height,
-                    //   top: rect.top,
-                    //   left: rect.left,
-                    // };
                     console.log('resetting to initial');
-                    // need to reset width/height to current before resetting transform
-                    // but we have a problem!!!
                     currentImage.initial.w = currentImage.initial.w * currentImage.scale;
                     currentImage.initial.h = currentImage.initial.h * currentImage.scale;
                     currentImage.scale = 1;
@@ -1094,22 +1084,17 @@ export class VistaView {
                   },
                   { once: true }
                 );
-                // console.log(currentImage.image.style.transform)
-                // console.log(`translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`)
+
                 const lastTransform = currentImage.image!.style.transform;
-                console.log('lastTransform:', lastTransform);
-                currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
-                // currentImage.image!.style.width = `${currentImage.initial.w * currentImage.scale}px`;
-                // currentImage.image!.style.height = `${currentImage.initial.h * currentImage.scale}px`;
-                // currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(1, 1, 1)`;
-                // currentImage.scale = 1
-                // currentImage.initial.w = currentImage.initial.w * currentImage.scale
-                // currentImage.initial.h = currentImage.initial.h * currentImage.scale
-                const currentTransform = currentImage.image!.style.transform;
-                console.log('currentTransform:', currentTransform);
-                console.log('the same?', lastTransform === currentTransform);
-                if (lastTransform === currentTransform) {
+                const nextTransform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
+
+                // do not animate if no change
+                if (lastTransform === nextTransform) {
                   currentImage.image!.classList.add('vistaview-image--touch-zoom');
+                }
+                currentImage.image!.style.transform = nextTransform;
+                // transitionend not fired when we don't animate
+                if (lastTransform === nextTransform) {
                   swapDimensions();
                 }
               });
