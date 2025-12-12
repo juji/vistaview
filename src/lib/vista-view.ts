@@ -1092,8 +1092,6 @@ export class VistaView {
                 });
               }, 'closing after touch zoom out');
             } else {
-              console.log('Resetting zoom after touch zoom in');
-
               this.fifo.exec(() => {
                 function swapDimensions() {
                   // reset last ratio
@@ -1134,12 +1132,9 @@ export class VistaView {
 
                 const lastTransform = currentImage.image!.style.transform;
                 const nextTransform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0px) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
-                console.log('Last transform:', lastTransform);
-                console.log('Next transform:', nextTransform);
 
                 // animate when transform changes
                 if (lastTransform !== nextTransform) {
-                  console.log('Animating transform swap');
                   currentImage.image!.classList.remove('vistaview-image--touch-zoom');
                   currentImage.image!.addEventListener(
                     'transitionend',
@@ -1150,7 +1145,6 @@ export class VistaView {
                   );
                   currentImage.image!.style.transform = nextTransform;
                 } else {
-                  console.log('No transform change, swapping dimensions directly');
                   currentImage.image!.style.transform = nextTransform;
                   swapDimensions();
                 }
