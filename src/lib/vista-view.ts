@@ -944,7 +944,6 @@ export class VistaView {
         }
 
         if (e.pointers.length >= 2) {
-          console.log('touch zoom start');
           lastDown = null;
           lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const image = this.rootElm.querySelector(
@@ -979,7 +978,6 @@ export class VistaView {
         if (e.pointers.length >= 2) {
           if (!currentImage.image) return;
           if (!currentImage.centroid) return;
-          console.log('touch zoom move');
 
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = Math.round((distance / lastDistance) * 100) / 100;
@@ -988,7 +986,6 @@ export class VistaView {
           if (ratio === lastRatio) return;
 
           lastRatio = ratio;
-          console.log('ratio:', ratio);
 
           const width = currentImage.initial.w * ratio;
           const height = currentImage.initial.h * ratio;
@@ -1025,22 +1022,13 @@ export class VistaView {
             newCentroid
           );
 
-          console.log('ratio:', ratio, 'finalRatio:', finalRatio);
-
           currentImage.scale = finalRatio;
-          // currentImage.translate =
-          //   finalRatio === 1
-          //     ? { x: 0, y: 0 }
-          //     : {
-          //         x: translate.x,
-          //         y: translate.y,
-          //       };
+
           currentImage.translate =
             finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH
               ? { x: 0, y: 0 }
               : finalTranslate;
 
-          console.log('fionalTranslate:', currentImage.translate);
           currentImage.stop = width / currentImage.sizes.minW < 0.5;
 
           if (currentImage.stop) {
