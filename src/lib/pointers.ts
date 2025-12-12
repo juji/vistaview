@@ -10,6 +10,7 @@ export type VistaViewPointerListenerArgs = {
   pointer: VistaViewPointer | undefined;
   domEvent: PointerEvent;
   pointers: VistaViewPointer[];
+  lastPointerLen: number;
 };
 
 export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => void;
@@ -18,6 +19,7 @@ export class VistaViewPointers {
   private pointers: VistaViewPointer[] = [];
   private elm: HTMLElement;
   private listeners: VistaViewPointerListener[] = [];
+  private lastLen: number = 0;
 
   constructor(elm: HTMLElement, listeners?: VistaViewPointerListener[], startListeners = true) {
     this.elm = elm;
@@ -31,12 +33,14 @@ export class VistaViewPointers {
     if (!this.listeners.length) return;
     const pointer = { x: e.clientX, y: e.clientY, id: e.pointerId };
     this.pointers.push(pointer);
+    this.lastLen = this.pointers.length - 1;
     this.listeners.forEach((l) =>
       l({
         event: 'down',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
+        lastPointerLen: this.lastLen,
       })
     );
   };
@@ -54,6 +58,7 @@ export class VistaViewPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
+        lastPointerLen: this.lastLen,
       })
     );
   };
@@ -62,8 +67,9 @@ export class VistaViewPointers {
     if (!this.listeners.length) return;
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
-    if (pointerIndex !== -1) {
+    if (pointer) {
       this.pointers.splice(pointerIndex, 1);
+      this.lastLen = this.pointers.length + 1;
     }
     this.listeners.forEach((l) =>
       l({
@@ -71,6 +77,7 @@ export class VistaViewPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
+        lastPointerLen: this.lastLen,
       })
     );
   };
@@ -81,6 +88,7 @@ export class VistaViewPointers {
     const pointer = this.pointers[pointerIndex];
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
+      this.lastLen = this.pointers.length + 1;
     }
     this.listeners.forEach((l) =>
       l({
@@ -88,6 +96,7 @@ export class VistaViewPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
+        lastPointerLen: this.lastLen,
       })
     );
   };

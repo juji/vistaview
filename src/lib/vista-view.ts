@@ -899,11 +899,13 @@ export class VistaView {
     // Get current centroid and adjust for any movement during gesture
     const translate = {
       x:
-        Math.round(newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x) * 100) /
-        100,
+        Math.round(
+          (newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x)) * 100
+        ) / 100,
       y:
-        Math.round(newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y) * 100) /
-        100,
+        Math.round(
+          (newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y)) * 100
+        ) / 100,
     };
 
     return translate;
@@ -1007,13 +1009,13 @@ export class VistaView {
           // calculate translate, get current centroid
           const newCentroid = this.pointers!.getCentroid()!;
 
-          // const translate = this.calculateTranslate(currentImage, ratio, width, height);
-          const translate = {
-            x: newCentroid.x - currentImage.centroid.x,
-            y: newCentroid.y - currentImage.centroid.y,
-          };
-
-          // temp: use translate as finalTranslate
+          const translate = this.calculateFinalTranslate(
+            currentImage,
+            ratio,
+            width,
+            height,
+            newCentroid
+          );
           const finalTranslate = this.calculateFinalTranslate(
             currentImage,
             finalRatio,
@@ -1021,6 +1023,8 @@ export class VistaView {
             finalHeight,
             newCentroid
           );
+
+          console.log('Final translate:', finalTranslate);
 
           currentImage.scale = finalRatio;
 
@@ -1052,7 +1056,7 @@ export class VistaView {
           // }
         }
 
-        if (e.pointers.length < 2) {
+        if (e.lastPointerLen >= 2) {
           if (currentImage.image) {
             if (currentImage.stop) {
               this.fifo.exec(() => {
@@ -1085,6 +1089,8 @@ export class VistaView {
                 });
               }, 'closing after touch zoom out');
             } else {
+              console.log('Resetting zoom after touch zoom in');
+
               this.fifo.exec(() => {
                 function swapDimensions() {
                   // reset last ratio
@@ -1125,16 +1131,19 @@ export class VistaView {
                   currentImage.image!.dataset.vistaViewTranslateLeft = `${translateLeft}`;
                   currentImage.image!.style.translate = `calc(-50% + ${translateTop}px) calc(-50% + ${translateLeft}px)`;
                   currentImage.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
+                  currentImage.translate = { x: 0, y: 0 };
                   // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
                   // });
                 }
 
                 const lastTransform = currentImage.image!.style.transform;
                 const nextTransform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0px) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
-                // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
+                console.log('Last transform:', lastTransform);
+                console.log('Next transform:', nextTransform);
 
                 // animate when transform changes
                 if (lastTransform !== nextTransform) {
+                  console.log('Animating transform swap');
                   currentImage.image!.classList.remove('vistaview-image--touch-zoom');
                   currentImage.image!.addEventListener(
                     'transitionend',
@@ -1145,13 +1154,10 @@ export class VistaView {
                   );
                   currentImage.image!.style.transform = nextTransform;
                 } else {
+                  console.log('No transform change, swapping dimensions directly');
                   currentImage.image!.style.transform = nextTransform;
                   swapDimensions();
                 }
-                // // transitionend not fired when we don't animate
-                // if (lastTransform === nextTransform) {
-                //   swapDimensions();
-                // }
               }, 'resetting after touch zoom in');
             }
           }
