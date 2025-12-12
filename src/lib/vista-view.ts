@@ -851,6 +851,38 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
   }
 
+  private calculateScaleTranslate(currentImage: any, ratio: number, width: number, height: number) {
+    // Calculate scale
+    const scale = width / currentImage.sizes.minW;
+
+    // Calculate displacement to keep centroid point fixed
+    const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
+    const distanceToLeft = currentImage.centroid.x - currentImage.initial.left;
+
+    // Scale distances by ratio to get new distances
+    const newDistanceToTop = distanceToTop * ratio;
+    const newDistanceToLeft = distanceToLeft * ratio;
+
+    // Calculate new position to keep centroid fixed
+    const newTop = currentImage.centroid.y - newDistanceToTop;
+    const newLeft = currentImage.centroid.x - newDistanceToLeft;
+
+    // Convert to translate values (displacement from center)
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight / 2;
+    const newCenterX = newLeft + width / 2;
+    const newCenterY = newTop + height / 2;
+
+    // Get current centroid and adjust for any movement during gesture
+    const newCentroid = this.pointers!.getCentroid() as { x: number; y: number };
+    const translate = {
+      x: newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x),
+      y: newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y),
+    };
+
+    return { scale, translate };
+  }
+
   private setSize({
     image,
     scale,
@@ -951,52 +983,22 @@ export class VistaView {
             currentImage.sizes.minH
           );
 
-          // allow scaling beyond min/max width for smoother zooming experience
-          const scale = width / currentImage.sizes.minW;
-          currentImage.scale = finalWidth / currentImage.sizes.minW;
+          const { scale, translate } = this.calculateScaleTranslate(
+            currentImage,
+            ratio,
+            width,
+            height
+          );
+          const { scale: finalScale, translate: finalTranslate } = this.calculateScaleTranslate(
+            currentImage,
+            finalWidth / currentImage.initial.w,
+            finalWidth,
+            finalHeight
+          );
+
+          currentImage.scale = finalScale;
+          currentImage.translate = finalScale === 1 ? { x: 0, y: 0 } : finalTranslate;
           const { image } = currentImage;
-
-          // Calculate displacement to keep centroid point fixed
-          const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
-          const distanceToLeft = currentImage.centroid.x - currentImage.initial.left;
-
-          // Scale distances by ratio to get new distances
-          const newDistanceToTop = distanceToTop * ratio;
-          const newDistanceToLeft = distanceToLeft * ratio;
-
-          // Calculate new position to keep centroid fixed
-          const newTop = currentImage.centroid.y - newDistanceToTop;
-          const newLeft = currentImage.centroid.x - newDistanceToLeft;
-
-          // Convert to translate values (displacement from center)
-          const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = window.innerHeight / 2;
-          const newCenterX = newLeft + width / 2;
-          const newCenterY = newTop + height / 2;
-
-          // Get current centroid and adjust for any movement during gesture
-          const newCentroid = this.pointers.getCentroid() as { x: number; y: number };
-          const translate = {
-            x: newCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x),
-            y: newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y),
-          };
-
-          // Calculate constrained ratio and positions for final translate
-          const constrainedRatio = finalWidth / currentImage.initial.w;
-          const finalDistanceToTop = distanceToTop * constrainedRatio;
-          const finalDistanceToLeft = distanceToLeft * constrainedRatio;
-          const finalNewTop = currentImage.centroid.y - finalDistanceToTop;
-          const finalNewLeft = currentImage.centroid.x - finalDistanceToLeft;
-          const finalCenterX = finalNewLeft + finalWidth / 2;
-          const finalCenterY = finalNewTop + finalHeight / 2;
-
-          currentImage.translate =
-            currentImage.scale == 1
-              ? { x: 0, y: 0 }
-              : {
-                  x: finalCenterX - viewportCenterX + (newCentroid.x - currentImage.centroid.x),
-                  y: finalCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y),
-                };
 
           this.setSize({
             image,
