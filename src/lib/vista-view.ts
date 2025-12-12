@@ -1035,9 +1035,32 @@ export class VistaView {
             };
 
             currentImage.image.classList.remove('vistaview-image--touch-zoom');
+            currentImage.image!.style.removeProperty('opacity');
             if (currentImage.stop) {
-              currentImage.image.style.display = 'none';
-              this.close();
+              currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
+                '--vistaview-fitted-width'
+              );
+              currentImage.image!.style.height = currentImage.image!.style.getPropertyValue(
+                '--vistaview-fitted-height'
+              );
+              currentImage.scale =
+                parseFloat(currentImage.image.style.width.replace('px', '')) /
+                currentImage.sizes.minW;
+              currentImage.image.style.transform = `translate(0px, 0px) scale(${currentImage.scale})`;
+              currentImage.image.addEventListener(
+                'transitionend',
+                () => {
+                  currentImage.image!.addEventListener(
+                    'transitionend',
+                    () => {
+                      this.close();
+                    },
+                    { once: true }
+                  );
+                  currentImage.image!.style.transform = `translate(0px, 0px) scale(1)`;
+                },
+                { once: true }
+              );
             } else {
               currentImage.image.style.transform = `translate(${currentImage.translate.x}px, ${currentImage.translate.y}px) scale(${currentImage.scale})`;
             }
