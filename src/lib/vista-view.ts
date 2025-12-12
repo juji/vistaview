@@ -1029,12 +1029,36 @@ export class VistaView {
             newCentroid
           );
 
+          const box = currentImage.image.getBoundingClientRect();
+          const isMin =
+            finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH;
+
+          if (!isMin) {
+            // calculate limits of finalTranslate
+            if (box.top > window.innerHeight / 2) {
+              finalTranslate.y = finalTranslate.y - (box.top - window.innerHeight / 2);
+            }
+
+            if (box.left > window.innerWidth / 2) {
+              finalTranslate.x = finalTranslate.x - (box.left - window.innerWidth / 2);
+            }
+
+            if (box.left + box.width < window.innerWidth / 2) {
+              finalTranslate.x =
+                finalTranslate.x + (window.innerWidth / 2 - (box.left + box.width));
+            }
+
+            if (box.top + box.height < window.innerHeight / 2) {
+              finalTranslate.y =
+                finalTranslate.y + (window.innerHeight / 2 - (box.top + box.height));
+            }
+          }
+
           currentImage.scale = finalRatio;
 
-          currentImage.translate =
-            finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH
-              ? { x: -currentImage.accumTranslate.x, y: -currentImage.accumTranslate.y }
-              : finalTranslate;
+          currentImage.translate = isMin
+            ? { x: -currentImage.accumTranslate.x, y: -currentImage.accumTranslate.y }
+            : finalTranslate;
 
           currentImage.stop = width / currentImage.sizes.minW < 0.5;
 
