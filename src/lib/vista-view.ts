@@ -1016,6 +1016,8 @@ export class VistaView {
             height,
             newCentroid
           );
+
+          // const finalTranslate = translate
           const finalTranslate = this.calculateTranslate(
             currentImage,
             finalRatio,
@@ -1030,7 +1032,7 @@ export class VistaView {
 
           currentImage.translate =
             finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH
-              ? { x: 0, y: 0 }
+              ? { x: -currentImage.accumTranslate.x, y: -currentImage.accumTranslate.y }
               : finalTranslate;
 
           currentImage.stop = width / currentImage.sizes.minW < 0.5;
