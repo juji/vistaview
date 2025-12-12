@@ -872,7 +872,7 @@ export class VistaView {
   }
 
   private calculateTranslate(currentImage: any, ratio: number, width: number, height: number) {
-    console.log('positions', currentImage.initial.top, currentImage.initial.left);
+    // console.log('positions', currentImage.initial.top, currentImage.initial.left);
 
     // Calculate displacement to keep centroid point fixed
     const distanceToTop = currentImage.centroid.y - currentImage.initial.top;
@@ -902,6 +902,14 @@ export class VistaView {
         Math.round(newCenterY - viewportCenterY + (newCentroid.y - currentImage.centroid.y) * 100) /
         100,
     };
+    // const translate = {
+    //   x:
+    //     Math.round((newCentroid.x - currentImage.centroid.x) * 100) /
+    //     100,
+    //   y:
+    //     Math.round((newCentroid.y - currentImage.centroid.y) * 100) /
+    //     100,
+    // };
 
     return translate;
     // return{ x: 0, y: 0 };
@@ -913,7 +921,7 @@ export class VistaView {
     let lastRatio = 0;
 
     let currentImage = {
-      centroid: { x: 0, y: 0 },
+      centroid: null as { x: number; y: number } | null,
       scale: 1,
       stop: false,
       translate: { x: 0, y: 0 },
@@ -955,16 +963,16 @@ export class VistaView {
           const rect = image.getBoundingClientRect();
           currentImage = {
             image: image,
-            centroid: this.pointers.getCentroid() as { x: number; y: number },
+            centroid: this.pointers.getCentroid(),
             initial: {
               w: rect.width,
               h: rect.height,
-              top: rect.top - currentImage.translate.y,
-              left: rect.left - currentImage.translate.x,
+              top: rect.top,
+              left: rect.left,
             },
             stop: false,
             scale: 1,
-            translate: currentImage.translate,
+            translate: { x: 0, y: 0 },
             sizes: {
               maxW: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
               maxH: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
@@ -976,6 +984,7 @@ export class VistaView {
       } else if (e.event === 'move') {
         if (e.pointers.length >= 2) {
           if (!currentImage.image) return;
+          if (!currentImage.centroid) return;
           console.log('touch zoom move');
 
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
@@ -1003,7 +1012,14 @@ export class VistaView {
               ? ratio
               : Math.round((finalWidth / currentImage.initial.w) * 100) / 100;
 
+          // calculate translate, get current centroid
+          // const newCentroid = this.pointers!.getCentroid()!;
+
           const translate = this.calculateTranslate(currentImage, ratio, width, height);
+          // const translate = {
+          //   x: newCentroid.x - currentImage.centroid.x,
+          //   y: newCentroid.y - currentImage.centroid.y,
+          // }
 
           const finalTranslate = this.calculateTranslate(
             currentImage,
@@ -1015,7 +1031,13 @@ export class VistaView {
           console.log('ratio:', ratio, 'finalRatio:', finalRatio);
 
           currentImage.scale = finalRatio;
-          // currentImage.translate = finalRatio === 1 ? { x: 0, y: 0 } : finalTranslate;
+          currentImage.translate =
+            finalRatio === 1
+              ? { x: 0, y: 0 }
+              : {
+                  x: translate.x,
+                  y: translate.y,
+                };
           currentImage.translate = finalTranslate;
           currentImage.stop = width / currentImage.sizes.minW < 0.5;
 
@@ -1095,9 +1117,23 @@ export class VistaView {
                   );
 
                   currentImage.scale = 1;
+                  currentImage.centroid = null;
                   currentImage.image!.style.width = `${currentImage.initial.w}px`;
                   currentImage.image!.style.height = `${currentImage.initial.h}px`;
-                  currentImage.image!.style.transform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0) scale3d(1, 1, 1)`;
+
+                  const translateTop =
+                    (currentImage.image!.dataset.vistaViewTranslateTop
+                      ? parseFloat(currentImage.image!.dataset.vistaViewTranslateTop)
+                      : 0) + currentImage.translate.x;
+                  const translateLeft =
+                    (currentImage.image!.dataset.vistaViewTranslateLeft
+                      ? parseFloat(currentImage.image!.dataset.vistaViewTranslateLeft)
+                      : 0) + currentImage.translate.y;
+
+                  currentImage.image!.dataset.vistaViewTranslateTop = `${translateTop}`;
+                  currentImage.image!.dataset.vistaViewTranslateLeft = `${translateLeft}`;
+                  currentImage.image!.style.translate = `calc(-50% + ${translateTop}px) calc(-50% + ${translateLeft}px)`;
+                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
                   // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
                   // });
                 }
