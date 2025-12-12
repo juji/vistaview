@@ -1078,6 +1078,7 @@ export class VistaView {
                     'transitionend',
                     () => {
                       this.close();
+                      currentImage.image = null;
                     },
                     { once: true }
                   );
