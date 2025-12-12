@@ -6,6 +6,7 @@ import {
   getFullSizeDim,
   getMaxMinZoomLevels,
   isNotZeroCssValue,
+  clamp,
 } from './utils';
 
 import { Fifo } from './fifo';
@@ -573,8 +574,8 @@ export class VistaView {
       let pointerDiffY = parseInt(
         highresImage?.style.getPropertyValue('--pointer-diff-y').replace('px', '') || '0'
       );
-      pointerDiffX = Math.min(maxDiffX, Math.max(minDiffX, pointerDiffX));
-      pointerDiffY = Math.min(maxDiffY, Math.max(minDiffY, pointerDiffY));
+      pointerDiffX = clamp(pointerDiffX, minDiffX, maxDiffX);
+      pointerDiffY = clamp(pointerDiffY, minDiffY, maxDiffY);
 
       highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
       highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
@@ -992,14 +993,8 @@ export class VistaView {
           const width = currentImage.initial.w * ratio;
           const height = currentImage.initial.h * ratio;
 
-          const finalWidth = Math.max(
-            Math.min(width, currentImage.sizes.maxW),
-            currentImage.sizes.minW
-          );
-          const finalHeight = Math.max(
-            Math.min(height, currentImage.sizes.maxH),
-            currentImage.sizes.minH
-          );
+          const finalWidth = clamp(width, currentImage.sizes.minW, currentImage.sizes.maxW);
+          const finalHeight = clamp(height, currentImage.sizes.minH, currentImage.sizes.maxH);
 
           const finalRatio =
             width === finalWidth
@@ -1104,13 +1099,15 @@ export class VistaView {
                   currentImage.initial.h = currentImage.initial.h * currentImage.scale;
 
                   // limit dimesion
-                  currentImage.initial.w = Math.max(
-                    Math.min(currentImage.initial.w, currentImage.sizes.maxW),
-                    currentImage.sizes.minW
+                  currentImage.initial.w = clamp(
+                    currentImage.initial.w,
+                    currentImage.sizes.minW,
+                    currentImage.sizes.maxW
                   );
-                  currentImage.initial.h = Math.max(
-                    Math.min(currentImage.initial.h, currentImage.sizes.maxH),
-                    currentImage.sizes.minH
+                  currentImage.initial.h = clamp(
+                    currentImage.initial.h,
+                    currentImage.sizes.minH,
+                    currentImage.sizes.maxH
                   );
 
                   currentImage.scale = 1;
