@@ -86,8 +86,12 @@ export class VistaImageState {
     return this.current.stop;
   }
 
-  hasImage(): boolean {
-    return this.current.image !== null;
+  getCurrentState(): VistaCurrentImage {
+    const { image, ...rest } = this.current;
+    return {
+      image,
+      ...structuredClone(rest),
+    };
   }
 
   newImage({ img }: { img: HTMLImageElement }) {
@@ -215,7 +219,8 @@ export class VistaImageState {
     const translate = this.calculateTranslate(ratio, width, height, centroid);
 
     // const finalTranslate = translate
-    const finalTranslate = this.calculateTranslate(ratio, finalWidth, finalHeight, centroid);
+    const finaleRatio = limitPrecision(c.final.w / c.initial.w);
+    const finalTranslate = this.calculateTranslate(finaleRatio, finalWidth, finalHeight, centroid);
 
     const box = c.image!.getBoundingClientRect();
     const isMin = finalWidth === c.sizes.minW;
@@ -290,7 +295,7 @@ export class VistaImageState {
     c.translate = { x: 0, y: 0 };
   }
 
-  async inertialMovement(image: HTMLImageElement): Promise<void> {
+  private async inertialMovement(image: HTMLImageElement): Promise<void> {
     return new Promise((r) => {
       requestAnimationFrame(() => {
         const c = this.current;
@@ -364,13 +369,14 @@ export class VistaImageState {
 
   async stabilizeProps(
     onAnimateTransform: (c: VistaCurrentImage) => void = (c) => {
+      // make sure to animate transform
       c.image!.classList.remove('vistaview-image--touch-zoom');
     }
   ) {
     const c = this.current;
     if (!c.image) throw new Error('No current image to stabilize props');
 
-    await this.inertialMovement(c.image!);
+    // await this.inertialMovement(c.image!);
 
     const lastTransform = c.image!.style.transform;
     const nextTransform = `translate3d(${c.final.translate.x}px, ${c.final.translate.y}px, 0px) scale3d(${c.final.scale}, ${c.final.scale}, 1)`;
