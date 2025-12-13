@@ -380,13 +380,11 @@ export class VistaView {
           state.image?.classList.remove('vistaview-image--click-zoom');
           this.zoomInEnabled = true;
           const cstate = this.imgState.getCurrentState();
+          this.rootElm?.querySelector('button.vistaview-zoom-out-btn')?.removeAttribute('disabled');
           if (cstate.final.w === cstate.sizes.maxW) {
             this.rootElm
               ?.querySelector('button.vistaview-zoom-in-btn')
               ?.setAttribute('disabled', 'true');
-            this.rootElm
-              ?.querySelector('button.vistaview-zoom-out-btn')
-              ?.removeAttribute('disabled');
           }
         });
       },
@@ -420,13 +418,11 @@ export class VistaView {
           state.image?.classList.remove('vistaview-image--click-zoom');
           this.zoomOutEnabled = true;
           const cstate = this.imgState.getCurrentState();
+          this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.removeAttribute('disabled');
           if (cstate.final.w === cstate.sizes.minW) {
             this.rootElm
               ?.querySelector('button.vistaview-zoom-out-btn')
               ?.setAttribute('disabled', 'true');
-            this.rootElm
-              ?.querySelector('button.vistaview-zoom-in-btn')
-              ?.removeAttribute('disabled');
           }
         });
       },

@@ -269,24 +269,12 @@
         calc(var(--vistaview-animation-duration) * 0.3ms),
       opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0ms;
 
-    /* &.vistaview-image--zooming {
-      transition: transform 222ms ease 0ms;
-      cursor: grab;
-      &:active {
-        cursor: grabbing;
-      }
-    }
-
-    &.vistaview-image--zooming-out {
-      transition: transform 222ms ease 0ms;
-    } */
-
     &.vistaview-image--touch-zoom {
       transition: none;
     }
 
     &.vistaview-image--click-zoom {
-      transition: transform 333ms ease 0ms;
+      transition: transform 222ms ease 0ms;
     }
 
     &.vistaview-image--touch-zoom-out {
