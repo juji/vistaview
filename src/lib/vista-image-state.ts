@@ -1,6 +1,6 @@
 import { clamp, limitPrecision } from './utils';
 
-export type VistaViewCurrentImage = {
+export type VistaCurrentImage = {
   scale: number;
   stop: boolean;
   translate: { x: number; y: number };
@@ -20,8 +20,8 @@ export type VistaViewCurrentImage = {
   };
 };
 
-export class VistaViewImageState {
-  private current: VistaViewCurrentImage = {
+export class VistaImageState {
+  private current: VistaCurrentImage = {
     image: null,
     scale: 1,
     stop: false,
@@ -170,7 +170,7 @@ export class VistaViewImageState {
   }: {
     ratio: number;
     centroid?: { x: number; y: number };
-    animate?: (c: VistaViewCurrentImage) => Promise<void>;
+    animate?: (c: VistaCurrentImage) => Promise<void>;
   }) {
     const c = this.current;
     if (!c.image) throw new Error('No current image to scale and move');
@@ -237,7 +237,7 @@ export class VistaViewImageState {
   }
 
   private swapDimensions(
-    onStopAmination: (c: VistaViewCurrentImage) => void = (c) => {
+    onStopAmination: (c: VistaCurrentImage) => void = (c) => {
       c.image!.classList.remove('vistaview-image--touch-zoom');
     }
   ) {
@@ -266,7 +266,7 @@ export class VistaViewImageState {
   }
 
   stabilizeProps(
-    onAnimateTransform: (c: VistaViewCurrentImage) => void = (c) => {
+    onAnimateTransform: (c: VistaCurrentImage) => void = (c) => {
       c.image!.classList.remove('vistaview-image--touch-zoom');
     }
   ) {
@@ -277,7 +277,6 @@ export class VistaViewImageState {
 
     // animate when transform changes
     if (lastTransform !== nextTransform) {
-      // c.image!.classList.remove('vistaview-image--touch-zoom');
       onAnimateTransform(c);
       c.image!.addEventListener(
         'transitionend',
@@ -300,7 +299,7 @@ export class VistaViewImageState {
     },
   }: {
     onClose?: () => void;
-    onAnimateZoomOut?: (c: VistaViewCurrentImage) => void;
+    onAnimateZoomOut?: (c: VistaCurrentImage) => void;
   }) {
     const c = this.current;
     if (!c.image) return;
