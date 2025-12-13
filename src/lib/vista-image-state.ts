@@ -43,6 +43,7 @@ export class VistaImageState {
 
   private maxZoom: number = 1;
   private centroid: { x: number; y: number } = { x: 0, y: 0 };
+  private closeLimit = 0.333;
 
   setMaxZoom(maxZoom: number) {
     this.maxZoom = maxZoom;
@@ -69,7 +70,6 @@ export class VistaImageState {
   }
 
   newImage({ img }: { img: HTMLImageElement }) {
-    console.log('VistaImageState: newImage', img);
     const rect = img.getBoundingClientRect();
     this.current = {
       image: img,
@@ -116,22 +116,6 @@ export class VistaImageState {
     };
   }
 
-  private setSize({
-    scale,
-    translate,
-  }: {
-    scale: number;
-    translate?: { x: number; y: number };
-  }): void {
-    if (!this.current.image) throw new Error('No current image to renew');
-    const image = this.current.image;
-    if (translate) {
-      image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0px) scale3d(${scale}, ${scale}, 1)`;
-    } else {
-      image.style.transform = `translate3d(0px, 0px, 0px) scale3d(${scale}, ${scale}, 1)`;
-    }
-  }
-
   private calculateTranslate(
     ratio: number,
     width: number,
@@ -173,15 +157,7 @@ export class VistaImageState {
     return translate;
   }
 
-  scaleAndMove({
-    ratio,
-    centroid,
-    animate,
-  }: {
-    ratio: number;
-    centroid?: { x: number; y: number };
-    animate?: (c: VistaCurrentImage) => Promise<void>;
-  }) {
+  scaleAndMove({ ratio, centroid }: { ratio: number; centroid?: { x: number; y: number } }) {
     const c = this.current;
     if (!c.image) throw new Error('No current image to scale and move');
 
@@ -226,24 +202,15 @@ export class VistaImageState {
     c.scale = finalRatio;
     c.translate = isMin ? { x: -c.accumTranslate.x, y: -c.accumTranslate.y } : finalTranslate;
 
-    c.stop = width / c.sizes.minW < 0.5;
+    c.stop = width / c.sizes.minW < this.closeLimit;
     if (c.stop) {
       c.image!.style.opacity = '0.33';
     } else {
       c.image!.style.removeProperty('opacity');
     }
 
-    let promise: Promise<void> | undefined;
-    if (animate) {
-      promise = animate(c);
-    }
-
-    this.setSize({
-      scale: ratio,
-      translate,
-    });
-
-    return promise;
+    // set transform
+    c.image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0px) scale3d(${ratio}, ${ratio}, 1)`;
   }
 
   private swapDimensions(

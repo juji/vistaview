@@ -877,28 +877,40 @@ export class VistaView {
       if (!this.rootElm) return;
 
       if (e.event === 'down') {
+        // const image = this.rootElm!.querySelector(
+        //   '[data-vistaview-pos="0"] .vistaview-image-highres'
+        // ) as HTMLImageElement;
+        // if (!image) return;
+        // image.classList.add('vistaview-image--touch-zoom');
+        // this.throttle.exec(() => {
+        //   lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+        //   this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
+        //   this.imgState.renew();
+        // }, 'pointer down');
+
+        const image = this.rootElm.querySelector(
+          '[data-vistaview-pos="0"] .vistaview-image-highres:not(.vistaview-image--touch-zoom)'
+        ) as HTMLImageElement;
+        if (image) {
+          image.classList.add('vistaview-image--touch-zoom');
+        }
+
         if (e.pointers.length === 1) {
           // this.imgState.setInitCentroid(this.pointers.getCentroid()!);
         }
 
         if (e.pointers.length >= 2) {
           lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
-          const image = this.rootElm.querySelector(
-            '[data-vistaview-pos="0"] .vistaview-image-highres'
-          ) as HTMLImageElement;
-          if (!image) return;
-
-          image.classList.add('vistaview-image--touch-zoom');
           this.imgState.setInitCentroid(this.pointers.getCentroid()!);
           this.imgState.renew();
         }
       } else if (e.event === 'move') {
-        if (e.pointers.length === 1) {
-          // this.imgState.scaleAndMove({
-          //   ratio: 1,
-          //   centroid: this.pointers.getCentroid() || undefined,
-          // });
-        }
+        // if (e.pointers.length === 1) {
+        //   this.imgState.scaleAndMove({
+        //     ratio: 1,
+        //     centroid: this.pointers.getCentroid() || undefined,
+        //   });
+        // }
         if (e.pointers.length >= 2) {
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = limitPrecision(distance / lastDistance);
@@ -921,18 +933,28 @@ export class VistaView {
         //   // }
         // }
 
-        if (this.imgState.shouldStop()) {
-          this.throttle.exec(() => {
-            this.imgState.close({
-              onClose: () => {
-                this.close();
-              },
-            });
-          }, 'closing after touch zoom out');
-        } else {
-          this.throttle.exec(() => {
-            this.imgState.stabilizeProps();
-          }, 'resetting after touch zoom in');
+        if (this.imgState.shouldStop() && e.lastPointerLen >= 2) {
+          this.throttle.exec(
+            () => {
+              this.imgState.close({
+                onClose: () => {
+                  this.close();
+                },
+              });
+            },
+            'closing after touch zoom out',
+            100
+          );
+        }
+
+        if (!this.imgState.shouldStop() && e.lastPointerLen >= 2) {
+          this.throttle.exec(
+            () => {
+              this.imgState.stabilizeProps();
+            },
+            'resetting after touch zoom in',
+            100
+          );
         }
 
         // if (e.lastPointerLen >= 2) {
