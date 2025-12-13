@@ -270,8 +270,6 @@ export class VistaImageState {
     c.image!.style.translate = `calc(-50% + ${c.accumTranslate.x}px) calc(-50% + ${c.accumTranslate.y}px)`;
     c.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
     c.translate = { x: 0, y: 0 };
-
-    console.log("c's after swap", c);
   }
 
   async inertialMovement(image: HTMLImageElement): Promise<void> {
@@ -355,14 +353,12 @@ export class VistaImageState {
     if (!c.image) throw new Error('No current image to stabilize props');
 
     await this.inertialMovement(c.image!);
-    console.log('stabilizeProps after inertia');
 
     const lastTransform = c.image!.style.transform;
     const nextTransform = `translate3d(${c.final.translate.x}px, ${c.final.translate.y}px, 0px) scale3d(${c.final.scale}, ${c.final.scale}, 1)`;
 
     // animate when transform changes
     if (lastTransform !== nextTransform) {
-      console.log('animating transform', { lastTransform, nextTransform });
       onAnimateTransform(c);
       c.image!.addEventListener(
         'transitionend',
@@ -373,7 +369,6 @@ export class VistaImageState {
       );
       c.image!.style.transform = nextTransform;
     } else {
-      console.log('no transform change, swapping dimensions directly');
       c.image!.style.transform = nextTransform;
       this.swapDimensions();
     }
