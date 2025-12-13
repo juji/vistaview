@@ -86,24 +86,3 @@ export type VistaViewTransitionFunction = (
 export type VistaViewSetupFunction = (params: VistaViewData) => void;
 export type VistaViewCloseFunction = (vistaView: VistaView) => void;
 export type VistaViewInitFunction = (vistaView: VistaView) => void;
-
-export type VistaViewCurrentImage = {
-  centroid: { x: number; y: number } | null;
-  scale: number;
-  stop: boolean;
-  translate: { x: number; y: number };
-  accumTranslate: { x: number; y: number };
-  image: HTMLImageElement | null;
-  initial: {
-    w: number;
-    h: number;
-    top: number;
-    left: number;
-  };
-  sizes: {
-    maxW: number;
-    maxH: number;
-    minW: number;
-    minH: number;
-  };
-};

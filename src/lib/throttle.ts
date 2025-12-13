@@ -3,7 +3,6 @@
 
 export class Throttle {
   fiolast: { [key: string]: number } = {};
-  lioTimeout: { [key: string]: ReturnType<typeof setTimeout> } = {};
 
   // first in out
   fio(func: () => void, id: string, wait: number = 50): void {
@@ -23,17 +22,5 @@ export class Throttle {
     if (timeSinceLastCall >= wait) {
       invoke();
     }
-  }
-
-  // last in out
-  lio(func: () => void, id: string, wait: number = 50): void {
-    if (this.lioTimeout[id]) {
-      clearTimeout(this.lioTimeout[id]);
-    }
-
-    this.lioTimeout[id] = setTimeout(() => {
-      func();
-      delete this.lioTimeout[id];
-    }, wait);
   }
 }
