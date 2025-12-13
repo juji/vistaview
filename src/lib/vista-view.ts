@@ -961,12 +961,12 @@ export class VistaView {
 
         if (!this.imgState.shouldStop()) {
           disableMove = true;
-          this.throttle.lio(
+          this.throttle.fio(
             () => {
               this.imgState.stabilizeProps();
             },
             'resetting after touch zoom in',
-            100
+            200
           );
         }
 
