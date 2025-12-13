@@ -51,7 +51,7 @@ export class VistaImageState {
 
   private maxZoom: number = 1;
   private centroid: { x: number; y: number } = { x: 0, y: 0 };
-  private closeLimit = 0.333;
+  private closeLimit = 0.5;
 
   setMaxZoom(maxZoom: number) {
     this.maxZoom = maxZoom;
