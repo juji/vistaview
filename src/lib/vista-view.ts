@@ -9,7 +9,7 @@ import {
   clamp,
 } from './utils';
 
-import { Fifo } from './fifo';
+import { Throttle } from './throttle';
 
 import type {
   VistaViewCloseFunction,
@@ -89,7 +89,7 @@ export class VistaView {
   currentItems: HTMLDivElement[] | null = null;
   isZoomed: HTMLImageElement | false = false;
 
-  private fifo = new Fifo();
+  private throttle = new Throttle();
 
   private onClickElements: (e: PointerEvent) => void = (e) => {
     e.preventDefault();
@@ -1086,7 +1086,7 @@ export class VistaView {
         if (e.lastPointerLen >= 2) {
           if (currentImage.image) {
             if (currentImage.stop) {
-              this.fifo.exec(() => {
+              this.throttle.exec(() => {
                 const rect = currentImage.image!.getBoundingClientRect();
                 currentImage.image!.style.width = rect.width + 'px';
                 currentImage.image!.style.height = rect.height + 'px';
@@ -1116,7 +1116,7 @@ export class VistaView {
                 });
               }, 'closing after touch zoom out');
             } else {
-              this.fifo.exec(() => {
+              this.throttle.exec(() => {
                 function swapDimensions() {
                   // reset last ratio
                   lastRatio = 0;
