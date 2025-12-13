@@ -2,17 +2,20 @@
 // Ensures that the function is not called more than once in the specified wait time.
 
 export class Throttle {
-  last: { [key: string]: number } = {};
-  exec(func: () => void, id: string, wait: number = 50): void {
+  fiolast: { [key: string]: number } = {};
+  lioTimeout: { [key: string]: ReturnType<typeof setTimeout> } = {};
+
+  // first in out
+  fio(func: () => void, id: string, wait: number = 50): void {
     const now = Date.now();
-    const timeSinceLastCall = now - (this.last[id] ?? 0);
+    const timeSinceLastCall = now - (this.fiolast[id] ?? 0);
 
     const invoke = () => {
-      this.last[id] = Date.now();
+      this.fiolast[id] = Date.now();
       func();
     };
 
-    if (!this.last[id]) {
+    if (!this.fiolast[id]) {
       invoke();
       return;
     }
@@ -20,5 +23,17 @@ export class Throttle {
     if (timeSinceLastCall >= wait) {
       invoke();
     }
+  }
+
+  // last in out
+  lio(func: () => void, id: string, wait: number = 50): void {
+    if (this.lioTimeout[id]) {
+      clearTimeout(this.lioTimeout[id]);
+    }
+
+    this.lioTimeout[id] = setTimeout(() => {
+      func();
+      delete this.lioTimeout[id];
+    }, wait);
   }
 }

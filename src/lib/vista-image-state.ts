@@ -12,6 +12,10 @@ export type VistaCurrentImage = {
     top: number;
     left: number;
   };
+  final: {
+    w: number;
+    h: number;
+  };
   sizes: {
     maxW: number;
     maxH: number;
@@ -32,6 +36,10 @@ export class VistaImageState {
       h: 0,
       top: 0,
       left: 0,
+    },
+    final: {
+      w: 0,
+      h: 0,
     },
     sizes: {
       maxW: 0,
@@ -78,6 +86,10 @@ export class VistaImageState {
         h: rect.height,
         top: rect.top,
         left: rect.left,
+      },
+      final: {
+        w: rect.width,
+        h: rect.height,
       },
       stop: false,
       scale: 1,
@@ -169,6 +181,8 @@ export class VistaImageState {
 
     const finalWidth = clamp(width, c.sizes.minW, c.sizes.maxW);
     const finalHeight = clamp(height, c.sizes.minH, c.sizes.maxH);
+    c.final.w = finalWidth;
+    c.final.h = finalHeight;
 
     const finalRatio = width === finalWidth ? ratio : limitPrecision(finalWidth / c.initial.w);
 
@@ -178,7 +192,19 @@ export class VistaImageState {
     const finalTranslate = this.calculateTranslate(finalRatio, finalWidth, finalHeight, centroid);
 
     const box = c.image!.getBoundingClientRect();
-    const isMin = finalWidth === c.sizes.minW && finalHeight === c.sizes.minH;
+    const isMin = finalWidth === c.sizes.minW;
+    console.log(
+      'ratio',
+      ratio,
+      'isMin',
+      isMin,
+      'finalWidth',
+      finalWidth,
+      'initial.w',
+      c.initial.w,
+      'minW',
+      c.sizes.minW
+    );
 
     if (!isMin) {
       // calculate limits of finalTranslate
@@ -224,13 +250,8 @@ export class VistaImageState {
     // add class to stop animation
     onStopAmination(c);
 
-    // requestAnimationFrame(() => {
-    c.initial.w = c.initial.w * c.scale;
-    c.initial.h = c.initial.h * c.scale;
-
-    // limit dimesion
-    c.initial.w = clamp(c.initial.w, c.sizes.minW, c.sizes.maxW);
-    c.initial.h = clamp(c.initial.h, c.sizes.minH, c.sizes.maxH);
+    c.initial.w = c.final.w;
+    c.initial.h = c.final.h;
 
     c.scale = 1;
     c.image!.style.width = `${c.initial.w}px`;

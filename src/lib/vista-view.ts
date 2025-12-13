@@ -871,6 +871,7 @@ export class VistaView {
   private setPointerListener = () => {
     let lastDistance = 0;
     let lastRatio = 0;
+    let disableMove = false;
 
     return (e: VistaViewPointerListenerArgs) => {
       if (!this.pointers) return;
@@ -894,23 +895,34 @@ export class VistaView {
         if (image) {
           image.classList.add('vistaview-image--touch-zoom');
         }
+        disableMove = false;
+
+        // this.throttle.fio(() => {
 
         if (e.pointers.length === 1) {
-          // this.imgState.setInitCentroid(this.pointers.getCentroid()!);
+          // this.imgState.stabilizeProps();
+          this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
+          this.imgState.renew();
         }
 
         if (e.pointers.length >= 2) {
-          lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
-          this.imgState.setInitCentroid(this.pointers.getCentroid()!);
+          lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+          // this.imgState.stabilizeProps();
+          this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
           this.imgState.renew();
         }
+
+        // },'pointer down');
       } else if (e.event === 'move') {
-        // if (e.pointers.length === 1) {
-        //   this.imgState.scaleAndMove({
-        //     ratio: 1,
-        //     centroid: this.pointers.getCentroid() || undefined,
-        //   });
-        // }
+        if (disableMove) return;
+        console.log('move');
+
+        if (e.pointers.length === 1) {
+          this.imgState.scaleAndMove({
+            ratio: 1,
+            centroid: this.pointers.getCentroid()!,
+          });
+        }
         if (e.pointers.length >= 2) {
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = limitPrecision(distance / lastDistance);
@@ -933,8 +945,11 @@ export class VistaView {
         //   // }
         // }
 
+        console.log('up');
+
         if (this.imgState.shouldStop() && e.lastPointerLen >= 2) {
-          this.throttle.exec(
+          disableMove = true;
+          this.throttle.fio(
             () => {
               this.imgState.close({
                 onClose: () => {
@@ -943,13 +958,15 @@ export class VistaView {
               });
             },
             'closing after touch zoom out',
-            100
+            1000
           );
         }
 
-        if (!this.imgState.shouldStop() && e.lastPointerLen >= 2) {
-          this.throttle.exec(
+        if (!this.imgState.shouldStop()) {
+          disableMove = true;
+          this.throttle.lio(
             () => {
+              console.log('stabilizing props');
               this.imgState.stabilizeProps();
             },
             'resetting after touch zoom in',
