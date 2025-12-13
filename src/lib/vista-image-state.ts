@@ -69,6 +69,7 @@ export class VistaImageState {
   }
 
   newImage({ img }: { img: HTMLImageElement }) {
+    console.log('VistaImageState: newImage', img);
     const rect = img.getBoundingClientRect();
     this.current = {
       image: img,
@@ -92,6 +93,7 @@ export class VistaImageState {
   }
 
   renew() {
+    console.log('VistaImageState: renew');
     if (!this.current.image) throw new Error('No current image to renew');
     const img = this.current.image;
     const rect = img!.getBoundingClientRect();

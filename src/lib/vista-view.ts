@@ -184,7 +184,7 @@ export class VistaView {
       const onImageTransitionEnd = () => {
         transitionNum++;
         if (transitionNum < 3) return;
-
+        im.removeEventListener('transitionend', onImageTransitionEnd);
         onSettling();
       };
 
@@ -878,7 +878,7 @@ export class VistaView {
 
       if (e.event === 'down') {
         if (e.pointers.length === 1) {
-          this.imgState.setInitCentroid(this.pointers.getCentroid()!);
+          // this.imgState.setInitCentroid(this.pointers.getCentroid()!);
         }
 
         if (e.pointers.length >= 2) {
@@ -894,10 +894,10 @@ export class VistaView {
         }
       } else if (e.event === 'move') {
         if (e.pointers.length === 1) {
-          this.imgState.scaleAndMove({
-            ratio: 1,
-            centroid: this.pointers.getCentroid() || undefined,
-          });
+          // this.imgState.scaleAndMove({
+          //   ratio: 1,
+          //   centroid: this.pointers.getCentroid() || undefined,
+          // });
         }
         if (e.pointers.length >= 2) {
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
