@@ -210,6 +210,7 @@
   margin: 0;
   padding: 0;
   translate: var(--vistaview-pointer-diff-x) var(--vistaview-pointer-diff-y);
+  cursor: zoom-in;
 
   &.vistaview-image-load-failed {
     &::after {
@@ -227,6 +228,7 @@
   }
 
   img.vistaview-image-lowres {
+    pointer-events: none;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -249,7 +251,7 @@
   }
 
   img.vistaview-image-highres {
-    cursor: zoom-in;
+    pointer-events: none;
     display: block;
     position: absolute;
     top: 50%;

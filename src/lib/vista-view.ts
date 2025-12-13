@@ -338,6 +338,7 @@ export class VistaView {
         this.setFullSizeImageDim(im);
       } else if (loaded && settled) {
         elm?.querySelector('.vistaview-image-lowres')?.classList.add('vistaview-image--hidden');
+        if (this.onImageSettledFn) this.onImageSettledFn(im);
       }
     });
 
@@ -356,254 +357,257 @@ export class VistaView {
   }
 
   //
-  private setZoomed(image: HTMLImageElement | false): void {
-    if (this.isZoomed === image) return;
+  // private setZoomed(image: HTMLImageElement | false): void {
+  //   if (this.isZoomed === image) return;
 
-    let raf: number | null = null;
+  //   let raf: number | null = null;
 
-    // this needs to be first
-    // basically remove event listeners from previous zoomed image
-    if (this.isZoomed) {
-      if (raf) cancelAnimationFrame(raf);
-      let img = this.isZoomed;
-      img.classList.remove('vistaview-image--zooming');
+  //   // this needs to be first
+  //   // basically remove event listeners from previous zoomed image
+  //   if (this.isZoomed) {
+  //     if (raf) cancelAnimationFrame(raf);
+  //     let img = this.isZoomed;
+  //     img.classList.remove('vistaview-image--zooming');
 
-      if (this.onZoomedPointerListener) {
-        this.pointers?.removeEventListener(this.onZoomedPointerListener);
-      }
+  //     if (this.onZoomedPointerListener) {
+  //       this.pointers?.removeEventListener(this.onZoomedPointerListener);
+  //     }
 
-      img?.style.removeProperty('--pointer-diff-x');
-      img?.style.removeProperty('--pointer-diff-y');
-      setTimeout(() => {
-        img?.classList.remove('vistaview-image--zooming');
-      }, 500);
+  //     img?.style.removeProperty('--pointer-diff-x');
+  //     img?.style.removeProperty('--pointer-diff-y');
+  //     setTimeout(() => {
+  //       img?.classList.remove('vistaview-image--zooming');
+  //     }, 500);
 
-      this.isZoomed = false;
+  //     this.isZoomed = false;
 
-      if (!image) return;
-    }
+  //     if (!image) return;
+  //   }
 
-    if (image) {
-      this.isZoomed = image;
+  //   if (image) {
+  //     this.isZoomed = image;
 
-      // image.classList.add('vistaview-image--zooming');
+  //     // image.classList.add('vistaview-image--zooming');
 
-      image?.style.setProperty('--pointer-diff-x', `0px`);
-      image?.style.setProperty('--pointer-diff-y', `0px`);
+  //     image?.style.setProperty('--pointer-diff-x', `0px`);
+  //     image?.style.setProperty('--pointer-diff-y', `0px`);
 
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
-      let diffX = 0;
-      let diffY = 0;
-      let localDiffX = 0;
-      let localDiffY = 0;
-      let initTime = 0;
-      let speedScale = 15;
-      let centeringDamping = 5;
-      let speedDecay = 0.1;
+  //     let isDragging = false;
+  //     let startX = 0;
+  //     let startY = 0;
+  //     let diffX = 0;
+  //     let diffY = 0;
+  //     let localDiffX = 0;
+  //     let localDiffY = 0;
+  //     let initTime = 0;
+  //     let speedScale = 15;
+  //     let centeringDamping = 5;
+  //     let speedDecay = 0.1;
 
-      function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
-        raf = requestAnimationFrame(() => {
-          if (Math.abs(speedX) < 0.01 && Math.abs(speedY) < 0.01) {
-            return;
-          }
+  //     function animateTranslation({ speedX, speedY }: { speedX: number; speedY: number }) {
+  //       raf = requestAnimationFrame(() => {
+  //         if (Math.abs(speedX) < 0.01 && Math.abs(speedY) < 0.01) {
+  //           return;
+  //         }
 
-          const img = image as HTMLImageElement;
-          const centerX = window.innerWidth / 2;
-          const centerY = window.innerHeight / 2;
-          const bounds = img.getBoundingClientRect();
-          const isUp = bounds.bottom < centerY;
-          const isDown = bounds.top > centerY;
-          const isLeft = bounds.right < centerX;
-          const isRight = bounds.left > centerX;
+  //         const img = image as HTMLImageElement;
+  //         const centerX = window.innerWidth / 2;
+  //         const centerY = window.innerHeight / 2;
+  //         const bounds = img.getBoundingClientRect();
+  //         const isUp = bounds.bottom < centerY;
+  //         const isDown = bounds.top > centerY;
+  //         const isLeft = bounds.right < centerX;
+  //         const isRight = bounds.left > centerX;
 
-          diffX += speedX;
-          diffY += speedY;
-          if (isUp) {
-            diffY += (centerY - bounds.bottom) / centeringDamping;
-          }
-          if (isDown) {
-            diffY -= (bounds.top - centerY) / centeringDamping;
-          }
-          if (isLeft) {
-            diffX += (centerX - bounds.right) / centeringDamping;
-          }
-          if (isRight) {
-            diffX -= (bounds.left - centerX) / centeringDamping;
-          }
-          img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
-          img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
-          animateTranslation({
-            speedX: speedX * (1 - speedDecay),
-            speedY: speedY * (1 - speedDecay),
-          });
-        });
-      }
+  //         diffX += speedX;
+  //         diffY += speedY;
+  //         if (isUp) {
+  //           diffY += (centerY - bounds.bottom) / centeringDamping;
+  //         }
+  //         if (isDown) {
+  //           diffY -= (bounds.top - centerY) / centeringDamping;
+  //         }
+  //         if (isLeft) {
+  //           diffX += (centerX - bounds.right) / centeringDamping;
+  //         }
+  //         if (isRight) {
+  //           diffX -= (bounds.left - centerX) / centeringDamping;
+  //         }
+  //         img?.style.setProperty('--pointer-diff-x', `${diffX}px`);
+  //         img?.style.setProperty('--pointer-diff-y', `${diffY}px`);
+  //         animateTranslation({
+  //           speedX: speedX * (1 - speedDecay),
+  //           speedY: speedY * (1 - speedDecay),
+  //         });
+  //       });
+  //     }
 
-      // set new listeners
-      const onZoomedPointerDown = (e: PointerEvent) => {
-        if (raf) cancelAnimationFrame(raf);
-        e.preventDefault();
-        e.stopPropagation();
-        isDragging = true;
-        startX = e.pageX;
-        startY = e.pageY;
-        initTime = performance.now();
-        image!.setPointerCapture(e.pointerId);
-      };
+  //     // set new listeners
+  //     const onZoomedPointerDown = (e: PointerEvent) => {
+  //       if (raf) cancelAnimationFrame(raf);
+  //       e.preventDefault();
+  //       e.stopPropagation();
+  //       isDragging = true;
+  //       startX = e.pageX;
+  //       startY = e.pageY;
+  //       initTime = performance.now();
+  //       image!.setPointerCapture(e.pointerId);
+  //     };
 
-      const onZoomedPointerMove = (e: PointerEvent) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        localDiffX = e.pageX - startX;
-        localDiffY = e.pageY - startY;
+  //     const onZoomedPointerMove = (e: PointerEvent) => {
+  //       if (!isDragging) return;
+  //       e.preventDefault();
+  //       localDiffX = e.pageX - startX;
+  //       localDiffY = e.pageY - startY;
 
-        image?.style.setProperty('--pointer-diff-x', `${localDiffX + diffX}px`);
-        image?.style.setProperty('--pointer-diff-y', `${localDiffY + diffY}px`);
-      };
+  //       image?.style.setProperty('--pointer-diff-x', `${localDiffX + diffX}px`);
+  //       image?.style.setProperty('--pointer-diff-y', `${localDiffY + diffY}px`);
+  //     };
 
-      const onZoomedPointerUp = (e: PointerEvent) => {
-        isDragging = false;
-        image!.releasePointerCapture(e.pointerId);
-        diffX += localDiffX;
-        diffY += localDiffY;
+  //     const onZoomedPointerUp = (e: PointerEvent) => {
+  //       isDragging = false;
+  //       image!.releasePointerCapture(e.pointerId);
+  //       diffX += localDiffX;
+  //       diffY += localDiffY;
 
-        if (localDiffX === 0 && localDiffY === 0) {
-          this.zoomIn();
-        } else {
-          let timeDiff = performance.now() - initTime;
-          if (timeDiff === 0) return;
-          let speedY = (e.pageY - startY) / timeDiff;
-          let speedX = (e.pageX - startX) / timeDiff;
-          animateTranslation({ speedX: speedX * speedScale, speedY: speedY * speedScale });
-        }
+  //       if (localDiffX === 0 && localDiffY === 0) {
+  //         this.zoomIn();
+  //       } else {
+  //         let timeDiff = performance.now() - initTime;
+  //         if (timeDiff === 0) return;
+  //         let speedY = (e.pageY - startY) / timeDiff;
+  //         let speedX = (e.pageX - startX) / timeDiff;
+  //         animateTranslation({ speedX: speedX * speedScale, speedY: speedY * speedScale });
+  //       }
 
-        localDiffX = 0;
-        localDiffY = 0;
-      };
+  //       localDiffX = 0;
+  //       localDiffY = 0;
+  //     };
 
-      this.onZoomedPointerListener = (e: VistaViewPointerListenerArgs) => {
-        if (!this.isZoomed || this.isZoomed !== image) return;
-        if (e.pointers.length > 1) return; // ignore multi-touch
-        switch (e.event) {
-          case 'down':
-            onZoomedPointerDown(e.domEvent);
-            return;
-          case 'move':
-            onZoomedPointerMove(e.domEvent);
-            return;
-          case 'up':
-            onZoomedPointerUp(e.domEvent);
-            return;
-        }
-      };
+  //     this.onZoomedPointerListener = (e: VistaViewPointerListenerArgs) => {
+  //       if (!this.isZoomed || this.isZoomed !== image) return;
+  //       if (e.pointers.length > 1) return; // ignore multi-touch
+  //       switch (e.event) {
+  //         case 'down':
+  //           onZoomedPointerDown(e.domEvent);
+  //           return;
+  //         case 'move':
+  //           onZoomedPointerMove(e.domEvent);
+  //           return;
+  //         case 'up':
+  //           onZoomedPointerUp(e.domEvent);
+  //           return;
+  //       }
+  //     };
 
-      // add listeners
-      // image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
-      // image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
-      // image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
-      this.pointers?.addEventListener(this.onZoomedPointerListener);
+  //     // add listeners
+  //     // image?.parentElement?.addEventListener('pointerdown', this.onZoomedPointerDown);
+  //     // image?.parentElement?.addEventListener('pointermove', this.onZoomedPointerMove);
+  //     // image?.parentElement?.addEventListener('pointerup', this.onZoomedPointerUp);
+  //     this.pointers?.addEventListener(this.onZoomedPointerListener);
 
-      return;
-    }
-  }
+  //     return;
+  //   }
+  // }
 
   zoomIn(): void {
     const highresImage = this.rootElm?.querySelector(
       '[data-vistaview-pos="0"] .vistaview-image-highres'
     ) as HTMLImageElement;
-    const width = highresImage.width;
-    const height = highresImage.height;
 
-    // store initial width/height if not set
-    if (!highresImage.dataset.vistaviewInitialWidth) {
-      highresImage.dataset.vistaviewInitialWidth = width.toString();
-    }
-    if (!highresImage.dataset.vistaviewInitialHeight) {
-      highresImage.dataset.vistaviewInitialHeight = height.toString();
-    }
+    console.log('zoomIn called');
 
-    this.setZoomed(highresImage);
+    // const width = highresImage.width;
+    // const height = highresImage.height;
 
-    // calculate new width/height
-    const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
-    if (width && maxWidth && width < maxWidth) {
-      const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
-      highresImage!.style.width = `${newWidth}px`;
-      const newHeight = (newWidth / width) * height;
-      highresImage!.style.height = `${newHeight}px`;
-      this.rootElm?.querySelector('button.vistaview-zoom-out-btn')?.removeAttribute('disabled');
+    // // store initial width/height if not set
+    // if (!highresImage.dataset.vistaviewInitialWidth) {
+    //   highresImage.dataset.vistaviewInitialWidth = width.toString();
+    // }
+    // if (!highresImage.dataset.vistaviewInitialHeight) {
+    //   highresImage.dataset.vistaviewInitialHeight = height.toString();
+    // }
 
-      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
-      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+    // this.setZoomed(highresImage);
 
-      // set counter zoom panning limits
-      if (newWidth === maxWidth) {
-        this.rootElm
-          ?.querySelector('button.vistaview-zoom-in-btn')
-          ?.setAttribute('disabled', 'true');
-      }
-    }
+    // // calculate new width/height
+    // const maxWidth = (highresImage.naturalWidth || 0) * this.options.maxZoomLevel!;
+    // if (width && maxWidth && width < maxWidth) {
+    //   const newWidth = Math.min(width + this.options.zoomStep!, maxWidth);
+    //   highresImage!.style.width = `${newWidth}px`;
+    //   const newHeight = (newWidth / width) * height;
+    //   highresImage!.style.height = `${newHeight}px`;
+    //   this.rootElm?.querySelector('button.vistaview-zoom-out-btn')?.removeAttribute('disabled');
+
+    //   highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+    //   highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+
+    //   // set counter zoom panning limits
+    //   if (newWidth === maxWidth) {
+    //     this.rootElm
+    //       ?.querySelector('button.vistaview-zoom-in-btn')
+    //       ?.setAttribute('disabled', 'true');
+    //   }
+    // }
   }
 
   zoomOut(): void {
     const highresImage = this.rootElm?.querySelector(
       '[data-vistaview-pos="0"] .vistaview-image-highres'
     ) as HTMLImageElement;
-    const width = highresImage.width;
-    const height = highresImage.height;
+    // const width = highresImage.width;
+    // const height = highresImage.height;
 
-    // get min width
-    const minWidth = highresImage.dataset.vistaviewInitialWidth
-      ? parseInt(highresImage.dataset.vistaviewInitialWidth)
-      : 0;
+    // // get min width
+    // const minWidth = highresImage.dataset.vistaviewInitialWidth
+    //   ? parseInt(highresImage.dataset.vistaviewInitialWidth)
+    //   : 0;
 
-    const removeZoomOutClass = (e: Event) => {
-      if (e.target !== highresImage) return;
-      highresImage.classList.remove('vistaview-image--zooming-out');
-      highresImage.removeEventListener('transitionend', removeZoomOutClass);
-    };
-    highresImage.addEventListener('transitionend', removeZoomOutClass);
-    highresImage.classList.add('vistaview-image--zooming-out');
+    // const removeZoomOutClass = (e: Event) => {
+    //   if (e.target !== highresImage) return;
+    //   highresImage.classList.remove('vistaview-image--zooming-out');
+    //   highresImage.removeEventListener('transitionend', removeZoomOutClass);
+    // };
+    // highresImage.addEventListener('transitionend', removeZoomOutClass);
+    // highresImage.classList.add('vistaview-image--zooming-out');
 
-    // calculate new width/height
-    if (width && minWidth && width > minWidth) {
-      const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
-      highresImage!.style.width = `${newWidth}px`;
+    // // calculate new width/height
+    // if (width && minWidth && width > minWidth) {
+    //   const newWidth = Math.max(width - this.options.zoomStep!, minWidth);
+    //   highresImage!.style.width = `${newWidth}px`;
 
-      const newHeight = (newWidth / width) * height;
-      highresImage!.style.height = `${newHeight}px`;
-      this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.removeAttribute('disabled');
-      highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
-      highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
+    //   const newHeight = (newWidth / width) * height;
+    //   highresImage!.style.height = `${newHeight}px`;
+    //   this.rootElm?.querySelector('button.vistaview-zoom-in-btn')?.removeAttribute('disabled');
+    //   highresImage.dataset.vistaviewCurrentWidth = newWidth.toString();
+    //   highresImage.dataset.vistaviewCurrentHeight = newHeight.toString();
 
-      // set counter zoom panning limits
-      const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(newWidth, newHeight);
-      let pointerDiffX = parseInt(
-        highresImage?.style.getPropertyValue('--pointer-diff-x').replace('px', '') || '0'
-      );
-      let pointerDiffY = parseInt(
-        highresImage?.style.getPropertyValue('--pointer-diff-y').replace('px', '') || '0'
-      );
-      pointerDiffX = clamp(pointerDiffX, minDiffX, maxDiffX);
-      pointerDiffY = clamp(pointerDiffY, minDiffY, maxDiffY);
+    //   // set counter zoom panning limits
+    //   const { maxDiffX, minDiffY, maxDiffY, minDiffX } = getMaxMinZoomLevels(newWidth, newHeight);
+    //   let pointerDiffX = parseInt(
+    //     highresImage?.style.getPropertyValue('--pointer-diff-x').replace('px', '') || '0'
+    //   );
+    //   let pointerDiffY = parseInt(
+    //     highresImage?.style.getPropertyValue('--pointer-diff-y').replace('px', '') || '0'
+    //   );
+    //   pointerDiffX = clamp(pointerDiffX, minDiffX, maxDiffX);
+    //   pointerDiffY = clamp(pointerDiffY, minDiffY, maxDiffY);
 
-      highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
-      highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
+    //   highresImage?.style.setProperty('--pointer-diff-x', `${pointerDiffX}px`);
+    //   highresImage?.style.setProperty('--pointer-diff-y', `${pointerDiffY}px`);
 
-      // when reached min zoom level
-      if (newWidth === minWidth) {
-        this.rootElm
-          ?.querySelector('button.vistaview-zoom-out-btn')
-          ?.setAttribute('disabled', 'true');
-        highresImage.removeAttribute('data-vistaview-current-width');
-        highresImage.removeAttribute('data-vistaview-current-height');
-        highresImage.removeAttribute('data-vistaview-initial-width');
-        highresImage.removeAttribute('data-vistaview-initial-height');
-        this.setZoomed(false);
-      }
-    }
+    //   // when reached min zoom level
+    //   if (newWidth === minWidth) {
+    //     this.rootElm
+    //       ?.querySelector('button.vistaview-zoom-out-btn')
+    //       ?.setAttribute('disabled', 'true');
+    //     highresImage.removeAttribute('data-vistaview-current-width');
+    //     highresImage.removeAttribute('data-vistaview-current-height');
+    //     highresImage.removeAttribute('data-vistaview-initial-width');
+    //     highresImage.removeAttribute('data-vistaview-initial-height');
+    //     this.setZoomed(false);
+    //   }
+    // }
   }
 
   private clearZoom(): void {
@@ -1130,6 +1134,7 @@ export class VistaView {
     this.onImageSettledFn = (im: HTMLImageElement) => {
       const isPos0 = im.parentElement?.dataset.vistaviewPos === '0';
       if (!isPos0) return;
+      console.log('onImageSettledFn called for', im);
       this.imgState.newImage({
         img: im,
       });
@@ -1200,7 +1205,7 @@ export class VistaView {
     }
 
     if (this.onZoomedPointerListener) {
-      this.setZoomed(false);
+      // this.setZoomed(false);
       this.onZoomedPointerListener = null;
     }
 
