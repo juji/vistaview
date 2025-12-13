@@ -868,6 +868,8 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
   }
 
+  // POINTER LISTENER
+  // ** --
   private setPointerListener = () => {
     let lastDistance = 0;
     let lastRatio = 0;
@@ -878,17 +880,6 @@ export class VistaView {
       if (!this.rootElm) return;
 
       if (e.event === 'down') {
-        // const image = this.rootElm!.querySelector(
-        //   '[data-vistaview-pos="0"] .vistaview-image-highres'
-        // ) as HTMLImageElement;
-        // if (!image) return;
-        // image.classList.add('vistaview-image--touch-zoom');
-        // this.throttle.exec(() => {
-        //   lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-        //   this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
-        //   this.imgState.renew();
-        // }, 'pointer down');
-
         const image = this.rootElm.querySelector(
           '[data-vistaview-pos="0"] .vistaview-image-highres:not(.vistaview-image--touch-zoom)'
         ) as HTMLImageElement;
@@ -897,22 +888,16 @@ export class VistaView {
         }
         disableMove = false;
 
-        // this.throttle.fio(() => {
-
         if (e.pointers.length === 1) {
-          // this.imgState.stabilizeProps();
           this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
           this.imgState.renew();
         }
 
         if (e.pointers.length >= 2) {
           lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-          // this.imgState.stabilizeProps();
           this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
           this.imgState.renew();
         }
-
-        // },'pointer down');
       } else if (e.event === 'move') {
         if (disableMove) return;
 
@@ -922,6 +907,7 @@ export class VistaView {
             centroid: this.pointers.getCentroid()!,
           });
         }
+
         if (e.pointers.length >= 2) {
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = limitPrecision(distance / lastDistance);
@@ -936,14 +922,6 @@ export class VistaView {
           });
         }
       } else if (e.event === 'up') {
-        // if (e.pointers.length === 1 && lastDown) {
-        //   // const time = lastDown ? performance.now() - lastDown : null;
-        //   // if(time !== null && time < 300) {
-        //   //   // treat as click
-        //   //   this.zoomIn();
-        //   // }
-        // }
-
         if (this.imgState.shouldStop() && e.lastPointerLen >= 2) {
           disableMove = true;
           this.throttle.fio(
@@ -969,28 +947,6 @@ export class VistaView {
             200
           );
         }
-
-        // if (e.lastPointerLen >= 2) {
-        //   if (this.imgState.hasImage()) {
-        //     if (this.imgState.shouldStop()) {
-
-        //       this.throttle.exec(() => {
-        //         this.imgState.close({
-        //           onClose: () => {
-        //             this.close()
-        //           }
-        //         })
-        //       }, 'closing after touch zoom out');
-
-        //     } else {
-
-        //       this.throttle.exec(() => {
-        //         this.imgState.stabilizeProps()
-        //       }, 'resetting after touch zoom in');
-
-        //     }
-        //   }
-        // }
       } else if (e.event === 'cancel') {
         // this.pointers.onPointerCancel(e.originalEvent);
       }
