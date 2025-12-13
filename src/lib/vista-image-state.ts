@@ -60,7 +60,15 @@ export class VistaImageState {
     };
   }
 
-  replace({ img }: { img: HTMLImageElement }) {
+  shouldStop(): boolean {
+    return this.current.stop;
+  }
+
+  hasImage(): boolean {
+    return this.current.image !== null;
+  }
+
+  newImage({ img }: { img: HTMLImageElement }) {
     const rect = img.getBoundingClientRect();
     this.current = {
       image: img,
@@ -238,10 +246,11 @@ export class VistaImageState {
 
   private swapDimensions(
     onStopAmination: (c: VistaCurrentImage) => void = (c) => {
-      c.image!.classList.remove('vistaview-image--touch-zoom');
+      c.image!.classList.add('vistaview-image--touch-zoom');
     }
   ) {
     const c = this.current;
+    if (!c.image) throw new Error('No current image to swap dimensions');
 
     // add class to stop animation
     onStopAmination(c);
@@ -271,6 +280,7 @@ export class VistaImageState {
     }
   ) {
     const c = this.current;
+    if (!c.image) throw new Error('No current image to stabilize props');
 
     const lastTransform = c.image!.style.transform;
     const nextTransform = `translate3d(${c.translate.x}px, ${c.translate.y}px, 0px) scale3d(${c.scale}, ${c.scale}, 1)`;
@@ -302,7 +312,7 @@ export class VistaImageState {
     onAnimateZoomOut?: (c: VistaCurrentImage) => void;
   }) {
     const c = this.current;
-    if (!c.image) return;
+    if (!c.image) throw new Error('No current image to close');
 
     const rect = c.image!.getBoundingClientRect();
     c.image!.style.width = rect.width + 'px';

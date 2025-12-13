@@ -7,6 +7,7 @@ import {
   getMaxMinZoomLevels,
   isNotZeroCssValue,
   clamp,
+  limitPrecision,
 } from './utils';
 
 import { Throttle } from './throttle';
@@ -20,11 +21,11 @@ import type {
   VistaViewImageIndexed,
   VistaViewOptions,
   VistaViewInitFunction,
-  VistaViewCurrentImage,
 } from './types';
 
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
 import { VistaViewPointers, type VistaViewPointerListenerArgs } from './pointers';
+import { VistaImageState } from './vista-image-state';
 
 export class VistaViewTransitionAbortedError extends Error {
   constructor(message: string) {
@@ -89,6 +90,8 @@ export class VistaView {
   currentItems: HTMLDivElement[] | null = null;
   isZoomed: HTMLImageElement | false = false;
 
+  imgState: VistaImageState;
+
   private throttle = new Throttle();
 
   private onClickElements: (e: PointerEvent) => void = (e) => {
@@ -113,6 +116,8 @@ export class VistaView {
 
   private transitionAbortControllers: { [key: string]: AbortController } = {};
   private pointers: VistaViewPointers | null = null;
+
+  private onImageSettledFn: ((im: HTMLImageElement) => void) | null = null;
 
   constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
     this.elements = elements;
@@ -144,6 +149,9 @@ export class VistaView {
       this.userInit = this.options.initFunction;
     }
 
+    // initiate vista iamge state
+    this.imgState = new VistaImageState(this.options.maxZoomLevel || 1);
+
     // detect reduced motion
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -160,23 +168,26 @@ export class VistaView {
   private setFullSizeImageDim(im: HTMLImageElement): void {
     const dim = im.getBoundingClientRect();
     const { width, height } = getFullSizeDim(im);
-    if (width === dim.width && height === dim.height) {
+
+    const onSettling = () => {
       im.parentElement
         ?.querySelector('.vistaview-image-lowres')
         ?.classList.add('vistaview-image--hidden');
       im.classList.add('vistaview-image-settled');
+      if (this.onImageSettledFn) this.onImageSettledFn(im);
+    };
+
+    if (width === dim.width && height === dim.height) {
+      onSettling();
     } else {
       let transitionNum = 0;
       const onImageTransitionEnd = () => {
         transitionNum++;
         if (transitionNum < 3) return;
 
-        im.removeEventListener('transitionend', onImageTransitionEnd);
-        im.parentElement
-          ?.querySelector('.vistaview-image-lowres')
-          ?.classList.add('vistaview-image--hidden');
-        im.classList.add('vistaview-image-settled');
+        onSettling();
       };
+
       requestAnimationFrame(() => {
         im.addEventListener('transitionend', onImageTransitionEnd);
         im.style.width = `${width}px`;
@@ -857,92 +868,9 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
   }
 
-  private setSize({
-    image,
-    scale,
-    translate,
-  }: {
-    image: HTMLImageElement;
-    translate?: { x: number; y: number };
-    scale: number;
-  }): void {
-    if (translate) {
-      image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0px) scale3d(${scale}, ${scale}, 1)`;
-    } else {
-      image.style.transform = `translate3d(0px, 0px, 0px) scale3d(${scale}, ${scale}, 1)`;
-    }
-  }
-
-  // Calculate displacement to keep centroid point fixed (scale around point)
-  private calculateTranslate(
-    currentImage: VistaViewCurrentImage,
-    ratio: number,
-    width: number,
-    height: number,
-    newCentroid: { x: number; y: number }
-  ) {
-    // initial.top/left from getBoundingClientRect() already includes visual position
-    // so we don't add accumTranslate here (it would double-count)
-    const distanceToTop = currentImage.centroid!.y - currentImage.initial.top;
-    const distanceToLeft = currentImage.centroid!.x - currentImage.initial.left;
-
-    // Scale distances by ratio to get new distances
-    const newDistanceToTop = distanceToTop * ratio;
-    const newDistanceToLeft = distanceToLeft * ratio;
-
-    // Calculate new top-left position to keep centroid fixed
-    const newTop = currentImage.centroid!.y - newDistanceToTop;
-    const newLeft = currentImage.centroid!.x - newDistanceToLeft;
-
-    // Calculate new image center position
-    const newCenterX = newLeft + width / 2;
-    const newCenterY = newTop + height / 2;
-
-    // Current image center (from getBoundingClientRect)
-    const currentCenterX = currentImage.initial.left + currentImage.initial.w / 2;
-    const currentCenterY = currentImage.initial.top + currentImage.initial.h / 2;
-
-    // Translation is the difference between new center and current center,
-    // plus adjustment for finger movement during gesture
-    const translate = {
-      x:
-        Math.round(
-          (newCenterX - currentCenterX + (newCentroid.x - currentImage.centroid!.x)) * 100
-        ) / 100,
-      y:
-        Math.round(
-          (newCenterY - currentCenterY + (newCentroid.y - currentImage.centroid!.y)) * 100
-        ) / 100,
-    };
-
-    return translate;
-  }
-
   private setPointerListener = () => {
-    let lastDown: number | null = null;
     let lastDistance = 0;
     let lastRatio = 0;
-
-    let currentImage: VistaViewCurrentImage = {
-      centroid: null,
-      scale: 1,
-      stop: false,
-      translate: { x: 0, y: 0 },
-      accumTranslate: { x: 0, y: 0 },
-      image: null,
-      initial: {
-        w: 0,
-        h: 0,
-        top: 0,
-        left: 0,
-      },
-      sizes: {
-        maxW: 0,
-        maxH: 0,
-        minW: 0,
-        minH: 0,
-      },
-    };
 
     return (e: VistaViewPointerListenerArgs) => {
       if (!this.pointers) return;
@@ -950,11 +878,10 @@ export class VistaView {
 
       if (e.event === 'down') {
         if (e.pointers.length === 1) {
-          lastDown = performance.now();
+          this.imgState.setInitCentroid(this.pointers.getCentroid()!);
         }
 
         if (e.pointers.length >= 2) {
-          lastDown = null;
           lastDistance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const image = this.rootElm.querySelector(
             '[data-vistaview-pos="0"] .vistaview-image-highres'
@@ -962,220 +889,73 @@ export class VistaView {
           if (!image) return;
 
           image.classList.add('vistaview-image--touch-zoom');
-
-          const rect = image.getBoundingClientRect();
-          currentImage = {
-            image: image,
-            centroid: this.pointers.getCentroid(),
-            initial: {
-              w: rect.width,
-              h: rect.height,
-              top: rect.top,
-              left: rect.left,
-            },
-            stop: false,
-            scale: 1,
-            translate: { x: 0, y: 0 },
-            accumTranslate: currentImage.accumTranslate,
-            sizes: {
-              maxW: image ? (image?.naturalWidth || 0) * this.options.maxZoomLevel! : 0,
-              maxH: image ? (image?.naturalHeight || 0) * this.options.maxZoomLevel! : 0,
-              minW: currentImage.sizes.minW || image.width,
-              minH: currentImage.sizes.minH || image.height,
-            },
-          };
+          this.imgState.setInitCentroid(this.pointers.getCentroid()!);
+          this.imgState.renew();
         }
       } else if (e.event === 'move') {
+        if (e.pointers.length === 1) {
+          this.imgState.scaleAndMove({
+            ratio: 1,
+            centroid: this.pointers.getCentroid() || undefined,
+          });
+        }
         if (e.pointers.length >= 2) {
-          if (!currentImage.image) return;
-          if (!currentImage.centroid) return;
-
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
-          const ratio = Math.round((distance / lastDistance) * 100) / 100;
+          const ratio = limitPrecision(distance / lastDistance);
 
           // avoid excessive calls
           if (ratio === lastRatio) return;
-
           lastRatio = ratio;
 
-          const width = currentImage.initial.w * ratio;
-          const height = currentImage.initial.h * ratio;
-
-          const finalWidth = clamp(width, currentImage.sizes.minW, currentImage.sizes.maxW);
-          const finalHeight = clamp(height, currentImage.sizes.minH, currentImage.sizes.maxH);
-
-          const finalRatio =
-            width === finalWidth
-              ? ratio
-              : Math.round((finalWidth / currentImage.initial.w) * 100) / 100;
-
-          // calculate translate, get current centroid
-          const newCentroid = this.pointers!.getCentroid()!;
-
-          const translate = this.calculateTranslate(
-            currentImage,
+          this.imgState.scaleAndMove({
             ratio,
-            width,
-            height,
-            newCentroid
-          );
-
-          // const finalTranslate = translate
-          const finalTranslate = this.calculateTranslate(
-            currentImage,
-            finalRatio,
-            finalWidth,
-            finalHeight,
-            newCentroid
-          );
-
-          const box = currentImage.image.getBoundingClientRect();
-          const isMin =
-            finalWidth === currentImage.sizes.minW && finalHeight === currentImage.sizes.minH;
-
-          if (!isMin) {
-            // calculate limits of finalTranslate
-            if (box.top > window.innerHeight / 2) {
-              finalTranslate.y = finalTranslate.y - (box.top - window.innerHeight / 2);
-            }
-
-            if (box.left > window.innerWidth / 2) {
-              finalTranslate.x = finalTranslate.x - (box.left - window.innerWidth / 2);
-            }
-
-            if (box.left + box.width < window.innerWidth / 2) {
-              finalTranslate.x =
-                finalTranslate.x + (window.innerWidth / 2 - (box.left + box.width));
-            }
-
-            if (box.top + box.height < window.innerHeight / 2) {
-              finalTranslate.y =
-                finalTranslate.y + (window.innerHeight / 2 - (box.top + box.height));
-            }
-          }
-
-          currentImage.scale = finalRatio;
-
-          currentImage.translate = isMin
-            ? { x: -currentImage.accumTranslate.x, y: -currentImage.accumTranslate.y }
-            : finalTranslate;
-
-          currentImage.stop = width / currentImage.sizes.minW < 0.5;
-
-          if (currentImage.stop) {
-            currentImage.image.style.opacity = '0.33';
-          } else {
-            currentImage.image.style.removeProperty('opacity');
-          }
-
-          this.setSize({
-            image: currentImage.image,
-            scale: ratio,
-            translate,
+            centroid: this.pointers.getCentroid() || undefined,
           });
         }
       } else if (e.event === 'up') {
-        if (e.pointers.length === 1 && lastDown) {
-          // const time = lastDown ? performance.now() - lastDown : null;
-          // if(time !== null && time < 300) {
-          //   // treat as click
-          //   this.zoomIn();
-          // }
+        // if (e.pointers.length === 1 && lastDown) {
+        //   // const time = lastDown ? performance.now() - lastDown : null;
+        //   // if(time !== null && time < 300) {
+        //   //   // treat as click
+        //   //   this.zoomIn();
+        //   // }
+        // }
+
+        if (this.imgState.shouldStop()) {
+          this.throttle.exec(() => {
+            this.imgState.close({
+              onClose: () => {
+                this.close();
+              },
+            });
+          }, 'closing after touch zoom out');
+        } else {
+          this.throttle.exec(() => {
+            this.imgState.stabilizeProps();
+          }, 'resetting after touch zoom in');
         }
 
-        if (e.lastPointerLen >= 2) {
-          if (currentImage.image) {
-            if (currentImage.stop) {
-              this.throttle.exec(() => {
-                const rect = currentImage.image!.getBoundingClientRect();
-                currentImage.image!.style.width = rect.width + 'px';
-                currentImage.image!.style.height = rect.height + 'px';
-                currentImage.image!.style.transform = currentImage.image!.style.transform.replace(
-                  /scale3d\([0-9.]+, [0-9.]+, 1\)/,
-                  'scale3d(1, 1, 1)'
-                );
+        // if (e.lastPointerLen >= 2) {
+        //   if (this.imgState.hasImage()) {
+        //     if (this.imgState.shouldStop()) {
 
-                requestAnimationFrame(() => {
-                  currentImage.image!.classList.add('vistaview-image--touch-zoom-out');
-                  currentImage.image!.style.opacity = '1';
-                  currentImage.image!.style.width = currentImage.image!.style.getPropertyValue(
-                    '--vistaview-fitted-width'
-                  );
-                  currentImage.image!.style.height = currentImage.image!.style.getPropertyValue(
-                    '--vistaview-fitted-height'
-                  );
-                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
-                  currentImage.image!.addEventListener(
-                    'transitionend',
-                    () => {
-                      this.close();
-                      currentImage.image = null;
-                    },
-                    { once: true }
-                  );
-                });
-              }, 'closing after touch zoom out');
-            } else {
-              this.throttle.exec(() => {
-                function swapDimensions() {
-                  // reset last ratio
-                  lastRatio = 0;
+        //       this.throttle.exec(() => {
+        //         this.imgState.close({
+        //           onClose: () => {
+        //             this.close()
+        //           }
+        //         })
+        //       }, 'closing after touch zoom out');
 
-                  // add class to stop animation
-                  currentImage.image!.classList.add('vistaview-image--touch-zoom');
+        //     } else {
 
-                  // requestAnimationFrame(() => {
-                  currentImage.initial.w = currentImage.initial.w * currentImage.scale;
-                  currentImage.initial.h = currentImage.initial.h * currentImage.scale;
+        //       this.throttle.exec(() => {
+        //         this.imgState.stabilizeProps()
+        //       }, 'resetting after touch zoom in');
 
-                  // limit dimesion
-                  currentImage.initial.w = clamp(
-                    currentImage.initial.w,
-                    currentImage.sizes.minW,
-                    currentImage.sizes.maxW
-                  );
-                  currentImage.initial.h = clamp(
-                    currentImage.initial.h,
-                    currentImage.sizes.minH,
-                    currentImage.sizes.maxH
-                  );
-
-                  currentImage.scale = 1;
-                  currentImage.centroid = null;
-                  currentImage.image!.style.width = `${currentImage.initial.w}px`;
-                  currentImage.image!.style.height = `${currentImage.initial.h}px`;
-
-                  currentImage.accumTranslate.x += currentImage.translate.x;
-                  currentImage.accumTranslate.y += currentImage.translate.y;
-                  currentImage.image!.style.translate = `calc(-50% + ${currentImage.accumTranslate.x}px) calc(-50% + ${currentImage.accumTranslate.y}px)`;
-                  currentImage.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
-                  currentImage.translate = { x: 0, y: 0 };
-                  // currentImage.image!.classList.remove('vistaview-image--touch-zoom');
-                  // });
-                }
-
-                const lastTransform = currentImage.image!.style.transform;
-                const nextTransform = `translate3d(${currentImage.translate.x}px, ${currentImage.translate.y}px, 0px) scale3d(${currentImage.scale}, ${currentImage.scale}, 1)`;
-
-                // animate when transform changes
-                if (lastTransform !== nextTransform) {
-                  currentImage.image!.classList.remove('vistaview-image--touch-zoom');
-                  currentImage.image!.addEventListener(
-                    'transitionend',
-                    () => {
-                      swapDimensions();
-                    },
-                    { once: true }
-                  );
-                  currentImage.image!.style.transform = nextTransform;
-                } else {
-                  currentImage.image!.style.transform = nextTransform;
-                  swapDimensions();
-                }
-              }, 'resetting after touch zoom in');
-            }
-          }
-        }
+        //     }
+        //   }
+        // }
       } else if (e.event === 'cancel') {
         // this.pointers.onPointerCancel(e.originalEvent);
       }
@@ -1325,12 +1105,24 @@ export class VistaView {
     }
 
     this.rootElm && this.rootElm.classList.add('vistaview--initialized');
+
+    this.onImageSettledFn = (im: HTMLImageElement) => {
+      const isPos0 = im.parentElement?.dataset.vistaviewPos === '0';
+      if (!isPos0) return;
+      this.imgState.newImage({
+        img: im,
+      });
+    };
+
     this.loadImages();
     this.setCurrentDescription();
     this.setIndexDisplay();
 
     // set pointer events
-    this.pointers = new VistaViewPointers(this.rootElm, [this.setPointerListener()]);
+    this.pointers = new VistaViewPointers(
+      this.rootElm.querySelector('.vistaview-image-container')!,
+      [this.setPointerListener()]
+    );
 
     this.userInit(this);
     this.options.onOpen?.(setupParams);
@@ -1374,6 +1166,7 @@ export class VistaView {
     this.imageContainerElm = null;
     this.currentImages = null;
     this.currentItems = null;
+    this.onImageSettledFn = null;
 
     if (this.onResizeHandler) {
       window.removeEventListener('resize', this.onResizeHandler);
