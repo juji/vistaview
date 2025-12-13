@@ -874,8 +874,14 @@ export class VistaView {
     let lastDistance = 0;
     let lastRatio = 0;
     let disableMove = false;
+    let stabilizationPromise: Promise<void> | null = null;
+    let lastPointerDown = {
+      x: 0,
+      y: 0,
+      time: 0,
+    };
 
-    return (e: VistaViewPointerListenerArgs) => {
+    return async (e: VistaViewPointerListenerArgs) => {
       if (!this.pointers) return;
       if (!this.rootElm) return;
 
@@ -889,11 +895,22 @@ export class VistaView {
         disableMove = false;
 
         if (e.pointers.length === 1) {
+          this.imgState.setInertia(false);
+          await stabilizationPromise;
+          const centroid = this.pointers!.getCentroid()!;
+          lastPointerDown = {
+            x: centroid.x,
+            y: centroid.y,
+            time: performance.now(),
+          };
           this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
           this.imgState.renew();
         }
 
         if (e.pointers.length >= 2) {
+          this.imgState.setInertia(false);
+          await stabilizationPromise;
+          lastPointerDown.time = 0;
           lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
           this.imgState.setInitCentroid(this.pointers!.getCentroid()!);
           this.imgState.renew();
@@ -902,6 +919,7 @@ export class VistaView {
         if (disableMove) return;
 
         if (e.pointers.length === 1) {
+          await stabilizationPromise;
           this.imgState.scaleAndMove({
             ratio: 1,
             centroid: this.pointers.getCentroid()!,
@@ -909,6 +927,7 @@ export class VistaView {
         }
 
         if (e.pointers.length >= 2) {
+          await stabilizationPromise;
           const distance = this.pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
           const ratio = limitPrecision(distance / lastDistance);
 
@@ -922,6 +941,17 @@ export class VistaView {
           });
         }
       } else if (e.event === 'up') {
+        if (e.pointers!.length === 0 && lastPointerDown.time) {
+          const centroid = e.pointer;
+          if (!centroid) throw new Error('centroid is null on pointer up with 0 pointers');
+          const timeDiff = performance.now() - lastPointerDown.time;
+          const distX = centroid.x - lastPointerDown.x;
+          const distY = centroid.y - lastPointerDown.y;
+          const speedX = (200 * distX) / timeDiff; // pixels per millisecond
+          const speedY = (200 * distY) / timeDiff; // pixels per millisecond
+          this.imgState.setInertia({ x: speedX, y: speedY });
+        }
+
         if (this.imgState.shouldStop() && e.lastPointerLen >= 2) {
           disableMove = true;
           this.throttle.fio(
@@ -941,7 +971,7 @@ export class VistaView {
           disableMove = true;
           this.throttle.fio(
             () => {
-              this.imgState.stabilizeProps();
+              stabilizationPromise = this.imgState.stabilizeProps();
             },
             'resetting after touch zoom in',
             200

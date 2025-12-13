@@ -15,6 +15,8 @@ export type VistaCurrentImage = {
   final: {
     w: number;
     h: number;
+    translate: { x: number; y: number };
+    scale: number;
   };
   sizes: {
     maxW: number;
@@ -40,6 +42,8 @@ export class VistaImageState {
     final: {
       w: 0,
       h: 0,
+      translate: { x: 0, y: 0 },
+      scale: 1,
     },
     sizes: {
       maxW: 0,
@@ -52,6 +56,15 @@ export class VistaImageState {
   private maxZoom: number = 1;
   private centroid: { x: number; y: number } = { x: 0, y: 0 };
   private closeLimit = 0.5;
+  private inertia: { x: number; y: number } | null = null;
+
+  setInertia(inertia?: { x: number; y: number } | false) {
+    if (inertia) {
+      this.inertia = inertia;
+    } else {
+      this.inertia = null;
+    }
+  }
 
   setMaxZoom(maxZoom: number) {
     this.maxZoom = maxZoom;
@@ -88,8 +101,10 @@ export class VistaImageState {
         left: rect.left,
       },
       final: {
-        w: rect.width,
-        h: rect.height,
+        w: 0,
+        h: 0,
+        translate: { x: 0, y: 0 },
+        scale: 1,
       },
       stop: false,
       scale: 1,
@@ -175,20 +190,25 @@ export class VistaImageState {
     // assume doesn't move when centroid not provided
     centroid = centroid || this.centroid;
 
-    const width = c.initial.w * ratio;
-    const height = c.initial.h * ratio;
+    const width = limitPrecision(c.initial.w * ratio);
+    const height = limitPrecision(c.initial.h * ratio);
 
     const finalWidth = clamp(width, c.sizes.minW, c.sizes.maxW);
     const finalHeight = clamp(height, c.sizes.minH, c.sizes.maxH);
     c.final.w = finalWidth;
     c.final.h = finalHeight;
 
-    const finalRatio = width === finalWidth ? ratio : limitPrecision(finalWidth / c.initial.w);
+    c.final.scale =
+      finalWidth === c.sizes.minW
+        ? c.sizes.minW / c.initial.w
+        : finalWidth === c.sizes.maxW
+          ? c.sizes.maxW / c.initial.w
+          : ratio;
 
     const translate = this.calculateTranslate(ratio, width, height, centroid);
 
     // const finalTranslate = translate
-    const finalTranslate = this.calculateTranslate(finalRatio, finalWidth, finalHeight, centroid);
+    const finalTranslate = this.calculateTranslate(ratio, finalWidth, finalHeight, centroid);
 
     const box = c.image!.getBoundingClientRect();
     const isMin = finalWidth === c.sizes.minW;
@@ -212,8 +232,9 @@ export class VistaImageState {
       }
     }
 
-    c.scale = finalRatio;
-    c.translate = isMin ? { x: -c.accumTranslate.x, y: -c.accumTranslate.y } : finalTranslate;
+    c.scale = ratio;
+    c.translate = translate;
+    c.final.translate = isMin ? { x: -c.accumTranslate.x, y: -c.accumTranslate.y } : finalTranslate;
 
     c.stop = width / c.sizes.minW < this.closeLimit;
     if (c.stop) {
@@ -244,14 +265,88 @@ export class VistaImageState {
     c.image!.style.width = `${c.initial.w}px`;
     c.image!.style.height = `${c.initial.h}px`;
 
-    c.accumTranslate.x += c.translate.x;
-    c.accumTranslate.y += c.translate.y;
+    c.accumTranslate.x += c.final.translate.x;
+    c.accumTranslate.y += c.final.translate.y;
     c.image!.style.translate = `calc(-50% + ${c.accumTranslate.x}px) calc(-50% + ${c.accumTranslate.y}px)`;
     c.image!.style.transform = `translate3d(0px, 0px, 0px) scale3d(1, 1, 1)`;
     c.translate = { x: 0, y: 0 };
+
+    console.log("c's after swap", c);
   }
 
-  stabilizeProps(
+  async inertialMovement(image: HTMLImageElement): Promise<void> {
+    return new Promise((r) => {
+      requestAnimationFrame(() => {
+        const c = this.current;
+
+        if (
+          !this.inertia ||
+          !c.image ||
+          c.translate.x !== c.final.translate.x ||
+          c.translate.y !== c.final.translate.y
+        ) {
+          r();
+          return;
+        }
+
+        if (Math.abs(this.inertia.x) < 0.1) {
+          this.inertia.x = 0;
+        }
+
+        if (Math.abs(this.inertia.y) < 0.1) {
+          this.inertia.y = 0;
+        }
+
+        const rect = image.getBoundingClientRect();
+        if (rect.left >= window.innerWidth * 0.75) {
+          c.final.translate.x -= limitPrecision(window.innerWidth * 0.25);
+          this.inertia!.x = 0;
+        }
+        if (rect.right <= window.innerWidth * 0.25) {
+          c.final.translate.x += limitPrecision(window.innerWidth * 0.25);
+          this.inertia!.x = 0;
+        }
+        if (rect.top >= window.innerHeight * 0.75) {
+          c.final.translate.y -= limitPrecision(window.innerHeight * 0.25);
+          this.inertia!.y = 0;
+        }
+        if (rect.bottom <= window.innerHeight * 0.25) {
+          c.final.translate.y += limitPrecision(window.innerHeight * 0.25);
+          this.inertia!.y = 0;
+        }
+
+        if (this.inertia.x === 0 && this.inertia.y === 0) {
+          r();
+          return;
+        }
+
+        const moveX = this.inertia!.x / 10;
+        const moveY = this.inertia!.y / 10;
+        this.inertia = {
+          x: this.inertia!.x - moveX,
+          y: this.inertia!.y - moveY,
+        };
+
+        c.translate.x += moveX;
+        c.translate.y += moveY;
+        c.final.translate.x += moveX;
+        c.final.translate.y += moveY;
+        c.translate.x = limitPrecision(c.translate.x);
+        c.translate.y = limitPrecision(c.translate.y);
+        c.final.translate.x = limitPrecision(c.final.translate.x);
+        c.final.translate.y = limitPrecision(c.final.translate.y);
+
+        // console.log('inertia move', {
+        //   moveX, moveY, inertia: this.inertia
+        // });
+        c.image.style.transform = `translate3d(${c.translate.x || 0}px, ${c.translate.y || 0}px, 0px) scale3d(${c.scale}, ${c.scale}, 1)`;
+
+        r(this.inertialMovement(image));
+      });
+    });
+  }
+
+  async stabilizeProps(
     onAnimateTransform: (c: VistaCurrentImage) => void = (c) => {
       c.image!.classList.remove('vistaview-image--touch-zoom');
     }
@@ -259,11 +354,15 @@ export class VistaImageState {
     const c = this.current;
     if (!c.image) throw new Error('No current image to stabilize props');
 
+    await this.inertialMovement(c.image!);
+    console.log('stabilizeProps after inertia');
+
     const lastTransform = c.image!.style.transform;
-    const nextTransform = `translate3d(${c.translate.x}px, ${c.translate.y}px, 0px) scale3d(${c.scale}, ${c.scale}, 1)`;
+    const nextTransform = `translate3d(${c.final.translate.x}px, ${c.final.translate.y}px, 0px) scale3d(${c.final.scale}, ${c.final.scale}, 1)`;
 
     // animate when transform changes
     if (lastTransform !== nextTransform) {
+      console.log('animating transform', { lastTransform, nextTransform });
       onAnimateTransform(c);
       c.image!.addEventListener(
         'transitionend',
@@ -274,6 +373,7 @@ export class VistaImageState {
       );
       c.image!.style.transform = nextTransform;
     } else {
+      console.log('no transform change, swapping dimensions directly');
       c.image!.style.transform = nextTransform;
       this.swapDimensions();
     }
