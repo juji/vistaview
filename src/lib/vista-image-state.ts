@@ -127,7 +127,6 @@ export class VistaImageState {
     if (!this.current.image) throw new Error('No current image to renew');
     const img = this.current.image;
     const rect = img!.getBoundingClientRect();
-    console.log('renewing current image state', { rect });
     this.current = {
       ...this.current,
       initial: {
@@ -257,11 +256,6 @@ export class VistaImageState {
 
     // set transform
     c.image.style.transform = `translate3d(${translate.x || 0}px, ${translate.y || 0}px, 0px) scale3d(${ratio}, ${ratio}, 1)`;
-
-    console.log('scale and move', {
-      initial: c.initial,
-      final: c.final,
-    });
   }
 
   private swapDimensions(
@@ -274,11 +268,6 @@ export class VistaImageState {
 
     // add class to stop animation
     onStopAmination(c);
-
-    console.log('swapping dimensions', {
-      initial: c.initial,
-      final: c.final,
-    });
 
     c.initial.w = c.final.w;
     c.initial.h = c.final.h;

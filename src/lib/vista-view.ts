@@ -370,7 +370,6 @@ export class VistaView {
     this.imgState.renew();
     const state = this.imgState.getCurrentState();
     state.image?.classList.add('vistaview-image--click-zoom');
-    console.log(state.image);
 
     state.image?.addEventListener(
       'transitionend',
@@ -957,7 +956,6 @@ export class VistaView {
     this.onImageSettledFn = (im: HTMLImageElement) => {
       const isPos0 = im.parentElement?.dataset.vistaviewPos === '0';
       if (!isPos0) return;
-      console.log('onImageSettledFn called for', im);
       this.imgState.newImage({
         img: im,
       });
