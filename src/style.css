@@ -274,15 +274,15 @@
     }
 
     &.vistaview-image--click-zoom {
-      transition: transform 222ms ease 0ms;
+      transition: transform calc(var(--vistaview-animation-duration) * 0.666ms) ease 0ms;
     }
 
     &.vistaview-image--touch-zoom-out {
       transition:
-        opacity 333ms ease 0ms,
-        transform 333ms ease 0ms,
-        width 333ms ease 0ms,
-        height 333ms ease 0ms;
+        opacity calc(var(--vistaview-animation-duration) * 1ms) ease 0ms,
+        transform calc(var(--vistaview-animation-duration) * 1ms) ease 0ms,
+        width calc(var(--vistaview-animation-duration) * 1ms) ease 0ms,
+        height calc(var(--vistaview-animation-duration) * 1ms) ease 0ms;
     }
 
     &.vistaview-image-loaded {
