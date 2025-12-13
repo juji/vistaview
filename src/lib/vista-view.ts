@@ -915,7 +915,6 @@ export class VistaView {
         // },'pointer down');
       } else if (e.event === 'move') {
         if (disableMove) return;
-        console.log('move');
 
         if (e.pointers.length === 1) {
           this.imgState.scaleAndMove({
@@ -945,8 +944,6 @@ export class VistaView {
         //   // }
         // }
 
-        console.log('up');
-
         if (this.imgState.shouldStop() && e.lastPointerLen >= 2) {
           disableMove = true;
           this.throttle.fio(
@@ -966,7 +963,6 @@ export class VistaView {
           disableMove = true;
           this.throttle.lio(
             () => {
-              console.log('stabilizing props');
               this.imgState.stabilizeProps();
             },
             'resetting after touch zoom in',

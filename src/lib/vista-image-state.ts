@@ -105,7 +105,6 @@ export class VistaImageState {
   }
 
   renew() {
-    console.log('VistaImageState: renew');
     if (!this.current.image) throw new Error('No current image to renew');
     const img = this.current.image;
     const rect = img!.getBoundingClientRect();
@@ -193,18 +192,6 @@ export class VistaImageState {
 
     const box = c.image!.getBoundingClientRect();
     const isMin = finalWidth === c.sizes.minW;
-    console.log(
-      'ratio',
-      ratio,
-      'isMin',
-      isMin,
-      'finalWidth',
-      finalWidth,
-      'initial.w',
-      c.initial.w,
-      'minW',
-      c.sizes.minW
-    );
 
     if (!isMin) {
       // calculate limits of finalTranslate
