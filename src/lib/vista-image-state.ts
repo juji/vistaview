@@ -365,7 +365,7 @@ export class VistaImageState {
     const c = this.current;
     if (!c.image) throw new Error('No current image to stabilize props');
 
-    // await this.inertialMovement(c.image!);
+    await this.inertialMovement(c.image!);
 
     const lastTransform = c.image!.style.transform;
     const nextTransform = `translate3d(${c.final.translate.x}px, ${c.final.translate.y}px, 0px) scale3d(${c.final.scale}, ${c.final.scale}, 1)`;
