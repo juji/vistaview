@@ -87,11 +87,7 @@ export class VistaImageState {
   }
 
   getCurrentState(): VistaCurrImg {
-    const { image, ...rest } = this.current;
-    return {
-      image,
-      ...structuredClone(rest),
-    };
+    return this.current;
   }
 
   newImage({ img }: { img: HTMLImageElement }) {
