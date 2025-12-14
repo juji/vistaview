@@ -14,6 +14,9 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  esbuild: {
+    drop: ['console', 'debugger'], // Remove console.log and debugger statements
+  },
   build: isUMD
     ? {
         lib: {
@@ -24,6 +27,7 @@ export default defineConfig({
         },
         cssCodeSplit: false,
         emptyOutDir: false,
+        minify: 'esbuild',
       }
     : {
         lib: {
@@ -38,6 +42,7 @@ export default defineConfig({
           formats: ['es', 'cjs'],
         },
         cssCodeSplit: false,
+        minify: 'esbuild',
         rollupOptions: {
           external: ['react', 'react/jsx-runtime', 'vue', 'svelte', 'solid-js'],
           output: {
