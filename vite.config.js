@@ -27,7 +27,6 @@ export default defineConfig({
         },
         cssCodeSplit: false,
         emptyOutDir: false,
-        minify: 'esbuild',
       }
     : {
         lib: {
@@ -42,7 +41,6 @@ export default defineConfig({
           formats: ['es'],
         },
         cssCodeSplit: false,
-        minify: 'esbuild',
         rollupOptions: {
           external: ['react', 'react/jsx-runtime', 'vue', 'svelte', 'solid-js'],
           output: {
