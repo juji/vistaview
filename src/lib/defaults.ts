@@ -1,11 +1,7 @@
-import type {
-  VistaViewCloseFunction,
-  VistaViewSetupFunction,
-  VistaViewTransitionFunction,
-} from './types';
+import type { VistaCloseFn, VistaSetupFn, VistaTransitionFn } from './types';
 
 import type { VistaView } from './vista-view';
-import { VistaViewTransitionAbortedError } from './vista-view';
+import { VistaTransitionAbortErr } from './vista-view';
 
 // pointer evvents
 let onPointerDown: ((e: PointerEvent) => void) | null = null;
@@ -188,7 +184,7 @@ export const defaultInit = (_vistaView: VistaView) => {
 // default setup
 // sets up the initial positions and styles of the images
 // when the viewer is opened or when navigating between images
-export const defaultSetup: VistaViewSetupFunction = ({
+export const defaultSetup: VistaSetupFn = ({
   htmlElements: { to },
   index: { to: indexTo },
   vistaView,
@@ -214,7 +210,7 @@ export const defaultSetup: VistaViewSetupFunction = ({
 
 // default transition
 // performs a simple slide transition between images
-export const defaultTransition: VistaViewTransitionFunction = async (
+export const defaultTransition: VistaTransitionFn = async (
   {
     htmlElements: { from: htmlFrom },
     via: { next, prev },
@@ -245,16 +241,16 @@ export const defaultTransition: VistaViewTransitionFunction = async (
     let returned = false;
 
     if (abortSignal.aborted) {
-      j(new VistaViewTransitionAbortedError('Transition aborted'));
+      j(new VistaTransitionAbortErr('Transition aborted'));
       return;
     }
 
     const onTransitionEnd = (e: Event) => {
-      if (returned) return j(new VistaViewTransitionAbortedError('Transition aborted'));
+      if (returned) return j(new VistaTransitionAbortErr('Transition aborted'));
 
       if (abortSignal.aborted) {
         if (!returned) returned = true;
-        return j(new VistaViewTransitionAbortedError('Transition aborted'));
+        return j(new VistaTransitionAbortErr('Transition aborted'));
       }
 
       e.currentTarget!.removeEventListener('transitionend', onTransitionEnd);
@@ -276,7 +272,7 @@ export const defaultTransition: VistaViewTransitionFunction = async (
 // default close
 // resets the styles of the images when the viewer is closed
 // and removes pointer event listeners
-export const defaultClose: VistaViewCloseFunction = (vistaView) => {
+export const defaultClose: VistaCloseFn = (vistaView) => {
   if (vistaView.elements instanceof NodeList) {
     vistaView.elements.forEach((el) => (el.style.opacity = '1'));
   }

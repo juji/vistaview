@@ -1,6 +1,6 @@
 import { clamp, limitPrecision } from './utils';
 
-export type VistaCurrentImage = {
+export type VistaCurrImg = {
   scale: number;
   stop: boolean;
   translate: { x: number; y: number };
@@ -27,7 +27,7 @@ export type VistaCurrentImage = {
 };
 
 export class VistaImageState {
-  private current: VistaCurrentImage = {
+  private current: VistaCurrImg = {
     image: null,
     scale: 1,
     stop: false,
@@ -86,7 +86,7 @@ export class VistaImageState {
     return this.current.stop;
   }
 
-  getCurrentState(): VistaCurrentImage {
+  getCurrentState(): VistaCurrImg {
     const { image, ...rest } = this.current;
     return {
       image,
@@ -259,7 +259,7 @@ export class VistaImageState {
   }
 
   private swapDimensions(
-    onStopAmination: (c: VistaCurrentImage) => void = (c) => {
+    onStopAmination: (c: VistaCurrImg) => void = (c) => {
       c.image!.classList.add('vistaview-image--touch-zoom');
     }
   ) {
@@ -357,7 +357,7 @@ export class VistaImageState {
   }
 
   async stabilizeProps(
-    onAnimateTransform: (c: VistaCurrentImage) => void = (c) => {
+    onAnimateTransform: (c: VistaCurrImg) => void = (c) => {
       // make sure to animate transform
       c.image!.classList.remove('vistaview-image--touch-zoom');
     }
@@ -394,7 +394,7 @@ export class VistaImageState {
     },
   }: {
     onClose?: () => void;
-    onAnimateZoomOut?: (c: VistaCurrentImage) => void;
+    onAnimateZoomOut?: (c: VistaCurrImg) => void;
   }) {
     const c = this.current;
     if (!c.image) throw new Error('No current image to close');

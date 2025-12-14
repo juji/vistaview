@@ -1,13 +1,8 @@
 import { onDestroy } from 'svelte';
 import { vistaView } from './vistaview';
-import type {
-  VistaViewParams,
-  VistaViewInterface,
-  VistaViewImage,
-  VistaViewOptions,
-} from './vistaview';
+import type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaViewImage, VistaViewOptions };
+export type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt };
 
 type UseVistaViewReturn = {
   open: (startIndex?: number) => void;

@@ -1,7 +1,7 @@
 /// <reference types="trusted-types" />
-import type { VistaViewElmProps } from './types';
+import type { VistaElmProps } from './types';
 
-export function getElmProperties(elm: HTMLElement): VistaViewElmProps {
+export function getElmProperties(elm: HTMLElement): VistaElmProps {
   const s = getComputedStyle(elm);
   const pos = elm.getBoundingClientRect();
   return {

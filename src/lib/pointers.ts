@@ -1,27 +1,27 @@
-export type VistaViewPointer = {
+export type VistaPointer = {
   x: number;
   y: number;
   id: number | string;
 };
 
-export type VistaViewPointerEvent = 'down' | 'move' | 'up' | 'cancel';
-export type VistaViewPointerListenerArgs = {
-  event: VistaViewPointerEvent;
-  pointer: VistaViewPointer | undefined;
+export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
+export type VistaPointerListenerArgs = {
+  event: VistaPointerEvent;
+  pointer: VistaPointer | undefined;
   domEvent: PointerEvent;
-  pointers: VistaViewPointer[];
+  pointers: VistaPointer[];
   lastPointerLen: number;
 };
 
-export type VistaViewPointerListener = (args: VistaViewPointerListenerArgs) => void;
+export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
 
-export class VistaViewPointers {
-  private pointers: VistaViewPointer[] = [];
+export class VistaPointers {
+  private pointers: VistaPointer[] = [];
   private elm: HTMLElement;
-  private listeners: VistaViewPointerListener[] = [];
+  private listeners: VistaPointerListener[] = [];
   private lastLen: number = 0;
 
-  constructor(elm: HTMLElement, listeners?: VistaViewPointerListener[], startListeners = true) {
+  constructor(elm: HTMLElement, listeners?: VistaPointerListener[], startListeners = true) {
     this.elm = elm;
     if (listeners) {
       this.listeners = listeners;
@@ -117,15 +117,15 @@ export class VistaViewPointers {
     this.pointers = [];
   }
 
-  addEventListener(listener: VistaViewPointerListener) {
+  addEventListener(listener: VistaPointerListener) {
     this.listeners.push(listener);
   }
 
-  removeEventListener(listener: VistaViewPointerListener) {
+  removeEventListener(listener: VistaPointerListener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
-  getPointerDistance(p1: VistaViewPointer, p2: VistaViewPointer): number {
+  getPointerDistance(p1: VistaPointer, p2: VistaPointer): number {
     const dx = p1.x - p2.x;
     const dy = p1.y - p2.y;
     return Math.sqrt(dx * dx + dy * dy);

@@ -107,7 +107,7 @@ import { vistaView, vistaViewDownload } from 'vistaview'
 
 vistaView({
   // Required: specify elements (string selector, NodeList, or array)
-  elements: string | NodeList | VistaViewImage[],
+  elements: string | NodeList | VistaImg[],
 
   // Optional configuration
   animationDurationBase: 333, // Base animation duration in ms (default: 333)
@@ -200,16 +200,16 @@ import {
 
 import type {
   VistaViewParams, // Full options including `elements`
-  VistaViewOptions, // Base options (without `elements`)
-  VistaViewImage, // Image object: { src, alt?, thumb? }
-  VistaViewImageIndexed, // Image with index and DOM references
+  VistaOpt, // Base options (without `elements`)
+  VistaImg, // Image object: { src, alt?, thumb? }
+  VistaImageIdx, // Image with index and DOM references
   VistaViewInterface, // Return type from vistaView()
   VistaViewData, // Data passed to events/functions
-  VistaViewSetupFunction, // Type for setupFunction
-  VistaViewTransitionFunction, // Type for transitionFunction
-  VistaViewCloseFunction, // Type for closeFunction
+  VistaSetupFn, // Type for setupFunction
+  VistaTransitionFn, // Type for transitionFunction
+  VistaCloseFn, // Type for closeFunction
   VistaViewInitFunction, // Type for initFunction
-  VistaViewCustomControl, // Custom control definition
+  VistaCustomCtrl, // Custom control definition
 } from 'vistaview';
 ```
 

@@ -1,13 +1,8 @@
 import { onCleanup, onMount, type JSX } from 'solid-js';
 import { vistaView } from './vistaview';
-import type {
-  VistaViewParams,
-  VistaViewInterface,
-  VistaViewImage,
-  VistaViewOptions,
-} from './vistaview';
+import type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaViewImage, VistaViewOptions };
+export type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt };
 
 type UseVistaViewReturn = {
   open: (startIndex?: number) => void;
@@ -35,7 +30,7 @@ export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
   };
 }
 
-type VistaViewProps = Omit<VistaViewOptions, 'elements'> & {
+type VistaViewProps = Omit<VistaOpt, 'elements'> & {
   children: JSX.Element;
   class?: string;
   selector: string;

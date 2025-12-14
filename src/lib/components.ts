@@ -1,9 +1,4 @@
-import type {
-  VistaViewDefaultControls,
-  VistaViewCustomControl,
-  VistaViewImageIndexed,
-  VistaViewOptions,
-} from './types';
+import type { VistaDefaultCtrl, VistaCustomCtrl, VistaImageIdx, VistaOpt } from './types';
 import { createTrustedHtml } from './utils';
 
 // Optimized SVG icons - common attributes applied via CSS
@@ -14,11 +9,11 @@ const zoomOutIcon = `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><li
 const closeIcon = `<svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
 const downloadIcon = `<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`;
 
-export function vistaViewDownload(): VistaViewCustomControl {
+export function vistaViewDownload(): VistaCustomCtrl {
   return {
     name: 'download',
     icon: downloadIcon,
-    onClick: async (image: VistaViewImageIndexed) => {
+    onClick: async (image: VistaImageIdx) => {
       const response = await fetch(image.src);
       const blob = await response.blob();
       const finalUrl = response.url; // This is the redirected URL
@@ -32,7 +27,7 @@ export function vistaViewDownload(): VistaViewCustomControl {
   };
 }
 
-function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCustomControl): string {
+function convertControlToHtml(control: VistaDefaultCtrl | VistaCustomCtrl): string {
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
@@ -52,7 +47,7 @@ function convertControlToHtml(control: VistaViewDefaultControls | VistaViewCusto
   return `<button data-vistaview-custom-control="${control.name}">${control.icon}</button>`;
 }
 
-export function vistaViewItem(el: VistaViewImageIndexed, positionalIndex?: number): HTMLDivElement {
+export function vistaViewItem(el: VistaImageIdx, positionalIndex?: number): HTMLDivElement {
   const comp = el.imageElm ? getComputedStyle(el.imageElm) : null;
   const fit = comp?.objectFit || '';
   const nw = el.imageElm?.naturalWidth || '';
@@ -81,10 +76,10 @@ export function vistaViewComponent({
   controls,
   isReducedMotion,
 }: {
-  controls: VistaViewOptions['controls'];
+  controls: VistaOpt['controls'];
   isReducedMotion: boolean;
 }): DocumentFragment {
-  const mapCtrl = (arr?: (VistaViewDefaultControls | VistaViewCustomControl)[]) =>
+  const mapCtrl = (arr?: (VistaDefaultCtrl | VistaCustomCtrl)[]) =>
     arr ? arr.map(convertControlToHtml).join('') : '';
 
   const html = createTrustedHtml(

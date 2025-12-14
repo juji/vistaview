@@ -1,6 +1,6 @@
 import type { VistaView } from './vista-view';
 
-export type VistaViewElmProps = {
+export type VistaElmProps = {
   objectFit: string;
   borderRadius: string;
   objectPosition: string;
@@ -13,19 +13,19 @@ export type VistaViewElmProps = {
   naturalHeight?: number;
 };
 
-export type VistaViewImage = {
+export type VistaImg = {
   src: string;
   alt?: string;
   thumb?: string;
 };
 
-export type VistaViewImageIndexed = {
+export type VistaImageIdx = {
   index: number;
   imageElm?: HTMLImageElement;
   anchorElm?: HTMLAnchorElement;
-} & VistaViewImage;
+} & VistaImg;
 
-export type VistaViewOptions = {
+export type VistaOpt = {
   animationDurationBase?: number;
   initialZIndex?: number;
   detectReducedMotion?: boolean;
@@ -37,12 +37,12 @@ export type VistaViewOptions = {
   arrowOnSmallScreens?: boolean;
 
   controls?: {
-    topLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
-    topRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
-    topCenter?: (VistaViewDefaultControls | VistaViewCustomControl)[];
-    bottomCenter?: (VistaViewDefaultControls | VistaViewCustomControl)[];
-    bottomLeft?: (VistaViewDefaultControls | VistaViewCustomControl)[];
-    bottomRight?: (VistaViewDefaultControls | VistaViewCustomControl)[];
+    topLeft?: (VistaDefaultCtrl | VistaCustomCtrl)[];
+    topRight?: (VistaDefaultCtrl | VistaCustomCtrl)[];
+    topCenter?: (VistaDefaultCtrl | VistaCustomCtrl)[];
+    bottomCenter?: (VistaDefaultCtrl | VistaCustomCtrl)[];
+    bottomLeft?: (VistaDefaultCtrl | VistaCustomCtrl)[];
+    bottomRight?: (VistaDefaultCtrl | VistaCustomCtrl)[];
   };
 
   // events
@@ -51,38 +51,30 @@ export type VistaViewOptions = {
   onClose?: (params: VistaViewData) => void;
 
   // uesr defined functions
-  transitionFunction?: VistaViewTransitionFunction;
-  setupFunction?: VistaViewSetupFunction;
-  closeFunction?: VistaViewCloseFunction;
+  transitionFunction?: VistaTransitionFn;
+  setupFunction?: VistaSetupFn;
+  closeFunction?: VistaCloseFn;
   initFunction?: VistaViewInitFunction;
 };
 
-export type VistaViewDefaultControls =
-  | 'indexDisplay'
-  | 'zoomIn'
-  | 'zoomOut'
-  | 'close'
-  | 'description';
+export type VistaDefaultCtrl = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'close' | 'description';
 
-export type VistaViewCustomControl = {
+export type VistaCustomCtrl = {
   name: string;
   icon: string;
-  onClick: (v: VistaViewImageIndexed) => void | Promise<void>;
+  onClick: (v: VistaImageIdx) => void | Promise<void>;
 };
 
 export type VistaViewData = {
   htmlElements: { from: HTMLElement[] | null; to: HTMLElement[] | null };
-  images: { from: VistaViewImageIndexed[] | null; to: VistaViewImageIndexed[] | null };
+  images: { from: VistaImageIdx[] | null; to: VistaImageIdx[] | null };
   index: { from: number | null; to: number | null };
   via: { next: boolean; prev: boolean };
   vistaView: VistaView;
 };
 
-export type VistaViewTransitionFunction = (
-  params: VistaViewData,
-  abortSignal: AbortSignal
-) => Promise<void>;
+export type VistaTransitionFn = (params: VistaViewData, abortSignal: AbortSignal) => Promise<void>;
 
-export type VistaViewSetupFunction = (params: VistaViewData) => void;
-export type VistaViewCloseFunction = (vistaView: VistaView) => void;
+export type VistaSetupFn = (params: VistaViewData) => void;
+export type VistaCloseFn = (vistaView: VistaView) => void;
 export type VistaViewInitFunction = (vistaView: VistaView) => void;

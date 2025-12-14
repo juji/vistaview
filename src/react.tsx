@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { vistaView } from './vistaview';
-import type { VistaViewParams, VistaViewInterface, VistaViewImage } from './vistaview';
+import type { VistaViewParams, VistaViewInterface, VistaImg } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaViewImage };
+export type { VistaViewParams, VistaViewInterface, VistaImg };
 
 type UseVistaViewReturn = {
   open: (startIndex?: number) => void;

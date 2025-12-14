@@ -13,24 +13,24 @@ import {
 import { Throttle } from './throttle';
 
 import type {
-  VistaViewCloseFunction,
-  VistaViewSetupFunction,
-  VistaViewTransitionFunction,
-  VistaViewCustomControl,
-  VistaViewImage,
-  VistaViewImageIndexed,
-  VistaViewOptions,
+  VistaCloseFn,
+  VistaSetupFn,
+  VistaTransitionFn,
+  VistaCustomCtrl,
+  VistaImg,
+  VistaImageIdx,
+  VistaOpt,
   VistaViewInitFunction,
 } from './types';
 
 import { defaultSetup, defaultTransition, defaultClose, defaultInit } from './defaults';
-import { VistaViewPointers, type VistaViewPointerListenerArgs } from './pointers';
-import { VistaImageState } from './vista-image-state';
+import { VistaPointers, type VistaPointerListenerArgs } from './pointers';
+import { VistaImageState } from './image-state';
 
-export class VistaViewTransitionAbortedError extends Error {
+export class VistaTransitionAbortErr extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'VistaViewTransitionAbortedError';
+    this.name = 'VistaTransitionAbortErr';
   }
 }
 
@@ -49,7 +49,7 @@ export const DefaultOptions = {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],
     bottomCenter: ['description'],
-  } as VistaViewOptions['controls'],
+  } as VistaOpt['controls'],
 };
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
@@ -57,8 +57,8 @@ export const GlobalVistaState: { somethingOpened: VistaView | null } = {
 };
 
 export class VistaView {
-  options: VistaViewOptions;
-  elements: NodeListOf<HTMLElement> | VistaViewImage[];
+  options: VistaOpt;
+  elements: NodeListOf<HTMLElement> | VistaImg[];
   isReducedMotion: boolean;
   currentIndex = {
     _value: null as number | null,
@@ -85,8 +85,8 @@ export class VistaView {
 
   rootElm: HTMLElement | null = null;
   imageContainerElm: HTMLElement | null = null;
-  customControls: { [key: string]: VistaViewCustomControl } = {};
-  currentImages: VistaViewImageIndexed[] | null = null;
+  customControls: { [key: string]: VistaCustomCtrl } = {};
+  currentImages: VistaImageIdx[] | null = null;
   currentItems: HTMLDivElement[] | null = null;
   isZoomed: HTMLImageElement | false = false;
 
@@ -104,24 +104,24 @@ export class VistaView {
   private onResizeHandler: (() => void) | null = null;
   private onKeyDown: ((e: KeyboardEvent) => void) | null = null;
 
-  private userSetup: VistaViewSetupFunction = defaultSetup;
-  private userTransition: VistaViewTransitionFunction = defaultTransition;
-  private userClose: VistaViewCloseFunction = defaultClose;
+  private userSetup: VistaSetupFn = defaultSetup;
+  private userTransition: VistaTransitionFn = defaultTransition;
+  private userClose: VistaCloseFn = defaultClose;
   private userInit: VistaViewInitFunction = defaultInit;
 
   // private onZoomedPointerDown: ((e: PointerEvent) => void) | null = null;
   // private onZoomedPointerMove: ((e: PointerEvent) => void) | null = null;
   // private onZoomedPointerUp: ((e: PointerEvent) => void) | null = null;
-  private onZoomedPointerListener: null | ((e: VistaViewPointerListenerArgs) => void) = null;
+  private onZoomedPointerListener: null | ((e: VistaPointerListenerArgs) => void) = null;
 
   private transitionAbortControllers: { [key: string]: AbortController } = {};
-  private pointers: VistaViewPointers | null = null;
+  private pointers: VistaPointers | null = null;
 
   private onImageSettledFn: ((im: HTMLImageElement) => void) | null = null;
 
   private imgStabilized: Promise<void> | null = null;
 
-  constructor(elements: NodeListOf<HTMLElement> | VistaViewImage[], options?: VistaViewOptions) {
+  constructor(elements: NodeListOf<HTMLElement> | VistaImg[], options?: VistaOpt) {
     this.elements = elements;
     this.currentIndex._vistaView = this;
 
@@ -272,7 +272,7 @@ export class VistaView {
     try {
       await this.userTransition(transitionParams, this.transitionAbortControllers[abortKey].signal);
     } catch (error) {
-      if (!(error instanceof VistaViewTransitionAbortedError)) {
+      if (!(error instanceof VistaTransitionAbortErr)) {
         console.warn(error);
       }
     }
@@ -437,7 +437,7 @@ export class VistaView {
     // TODO, i don't think we need to do anything here for now
   }
 
-  private getImages(activeIndexes: number[]): VistaViewImageIndexed[] {
+  private getImages(activeIndexes: number[]): VistaImageIdx[] {
     return activeIndexes.map((index, i) => {
       const elm = this.elements[index];
       if (elm instanceof HTMLElement) {
@@ -707,7 +707,7 @@ export class VistaView {
       time: 0,
     };
 
-    return async (e: VistaViewPointerListenerArgs) => {
+    return async (e: VistaPointerListenerArgs) => {
       if (!this.pointers) return;
       if (!this.rootElm) return;
 
@@ -903,9 +903,7 @@ export class VistaView {
     this.rootElm.querySelectorAll(`button[data-vistaview-custom-control]`).forEach((btn) => {
       (btn as HTMLButtonElement).addEventListener('click', (e: MouseEvent) => {
         const control =
-          this.customControls[
-            (e.currentTarget as HTMLButtonElement).dataset.vistaviewCustomControl!
-          ];
+          this.customControls[(e.currentTarget as HTMLButtonElement).dataset.VistaCustomCtrl!];
         const currentImage = this.currentImages!.find(
           (img) => img.index === this.currentIndex.value
         );
@@ -966,10 +964,9 @@ export class VistaView {
     this.setIndexDisplay();
 
     // set pointer events
-    this.pointers = new VistaViewPointers(
-      this.rootElm.querySelector('.vistaview-image-container')!,
-      [this.setPointerListener()]
-    );
+    this.pointers = new VistaPointers(this.rootElm.querySelector('.vistaview-image-container')!, [
+      this.setPointerListener(),
+    ]);
 
     this.userInit(this);
     this.options.onOpen?.(setupParams);

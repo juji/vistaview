@@ -1,4 +1,4 @@
-import { VistaView, DefaultOptions, VistaViewTransitionAbortedError } from './lib/vista-view';
+import { VistaView, DefaultOptions, VistaTransitionAbortErr } from './lib/vista-view';
 import { vistaViewDownload } from './lib/components';
 
 import {
@@ -10,12 +10,12 @@ import {
   defaultTransition,
 } from './lib/defaults';
 
-import type { VistaViewImage, VistaViewOptions } from './lib/types';
+import type { VistaImg, VistaOpt } from './lib/types';
 
 import './style.css';
 
 export type * from './lib/types';
-export { DefaultOptions, vistaViewDownload, VistaViewTransitionAbortedError };
+export { DefaultOptions, vistaViewDownload, VistaTransitionAbortErr };
 export {
   setTouchActions,
   removeTouchActions,
@@ -26,8 +26,8 @@ export {
 };
 
 export type VistaViewParams = {
-  elements: string | NodeListOf<HTMLElement> | VistaViewImage[];
-} & VistaViewOptions;
+  elements: string | NodeListOf<HTMLElement> | VistaImg[];
+} & VistaOpt;
 
 export type VistaViewInterface = {
   open: (startIndex?: number) => void;
@@ -40,8 +40,8 @@ export type VistaViewInterface = {
 };
 
 function checkElementsCorrectness(
-  elements: string | NodeListOf<HTMLElement> | VistaViewImage[]
-): string | (NodeListOf<HTMLElement> | VistaViewImage[]) {
+  elements: string | NodeListOf<HTMLElement> | VistaImg[]
+): string | (NodeListOf<HTMLElement> | VistaImg[]) {
   let els: NodeListOf<HTMLElement> | null = null;
   // check for correctness
   if (typeof elements === 'string') {
@@ -60,7 +60,7 @@ function checkElementsCorrectness(
       }
     }
   } else {
-    const images = elements as VistaViewImage[];
+    const images = elements as VistaImg[];
     for (let i = 0; i < images.length; i++) {
       const el = images[i];
       if (!el.src) {
@@ -69,7 +69,7 @@ function checkElementsCorrectness(
     }
   }
 
-  return els || (elements as VistaViewImage[]);
+  return els || (elements as VistaImg[]);
 }
 
 export function vistaView({ elements, ...opts }: VistaViewParams): VistaViewInterface | null {
