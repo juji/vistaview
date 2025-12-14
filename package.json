@@ -19,34 +19,29 @@
     "responsive"
   ],
   "type": "module",
-  "main": "./dist/vistaview.cjs",
+  "main": "./dist/vistaview.js",
   "module": "./dist/vistaview.js",
   "types": "./dist/vistaview.d.ts",
   "exports": {
     ".": {
       "types": "./dist/vistaview.d.ts",
-      "import": "./dist/vistaview.js",
-      "require": "./dist/vistaview.cjs"
+      "import": "./dist/vistaview.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
-      "import": "./dist/react.js",
-      "require": "./dist/react.cjs"
+      "import": "./dist/react.js"
     },
     "./vue": {
       "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.js",
-      "require": "./dist/vue.cjs"
+      "import": "./dist/vue.js"
     },
     "./svelte": {
       "types": "./dist/svelte.d.ts",
-      "import": "./dist/svelte.js",
-      "require": "./dist/svelte.cjs"
+      "import": "./dist/svelte.js"
     },
     "./solid": {
       "types": "./dist/solid.d.ts",
-      "import": "./dist/solid.js",
-      "require": "./dist/solid.cjs"
+      "import": "./dist/solid.js"
     },
     "./style.css": "./dist/vistaview.css"
   },

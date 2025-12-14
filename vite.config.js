@@ -39,7 +39,7 @@ export default defineConfig({
             solid: resolve(__dirname, 'src/solid.ts'),
           },
           name: 'VistaView',
-          formats: ['es', 'cjs'],
+          formats: ['es'],
         },
         cssCodeSplit: false,
         minify: 'esbuild',
