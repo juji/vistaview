@@ -116,6 +116,7 @@ export function vistaViewComponent({
   const html = createTrustedHtml(
     `<div class="vvw-root" id="vvw-root">
     <div class="vvw-container">
+      <div class="vvw-bg"></div>
       <div class="vvw-image-container"></div>
       <div class="vvw-top-bar vvw-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
       <div class="vvw-bottom-bar vvw-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>

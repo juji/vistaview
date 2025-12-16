@@ -342,6 +342,12 @@ export class VistaView {
     this.qs('.vvw-prev>button')?.addEventListener('click', () => this.prev());
     this.qs('.vvw-next>button')?.addEventListener('click', () => this.next());
 
+    // background click to close
+    this.qs('.vvw-bg')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.close();
+    });
+
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
     [
@@ -403,7 +409,7 @@ export class VistaView {
       return;
     }
 
-    if (animate && !this.isReducedMotion) {
+    if (animate) {
       await new Promise((resolve) => {
         const target = 3;
         let current = 0;

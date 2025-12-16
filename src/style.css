@@ -78,14 +78,12 @@
   height: 100vh;
   overflow: hidden;
 
-  &::before {
-    content: '';
+  .vvw-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
     z-index: 0;
     background-color: rgb(from var(--vvw-bg-color) r g b / var(--vvw-bg-opacity));
     backdrop-filter: blur(var(--vvw-bg-blur));
@@ -99,6 +97,7 @@
   height: 100vh;
   overflow: hidden;
   isolation: isolate;
+  pointer-events: none;
 }
 
 .vvw-item {
@@ -109,6 +108,7 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  pointer-events: none;
 
   img {
     position: absolute;
@@ -155,6 +155,9 @@
   }
 
   .vvw-img-hi {
+    pointer-events: auto;
+    cursor: zoom-in;
+
     /* outline: 5px solid red; */
     --vvw-init-radius: 0px;
     --vvw-init-w: 0px;
@@ -293,7 +296,7 @@
   z-index: var(--vvw-dest-z);
 
   .vvw-container {
-    &::before {
+    .vvw-bg {
       opacity: 1;
     }
   }
@@ -379,7 +382,7 @@
   }
 
   .vvw-container {
-    &::before {
+    .vvw-bg {
       transition: opacity calc(var(--vvw-anim-dur) * 1ms) calc(var(--vvw-anim-dur) * 1ms) ease;
       opacity: 0;
     }
