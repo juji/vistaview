@@ -74,7 +74,8 @@ export type VistaData = {
 
 export type VistaTransitionFn = (
   params: VistaData,
-  abortSignal: AbortSignal
+  abortSignal: AbortSignal,
+  rapid?: boolean
 ) => Promise<void | (() => void)>;
 export type VistaSetupFn = (params: VistaData) => void;
 export type VistaCloseFn = (vistaView: VistaView) => void;

@@ -92,12 +92,11 @@ export class VistaView {
     }
   }
 
+  private rapidLimit = 700;
+  private lastSwapTime = 0;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
-
-    // display index first
-    const setDesc = this.displayActiveIndex();
 
     const { htmls, images } = this.getChildElements(allImage, index);
     const imgs = this.imageContainer!;
@@ -113,9 +112,14 @@ export class VistaView {
 
     this.setupFunction(vistaData);
     this.currentChildren = { htmls, images };
+    this.displayActiveIndex();
 
     const abortControllerSignal = this.abortController!.signal;
-    const cleanup = await this.transitionFunction(vistaData, abortControllerSignal);
+
+    const now = performance.now();
+    const rapid = now - this.lastSwapTime < this.rapidLimit;
+    const cleanup = await this.transitionFunction(vistaData, abortControllerSignal, rapid);
+    this.lastSwapTime = now;
 
     // get info about old center image
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
@@ -155,7 +159,6 @@ export class VistaView {
     });
 
     this.waitForImagesToLoad();
-    setDesc();
     this.options.onImageView && this.options.onImageView(vistaData);
   }
 
@@ -212,7 +215,7 @@ export class VistaView {
   private zoomIn(): void {}
   private zoomOut(): void {}
 
-  private displayActiveIndex(): () => void {
+  private displayActiveIndex(): void {
     const cid = this.currentIndex;
 
     // set opacity in element
@@ -230,17 +233,15 @@ export class VistaView {
       indexDisplay.textContent = `${cid + 1} / ${this.elements.length}`;
     }
 
-    return () => {
-      const description = this.qs<HTMLDivElement>('.vvw-desc');
-      if (description) {
-        const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
-        if (currentImg && currentImg.alt) {
-          description.textContent = currentImg.alt;
-        } else {
-          description.textContent = '';
-        }
+    const description = this.qs<HTMLDivElement>('.vvw-desc');
+    if (description) {
+      const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
+      if (currentImg && currentImg.alt) {
+        description.textContent = currentImg.alt;
+      } else {
+        description.textContent = '';
       }
-    };
+    }
   }
 
   private waitForImagesToLoad(onImgLoaded?: () => void, signal?: AbortSignal): void {
@@ -467,8 +468,7 @@ export class VistaView {
       );
 
       this.root!.classList.add('vvw--active');
-      const setDesc = this.displayActiveIndex();
-      setDesc();
+      this.displayActiveIndex();
       this.options.onOpen && this.options.onOpen(this);
       this.options.onImageView && this.options.onImageView(vistaData);
     });
