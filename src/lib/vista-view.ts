@@ -282,6 +282,31 @@ export class VistaView {
     });
   }
 
+  private onKeyDown = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        this.prev();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        this.next();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        this.zoomIn();
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        this.zoomOut();
+        break;
+      case 'Escape':
+        e.preventDefault();
+        this.close();
+        break;
+    }
+  };
+
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -347,6 +372,9 @@ export class VistaView {
       e.preventDefault();
       this.close();
     });
+
+    // keyboard events
+    window.addEventListener('keydown', this.onKeyDown);
 
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
@@ -439,6 +467,7 @@ export class VistaView {
       }
     }
 
+    window.removeEventListener('keydown', this.onKeyDown);
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
