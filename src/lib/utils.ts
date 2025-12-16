@@ -152,8 +152,11 @@ export function setImageStyles(
     left,
   } = getElmProps(el);
 
-  const translateLeft = left - window.innerWidth / 2 + w / 2;
-  const translateTop = top - window.innerHeight / 2 + h / 2;
+  // Calculate translation values, clamped within viewport + image size
+  const translateLeft =
+    Math.min(Math.max(left, -w), window.innerWidth + w) - window.innerWidth / 2 + w / 2;
+  const translateTop =
+    Math.min(Math.max(top, -h), window.innerHeight + h) - window.innerHeight / 2 + h / 2;
 
   const ls = lo.style;
   ls.width = `${w}px`;
