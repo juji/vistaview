@@ -1,19 +1,8 @@
 import { onCleanup, onMount, type JSX } from 'solid-js';
 import { vistaView } from './vistaview';
-import type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt } from './vistaview';
+import type { VistaParams, VistaInterface, VistaOpt } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaImg, VistaOpt };
-
-type UseVistaViewReturn = {
-  open: (startIndex?: number) => void;
-  close: () => void;
-  next: () => void;
-  prev: () => void;
-  getCurrentIndex: () => number;
-  view: (index: number) => void;
-};
-
-export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
+export function useVistaView(options: VistaParams): VistaInterface {
   const instance = vistaView(options);
 
   onCleanup(() => {
@@ -22,11 +11,12 @@ export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
 
   return {
     open: (i = 0) => instance?.open(i),
-    close: () => instance?.close(),
+    close: () => instance?.close() ?? Promise.resolve(),
     next: () => instance?.next(),
     prev: () => instance?.prev(),
     getCurrentIndex: () => instance?.getCurrentIndex() ?? -1,
     view: (i: number) => instance?.view(i),
+    destroy: () => instance?.destroy(),
   };
 }
 
@@ -39,7 +29,7 @@ type VistaViewProps = Omit<VistaOpt, 'elements'> & {
 
 export function VistaView(props: VistaViewProps): JSX.Element {
   let container: HTMLDivElement | undefined;
-  let instance: VistaViewInterface | null = null;
+  let instance: VistaInterface | null = null;
 
   onMount(() => {
     if (!container) return;

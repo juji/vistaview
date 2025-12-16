@@ -1,11 +1,9 @@
 import { onMounted, onUnmounted, ref, defineComponent, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
-import type { VistaViewParams, VistaViewInterface, VistaImg } from './vistaview';
+import type { VistaParams, VistaInterface } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaImg };
-
-export function useVistaView(options: VistaViewParams) {
-  let instance: VistaViewInterface | null = null;
+export function useVistaView(options: VistaParams): VistaInterface {
+  let instance: VistaInterface | null = null;
 
   onMounted(() => {
     instance = vistaView(options);
@@ -18,11 +16,12 @@ export function useVistaView(options: VistaViewParams) {
 
   return {
     open: (i?: number) => instance?.open(i),
-    close: () => instance?.close(),
+    close: () => instance?.close() ?? Promise.resolve(),
     next: () => instance?.next(),
     prev: () => instance?.prev(),
     getCurrentIndex: () => instance?.getCurrentIndex() ?? -1,
     view: (i: number) => instance?.view(i),
+    destroy: () => instance?.destroy(),
   };
 }
 
@@ -37,7 +36,7 @@ export const VistaView = defineComponent({
   },
   setup(props, { slots, attrs }) {
     const container = ref<HTMLElement | null>(null);
-    let instance: VistaViewInterface | null = null;
+    let instance: VistaInterface | null = null;
 
     onMounted(() => {
       if (!container.value) return;
@@ -45,7 +44,7 @@ export const VistaView = defineComponent({
       instance = vistaView({
         ...attrs,
         elements: container.value.querySelectorAll(props.selector),
-      } as VistaViewParams);
+      } as VistaParams);
     });
 
     onUnmounted(() => {

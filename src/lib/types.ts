@@ -13,22 +13,9 @@ export type VistaElmProps = {
   naturalHeight?: number;
 };
 
-export type VistaImg = {
-  src: string;
-  alt?: string;
-  thumb?: string;
-};
-
-export type VistaImageIdx = {
-  index: number;
-  imageElm?: HTMLImageElement;
-  anchorElm?: HTMLAnchorElement;
-} & VistaImg;
-
 export type VistaOpt = {
   animationDurationBase?: number;
   initialZIndex?: number;
-  detectReducedMotion?: boolean;
   zoomStep?: number;
   maxZoomLevel?: number;
   touchSpeedThreshold?: number;
@@ -46,35 +33,63 @@ export type VistaOpt = {
   };
 
   // events
-  onImageView?: (params: VistaViewData) => void;
-  onOpen?: (params: VistaViewData) => void;
-  onClose?: (params: VistaViewData) => void;
+  onImageView?: (params: VistaData) => void;
+  onOpen?: (params: VistaData) => void;
+  onClose?: (params: VistaData) => void;
 
   // uesr defined functions
   transitionFunction?: VistaTransitionFn;
   setupFunction?: VistaSetupFn;
   closeFunction?: VistaCloseFn;
-  initFunction?: VistaViewInitFunction;
+  initFunction?: VistaInitFn;
 };
 
 export type VistaDefaultCtrl = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'close' | 'description';
 
+export type VistaImg = {
+  src: string;
+  alt?: string;
+  thumb?: string;
+};
+
+export type VistaImgIdx = {
+  index: number;
+  imageElm?: HTMLImageElement;
+  anchorElm?: HTMLAnchorElement;
+} & VistaImg;
+
 export type VistaCustomCtrl = {
   name: string;
   icon: string;
-  onClick: (v: VistaImageIdx) => void | Promise<void>;
+  onClick: (vistaImageIndex: VistaImgIdx, vistaView: VistaView) => void | Promise<void>;
 };
 
-export type VistaViewData = {
+export type VistaData = {
   htmlElements: { from: HTMLElement[] | null; to: HTMLElement[] | null };
-  images: { from: VistaImageIdx[] | null; to: VistaImageIdx[] | null };
+  images: { from: VistaImgIdx[] | null; to: VistaImgIdx[] | null };
   index: { from: number | null; to: number | null };
   via: { next: boolean; prev: boolean };
   vistaView: VistaView;
 };
 
-export type VistaTransitionFn = (params: VistaViewData, abortSignal: AbortSignal) => Promise<void>;
-
-export type VistaSetupFn = (params: VistaViewData) => void;
+export type VistaTransitionFn = (
+  params: VistaData,
+  abortSignal: AbortSignal
+) => Promise<void | (() => void)>;
+export type VistaSetupFn = (params: VistaData) => void;
 export type VistaCloseFn = (vistaView: VistaView) => void;
-export type VistaViewInitFunction = (vistaView: VistaView) => void;
+export type VistaInitFn = (vistaView: VistaView) => void;
+
+export type VistaParams = {
+  elements: string | NodeListOf<HTMLElement> | VistaImg[];
+} & VistaOpt;
+
+export type VistaInterface = {
+  open: (startIndex?: number) => void;
+  close: () => Promise<void>;
+  next: () => void;
+  prev: () => void;
+  destroy: () => void;
+  getCurrentIndex: () => number;
+  view: (index: number) => void;
+};

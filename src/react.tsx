@@ -1,20 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { vistaView } from './vistaview';
-import type { VistaViewParams, VistaViewInterface, VistaImg } from './vistaview';
+import type { VistaParams, VistaInterface } from './vistaview';
 
-export type { VistaViewParams, VistaViewInterface, VistaImg };
-
-type UseVistaViewReturn = {
-  open: (startIndex?: number) => void;
-  close: () => void;
-  next: () => void;
-  prev: () => void;
-  getCurrentIndex: () => number;
-  view: (index: number) => void;
-};
-
-export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
-  const instance = useRef<VistaViewInterface | null>(null);
+export function useVistaView(options: VistaParams): VistaInterface {
+  const instance = useRef<VistaInterface | null>(null);
 
   useEffect(() => {
     instance.current = vistaView(options);
@@ -26,15 +15,16 @@ export function useVistaView(options: VistaViewParams): UseVistaViewReturn {
 
   return {
     open: useCallback((i = 0) => instance.current?.open(i), []),
-    close: useCallback(() => instance.current?.close(), []),
+    close: useCallback(() => instance.current?.close() ?? Promise.resolve(), []),
     next: useCallback(() => instance.current?.next(), []),
     prev: useCallback(() => instance.current?.prev(), []),
     getCurrentIndex: useCallback(() => instance.current?.getCurrentIndex() ?? -1, []),
     view: useCallback((i: number) => instance.current?.view(i), []),
+    destroy: useCallback(() => instance.current?.destroy(), []),
   };
 }
 
-type VistaViewProps = VistaViewParams & {
+type VistaViewProps = VistaParams & {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -49,7 +39,7 @@ export function VistaView({
   ...options
 }: VistaViewProps): React.ReactElement {
   const ref = useRef<HTMLDivElement>(null);
-  const instance = useRef<VistaViewInterface | null>(null);
+  const instance = useRef<VistaInterface | null>(null);
 
   useEffect(() => {
     if (!ref.current) return;
