@@ -1,5 +1,6 @@
 import type { VistaView } from '../vista-view';
 
+// run on initialization, when we open the viewer
 export function init(vistaView: VistaView) {
   // setup container width and position
   const preloads = vistaView.options.preloads!;

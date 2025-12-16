@@ -1,5 +1,6 @@
 import type { VistaData } from '../types';
 
+// run on every image transition
 export async function transition(
   {
     vistaView: { isReducedMotion },
