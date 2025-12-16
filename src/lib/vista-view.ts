@@ -100,7 +100,7 @@ export class VistaView {
     const imgs = this.imageContainer!;
     const c = this.currentChildren!;
 
-    const par = {
+    const vistaData = {
       htmlElements: { from: c.htmls, to: htmls },
       images: { from: c.images, to: images },
       index: { from: beforeIndex, to: this.currentIndex },
@@ -108,12 +108,13 @@ export class VistaView {
       vistaView: this,
     };
 
-    this.setupFunction(par);
+    this.setupFunction(vistaData);
     this.currentChildren = { htmls, images };
 
     const abortControllerSignal = this.abortController!.signal;
-    const cleanup = await this.transitionFunction(par, abortControllerSignal);
+    const cleanup = await this.transitionFunction(vistaData, abortControllerSignal);
 
+    // get info about old center image
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
     const img0 = imgs.querySelector(
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
@@ -152,6 +153,7 @@ export class VistaView {
 
     this.waitForImagesToLoad();
     this.displayActiveIndex();
+    this.options.onImageView && this.options.onImageView(vistaData);
   }
 
   private getChildElements(
@@ -374,13 +376,15 @@ export class VistaView {
     const index = startIndex;
     const { images, htmls } = this.getChildElements(allImage, index);
 
-    this.setupFunction({
+    const vistaData = {
       htmlElements: { from: null, to: htmls },
       images: { from: null, to: images },
       index: { from: null, to: this.currentIndex },
       via: { next: false, prev: false },
       vistaView: this,
-    });
+    };
+
+    this.setupFunction(vistaData);
 
     this.currentChildren = { htmls, images };
     htmls.forEach((vistaImg) => {
@@ -459,6 +463,8 @@ export class VistaView {
 
       this.root!.classList.add('vvw--active');
       this.displayActiveIndex();
+      this.options.onOpen && this.options.onOpen(this);
+      this.options.onImageView && this.options.onImageView(vistaData);
     });
   }
 
@@ -511,6 +517,7 @@ export class VistaView {
 
     GlobalVistaState.somethingOpened = null;
     this.closeFunction(this);
+    this.options.onClose && this.options.onClose(this);
   }
 
   next(): void {

@@ -34,8 +34,8 @@ export type VistaOpt = {
 
   // events
   onImageView?: (params: VistaData) => void;
-  onOpen?: (params: VistaData) => void;
-  onClose?: (params: VistaData) => void;
+  onOpen?: (vistaView: VistaView) => void;
+  onClose?: (vistaView: VistaView) => void;
 
   // uesr defined functions
   transitionFunction?: VistaTransitionFn;
