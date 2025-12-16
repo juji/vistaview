@@ -1,34 +1,5 @@
 import type { VistaData } from '../types';
 
-// wawit for the image to be ready
-// class: 'vvw-image--loaded vvw-image--ready'
-// 'vvw-image--ready' is added right after the image is animated
-// 'vvw-image--loaded' is added right after the image is loaded
-// loaded first, then animated
-function waitForClass(
-  element: HTMLImageElement,
-  className: string = 'vvw-img--ready'
-): Promise<void> {
-  // Check if it already has the class
-  if (element.classList.contains(className)) {
-    return Promise.resolve(); // ← Important! Return immediately
-  }
-
-  return new Promise((resolve) => {
-    const observer = new MutationObserver(() => {
-      if (element.classList.contains(className)) {
-        observer.disconnect();
-        resolve();
-      }
-    });
-
-    observer.observe(element, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-  });
-}
-
 export async function transition(
   {
     vistaView: { isReducedMotion },
@@ -47,72 +18,36 @@ export async function transition(
     (fromIndex === 0 && toIndex === elements.length - 1) ||
     (fromIndex === elements.length - 1 && toIndex === 0);
 
-  const duration = Math.round(options.animationDurationBase! * 100) / 100;
-
   // for non-adjacent, or reduced motion preference
-  // just fade out/in
+  // just return
   if (!adjacent || isReducedMotion) {
-    return new Promise<() => void>((r) => {
-      function clean() {
+    return;
+  }
+
+  const duration = Math.round(options.animationDurationBase! * 1.5 * 100) / 100;
+
+  // adjacent transition
+  // with no reduced motion preference
+  // slide left/right
+
+  return new Promise<() => void>((r) => {
+    imgc!.addEventListener(
+      'transitionend',
+      () => {
         r(() => {
           imgc!.style.transition = '';
-          imgc!.style.opacity = '';
+          imgc!.style.transform = '';
         });
-      }
+      },
+      { once: true }
+    );
 
-      imgc!.style.opacity = '1';
-      imgc!.style.transition = `opacity ${duration}ms ease`;
-      requestAnimationFrame(() => {
-        if (signal.aborted) return clean();
-        imgc?.addEventListener(
-          'transitionend',
-          () => {
-            if (signal.aborted) return clean();
-            imgc.innerHTML = '';
-            imgc.appendChild(HtmlTo[Math.floor(HtmlTo.length / 2)] as HTMLElement);
-            imgc?.addEventListener(
-              'transitionend',
-              async () => {
-                if (signal.aborted) return clean();
+    const transform =
+      toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
+        ? 'translateX(-100vw)'
+        : 'translateX(100vw)';
 
-                const hires = imgc.querySelector('img.vvw-img-hi') as HTMLImageElement;
-                await waitForClass(hires!);
-
-                clean();
-              },
-              { once: true }
-            );
-            imgc!.style.opacity = '1';
-          },
-          { once: true }
-        );
-        imgc!.style.opacity = '0';
-      });
-    });
-  } else {
-    // adjacent transition
-    // with no reduced motion preference
-    // slide left/right
-
-    return new Promise<() => void>((r) => {
-      imgc!.addEventListener(
-        'transitionend',
-        () => {
-          r(() => {
-            imgc!.style.transition = '';
-            imgc!.style.transform = '';
-          });
-        },
-        { once: true }
-      );
-
-      const transform =
-        toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
-          ? 'translateX(-100vw)'
-          : 'translateX(100vw)';
-
-      imgc!.style.transition = `transform ${duration}ms ease`;
-      imgc!.style.transform = transform;
-    });
-  }
+    imgc!.style.transition = `transform ${duration}ms ease`;
+    imgc!.style.transform = transform;
+  });
 }

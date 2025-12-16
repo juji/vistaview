@@ -175,9 +175,9 @@
     object-fit: cover;
     opacity: 0;
     transition:
-      width calc(var(--vvw-anim-dur) * 1ms) ease,
-      height calc(var(--vvw-anim-dur) * 1ms) ease,
-      border-radius calc(var(--vvw-anim-dur) * 1ms) ease;
+      width calc(var(--vvw-anim-dur) * 1.5ms) ease,
+      height calc(var(--vvw-anim-dur) * 1.5ms) ease,
+      border-radius calc(var(--vvw-anim-dur) * 1.5ms) ease;
   }
 }
 
