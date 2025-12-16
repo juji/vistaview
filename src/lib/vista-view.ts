@@ -15,7 +15,7 @@ import { setup } from './defaults/setup';
 import { init } from './defaults/init';
 import { close } from './defaults/close';
 import { transition } from './defaults/transition';
-import { getFullSizeDim } from './utils';
+import { getFullSizeDim, setImageStyles } from './utils';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -317,6 +317,24 @@ export class VistaView {
     }
   };
 
+  private onResizeHandler = () => {
+    this.currentChildren!.htmls.forEach((htmlDiv, i) => {
+      const vistaImg = this.currentChildren!.images[i];
+      const hi = htmlDiv.querySelector('img.vvw-img-hi') as HTMLImageElement;
+      const lo = htmlDiv.querySelector('img.vvw-img-lo') as HTMLImageElement;
+
+      // update styles info
+      setImageStyles(vistaImg, hi, lo, false);
+
+      if (hi.classList.contains('vvw--loaded')) {
+        // update current image size
+        const { width, height } = getFullSizeDim(hi);
+        hi.style.setProperty('--vvw-current-w', `${width}px`);
+        hi.style.setProperty('--vvw-current-h', `${height}px`);
+      }
+    });
+  };
+
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -388,6 +406,9 @@ export class VistaView {
 
     // scroll Events
     this.root.addEventListener('wheel', this.onScroll, { passive: false });
+
+    // resize listener
+    window.addEventListener('resize', this.onResizeHandler);
 
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
@@ -481,6 +502,7 @@ export class VistaView {
     }
 
     window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('resize', this.onResizeHandler);
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
