@@ -92,7 +92,6 @@ export class VistaView {
     }
   }
 
-  private rapidLimit = 700;
   private lastSwapTime = 0;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
@@ -117,7 +116,7 @@ export class VistaView {
     const abortControllerSignal = this.abortController!.signal;
 
     const now = performance.now();
-    const rapid = now - this.lastSwapTime < this.rapidLimit;
+    const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
     const cleanup = await this.transitionFunction(vistaData, abortControllerSignal, rapid);
     this.lastSwapTime = now;
 

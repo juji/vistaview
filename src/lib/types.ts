@@ -22,6 +22,7 @@ export type VistaOpt = {
   preloads?: number;
   keyboardListeners?: boolean;
   arrowOnSmallScreens?: boolean;
+  rapidLimit?: number;
 
   controls?: {
     topLeft?: (VistaDefaultCtrl | VistaCustomCtrl)[];
