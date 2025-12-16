@@ -326,8 +326,8 @@ export class VistaView {
       // update styles info
       setImageStyles(vistaImg, hi, lo, false);
 
+      // update current image size
       if (hi.classList.contains('vvw--loaded')) {
-        // update current image size
         const { width, height } = getFullSizeDim(hi);
         hi.style.setProperty('--vvw-current-w', `${width}px`);
         hi.style.setProperty('--vvw-current-h', `${height}px`);
