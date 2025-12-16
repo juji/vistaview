@@ -199,11 +199,11 @@ import {
 } from 'vistaview';
 
 import type {
-  VistaViewParams, // Full options including `elements`
+  VistaParams, // Full options including `elements`
   VistaOpt, // Base options (without `elements`)
   VistaImg, // Image object: { src, alt?, thumb? }
   VistaImageIdx, // Image with index and DOM references
-  VistaViewInterface, // Return type from vistaView()
+  VistaInterface, // Return type from vistaView()
   VistaViewData, // Data passed to events/functions
   VistaSetupFn, // Type for setupFunction
   VistaTransitionFn, // Type for transitionFunction

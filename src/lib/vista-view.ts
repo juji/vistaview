@@ -405,12 +405,12 @@ export class VistaView {
         });
         this.root!.classList.add('vvw--closing');
       });
-    }
-
-    if (this.elements instanceof NodeList) {
-      this.elements.forEach((el) => {
-        el.style.opacity = '';
-      });
+    } else {
+      if (this.elements instanceof NodeList) {
+        this.elements.forEach((el) => {
+          el.style.opacity = '';
+        });
+      }
     }
 
     this.root.remove();

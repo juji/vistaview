@@ -4,6 +4,7 @@ import dts from 'vite-plugin-dts';
 
 // Check if building UMD specifically
 const isUMD = process.env.BUILD_UMD === 'true';
+const isProd = process.env.BUILD_ENV === 'prod';
 
 export default defineConfig({
   server: {
@@ -15,7 +16,7 @@ export default defineConfig({
     }),
   ],
   esbuild: {
-    drop: ['console', 'debugger'], // Remove console.log and debugger statements
+    ...(isProd && { drop: ['console', 'debugger'] }),
   },
   build: isUMD
     ? {

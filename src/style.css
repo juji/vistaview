@@ -151,9 +151,10 @@
     --vvw-current-h: 0px;
     --vvw-current-radius: 0px;
 
-    width: var(--vvw-current-w);
-    height: var(--vvw-current-h);
-    border-radius: var(--vvw-current-radius);
+    width: var(--vvw-init-w);
+    height: var(--vvw-init-h);
+    border-radius: var(--vvw-init-radius);
+
     z-index: 1;
     overflow: hidden;
     object-fit: cover;
@@ -310,6 +311,9 @@
 
   .vvw-img-hi.vvw--loaded {
     opacity: 1;
+    width: var(--vvw-current-w);
+    height: var(--vvw-current-h);
+    border-radius: var(--vvw-current-radius);
   }
 
   .vvw-img-hi.vvw--ready {
@@ -370,7 +374,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* @media (prefers-reduced-motion: reduce) {
   :root {
     --vvw-anim-dur: 0;
   }
@@ -381,4 +385,4 @@
     animation-duration: 0ms !important;
     transition-duration: 0ms !important;
   }
-}
+} */

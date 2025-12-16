@@ -70,7 +70,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && BUILD_UMD=true vite build",
+    "build": "tsc && BUILD_ENV=prod vite build && BUILD_ENV=prod BUILD_UMD=true vite build",
     "preview": "vite preview",
     "prepare": "husky",
     "test": "echo \"no test specified\"",

@@ -43,12 +43,12 @@ If you prefer manual setup:
 
 ```tsx
 import { useEffect, useRef } from 'react';
-import { vistaView, type VistaViewInterface } from 'vistaview';
+import { vistaView, type VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
 
 function Gallery({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const instanceRef = useRef<VistaViewInterface | null>(null);
+  const instanceRef = useRef<VistaInterface | null>(null);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -233,12 +233,12 @@ function Gallery2() {
 
 ```tsx
 import { onMount, onCleanup, type ParentProps } from 'solid-js';
-import { vistaView, type VistaViewInterface } from 'vistaview';
+import { vistaView, type VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
 
 function Gallery(props: ParentProps) {
   let container: HTMLDivElement | undefined;
-  let instance: VistaViewInterface | null = null;
+  let instance: VistaInterface | null = null;
 
   onMount(() => {
     instance = vistaView({ elements: container!.querySelectorAll('a') });
@@ -256,7 +256,7 @@ function Gallery(props: ParentProps) {
 
 ```typescript
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { vistaView, type VistaViewInterface } from 'vistaview';
+import { vistaView, type VistaInterface } from 'vistaview';
 
 @Component({
   selector: 'app-gallery',
@@ -268,7 +268,7 @@ import { vistaView, type VistaViewInterface } from 'vistaview';
 })
 export class GalleryComponent implements AfterViewInit, OnDestroy {
   @ViewChild('container') container!: ElementRef<HTMLElement>;
-  private instance: VistaViewInterface | null = null;
+  private instance: VistaInterface | null = null;
 
   ngAfterViewInit() {
     this.instance = vistaView({
