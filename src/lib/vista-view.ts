@@ -307,6 +307,16 @@ export class VistaView {
     }
   };
 
+  private onScroll = (e: Event) => {
+    e.preventDefault();
+    const delta = (e as WheelEvent).deltaY;
+    if (delta < 0) {
+      this.zoomIn();
+    } else if (delta > 0) {
+      this.zoomOut();
+    }
+  };
+
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -375,6 +385,9 @@ export class VistaView {
 
     // keyboard events
     window.addEventListener('keydown', this.onKeyDown);
+
+    // scroll Events
+    this.root.addEventListener('wheel', this.onScroll, { passive: false });
 
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
