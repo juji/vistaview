@@ -96,6 +96,9 @@ export class VistaView {
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
 
+    // display index first
+    const setDesc = this.displayActiveIndex();
+
     const { htmls, images } = this.getChildElements(allImage, index);
     const imgs = this.imageContainer!;
     const c = this.currentChildren!;
@@ -152,7 +155,7 @@ export class VistaView {
     });
 
     this.waitForImagesToLoad();
-    this.displayActiveIndex();
+    setDesc();
     this.options.onImageView && this.options.onImageView(vistaData);
   }
 
@@ -209,7 +212,7 @@ export class VistaView {
   private zoomIn(): void {}
   private zoomOut(): void {}
 
-  private displayActiveIndex(): void {
+  private displayActiveIndex(): () => void {
     const cid = this.currentIndex;
 
     // set opacity in element
@@ -227,15 +230,17 @@ export class VistaView {
       indexDisplay.textContent = `${cid + 1} / ${this.elements.length}`;
     }
 
-    const description = this.qs<HTMLDivElement>('.vvw-desc');
-    if (description) {
-      const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
-      if (currentImg && currentImg.alt) {
-        description.textContent = currentImg.alt;
-      } else {
-        description.textContent = '';
+    return () => {
+      const description = this.qs<HTMLDivElement>('.vvw-desc');
+      if (description) {
+        const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
+        if (currentImg && currentImg.alt) {
+          description.textContent = currentImg.alt;
+        } else {
+          description.textContent = '';
+        }
       }
-    }
+    };
   }
 
   private waitForImagesToLoad(onImgLoaded?: () => void, signal?: AbortSignal): void {
@@ -462,7 +467,8 @@ export class VistaView {
       );
 
       this.root!.classList.add('vvw--active');
-      this.displayActiveIndex();
+      const setDesc = this.displayActiveIndex();
+      setDesc();
       this.options.onOpen && this.options.onOpen(this);
       this.options.onImageView && this.options.onImageView(vistaData);
     });
