@@ -66,15 +66,15 @@ function convertControlToHtml(control: VistaDefaultCtrl | VistaCustomCtrl): stri
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
-        return `<button class="vvw-zoom-in">${zoomInIcon}</button>`;
+        return `<button class="vvw-zoom-in vvw-ui">${zoomInIcon}</button>`;
       case 'zoomOut':
-        return `<button disabled class="vvw-zoom-out">${zoomOutIcon}</button>`;
+        return `<button disabled class="vvw-zoom-out vvw-ui">${zoomOutIcon}</button>`;
       case 'close':
-        return `<button class="vvw-close">${closeIcon}</button>`;
+        return `<button class="vvw-close vvw-ui">${closeIcon}</button>`;
       case 'indexDisplay':
-        return `<div class="vvw-index"></div>`;
+        return `<div class="vvw-index vvw-ui"></div>`;
       case 'description':
-        return `<div class="vvw-desc"></div>`;
+        return `<div class="vvw-desc vvw-ui"></div>`;
       default:
         console.warn(`Unknown default control: ${control}. Will return empty string.`);
         return '';

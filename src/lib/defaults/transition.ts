@@ -47,7 +47,7 @@ export async function transition(
     (fromIndex === 0 && toIndex === elements.length - 1) ||
     (fromIndex === elements.length - 1 && toIndex === 0);
 
-  const duration = Math.round(options.animationDurationBase! * 0.5 * 100) / 100;
+  const duration = Math.round(options.animationDurationBase! * 100) / 100;
 
   // for non-adjacent, or reduced motion preference
   // just fade out/in
@@ -93,11 +93,6 @@ export async function transition(
     // adjacent transition
     // with no reduced motion preference
     // slide left/right
-    imgc!.style.transition = `transform ${duration}ms ease`;
-    imgc!.style.transform =
-      toIndex! > fromIndex! || (fromIndex === elements.length - 1 && toIndex === 0)
-        ? 'translateX(-100%)'
-        : 'translateX(100%)';
 
     return new Promise<() => void>((r) => {
       imgc!.addEventListener(
@@ -110,6 +105,14 @@ export async function transition(
         },
         { once: true }
       );
+
+      const transform =
+        toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
+          ? 'translateX(-100vw)'
+          : 'translateX(100vw)';
+
+      imgc!.style.transition = `transform ${duration}ms ease`;
+      imgc!.style.transform = transform;
     });
   }
 }

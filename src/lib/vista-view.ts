@@ -93,7 +93,7 @@ export class VistaView {
   }
 
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
-    const allImage = (this.options.preloads || 0) + 1;
+    const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
 
     const { htmls, images } = this.getChildElements(allImage, index);
@@ -111,21 +111,19 @@ export class VistaView {
     this.setupFunction(par);
     this.currentChildren = { htmls, images };
 
-    const abortController = this.abortController!;
-    const cleanup = await this.transitionFunction(par, abortController.signal);
+    const abortControllerSignal = this.abortController!.signal;
+    const cleanup = await this.transitionFunction(par, abortControllerSignal);
 
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
     const img0 = imgs.querySelector(
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
     ) as HTMLImageElement;
-    const dim = {
-      dataWidth: img0.dataset.vvwInitWidth || '',
-      dataHeight: img0.dataset.vvwInitHeight || '',
-      styleWidth: img0.style.width || '',
-      styleHeight: img0.style.height || '',
-      naturalWidth: img0.naturalWidth || 0,
-      naturalHeight: img0.naturalHeight || 0,
-    };
+
+    const style = img0.getAttribute('style') || '';
+    const loaded = img0.classList.contains('vvw--loaded');
+    const ready = img0.classList.contains('vvw--ready');
+    const width = img0.width;
+    const height = img0.height;
 
     // swap elements
     imgs.innerHTML = '';
@@ -134,27 +132,26 @@ export class VistaView {
       // is this position 0?
       if (
         vistaImg.dataset.vvwPos === '0' &&
-        !abortController.signal.aborted &&
-        dim.styleWidth &&
-        dim.styleHeight &&
-        dim.naturalHeight &&
-        dim.naturalWidth &&
-        dim.dataWidth &&
-        dim.dataHeight
+        !abortControllerSignal.aborted &&
+        style &&
+        loaded &&
+        ready &&
+        width &&
+        height
       ) {
         const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
-        img.classList.add('vvw-img--loaded');
-        img.classList.add('vvw-img--ready');
-        img.style.setProperty('width', dim.styleWidth);
-        img.style.setProperty('height', dim.styleHeight);
-        img.dataset.vvwInitWidth = dim.dataWidth;
-        img.dataset.vvwInitHeight = dim.dataHeight;
-        img.width = dim.naturalWidth;
-        img.height = dim.naturalHeight;
+        img.classList.add('vvw--loaded');
+        img.classList.add('vvw--ready');
+        img.setAttribute('style', style);
+        img.width = width;
+        img.height = height;
       }
 
       imgs.appendChild(vistaImg);
     });
+
+    this.waitForImagesToLoad();
+    this.displayActiveIndex();
   }
 
   private getChildElements(
@@ -209,6 +206,35 @@ export class VistaView {
 
   private zoomIn(): void {}
   private zoomOut(): void {}
+
+  private displayActiveIndex(): void {
+    const cid = this.currentIndex;
+
+    // set opacity in element
+    if (this.elements instanceof NodeList) {
+      this.elements.forEach((el, idx) => {
+        el.style.opacity = '';
+        if (idx === cid) {
+          el.style.opacity = '0';
+        }
+      });
+    }
+
+    const indexDisplay = this.qs<HTMLDivElement>('.vvw-index');
+    if (indexDisplay) {
+      indexDisplay.textContent = `${cid + 1} / ${this.elements.length}`;
+    }
+
+    const description = this.qs<HTMLDivElement>('.vvw-desc');
+    if (description) {
+      const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
+      if (currentImg && currentImg.alt) {
+        description.textContent = currentImg.alt;
+      } else {
+        description.textContent = '';
+      }
+    }
+  }
 
   private waitForImagesToLoad(onImgLoaded?: () => void, signal?: AbortSignal): void {
     const imgs = this.imageContainer!;
@@ -364,13 +390,7 @@ export class VistaView {
       );
 
       this.root!.classList.add('vvw--active');
-      if (this.elements instanceof NodeList) {
-        this.elements.forEach((el, idx) => {
-          if (idx === this.currentIndex) {
-            el.style.opacity = '0';
-          }
-        });
-      }
+      this.displayActiveIndex();
     });
   }
 

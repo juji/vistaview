@@ -156,7 +156,6 @@ export function setImageStyles(
   const translateTop = top - window.innerHeight / 2 + h / 2;
 
   const ls = lo.style;
-  const ld = lo.dataset;
   ls.width = `${w}px`;
   ls.height = `${h}px`;
   ls.objectFit = fit;
@@ -170,9 +169,6 @@ export function setImageStyles(
     ls.setProperty('--vvw-current-x', `${translateLeft}px`);
     ls.setProperty('--vvw-current-y', `${translateTop}px`);
   }
-
-  ld.vvwInitL = translateLeft.toString();
-  ld.vvwInitT = translateTop.toString();
 
   const fittedSize = getFittedSize(el.imageElm!);
   const hiWidth = Math.min(w, fittedSize.width);

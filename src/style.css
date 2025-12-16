@@ -17,7 +17,7 @@
   --vvw-radius: 0px;
 }
 
-@keyframes vistaview-pulse {
+@keyframes vvw-pulse {
   0% {
     opacity: 1;
     border-radius: var(--vvw-init-radius);
@@ -35,7 +35,19 @@
   }
 }
 
-@keyframes vistaview-gradient {
+@keyframes vvw-simple-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes vvw-gradient {
   0% {
     background-position: 0% 50%;
   }
@@ -139,7 +151,7 @@
 
     background: linear-gradient(45deg, #1a1a1a, #333, #1a1a1a, #555);
     background-size: 400% 400%;
-    animation: vistaview-gradient 3s ease-in-out infinite;
+    animation: vvw-gradient 3s ease-in-out infinite;
   }
 
   .vvw-img-hi {
@@ -184,24 +196,24 @@
     & > div {
       display: flex;
     }
+  }
 
-    .vvw-index {
-      font-size: 16px;
-      padding: 8px;
-      background-color: var(--vistaview-bg-color);
-      color: var(--vistaview-text-color);
-    }
+  &.vvw-index {
+    font-size: 16px;
+    padding: 8px;
+    background-color: var(--vvw-bg-color);
+    color: var(--vvw-text-color);
+  }
 
-    .vvw-desc {
-      font-size: 14px;
-      padding: 8px 15px;
-      background-color: var(--vistaview-bg-color);
-      color: var(--vistaview-text-color);
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+  &.vvw-desc {
+    font-size: 14px;
+    padding: 8px 15px;
+    background-color: var(--vvw-bg-color);
+    color: var(--vvw-text-color);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &.vvw-bottom-bar {
@@ -223,22 +235,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--vistaview-bg-color);
-    color: var(--vistaview-text-color);
+    background-color: var(--vvw-bg-color);
+    color: var(--vvw-text-color);
 
     &:disabled {
-      color: rgb(from var(--vistaview-text-color) r g b / 0.5);
+      color: rgb(from var(--vvw-text-color) r g b / 0.5);
       cursor: not-allowed;
     }
     &:hover {
-      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 20));
+      background-color: hsl(from var(--vvw-bg-color) h s calc(l + 20));
     }
     &:active {
-      background-color: hsl(from var(--vistaview-bg-color) h s calc(l + 40));
+      background-color: hsl(from var(--vvw-bg-color) h s calc(l + 40));
     }
 
-    &.vistaview-button--loading {
-      animation: vistaview-simple-pulse 500ms ease-in-out infinite;
+    &.vvw-button--loading {
+      animation: vvw-simple-pulse 500ms ease-in-out infinite;
     }
 
     svg {
@@ -290,13 +302,17 @@
     --vvw-current-x: 0px !important;
     --vvw-current-y: 0px !important;
   }
+
+  .vvw-ui {
+    opacity: 1;
+  }
 }
 
 .vvw-root.vvw--settled {
   .vvw-img-lo {
     animation:
-      vistaview-pulse 1s infinite,
-      vistaview-gradient 3s ease-in-out infinite;
+      vvw-pulse 1s infinite,
+      vvw-gradient 3s ease-in-out infinite;
     animation-delay: calc(var(--vvw-anim-dur) * 2ms);
 
     &:has(+ img.vvw--loaded) {
@@ -318,10 +334,6 @@
 
   .vvw-img-hi.vvw--ready {
     transition: none;
-  }
-
-  .vvw-ui {
-    opacity: 1;
   }
 }
 

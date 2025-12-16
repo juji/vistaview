@@ -14,6 +14,6 @@ export const DefaultOptions: VistaOpt = {
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],
-    bottomCenter: ['description'],
+    bottomLeft: ['description'],
   },
 };
