@@ -117,7 +117,10 @@ export class VistaView {
 
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
-    const cleanup = await this.transitionFunction(vistaData, abortControllerSignal, rapid);
+    let cleanup: void | (() => void) | null = null;
+    if (!rapid) {
+      cleanup = await this.transitionFunction(vistaData, abortControllerSignal);
+    }
     this.lastSwapTime = now;
 
     // get info about old center image

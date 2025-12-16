@@ -8,17 +8,16 @@ export async function transition(
     index: { from: fromIndex, to: toIndex },
     vistaView: { elements, imageContainer: imgc, options },
   }: VistaData,
-  signal: AbortSignal,
-  rapid?: boolean
+  signal: AbortSignal
 ) {
-  if (!HtmlTo || rapid || signal.aborted || isReducedMotion) return;
+  if (!HtmlTo || signal.aborted || isReducedMotion) return;
 
   const adjacent =
     Math.abs(toIndex! - fromIndex!) === 1 ||
     (fromIndex === 0 && toIndex === elements.length - 1) ||
     (fromIndex === elements.length - 1 && toIndex === 0);
 
-  // for non-adjacent, or reduced motion preference
+  // for non-adjacent
   // just return
   if (!adjacent) {
     return;
