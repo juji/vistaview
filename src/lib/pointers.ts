@@ -17,7 +17,16 @@ export class VistaPointers {
   private onPointerDown = (e: PointerEvent) => {
     if (!this.listeners.length) return;
     e.preventDefault();
-    const pointer = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    const pointer = {
+      x: e.clientX,
+      y: e.clientY,
+      initX: e.clientX,
+      initY: e.clientY,
+      initTime: e.timeStamp,
+      velocityX: 0,
+      velocityY: 0,
+      id: e.pointerId,
+    };
     this.pointers.push(pointer);
     this.lastLen = this.pointers.length - 1;
     this.listeners.forEach((l) =>
@@ -55,6 +64,8 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
+    pointer.velocityX = (e.clientX - pointer.initX) / (e.timeStamp - pointer.initTime);
+    pointer.velocityY = (e.clientY - pointer.initY) / (e.timeStamp - pointer.initTime);
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
       this.lastLen = this.pointers.length + 1;
@@ -75,6 +86,8 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
+    pointer.velocityX = (e.clientX - pointer.initX) / (e.timeStamp - pointer.initTime);
+    pointer.velocityY = (e.clientY - pointer.initY) / (e.timeStamp - pointer.initTime);
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
       this.lastLen = this.pointers.length + 1;

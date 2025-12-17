@@ -20,7 +20,7 @@ import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
 import { VistaImageState } from './image-state';
-import { Throttle } from './throttle';
+// import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -364,20 +364,43 @@ export class VistaView {
 
   private getPointerListener = () => {
     const imageState = new VistaImageState(this.options.maxZoomLevel!);
-    const throttle = new Throttle();
+    // const throttle = new Throttle();
     let lastDistance = 0;
-    let lastRatio = 0;
-    let disableMove = false;
-    let lastPointerDown = {
-      x: 0,
-      y: 0,
-      time: 0,
-    };
+    // let lastRatio = 0;
+    // let disableMove = false;
+    // let lastPointerDown = {
+    //   x: 0,
+    //   y: 0,
+    //   time: 0,
+    // };
 
     return (e: VistaPointerListenerArgs) => {
       this.zoom(0);
 
-      console.log(imageState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
+      // console.log(imageState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
+
+      if (e.event === 'down') {
+        if (e.pointers.length >= 2) {
+          const img = this.qs(
+            `[data-vvw-idx="${this.currentIndex}"] img.vvw-img-hi`
+          ) as HTMLImageElement;
+          const center = this.pointers!.getCentroid();
+          lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+          imageState.setCurrentImage(img);
+          imageState.setInitialCenter(center!);
+        }
+      } else if (e.event === 'move') {
+        // console.log('pointer move', center);
+        if (e.pointers.length >= 2) {
+          const center = this.pointers!.getCentroid();
+          const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+          imageState.scaleMove(distance - lastDistance, center!);
+        }
+      } else if (e.event === 'up') {
+        imageState.normalize();
+      } else if (e.event === 'cancel') {
+        imageState.normalize();
+      }
 
       // external listeners
       this.pointerListeners.forEach((l) =>
