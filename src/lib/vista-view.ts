@@ -20,7 +20,6 @@ import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
 import { VistaImageState } from './image-state';
-// import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
