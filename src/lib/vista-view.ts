@@ -20,6 +20,7 @@ import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
 import { VistaImageState, type VistaImageStateScaleParams } from './image-state';
+import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -75,9 +76,17 @@ export class VistaView {
         if (par.isMin) {
           this.isZoomedIn = false;
           this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+          this.qs('.vvw-item[data-vvw-idx="' + this.currentIndex + '"]')?.style.setProperty(
+            'pointer-events',
+            'none'
+          );
         } else {
           this.isZoomedIn = true;
           this.qs('.vvw-zoom-out')?.removeAttribute('disabled');
+          this.qs('.vvw-item[data-vvw-idx="' + this.currentIndex + '"]')?.style.setProperty(
+            'pointer-events',
+            'auto'
+          );
         }
 
         if (par.isMax) {
@@ -400,12 +409,24 @@ export class VistaView {
 
   private getPointerListener = () => {
     const imgState = this.imageState;
+    const throttle = new Throttle(); // ~60fps
     let lastDistance = 0;
     let pinchMode = false;
+    let releasing = false;
+    let cancelMove = () => {};
 
     // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
       if (e.event === 'down') {
+        if (releasing) return;
+
+        cancelMove();
+
+        if (this.isZoomedIn && e.pointers.length === 1) {
+          const center = this.pointers!.getCentroid();
+          imgState.setInitialCenter(center!);
+        }
+
         if (e.pointers.length >= 2) {
           pinchMode = true;
           const center = this.pointers!.getCentroid();
@@ -413,6 +434,13 @@ export class VistaView {
           imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
+        if (releasing) return;
+
+        if (this.isZoomedIn && e.pointers.length === 1) {
+          const center = this.pointers!.getCentroid();
+          imgState.move(center!);
+        }
+
         if (e.pointers.length >= 2) {
           if (!pinchMode) return;
           const center = this.pointers!.getCentroid();
@@ -420,13 +448,29 @@ export class VistaView {
           imgState.scaleMove(distance / lastDistance, center!);
         }
       } else if (e.event === 'up' || e.event === 'cancel') {
-        if (!pinchMode) return;
-        pinchMode = false;
-        const close = imgState.normalize();
-        if (close)
-          requestAnimationFrame(() => {
-            this.close();
-          });
+        if (!pinchMode && !this.isZoomedIn) return;
+        if (releasing) return;
+
+        throttle.fio(
+          () => {
+            releasing = true;
+            if (pinchMode) {
+              pinchMode = false;
+              const close = imgState.normalize();
+              if (close)
+                requestAnimationFrame(() => {
+                  this.close();
+                });
+            } else if (this.isZoomedIn && e.pointers.length === 0) {
+              cancelMove = imgState.moveAndNormalize(e.pointer!);
+            }
+          },
+          'pointer-end',
+          333
+        );
+        setTimeout(() => {
+          releasing = false;
+        }, 333);
       }
 
       // external listeners

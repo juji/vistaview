@@ -1,3 +1,4 @@
+import type { VistaPointer } from './types';
 import { clamp, limitPrecision } from './utils';
 
 export type VistaImageStateScaleParams = {
@@ -78,6 +79,16 @@ export class VistaImageState {
     this.initialCenter = center;
   }
 
+  move(center: { x: number; y: number }) {
+    if (!this.image || !this.rect) return;
+
+    this.translate.x = limitPrecision(center.x - this.initialCenter.x);
+    this.translate.y = limitPrecision(center.y - this.initialCenter.y);
+
+    // Apply transform
+    this.image.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
+  }
+
   scaleMove(ratio: number, center?: { x: number; y: number }) {
     if (!this.image || !this.rect || !this.rect.width) return;
 
@@ -133,7 +144,44 @@ export class VistaImageState {
     }
   }
 
-  normalize() {
+  moveAndNormalize(pointer: VistaPointer) {
+    if (pointer.deltaTime > 333) {
+      this.normalize();
+      return () => {};
+    }
+
+    let raf = 0;
+    const animate = ({ x, y }: { x: number; y: number }) => {
+      this.translate.x = limitPrecision(this.translate.x + x);
+      this.translate.y = limitPrecision(this.translate.y + y);
+      this.image!.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
+
+      if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) return this.normalize();
+
+      const speedFactor = 0.95;
+      raf = requestAnimationFrame(() =>
+        animate({
+          x: x * speedFactor,
+          y: y * speedFactor,
+        })
+      );
+    };
+
+    console.log('moveAndNormalize', pointer.velocityX, pointer.velocityY);
+    raf = requestAnimationFrame(() =>
+      animate({
+        x: pointer.velocityX * 33,
+        y: pointer.velocityY * 33,
+      })
+    );
+
+    return () => {
+      cancelAnimationFrame(raf);
+      this.normalize();
+    };
+  }
+
+  normalize(): boolean | void {
     if (!this.image || !this.rect) return;
 
     // translate scale to width/height

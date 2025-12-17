@@ -101,6 +101,7 @@ export type VistaPointer = {
   initX: number;
   initY: number;
   initTime: number;
+  deltaTime: number;
   velocityX: number;
   velocityY: number;
   id: number | string;
