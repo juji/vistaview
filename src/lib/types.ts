@@ -98,6 +98,11 @@ export type VistaInterface = {
 export type VistaPointer = {
   x: number;
   y: number;
+  initX: number;
+  initY: number;
+  initTime: number;
+  velocityX: number;
+  velocityY: number;
   id: number | string;
 };
 
