@@ -223,8 +223,12 @@ export class VistaImageState {
     if (!this.image || !this.rect) return;
 
     // translate scale to width/height
-    const newWidth = this.rect.width * this.scale;
-    const newHeight = this.rect.height * this.scale;
+    let newWidth = this.rect.width * this.scale;
+    let newHeight = this.rect.height * this.scale;
+    if (Math.round(newWidth) === Math.round(this.minDimension.initialWidth)) {
+      newWidth = this.minDimension.initialWidth;
+      newHeight = this.minDimension.initialHeight;
+    }
     this.image.style.width = `${newWidth}px`;
     this.image.style.height = `${newHeight}px`;
     this.scale = 1;
