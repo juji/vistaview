@@ -19,7 +19,7 @@ import { close } from './defaults/close';
 import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
-import { VistaImageState } from './image-state';
+import { VistaImageState, type VistaImageStateScaleParams } from './image-state';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -68,7 +68,25 @@ export class VistaView {
       },
     };
 
-    this.imageState = new VistaImageState(this.options.maxZoomLevel!);
+    this.imageState = new VistaImageState(
+      this.options.maxZoomLevel!,
+      (par: VistaImageStateScaleParams) => {
+        // handle scale changes
+        if (par.isMin) {
+          this.isZoomedIn = false;
+          this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+        } else {
+          this.isZoomedIn = true;
+          this.qs('.vvw-zoom-out')?.removeAttribute('disabled');
+        }
+
+        if (par.isMax) {
+          this.qs('.vvw-zoom-in')?.setAttribute('disabled', 'true');
+        } else {
+          this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
+        }
+      }
+    );
 
     // setup user defined functions
     if (this.options.setupFunction) {
@@ -385,6 +403,7 @@ export class VistaView {
     let lastDistance = 0;
     let pinchMode = false;
 
+    // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
       if (e.event === 'down') {
         if (e.pointers.length >= 2) {

@@ -1,6 +1,10 @@
 import { clamp, limitPrecision } from './utils';
 
-export type VistaCurrImg = {};
+export type VistaImageStateScaleParams = {
+  scale: number;
+  isMax: boolean;
+  isMin: boolean;
+};
 
 export class VistaImageState {
   private maxZoomLevel: number;
@@ -14,9 +18,11 @@ export class VistaImageState {
   // state
   private scale: number = 1;
   private translate = { x: 0, y: 0 };
+  private onScale: ((par: VistaImageStateScaleParams) => void) | null = null;
 
-  constructor(maxZoomLevel: number) {
+  constructor(maxZoomLevel: number, onScale: (par: VistaImageStateScaleParams) => void) {
     this.maxZoomLevel = maxZoomLevel;
+    this.onScale = onScale;
   }
 
   close() {
@@ -84,6 +90,13 @@ export class VistaImageState {
       this.minDimension.minWidth,
       this.maxDimension.width
     );
+
+    this.onScale &&
+      this.onScale({
+        scale: newWidth / (this.maxDimension.width / this.maxZoomLevel),
+        isMax: newWidth >= this.maxDimension.width,
+        isMin: newWidth <= this.minDimension.initialWidth,
+      });
 
     this.scale = limitPrecision(newWidth / this.rect.width);
 
