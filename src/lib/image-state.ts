@@ -138,9 +138,10 @@ export class VistaImageState {
 
     // change opacity if closing
     if (newWidth <= this.minDimension.closingWidth) {
+      console.log(this.rect);
       this.image.style.opacity = '0.5';
     } else {
-      this.image.style.opacity = '1';
+      this.image.style.opacity = '';
     }
   }
 
@@ -202,6 +203,12 @@ export class VistaImageState {
     if (!this.image || !this.rect) return;
     const now = Date.now();
     const img = this.image;
+
+    // prevent zooming out too much
+    const newWidth = this.rect.width * targetScale;
+    if (newWidth < this.minDimension.closingWidth) return;
+    if (img.width < this.minDimension.initialWidth) return; // seems to prevent jankyness
+
     img.addEventListener(
       'transitionend',
       () => {
@@ -233,6 +240,9 @@ export class VistaImageState {
     this.image.style.height = `${newHeight}px`;
     this.scale = 1;
 
+    // make sure opacity is back to normal
+    this.image.style.opacity = '';
+
     // accumulate translate
     this.accumulatedTranslate.x += this.translate.x;
     this.accumulatedTranslate.y += this.translate.y;
@@ -248,7 +258,7 @@ export class VistaImageState {
 
     if (newWidth <= this.minDimension.closingWidth) {
       // close image
-      this.image.style.opacity = '';
+      this.close();
       return true;
     } else if (newWidth < this.minDimension.initialWidth) {
       // animate back to initial size

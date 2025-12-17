@@ -20,7 +20,7 @@ import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
 import { VistaImageState, type VistaImageStateScaleParams } from './image-state';
-// import { Throttle } from './throttle';
+import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -56,6 +56,8 @@ export class VistaView {
   private defaultOnClickHandler: (e: PointerEvent) => void = (e) => e.preventDefault();
 
   private abortController: AbortController | null = null;
+
+  private throttle = new Throttle();
 
   constructor(elements: NodeListOf<HTMLElement> | VistaImg[], options: VistaOpt = {}) {
     this.elements = elements;
@@ -264,10 +266,22 @@ export class VistaView {
 
   isZoomedIn: boolean = false;
   private zoomIn(): void {
-    this.imageState.animateZoom(1.68);
+    this.throttle.fio(
+      () => {
+        this.imageState.animateZoom(1.68);
+      },
+      'zoom',
+      222
+    );
   }
   private zoomOut(): void {
-    this.imageState.animateZoom(0.68);
+    this.throttle.fio(
+      () => {
+        this.imageState.animateZoom(0.68);
+      },
+      'zoom',
+      222
+    );
   }
 
   private displayActiveIndex(): void {
