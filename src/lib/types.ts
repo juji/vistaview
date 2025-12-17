@@ -94,3 +94,24 @@ export type VistaInterface = {
   getCurrentIndex: () => number;
   view: (index: number) => void;
 };
+
+export type VistaPointer = {
+  x: number;
+  y: number;
+  id: number | string;
+};
+
+export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
+export type VistaPointerListenerArgs = {
+  event: VistaPointerEvent;
+  pointer: VistaPointer | undefined;
+  domEvent: PointerEvent;
+  pointers: VistaPointer[];
+  lastPointerLen: number;
+};
+
+export type VistaExternalPointerListenerArgs = VistaPointerListenerArgs & {
+  hasInternalExecution: boolean;
+};
+
+export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;

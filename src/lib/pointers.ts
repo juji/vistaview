@@ -1,19 +1,4 @@
-export type VistaPointer = {
-  x: number;
-  y: number;
-  id: number | string;
-};
-
-export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
-export type VistaPointerListenerArgs = {
-  event: VistaPointerEvent;
-  pointer: VistaPointer | undefined;
-  domEvent: PointerEvent;
-  pointers: VistaPointer[];
-  lastPointerLen: number;
-};
-
-export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
+import type { VistaPointer, VistaPointerListener } from './types.js';
 
 export class VistaPointers {
   private pointers: VistaPointer[] = [];

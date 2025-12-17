@@ -7,6 +7,8 @@ import type {
   VistaOpt,
   VistaSetupFn,
   VistaTransitionFn,
+  VistaPointerListenerArgs,
+  VistaExternalPointerListenerArgs,
 } from './types';
 import { DefaultOptions } from './defaults/options';
 import { vistaViewComponent, vistaViewItem } from './components';
@@ -16,7 +18,9 @@ import { init } from './defaults/init';
 import { close } from './defaults/close';
 import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
-import { VistaPointers, type VistaPointerListenerArgs } from './pointers';
+import { VistaPointers } from './pointers';
+import { VistaImageState } from './image-state';
+import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -216,7 +220,7 @@ export class VistaView {
     };
   }
 
-  isZoomed: boolean = false;
+  isZoomedIn: boolean = false;
   private zoomIn(): void {}
   private zoomOut(): void {}
   private zoom(_point: number, _center?: { x: number; y: number }): void {}
@@ -350,16 +354,39 @@ export class VistaView {
   };
 
   /// POINTERS
-  private pointerListeners: ((e: VistaPointerListenerArgs) => void)[] = [];
-  registerPointerListener(listener: (e: VistaPointerListenerArgs) => void): void {
+  private pointerListeners: ((e: VistaExternalPointerListenerArgs) => void)[] = [];
+  registerPointerListener(listener: (e: VistaExternalPointerListenerArgs) => void): void {
     this.pointerListeners.push(listener);
   }
   private unregisterPointerListeners(): void {
     this.pointerListeners = [];
   }
 
-  private pointerListener = (_e: VistaPointerListenerArgs) => {
-    this.zoom(0);
+  private getPointerListener = () => {
+    const imageState = new VistaImageState(this.options.maxZoomLevel!);
+    const throttle = new Throttle();
+    let lastDistance = 0;
+    let lastRatio = 0;
+    let disableMove = false;
+    let lastPointerDown = {
+      x: 0,
+      y: 0,
+      time: 0,
+    };
+
+    return (e: VistaPointerListenerArgs) => {
+      this.zoom(0);
+
+      console.log(imageState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
+
+      // external listeners
+      this.pointerListeners.forEach((l) =>
+        l({
+          ...e,
+          hasInternalExecution: this.isZoomedIn,
+        })
+      );
+    };
   };
 
   /// OPEN
@@ -441,7 +468,7 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
 
     // pointer listener
-    this.pointers = new VistaPointers(this.imageContainer!, [this.pointerListener], true);
+    this.pointers = new VistaPointers(this.imageContainer!, [this.getPointerListener()], true);
 
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
