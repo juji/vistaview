@@ -7,7 +7,7 @@ export class VistaImageState {
   private image: HTMLImageElement | null = null;
   private rect: DOMRect | null = null;
   private initialCenter: { x: number; y: number } = { x: 0, y: 0 };
-  private maxDimension = { width: 0, height: 0 };
+  private maxDimension = { width: 0 };
   private minDimension = { initialWidth: 0, initialHeight: 0, minWidth: 0, closingWidth: 0 };
   private accumulatedTranslate = { x: 0, y: 0 };
 
@@ -23,7 +23,7 @@ export class VistaImageState {
     this.image = null;
     this.rect = null;
     this.initialCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    this.maxDimension = { width: 0, height: 0 };
+    this.maxDimension = { width: 0 };
     this.minDimension = { initialWidth: 0, initialHeight: 0, minWidth: 0, closingWidth: 0 };
     this.accumulatedTranslate = { x: 0, y: 0 };
     this.scale = 1;
@@ -35,7 +35,6 @@ export class VistaImageState {
     this.image = image;
     this.maxDimension = {
       width: image.naturalWidth * this.maxZoomLevel,
-      height: image.naturalHeight * this.maxZoomLevel,
     };
 
     if (!image.dataset.vvwWidth || !image.dataset.vvwHeight) {
@@ -50,10 +49,7 @@ export class VistaImageState {
       minWidth: width * 0.1,
       closingWidth: width * 0.5,
     };
-
-    const accumTrans = image.dataset.vvwAccumTrans;
-    this.accumulatedTranslate = accumTrans ? JSON.parse(accumTrans) : { x: 0, y: 0 };
-    image.dataset.vvwAccumTrans = JSON.stringify(this.accumulatedTranslate);
+    this.accumulatedTranslate = { x: 0, y: 0 };
   }
 
   setInitialCenter(center: { x: number; y: number }) {
@@ -102,8 +98,6 @@ export class VistaImageState {
 
     // change opacity if closing
     if (newWidth <= this.minDimension.closingWidth) {
-      console.log('newWidth', newWidth);
-      console.log('closingWidth', this.minDimension.closingWidth);
       this.image.style.opacity = '0.5';
     } else {
       this.image.style.opacity = '1';
@@ -121,12 +115,10 @@ export class VistaImageState {
     this.scale = 1;
 
     // accumulate translate
-    const accumX = parseFloat(this.image.dataset.vvwAccumTranslateX || '0') + this.translate.x;
-    const accumY = parseFloat(this.image.dataset.vvwAccumTranslateY || '0') + this.translate.y;
-    this.image.dataset.vvwAccumTranslateX = accumX.toString();
-    this.image.dataset.vvwAccumTranslateY = accumY.toString();
-    this.image.style.left = `calc(50% + ${accumX}px)`;
-    this.image.style.top = `calc(50% + ${accumY}px)`;
+    this.accumulatedTranslate.x += this.translate.x;
+    this.accumulatedTranslate.y += this.translate.y;
+    this.image.style.left = `calc(50% + ${this.accumulatedTranslate.x}px)`;
+    this.image.style.top = `calc(50% + ${this.accumulatedTranslate.y}px)`;
     this.translate = { x: 0, y: 0 };
 
     // remove transform
