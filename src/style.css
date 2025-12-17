@@ -65,6 +65,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   z-index: var(--vvw-init-z);
   opacity: 0;
@@ -74,16 +75,16 @@
 
 .vvw-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 
   .vvw-bg {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 0;
     background-color: rgb(from var(--vvw-bg-color) r g b / var(--vvw-bg-opacity));
     backdrop-filter: blur(var(--vvw-bg-blur));
@@ -94,7 +95,7 @@
 
 .vvw-image-container {
   position: relative;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   isolation: isolate;
   pointer-events: none;
@@ -105,8 +106,8 @@
   left: 0;
   top: 0; */
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   pointer-events: none;
 
