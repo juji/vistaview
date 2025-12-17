@@ -153,6 +153,22 @@ export function setImageStyles(
   } = getElmProps(el);
 
   // Calculate translation values, clamped within viewport + image size
+  // there is a bug when the address bar in mobile browser shows
+  // the viewport height changes, and it's not reflected in translateTop calculation
+
+  // get html's client height
+  // const htmlClientHeight = document.documentElement.clientHeight;
+  // const htmlClientWidth = document.documentElement.clientWidth;
+  // const outerHeight = window.outerHeight;
+  // const innerHeight = window.innerHeight;
+  // const innerWidth = window.innerWidth;
+  // const vhOffset = innerHeight - htmlClientHeight;
+  // const vwOffset = innerWidth - htmlClientWidth;
+  // console.log('vhOffset', vhOffset);
+  // console.log('vwOffset', vwOffset);
+  // console.log('outerHeight', outerHeight);
+  // console.log('innerHeight', innerHeight);
+
   const translateLeft =
     Math.min(Math.max(left, -w), window.innerWidth + w) - window.innerWidth / 2 + w / 2;
   const translateTop =
