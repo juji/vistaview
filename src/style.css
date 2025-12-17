@@ -363,11 +363,15 @@
       width calc(var(--vvw-anim-dur) * 1ms) ease,
       height calc(var(--vvw-anim-dur) * 1ms) ease,
       border-radius calc(var(--vvw-anim-dur) * 1ms) ease,
+      top calc(var(--vvw-anim-dur) * 1ms) ease,
+      left calc(var(--vvw-anim-dur) * 1ms) ease,
       opacity 0ms calc(var(--vvw-anim-dur) * 1ms) ease;
     opacity: 0;
-    --vvw-current-radius: var(--vvw-init-radius) !important;
-    --vvw-current-w: var(--vvw-init-w) !important;
-    --vvw-current-h: var(--vvw-init-h) !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: var(--vvw-init-w) !important;
+    height: var(--vvw-init-h) !important;
+    border-radius: var(--vvw-init-radius) !important;
   }
 
   .vvw-img-lo {
