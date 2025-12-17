@@ -420,6 +420,7 @@ export class VistaView {
         cancelMove();
 
         if (this.isZoomedIn && e.pointers.length === 1) {
+          console.log('set initial center for 1');
           const center = this.pointers!.getCentroid();
           imgState.setInitialCenter(center!);
         }
@@ -431,7 +432,7 @@ export class VistaView {
           imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
-        if (this.isZoomedIn && e.pointers.length === 1) {
+        if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0) {
           const center = this.pointers!.getCentroid();
           imgState.move(center!);
         }
@@ -459,7 +460,7 @@ export class VistaView {
             }
           },
           'pointer-end',
-          333
+          1000
         );
       }
 
