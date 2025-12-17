@@ -20,7 +20,7 @@ import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
 import { VistaPointers } from './pointers';
 import { VistaImageState, type VistaImageStateScaleParams } from './image-state';
-import { Throttle } from './throttle';
+// import { Throttle } from './throttle';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -409,7 +409,7 @@ export class VistaView {
 
   private getPointerListener = () => {
     const imgState = this.imageState;
-    const throttle = new Throttle(); // ~60fps
+    // const throttle = new Throttle();
     let lastDistance = 0;
     let pinchMode = false;
     let cancelMove = () => {};
@@ -420,7 +420,6 @@ export class VistaView {
         cancelMove();
 
         if (this.isZoomedIn && e.pointers.length === 1) {
-          console.log('set initial center for 1');
           const center = this.pointers!.getCentroid();
           imgState.setInitialCenter(center!);
         }
@@ -446,22 +445,16 @@ export class VistaView {
       } else if (e.event === 'up' || e.event === 'cancel') {
         if (!pinchMode && !this.isZoomedIn) return;
 
-        throttle.fio(
-          () => {
-            if (pinchMode) {
-              pinchMode = false;
-              const close = imgState.normalize();
-              if (close)
-                requestAnimationFrame(() => {
-                  this.close();
-                });
-            } else if (this.isZoomedIn && e.pointers.length === 0) {
-              cancelMove = imgState.moveAndNormalize(e.pointer!);
-            }
-          },
-          'pointer-end',
-          1000
-        );
+        if (pinchMode) {
+          pinchMode = false;
+          const close = imgState.normalize();
+          if (close)
+            requestAnimationFrame(() => {
+              this.close();
+            });
+        } else if (this.isZoomedIn && e.pointers.length === 0) {
+          cancelMove = imgState.moveAndNormalize(e.pointer!);
+        }
       }
 
       // external listeners
