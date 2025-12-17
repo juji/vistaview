@@ -263,8 +263,12 @@ export class VistaView {
   }
 
   isZoomedIn: boolean = false;
-  private zoomIn(): void {}
-  private zoomOut(): void {}
+  private zoomIn(): void {
+    this.imageState.animateZoom(1.68);
+  }
+  private zoomOut(): void {
+    this.imageState.animateZoom(0.68);
+  }
 
   private displayActiveIndex(): void {
     const cid = this.currentIndex;

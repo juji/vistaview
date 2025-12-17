@@ -197,6 +197,28 @@ export class VistaImageState {
     };
   }
 
+  private animationTimestamp: number = 0;
+  animateZoom(targetScale: number) {
+    if (!this.image || !this.rect) return;
+    const now = Date.now();
+    const img = this.image;
+    img.addEventListener(
+      'transitionend',
+      () => {
+        if (this.animationTimestamp !== now) return;
+        if (!img) return;
+        img.style.transition = '';
+        this.normalize();
+      },
+      { once: true }
+    );
+
+    if (!img.style.transition) img.style.transition = 'all 222ms ease';
+
+    this.animationTimestamp = now;
+    this.scaleMove(targetScale);
+  }
+
   normalize(checkBound: boolean = true): boolean | void {
     if (!this.image || !this.rect) return;
 
