@@ -138,7 +138,6 @@ export class VistaImageState {
 
     // change opacity if closing
     if (newWidth <= this.minDimension.closingWidth) {
-      console.log(this.rect);
       this.image.style.opacity = '0.5';
     } else {
       this.image.style.opacity = '';
