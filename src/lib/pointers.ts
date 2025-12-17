@@ -47,6 +47,8 @@ export class VistaPointers {
     if (pointer) {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
+      pointer.velocityX = (e.clientX - pointer.initX) / (e.timeStamp - pointer.initTime);
+      pointer.velocityY = (e.clientY - pointer.initY) / (e.timeStamp - pointer.initTime);
     }
     this.listeners.forEach((l) =>
       l({
