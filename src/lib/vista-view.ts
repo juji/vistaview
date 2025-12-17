@@ -39,6 +39,7 @@ export class VistaView {
   private closeFunction: VistaCloseFn = close;
   private transitionFunction: VistaTransitionFn = transition;
   private pointers: VistaPointers | null = null;
+  private imageState: VistaImageState;
 
   root: HTMLElement | null = null;
   imageContainer: HTMLElement | null = null;
@@ -67,6 +68,8 @@ export class VistaView {
         ...options.controls,
       },
     };
+
+    this.imageState = new VistaImageState(this.options.maxZoomLevel!);
 
     // setup user defined functions
     if (this.options.setupFunction) {
@@ -141,6 +144,9 @@ export class VistaView {
     const width = img0.width;
     const height = img0.height;
 
+    // reset image state
+    this.imageState.reset();
+
     // swap elements
     imgs.innerHTML = '';
     if (cleanup instanceof Function) cleanup();
@@ -161,6 +167,9 @@ export class VistaView {
         img.setAttribute('style', style);
         img.width = width;
         img.height = height;
+        img.dataset.vvwMinDim = '';
+        img.dataset.vvwAccumTrans = '';
+        this.imageState.setCurrentImage(img);
       }
 
       imgs.appendChild(vistaImg);
@@ -254,36 +263,49 @@ export class VistaView {
     }
   }
 
-  private waitForImagesToLoad(onImgLoaded?: () => void, signal?: AbortSignal): void {
+  private waitForImagesToLoad(): void {
     const imgs = this.imageContainer!;
     const imgElements = imgs.querySelectorAll('img.vvw-img-hi:not(.vvw--loaded)');
     imgElements.forEach((img) => {
       const im = img as HTMLImageElement;
 
-      function onLoaded() {
-        if (signal?.aborted) return;
+      const onLoaded = () => {
+        // if (signal?.aborted) return;
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
         im.addEventListener(
           'transitionend',
           () => {
-            if (signal?.aborted) return;
+            // if (signal?.aborted) return;
             im.classList.add('vvw--ready');
           },
           { once: true }
         );
 
         im.classList.add('vvw--loaded');
-        onImgLoaded && onImgLoaded();
+        // onImgLoaded && onImgLoaded();
         requestAnimationFrame(() => {
-          if (signal?.aborted) return;
+          // if (signal?.aborted) return;
           const { width, height } = getFullSizeDim(im);
+
+          im.addEventListener(
+            'transitionend',
+            () => {
+              if (im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`)) {
+                im.dataset.vvwMinDim = '';
+                im.dataset.vvwAccumTrans = '';
+                this.imageState.setCurrentImage(im);
+              }
+            },
+            { once: true }
+          );
+
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
           im.style.setProperty('--vvw-current-radius', `0px`);
         });
-      }
+      };
 
       if (im.complete && im.naturalWidth !== 0) {
         onLoaded();
@@ -363,45 +385,33 @@ export class VistaView {
   }
 
   private getPointerListener = () => {
-    const imageState = new VistaImageState(this.options.maxZoomLevel!);
-    // const throttle = new Throttle();
+    const imgState = this.imageState;
     let lastDistance = 0;
     let pinchMode = false;
-    // let lastRatio = 0;
-    // let disableMove = false;
-    // let lastPointerDown = {
-    //   x: 0,
-    //   y: 0,
-    //   time: 0,
-    // };
 
     return (e: VistaPointerListenerArgs) => {
       this.zoom(0);
 
-      // console.log(imageState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
+      // console.log(imgState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
 
       if (e.event === 'down') {
         if (e.pointers.length >= 2) {
           pinchMode = true;
-          const img = this.qs(
-            `[data-vvw-idx="${this.currentIndex}"] img.vvw-img-hi`
-          ) as HTMLImageElement;
           const center = this.pointers!.getCentroid();
           lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-          imageState.setCurrentImage(img);
-          imageState.setInitialCenter(center!);
+          imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
         if (e.pointers.length >= 2) {
           if (!pinchMode) return;
           const center = this.pointers!.getCentroid();
           const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-          imageState.scaleMove(distance / lastDistance, center!);
+          imgState.scaleMove(distance / lastDistance, center!);
         }
       } else if (e.event === 'up') {
         if (!pinchMode) return;
         pinchMode = false;
-        const close = imageState.normalize();
+        const close = imgState.normalize();
         if (close)
           requestAnimationFrame(() => {
             this.close();
@@ -409,7 +419,7 @@ export class VistaView {
       } else if (e.event === 'cancel') {
         if (!pinchMode) return;
         pinchMode = false;
-        const close = imageState.normalize();
+        const close = imgState.normalize();
         if (close)
           requestAnimationFrame(() => {
             this.close();
@@ -547,11 +557,14 @@ export class VistaView {
         () => {
           this.root?.classList.add('vvw--settled');
           this.waitForImagesToLoad();
+
           // background click to close
           this.qs('.vvw-bg')?.addEventListener('click', (e) => {
             e.preventDefault();
             this.close();
           });
+
+          this.imageState.reset();
         },
         { once: true }
       );

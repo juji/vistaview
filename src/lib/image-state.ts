@@ -6,7 +6,6 @@ export class VistaImageState {
   private maxZoomLevel: number;
   private image: HTMLImageElement | null = null;
   private rect: DOMRect | null = null;
-  private initialZoom: number = 1;
   private initialCenter: { x: number; y: number } = { x: 0, y: 0 };
   private maxDimension = { width: 0, height: 0 };
   private minDimension = { initialWidth: 0, initialHeight: 0, minWidth: 0, closingWidth: 0 };
@@ -20,10 +19,20 @@ export class VistaImageState {
     this.maxZoomLevel = maxZoomLevel;
   }
 
+  reset() {
+    this.image = null;
+    this.rect = null;
+    this.initialCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    this.maxDimension = { width: 0, height: 0 };
+    this.minDimension = { initialWidth: 0, initialHeight: 0, minWidth: 0, closingWidth: 0 };
+    this.accumulatedTranslate = { x: 0, y: 0 };
+    this.scale = 1;
+    this.translate = { x: 0, y: 0 };
+  }
+
   setCurrentImage(image: HTMLImageElement) {
     this.rect = image.getBoundingClientRect();
     this.image = image;
-    this.initialZoom = this.rect.width / image.naturalWidth;
     this.maxDimension = {
       width: image.naturalWidth * this.maxZoomLevel,
       height: image.naturalHeight * this.maxZoomLevel,
@@ -35,7 +44,7 @@ export class VistaImageState {
       : {
           initialWidth: this.rect.width,
           initialHeight: this.rect.height,
-          minWidth: this.rect.width * 0.3,
+          minWidth: this.rect.width * 0.1,
           closingWidth: this.rect.width * 0.5,
         };
 
@@ -48,10 +57,6 @@ export class VistaImageState {
 
   setInitialCenter(center: { x: number; y: number }) {
     this.initialCenter = center;
-  }
-
-  getInitialCenter() {
-    return this.initialCenter;
   }
 
   scaleMove(ratio: number, center: { x: number; y: number }) {
@@ -120,6 +125,10 @@ export class VistaImageState {
     // remove transform
     this.image.style.transform = ``;
 
+    console.log('new width after normalize:', newWidth);
+    console.log('min closing width:', this.minDimension.closingWidth);
+    console.log('min initial width:', this.minDimension.initialWidth);
+
     if (newWidth <= this.minDimension.closingWidth) {
       this.image.style.opacity = '';
       return true;
@@ -146,9 +155,5 @@ export class VistaImageState {
         img.style.top = `50%`;
       });
     }
-  }
-
-  public getCurrentZoom(): number {
-    return this.initialZoom;
   }
 }
