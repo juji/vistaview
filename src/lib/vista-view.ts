@@ -401,6 +401,9 @@ export class VistaView {
     GlobalVistaState.somethingOpened = this;
     this.currentIndex = startIndex;
 
+    // Prevent body scrolling
+    document.body.style.overflow = 'hidden';
+
     // setting up root component
     const root = vistaViewComponent({
       controls: this.options.controls,
@@ -451,12 +454,6 @@ export class VistaView {
     this.qs('.vvw-zoom-out')?.addEventListener('click', () => this.zoomOut());
     this.qs('.vvw-prev>button')?.addEventListener('click', () => this.prev());
     this.qs('.vvw-next>button')?.addEventListener('click', () => this.next());
-
-    // background click to close
-    this.qs('.vvw-bg')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      this.close();
-    });
 
     // keyboard events
     window.addEventListener('keydown', this.onKeyDown);
@@ -513,6 +510,11 @@ export class VistaView {
         () => {
           this.root?.classList.add('vvw--settled');
           this.waitForImagesToLoad();
+          // background click to close
+          this.qs('.vvw-bg')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.close();
+          });
         },
         { once: true }
       );
@@ -574,6 +576,9 @@ export class VistaView {
     this.imageContainer = null;
     this.currentChildren = null;
     this.currentIndex = -1;
+
+    // Restore body scrolling
+    document.body.style.overflow = '';
 
     GlobalVistaState.somethingOpened = null;
     this.closeFunction(this);
