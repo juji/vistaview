@@ -59,8 +59,12 @@ export class VistaImageState {
     this.initialCenter = center;
   }
 
-  scaleMove(ratio: number, center: { x: number; y: number }) {
+  scaleMove(ratio: number, center?: { x: number; y: number }) {
     if (!this.image || !this.rect) return;
+
+    if (!center) {
+      center = this.initialCenter;
+    }
 
     const newWidth = clamp(
       this.rect.width * ratio,
@@ -124,10 +128,6 @@ export class VistaImageState {
 
     // remove transform
     this.image.style.transform = ``;
-
-    console.log('new width after normalize:', newWidth);
-    console.log('min closing width:', this.minDimension.closingWidth);
-    console.log('min initial width:', this.minDimension.initialWidth);
 
     if (newWidth <= this.minDimension.closingWidth) {
       this.image.style.opacity = '';
