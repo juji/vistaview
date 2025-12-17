@@ -412,14 +412,11 @@ export class VistaView {
     const throttle = new Throttle(); // ~60fps
     let lastDistance = 0;
     let pinchMode = false;
-    let releasing = false;
     let cancelMove = () => {};
 
     // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
       if (e.event === 'down') {
-        if (releasing) return;
-
         cancelMove();
 
         if (this.isZoomedIn && e.pointers.length === 1) {
@@ -434,8 +431,6 @@ export class VistaView {
           imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
-        if (releasing) return;
-
         if (this.isZoomedIn && e.pointers.length === 1) {
           const center = this.pointers!.getCentroid();
           imgState.move(center!);
@@ -449,11 +444,9 @@ export class VistaView {
         }
       } else if (e.event === 'up' || e.event === 'cancel') {
         if (!pinchMode && !this.isZoomedIn) return;
-        if (releasing) return;
 
         throttle.fio(
           () => {
-            releasing = true;
             if (pinchMode) {
               pinchMode = false;
               const close = imgState.normalize();
@@ -468,9 +461,6 @@ export class VistaView {
           'pointer-end',
           333
         );
-        setTimeout(() => {
-          releasing = false;
-        }, 333);
       }
 
       // external listeners

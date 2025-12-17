@@ -144,44 +144,60 @@ export class VistaImageState {
     }
   }
 
-  moveAndNormalize(pointer: VistaPointer) {
-    if (pointer.deltaTime > 333) {
-      this.normalize();
-      return () => {};
-    }
-
+  moveAndNormalize(pointer: VistaPointer): () => void {
     let raf = 0;
+    let canceled = false;
     const animate = ({ x, y }: { x: number; y: number }) => {
+      if (canceled) {
+        return;
+      }
+
+      if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {
+        return this.normalize();
+      }
+
+      x *= 0.95;
+      y *= 0.95;
+      const bound = this.image!.getBoundingClientRect();
+
       this.translate.x = limitPrecision(this.translate.x + x);
       this.translate.y = limitPrecision(this.translate.y + y);
+
+      if (bound.right < window.innerWidth / 2) {
+        this.translate.x += (window.innerWidth / 2 - bound.right) * 0.1;
+        x *= 0.5;
+      }
+      if (bound.left > window.innerWidth / 2) {
+        this.translate.x -= (bound.left - window.innerWidth / 2) * 0.1;
+        x *= 0.5;
+      }
+      if (bound.bottom < window.innerHeight / 2) {
+        this.translate.y += (window.innerHeight / 2 - bound.bottom) * 0.1;
+        y *= 0.5;
+      }
+      if (bound.top > window.innerHeight / 2) {
+        this.translate.y -= (bound.top - window.innerHeight / 2) * 0.1;
+        y *= 0.5;
+      }
+
       this.image!.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
 
-      if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) return this.normalize();
-
-      const speedFactor = 0.95;
-      raf = requestAnimationFrame(() =>
-        animate({
-          x: x * speedFactor,
-          y: y * speedFactor,
-        })
-      );
+      raf = requestAnimationFrame(() => animate({ x, y }));
     };
 
-    console.log('moveAndNormalize', pointer.velocityX, pointer.velocityY);
-    raf = requestAnimationFrame(() =>
-      animate({
-        x: pointer.velocityX * 33,
-        y: pointer.velocityY * 33,
-      })
-    );
+    animate({
+      x: pointer.velocityX * 10,
+      y: pointer.velocityY * 10,
+    });
 
     return () => {
+      canceled = true;
       cancelAnimationFrame(raf);
-      this.normalize();
+      this.normalize(false);
     };
   }
 
-  normalize(): boolean | void {
+  normalize(checkBound: boolean = true): boolean | void {
     if (!this.image || !this.rect) return;
 
     // translate scale to width/height
@@ -205,6 +221,7 @@ export class VistaImageState {
     this.rect = this.image.getBoundingClientRect();
 
     if (newWidth <= this.minDimension.closingWidth) {
+      // close image
       this.image.style.opacity = '';
       return true;
     } else if (newWidth < this.minDimension.initialWidth) {
@@ -229,6 +246,45 @@ export class VistaImageState {
         img.style.left = `50%`;
         img.style.top = `50%`;
       });
+    } else if (checkBound) {
+      let changes = false;
+
+      // adjust position
+      if (this.rect.right < window.innerWidth / 2) {
+        changes = true;
+        this.accumulatedTranslate.x += window.innerWidth / 2 - this.rect.right;
+      }
+
+      if (this.rect.left > window.innerWidth / 2) {
+        changes = true;
+        this.accumulatedTranslate.x -= this.rect.left - window.innerWidth / 2;
+      }
+
+      if (this.rect.bottom < window.innerHeight / 2) {
+        changes = true;
+        this.accumulatedTranslate.y += window.innerHeight / 2 - this.rect.bottom;
+      }
+
+      if (this.rect.top > window.innerHeight / 2) {
+        changes = true;
+        this.accumulatedTranslate.y -= this.rect.top - window.innerHeight / 2;
+      }
+
+      if (changes) {
+        const img = this.image;
+        img.addEventListener(
+          'transitionend',
+          () => {
+            if (!img) return;
+            img.style.transition = '';
+            this.rect = img.getBoundingClientRect();
+          },
+          { once: true }
+        );
+        img.style.transition = 'all 222ms ease';
+        img.style.left = `calc(50% + ${this.accumulatedTranslate.x}px)`;
+        img.style.top = `calc(50% + ${this.accumulatedTranslate.y}px)`;
+      }
     }
   }
 }

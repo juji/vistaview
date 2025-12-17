@@ -20,10 +20,7 @@ export class VistaPointers {
     const pointer = {
       x: e.clientX,
       y: e.clientY,
-      initX: e.clientX,
-      initY: e.clientY,
-      initTime: e.timeStamp,
-      deltaTime: 0,
+      lastTimestamp: e.timeStamp,
       velocityX: 0,
       velocityY: 0,
       id: e.pointerId,
@@ -46,8 +43,11 @@ export class VistaPointers {
     e.preventDefault();
     const pointer = this.pointers.find((p) => p.id === e.pointerId);
     if (pointer) {
+      pointer.velocityX = (e.clientX - pointer.x) / (e.timeStamp - pointer.lastTimestamp);
+      pointer.velocityY = (e.clientY - pointer.y) / (e.timeStamp - pointer.lastTimestamp);
       pointer.x = e.clientX;
       pointer.y = e.clientY;
+      pointer.lastTimestamp = e.timeStamp;
     }
     this.listeners.forEach((l) =>
       l({
@@ -65,9 +65,6 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
-    pointer.velocityX = (e.clientX - pointer.initX) / (e.timeStamp - pointer.initTime);
-    pointer.velocityY = (e.clientY - pointer.initY) / (e.timeStamp - pointer.initTime);
-    pointer.deltaTime = e.timeStamp - pointer.initTime;
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
       this.lastLen = this.pointers.length + 1;
@@ -88,9 +85,6 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
-    pointer.velocityX = (e.clientX - pointer.initX) / (e.timeStamp - pointer.initTime);
-    pointer.velocityY = (e.clientY - pointer.initY) / (e.timeStamp - pointer.initTime);
-    pointer.deltaTime = e.timeStamp - pointer.initTime;
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
       this.lastLen = this.pointers.length + 1;
