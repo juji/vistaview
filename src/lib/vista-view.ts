@@ -16,6 +16,7 @@ import { init } from './defaults/init';
 import { close } from './defaults/close';
 import { transition } from './defaults/transition';
 import { getFullSizeDim, setImageStyles } from './utils';
+import { VistaPointers, type VistaPointerListenerArgs } from './pointers';
 
 export const GlobalVistaState: { somethingOpened: VistaView | null } = {
   somethingOpened: null,
@@ -33,6 +34,7 @@ export class VistaView {
   private initFunction: VistaInitFn = init;
   private closeFunction: VistaCloseFn = close;
   private transitionFunction: VistaTransitionFn = transition;
+  private pointers: VistaPointers | null = null;
 
   root: HTMLElement | null = null;
   imageContainer: HTMLElement | null = null;
@@ -214,8 +216,10 @@ export class VistaView {
     };
   }
 
+  isZoomed: boolean = false;
   private zoomIn(): void {}
   private zoomOut(): void {}
+  private zoom(_point: number, _center?: { x: number; y: number }): void {}
 
   private displayActiveIndex(): void {
     const cid = this.currentIndex;
@@ -345,6 +349,20 @@ export class VistaView {
     });
   };
 
+  /// POINTERS
+  private pointerListeners: ((e: VistaPointerListenerArgs) => void)[] = [];
+  registerPointerListener(listener: (e: VistaPointerListenerArgs) => void): void {
+    this.pointerListeners.push(listener);
+  }
+  private unregisterPointerListeners(): void {
+    this.pointerListeners = [];
+  }
+
+  private pointerListener = (_e: VistaPointerListenerArgs) => {
+    this.zoom(0);
+  };
+
+  /// OPEN
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -422,6 +440,9 @@ export class VistaView {
     // resize listener
     window.addEventListener('resize', this.onResizeHandler);
 
+    // pointer listener
+    this.pointers = new VistaPointers(this.imageContainer!, [this.pointerListener], true);
+
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
     [
@@ -476,6 +497,7 @@ export class VistaView {
     });
   }
 
+  /// CLOSE
   async close(animate: boolean = true): Promise<void> {
     if (GlobalVistaState.somethingOpened !== this) {
       return;
@@ -517,6 +539,9 @@ export class VistaView {
 
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onResizeHandler);
+    this.root.removeEventListener('wheel', this.onScroll);
+    this.unregisterPointerListeners();
+    this.pointers!.removeListeners();
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
