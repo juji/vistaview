@@ -167,8 +167,8 @@ export class VistaView {
         img.setAttribute('style', style);
         img.width = width;
         img.height = height;
-        img.dataset.vvwMinDim = '';
-        img.dataset.vvwAccumTrans = '';
+        img.dataset.vvwWidth = width.toString();
+        img.dataset.vvwHeight = height.toString();
         this.imageState.setCurrentImage(img);
       }
 
@@ -293,8 +293,6 @@ export class VistaView {
             'transitionend',
             () => {
               if (im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`)) {
-                im.dataset.vvwMinDim = '';
-                im.dataset.vvwAccumTrans = '';
                 this.imageState.setCurrentImage(im);
               }
             },
@@ -303,6 +301,8 @@ export class VistaView {
 
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
+          im.dataset.vvwWidth = width.toString();
+          im.dataset.vvwHeight = height.toString();
           im.style.setProperty('--vvw-current-radius', `0px`);
         });
       };
@@ -371,6 +371,8 @@ export class VistaView {
         const { width, height } = getFullSizeDim(hi);
         hi.style.setProperty('--vvw-current-w', `${width}px`);
         hi.style.setProperty('--vvw-current-h', `${height}px`);
+        hi.dataset.vvwWidth = width.toString();
+        hi.dataset.vvwHeight = height.toString();
       }
     });
   };
@@ -408,17 +410,11 @@ export class VistaView {
           const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
           imgState.scaleMove(distance / lastDistance, center!);
         }
-      } else if (e.event === 'up') {
+      } else if (e.event === 'up' || e.event === 'cancel') {
         if (!pinchMode) return;
         pinchMode = false;
-        const close = imgState.normalize();
-        if (close)
-          requestAnimationFrame(() => {
-            this.close();
-          });
-      } else if (e.event === 'cancel') {
-        if (!pinchMode) return;
-        pinchMode = false;
+
+        console.log('Pointer up/cancel - normalizing image');
         const close = imgState.normalize();
         if (close)
           requestAnimationFrame(() => {

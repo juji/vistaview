@@ -188,6 +188,8 @@ export function setImageStyles(
     hs.setProperty('--vvw-current-radius', `${br}`);
     hs.setProperty('--vvw-current-w', `${hiWidth}px`);
     hs.setProperty('--vvw-current-h', `${hiHeight}px`);
+    hi.dataset.vvwWidth = hiWidth.toString();
+    hi.dataset.vvwHeight = hiHeight.toString();
   }
 }
 

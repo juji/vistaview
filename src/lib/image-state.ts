@@ -38,17 +38,18 @@ export class VistaImageState {
       height: image.naturalHeight * this.maxZoomLevel,
     };
 
-    const minDim = image.dataset.vvwMinDim;
-    this.minDimension = minDim
-      ? JSON.parse(minDim)
-      : {
-          initialWidth: this.rect.width,
-          initialHeight: this.rect.height,
-          minWidth: this.rect.width * 0.1,
-          closingWidth: this.rect.width * 0.5,
-        };
+    if (!image.dataset.vvwWidth || !image.dataset.vvwHeight) {
+      throw new Error('VistaImageState: Image dataset vvwWidth or vvwHeight not set.');
+    }
 
-    image.dataset.vvwMinDim = JSON.stringify(this.minDimension);
+    const width = parseFloat(image.dataset.vvwWidth);
+    const height = parseFloat(image.dataset.vvwHeight);
+    this.minDimension = {
+      initialWidth: width,
+      initialHeight: height,
+      minWidth: width * 0.1,
+      closingWidth: width * 0.5,
+    };
 
     const accumTrans = image.dataset.vvwAccumTrans;
     this.accumulatedTranslate = accumTrans ? JSON.parse(accumTrans) : { x: 0, y: 0 };
@@ -71,7 +72,9 @@ export class VistaImageState {
       this.minDimension.minWidth,
       this.maxDimension.width
     );
+
     this.scale = limitPrecision(newWidth / this.rect.width);
+    // console.log('Scaling to', this.scale);
 
     // Calculate translation to keep the INITIAL center point fixed during zoom
     // Current image center position
@@ -99,6 +102,8 @@ export class VistaImageState {
 
     // change opacity if closing
     if (newWidth <= this.minDimension.closingWidth) {
+      console.log('newWidth', newWidth);
+      console.log('closingWidth', this.minDimension.closingWidth);
       this.image.style.opacity = '0.5';
     } else {
       this.image.style.opacity = '1';
@@ -124,10 +129,11 @@ export class VistaImageState {
     this.image.style.top = `calc(50% + ${accumY}px)`;
     this.translate = { x: 0, y: 0 };
 
-    this.rect = this.image.getBoundingClientRect();
-
     // remove transform
     this.image.style.transform = ``;
+
+    // update rect
+    this.rect = this.image.getBoundingClientRect();
 
     if (newWidth <= this.minDimension.closingWidth) {
       this.image.style.opacity = '';
@@ -135,6 +141,7 @@ export class VistaImageState {
     } else if (newWidth < this.minDimension.initialWidth) {
       // animate back to initial size
       requestAnimationFrame(() => {
+        console.log('Animating back to initial size');
         const img = this.image;
         if (!img) return;
         img.dataset.vvwAccumTranslateX = '0';
