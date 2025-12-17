@@ -169,7 +169,14 @@ export class VistaView {
         img.height = height;
         img.dataset.vvwWidth = width.toString();
         img.dataset.vvwHeight = height.toString();
-        this.imageState.setCurrentImage(img);
+
+        // wait for dimensions
+        const waitDim = setInterval(() => {
+          if (img.getBoundingClientRect().width) {
+            clearInterval(waitDim);
+            this.imageState.setCurrentImage(img);
+          }
+        }, 333);
       }
 
       imgs.appendChild(vistaImg);
@@ -232,7 +239,6 @@ export class VistaView {
   isZoomedIn: boolean = false;
   private zoomIn(): void {}
   private zoomOut(): void {}
-  private zoom(_point: number, _center?: { x: number; y: number }): void {}
 
   private displayActiveIndex(): void {
     const cid = this.currentIndex;
@@ -270,34 +276,23 @@ export class VistaView {
       const im = img as HTMLImageElement;
 
       const onLoaded = () => {
-        // if (signal?.aborted) return;
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
         im.addEventListener(
           'transitionend',
           () => {
-            // if (signal?.aborted) return;
+            if (im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`)) {
+              this.imageState.setCurrentImage(im);
+            }
             im.classList.add('vvw--ready');
           },
           { once: true }
         );
 
         im.classList.add('vvw--loaded');
-        // onImgLoaded && onImgLoaded();
         requestAnimationFrame(() => {
-          // if (signal?.aborted) return;
           const { width, height } = getFullSizeDim(im);
-
-          im.addEventListener(
-            'transitionend',
-            () => {
-              if (im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`)) {
-                this.imageState.setCurrentImage(im);
-              }
-            },
-            { once: true }
-          );
 
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
@@ -392,10 +387,6 @@ export class VistaView {
     let pinchMode = false;
 
     return (e: VistaPointerListenerArgs) => {
-      this.zoom(0);
-
-      // console.log(imgState, throttle, lastDistance, lastRatio, disableMove, lastPointerDown);
-
       if (e.event === 'down') {
         if (e.pointers.length >= 2) {
           pinchMode = true;
@@ -413,8 +404,6 @@ export class VistaView {
       } else if (e.event === 'up' || e.event === 'cancel') {
         if (!pinchMode) return;
         pinchMode = false;
-
-        console.log('Pointer up/cancel - normalizing image');
         const close = imgState.normalize();
         if (close)
           requestAnimationFrame(() => {

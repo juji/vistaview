@@ -19,7 +19,18 @@ export class VistaImageState {
     this.maxZoomLevel = maxZoomLevel;
   }
 
+  close() {
+    if (!this.image) return;
+    this.image.style.transform = ``;
+    this.image.style.width = ``;
+    this.image.style.height = ``;
+    this.image.style.top = ``;
+    this.image.style.left = ``;
+    this.image.style.opacity = ``;
+  }
+
   reset() {
+    this.close();
     this.image = null;
     this.rect = null;
     this.initialCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -41,6 +52,11 @@ export class VistaImageState {
       throw new Error('VistaImageState: Image dataset vvwWidth or vvwHeight not set.');
     }
 
+    if (!this.rect.width) {
+      console.error('Error', image);
+      throw new Error('VistaImageState: Image rect width is zero.');
+    }
+
     const width = parseFloat(image.dataset.vvwWidth);
     const height = parseFloat(image.dataset.vvwHeight);
     this.minDimension = {
@@ -57,7 +73,7 @@ export class VistaImageState {
   }
 
   scaleMove(ratio: number, center?: { x: number; y: number }) {
-    if (!this.image || !this.rect) return;
+    if (!this.image || !this.rect || !this.rect.width) return;
 
     if (!center) {
       center = this.initialCenter;
@@ -70,7 +86,6 @@ export class VistaImageState {
     );
 
     this.scale = limitPrecision(newWidth / this.rect.width);
-    // console.log('Scaling to', this.scale);
 
     // Calculate translation to keep the INITIAL center point fixed during zoom
     // Current image center position
@@ -90,6 +105,7 @@ export class VistaImageState {
     const panY = center.y - this.initialCenter.y;
 
     // Combine zoom translation and pan translation
+
     this.translate.x = limitPrecision(zoomTranslateX + panX);
     this.translate.y = limitPrecision(zoomTranslateY + panY);
 
@@ -132,12 +148,11 @@ export class VistaImageState {
       return true;
     } else if (newWidth < this.minDimension.initialWidth) {
       // animate back to initial size
+      this.accumulatedTranslate.x = 0;
+      this.accumulatedTranslate.y = 0;
       requestAnimationFrame(() => {
-        console.log('Animating back to initial size');
         const img = this.image;
         if (!img) return;
-        img.dataset.vvwAccumTranslateX = '0';
-        img.dataset.vvwAccumTranslateY = '0';
         img.addEventListener(
           'transitionend',
           () => {
