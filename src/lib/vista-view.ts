@@ -297,9 +297,10 @@ export class VistaView {
     }
 
     const indexDisplay = this.qs<HTMLDivElement>('.vvw-index');
-    const indexText = `${cid + 1} / ${this.elements.length}`;
+    const indexText = `${cid + 1}`;
+    const indexTotal = `${this.elements.length}`;
     if (indexDisplay) {
-      indexDisplay.textContent = indexText;
+      indexDisplay.textContent = `${indexText} / ${indexTotal}`;
     }
 
     const description = this.qs<HTMLDivElement>('.vvw-desc');
@@ -309,10 +310,10 @@ export class VistaView {
 
       if (descText) {
         description.textContent = descText;
-        description.setAttribute('aria-label', `Image ${indexText}: ${descText}`);
+        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}: ${descText}`);
       } else {
         description.textContent = '';
-        description.setAttribute('aria-label', `Image ${indexText}`);
+        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
       }
     }
   }
