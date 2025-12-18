@@ -88,8 +88,6 @@ export class VistaPointers {
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0) return;
 
-    console.log('up event', e.target);
-
     // remove one-time listeners
     window.removeEventListener('contextmenu', this.removeLastPointer);
     window.removeEventListener('auxclick', this.removeLastPointer);
