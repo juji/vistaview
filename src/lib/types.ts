@@ -98,62 +98,14 @@ export type VistaInterface = {
 export type VistaPointerArgs = {
   elm?: HTMLElement | Document;
   listeners?: VistaPointerListener[];
-  startListeners?: boolean;
-  enableHistory?: boolean;
-  recordPointerEvent?: boolean;
-  ignoreNonPrimary?: boolean;
-};
-
-export type VistaPointerEventData = {
-  // Position
-  clientX: number;
-  clientY: number;
-  pageX: number;
-  pageY: number;
-  screenX: number;
-  screenY: number;
-  offsetX: number;
-  offsetY: number;
-  movementX: number;
-  movementY: number;
-
-  // Pointer specific
-  pointerId: number;
-  pointerType: string; // 'mouse' | 'pen' | 'touch'
-  width: number;
-  height: number;
-  pressure: number;
-  tangentialPressure: number;
-  tiltX: number;
-  tiltY: number;
-  twist: number;
-
-  // Button state
-  button: number;
-  buttons: number;
-
-  // Modifiers
-  altKey: boolean;
-  ctrlKey: boolean;
-  metaKey: boolean;
-  shiftKey: boolean;
-
-  // Touch/pen
-  isPrimary: boolean;
-
-  // Timing
-  timeStamp: number;
 };
 
 export type VistaPointer = {
   x: number;
   y: number;
-  lastTimestamp: number;
-  velocityX: number;
-  velocityY: number;
+  movementX: number;
+  movementY: number;
   id: number | string;
-  history?: VistaPointer[];
-  pointerEvent?: Partial<VistaPointerEventData>;
 };
 
 export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
@@ -164,8 +116,8 @@ export type VistaPointerListenerArgs = {
   lastPointerLen: number;
 };
 
+export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
+
 export type VistaExternalPointerListenerArgs = VistaPointerListenerArgs & {
   hasInternalExecution: boolean;
 };
-
-export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;

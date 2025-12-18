@@ -203,8 +203,8 @@ export class VistaImageState {
     };
 
     animate({
-      x: pointer.velocityX * 10,
-      y: pointer.velocityY * 10,
+      x: pointer.movementX,
+      y: pointer.movementY,
     });
 
     return () => {

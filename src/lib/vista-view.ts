@@ -572,7 +572,6 @@ export class VistaView {
     this.pointers = new VistaPointers({
       elm: this.imageContainer!,
       listeners: [this.getPointerListener()],
-      startListeners: true,
     });
 
     // set custom controls' event listeners

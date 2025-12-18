@@ -1,20 +1,110 @@
-import type { VistaPointer, VistaPointerListener, VistaPointerArgs } from './types.js';
+export type PointaArgs = {
+  elm?: HTMLElement | Document;
+  listeners?: PointaListener[];
+  startListeners?: boolean;
+  enableHistory?: boolean;
+  recordPointerEvent?: boolean;
+  ignoreNonPrimary?: boolean;
+  recordLastMovement?: boolean;
+};
 
-// simplification of pointas
-export class VistaPointers {
-  private pointers: VistaPointer[] = [];
+export type PointaEventData = {
+  // Position
+  clientX: number;
+  clientY: number;
+  pageX: number;
+  pageY: number;
+  screenX: number;
+  screenY: number;
+  offsetX: number;
+  offsetY: number;
+  movementX: number;
+  movementY: number;
+
+  // Pointer specific
+  pointerId: number;
+  pointerType: string; // 'mouse' | 'pen' | 'touch'
+  width: number;
+  height: number;
+  pressure: number;
+  tangentialPressure: number;
+  tiltX: number;
+  tiltY: number;
+  twist: number;
+
+  // Button state
+  button: number;
+  buttons: number;
+
+  // Modifiers
+  altKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
+
+  // Touch/pen
+  isPrimary: boolean;
+
+  // Timing
+  timeStamp: number;
+};
+
+export type Pointa = {
+  x: number;
+  y: number;
+  movementX: number;
+  movementY: number;
+  id: number | string;
+  history?: Pointa[];
+  pointerEvent?: Partial<PointaEventData>;
+};
+
+export type PointaEvent = 'down' | 'move' | 'up' | 'cancel';
+export type PointaListenerArgs = {
+  event: PointaEvent;
+  pointer: Pointa | undefined;
+  pointers: Pointa[];
+  lastPointerLen: number;
+};
+
+export type VistaExternalPointerListenerArgs = PointaListenerArgs & {
+  hasInternalExecution: boolean;
+};
+
+export type PointaListener = (args: PointaListenerArgs) => void;
+
+// Pointas
+export class Pointas {
+  private pointers: Pointa[] = [];
   private elm: HTMLElement | Document;
-  private listeners: VistaPointerListener[] = [];
+  private listeners: PointaListener[] = [];
+  private enableHistory: boolean = false;
   private lastPointerDownId: number | string | null = null;
+  private ignoreNonPrimary: boolean = true;
+  private recordLastMovement: boolean = false;
+  private recordPointerEvent: boolean | ((e: PointerEvent) => Partial<PointaEventData>) = false;
 
-  constructor({ elm, listeners }: VistaPointerArgs) {
+  constructor({
+    elm,
+    listeners,
+    startListeners = true,
+    enableHistory = false,
+    recordPointerEvent = false,
+    ignoreNonPrimary = true,
+    recordLastMovement = false,
+  }: PointaArgs) {
     this.elm = elm ?? document;
 
     if (listeners) {
       this.listeners = listeners;
     }
 
-    this.startListeners();
+    if (startListeners) this.startListeners();
+
+    this.enableHistory = enableHistory;
+    this.recordPointerEvent = recordPointerEvent;
+    this.ignoreNonPrimary = ignoreNonPrimary;
+    this.recordLastMovement = recordLastMovement;
   }
 
   private removeLastPointer = () => {
@@ -27,11 +117,26 @@ export class VistaPointers {
     }
   };
 
+  private setHistoryObject(pointer: Pointa) {
+    if (this.enableHistory) {
+      if (!pointer.history) pointer.history = [];
+      const { history, ...eventData } = pointer;
+      pointer.history!.push(eventData);
+    }
+  }
+
+  private setPointerEventObject(pointer: Pointa, e: PointerEvent) {
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
+  }
+
   private onPointerDown = (e: PointerEvent) => {
     if (!this.listeners.length) return;
 
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
-    if (e.button !== 0) return;
+    if (e.button !== 0 && this.ignoreNonPrimary) return;
 
     e.preventDefault();
 
@@ -42,13 +147,16 @@ export class VistaPointers {
     window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
     window.addEventListener('auxclick', this.removeLastPointer, { once: true });
 
-    let pointer: VistaPointer = {
+    let pointer: Pointa = {
       x: e.clientX,
       y: e.clientY,
       movementX: 0,
       movementY: 0,
       id: e.pointerId,
     };
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.push(pointer);
 
@@ -72,6 +180,10 @@ export class VistaPointers {
     pointer.movementY = e.movementY;
     pointer.x = e.clientX;
     pointer.y = e.clientY;
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
+
     this.listeners.forEach((l) =>
       l({
         event: 'move',
@@ -86,9 +198,7 @@ export class VistaPointers {
     if (!this.listeners.length) return;
 
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
-    if (e.button !== 0) return;
-
-    console.log('up event', e.target);
+    if (e.button !== 0 && this.ignoreNonPrimary) return;
 
     // remove one-time listeners
     window.removeEventListener('contextmenu', this.removeLastPointer);
@@ -111,7 +221,14 @@ export class VistaPointers {
     const pointer = this.pointers[pointerIndex];
     pointer.x = e.clientX;
     pointer.y = e.clientY;
+    if (this.recordLastMovement) {
+      pointer.movementX = e.movementX;
+      pointer.movementY = e.movementY;
+    }
     const lastLen = this.pointers.length;
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.splice(pointerIndex, 1);
 
@@ -145,7 +262,14 @@ export class VistaPointers {
     const pointer = this.pointers[pointerIndex];
     pointer.x = e.clientX;
     pointer.y = e.clientY;
+    if (this.recordLastMovement) {
+      pointer.movementX = e.movementX;
+      pointer.movementY = e.movementY;
+    }
     const lastLen = this.pointers.length;
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.splice(pointerIndex, 1);
 
@@ -178,15 +302,15 @@ export class VistaPointers {
     this.pointers = [];
   }
 
-  addEventListener(listener: VistaPointerListener) {
+  addEventListener(listener: PointaListener) {
     this.listeners.push(listener);
   }
 
-  removeEventListener(listener: VistaPointerListener) {
+  removeEventListener(listener: PointaListener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
-  getPointerDistance(p1: VistaPointer, p2: VistaPointer): number {
+  getPointerDistance(p1: Pointa, p2: Pointa): number {
     const dx = p1.x - p2.x;
     const dy = p1.y - p2.y;
     return Math.sqrt(dx * dx + dy * dy);
