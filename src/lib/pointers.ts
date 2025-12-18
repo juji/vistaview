@@ -127,6 +127,9 @@ export class VistaPointers {
     if (pointerIndex === -1) return;
 
     const pointer = this.pointers[pointerIndex];
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.lastTimestamp = e.timeStamp;
     const lastLen = this.pointers.length;
     if (this.recordPointerEvent) {
       pointer.pointerEvent =
@@ -162,6 +165,9 @@ export class VistaPointers {
     if (pointerIndex === -1) return;
 
     const pointer = this.pointers[pointerIndex];
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.lastTimestamp = e.timeStamp;
     const lastLen = this.pointers.length;
     if (this.recordPointerEvent) {
       pointer.pointerEvent =
