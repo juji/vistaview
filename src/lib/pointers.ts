@@ -1,23 +1,33 @@
-import type { VistaPointer, VistaPointerListener } from './types.js';
+import type { VistaPointer, VistaPointerListener, VistaPointerArgs } from './types.js';
 
 // Pointahs
 // say it like the pepe julian onzima interviewer guy
 export class VistaPointers {
   private pointers: VistaPointer[] = [];
-  private elm: HTMLElement;
+  private elm: HTMLElement | Document;
   private listeners: VistaPointerListener[] = [];
   private lastLen: number = 0;
+  private enableHistory: boolean = false;
 
-  private preventContextMenu = (e: MouseEvent) => {
-    e.preventDefault();
+  // private preventContextMenu = (e: MouseEvent) => {
+  //   console.log('prevented context menu');
+  //   e.preventDefault();
+  // };
+
+  private removeLastPointer = () => {
+    if (!this.pointers.length) return;
+    // console.log('removing last pointers');
+    this.pointers.pop();
+    ((this.lastLen = this.pointers.length - 1), 0);
   };
 
-  constructor(elm: HTMLElement, listeners?: VistaPointerListener[], startListeners = true) {
-    this.elm = elm;
+  constructor({ elm, listeners, startListeners = true, enableHistory = false }: VistaPointerArgs) {
+    this.elm = elm ?? document;
     if (listeners) {
       this.listeners = listeners;
     }
     if (startListeners) this.startListeners();
+    this.enableHistory = enableHistory;
   }
 
   private onPointerDown = (e: PointerEvent) => {
@@ -29,22 +39,28 @@ export class VistaPointers {
     e.preventDefault();
 
     // Prevent context menu only for mouse (not touch/pen), to block right-click but allow mobile long-press
-    if (e.pointerType === 'mouse') {
-      window.addEventListener('contextmenu', this.preventContextMenu);
-    }
+    // if (e.pointerType === 'mouse') {
+    //   window.addEventListener('contextmenu', this.preventContextMenu);
+    // }
+
+    window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
 
     const pointer = {
       x: e.clientX,
       y: e.clientY,
       pressure: e.pressure,
       lastTimestamp: e.timeStamp,
-      history: [{ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp }],
+      ...(this.enableHistory
+        ? {
+            history: [{ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp }],
+          }
+        : {}),
       velocityX: 0,
       velocityY: 0,
       id: e.pointerId,
     };
     this.pointers.push(pointer);
-    this.lastLen = this.pointers.length - 1;
+    this.lastLen = this.pointers.length;
 
     this.listeners.forEach((l) =>
       l({
@@ -68,7 +84,12 @@ export class VistaPointers {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
       pointer.lastTimestamp = e.timeStamp;
-      pointer.history.push({ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp });
+      pointer.history?.push({
+        x: e.clientX,
+        y: e.clientY,
+        pressure: e.pressure,
+        time: e.timeStamp,
+      });
     }
     this.listeners.forEach((l) =>
       l({
@@ -88,9 +109,11 @@ export class VistaPointers {
     if (e.button !== 0) return;
 
     // Release context menu prevention only for mouse
-    if (e.pointerType === 'mouse') {
-      window.removeEventListener('contextmenu', this.preventContextMenu);
-    }
+    // if (e.pointerType === 'mouse') {
+    //   window.removeEventListener('contextmenu', this.preventContextMenu);
+    // }
+
+    window.removeEventListener('contextmenu', this.removeLastPointer);
 
     // Only handle if target is within our element
     if (
@@ -105,7 +128,6 @@ export class VistaPointers {
     const pointer = this.pointers[pointerIndex];
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
-      this.lastLen = this.pointers.length + 1;
     }
     this.listeners.forEach((l) =>
       l({
@@ -134,7 +156,6 @@ export class VistaPointers {
     const pointer = this.pointers[pointerIndex];
     if (pointer) {
       this.pointers.splice(pointerIndex, 1);
-      this.lastLen = this.pointers.length + 1;
     }
     this.listeners.forEach((l) =>
       l({
@@ -148,8 +169,8 @@ export class VistaPointers {
   };
 
   startListeners() {
-    this.elm.addEventListener('pointerdown', this.onPointerDown);
-    this.elm.addEventListener('pointermove', this.onPointerMove);
+    this.elm.addEventListener('pointerdown', this.onPointerDown as EventListener);
+    this.elm.addEventListener('pointermove', this.onPointerMove as EventListener);
 
     // this.elm.addEventListener('pointerup', this.onPointerUp);
     // this.elm.addEventListener('pointercancel', this.onPointerCancel);
@@ -160,8 +181,8 @@ export class VistaPointers {
   }
 
   removeListeners() {
-    this.elm.removeEventListener('pointerdown', this.onPointerDown);
-    this.elm.removeEventListener('pointermove', this.onPointerMove);
+    this.elm.removeEventListener('pointerdown', this.onPointerDown as EventListener);
+    this.elm.removeEventListener('pointermove', this.onPointerMove as EventListener);
 
     // this.elm.removeEventListener('pointerup', this.onPointerUp);
     // this.elm.removeEventListener('pointercancel', this.onPointerCancel);

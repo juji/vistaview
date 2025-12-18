@@ -95,12 +95,19 @@ export type VistaInterface = {
   view: (index: number) => void;
 };
 
+export type VistaPointerArgs = {
+  elm?: HTMLElement | Document;
+  listeners?: VistaPointerListener[];
+  startListeners?: boolean;
+  enableHistory?: boolean;
+};
+
 export type VistaPointer = {
   x: number;
   y: number;
   pressure: number;
   lastTimestamp: number;
-  history: { x: number; y: number; pressure: number; time: number }[];
+  history?: { x: number; y: number; pressure: number; time: number }[];
   velocityX: number;
   velocityY: number;
   id: number | string;

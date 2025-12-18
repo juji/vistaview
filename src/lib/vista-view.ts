@@ -440,6 +440,8 @@ export class VistaView {
 
     // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
+      console.log(e);
+
       if (e.event === 'down') {
         cancelMove();
 
@@ -567,7 +569,11 @@ export class VistaView {
     window.addEventListener('resize', this.onResizeHandler);
 
     // pointer listener
-    this.pointers = new VistaPointers(this.imageContainer!, [this.getPointerListener()], true);
+    this.pointers = new VistaPointers({
+      elm: this.imageContainer!,
+      listeners: [this.getPointerListener()],
+      startListeners: true,
+    });
 
     // set custom controls' event listeners
     const customControls: { [key: string]: VistaCustomCtrl } = {};
