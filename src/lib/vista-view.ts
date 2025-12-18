@@ -431,7 +431,7 @@ export class VistaView {
     this.pointerListeners = [];
   }
 
-  private getPointerListener = () => {
+  private getInternalPointerListener = () => {
     const imgState = this.imageState;
 
     let lastDistance = 0;
@@ -460,15 +460,12 @@ export class VistaView {
           imgState.move(center!);
         }
 
-        if (e.pointers.length >= 2) {
-          if (!pinchMode) return;
+        if (e.pointers.length >= 2 && pinchMode) {
           const center = this.pointers!.getCentroid();
           const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
           imgState.scaleMove(distance / lastDistance, center!);
         }
-      } else if (e.event === 'up' || e.event === 'cancel') {
-        if (!pinchMode && !this.isZoomedIn) return;
-
+      } else if ((e.event === 'up' || e.event === 'cancel') && (pinchMode || this.isZoomedIn)) {
         if (pinchMode) {
           pinchMode = false;
           const close = imgState.normalize();
@@ -569,7 +566,7 @@ export class VistaView {
     // pointer listener
     this.pointers = new VistaPointers({
       elm: this.imageContainer!,
-      listeners: [this.getPointerListener()],
+      listeners: [this.getInternalPointerListener()],
     });
 
     // set custom controls' event listeners
