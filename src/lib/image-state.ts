@@ -99,11 +99,15 @@ export class VistaImageState {
       center = this.initialCenter;
     }
 
-    const newWidth = clamp(
+    let newWidth = clamp(
       this.rect.width * ratio,
       this.minDimension.minWidth,
       this.maxDimension.width
     );
+
+    if (Math.round(newWidth) === Math.round(this.minDimension.initialWidth)) {
+      newWidth = this.minDimension.initialWidth;
+    }
 
     this.onScale &&
       this.onScale({
