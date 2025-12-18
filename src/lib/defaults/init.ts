@@ -14,10 +14,8 @@ export function init(vistaView: VistaView) {
 
 // register external pointer listener
 function registerPointerListener(vistaView: VistaView) {
-  let startX = 0;
-  let currentX = 0;
-  let startY = 0;
-  let currentY = 0;
+  let start = { x: 0, y: 0 };
+  let current = { x: 0, y: 0 };
   let axis: 'x' | 'y' | null = null;
 
   // external pointer listener
@@ -30,19 +28,16 @@ function registerPointerListener(vistaView: VistaView) {
 
     // on down, record start positions
     if (e.event === 'down') {
-      startX = e.pointer.x;
-      currentX = startX;
-      startY = e.pointer.y;
-      currentY = startY;
+      start = { x: e.pointer.x, y: e.pointer.y };
+      current = { x: e.pointer.x, y: e.pointer.y };
     }
 
     // on move, calculate deltas and translate image container
     if (e.event === 'move') {
-      currentX = e.pointer.x;
-      currentY = e.pointer.y;
+      current = { x: e.pointer.x, y: e.pointer.y };
 
-      const deltaX = currentX - startX;
-      const deltaY = currentY - startY;
+      const deltaX = current.x - start.x;
+      const deltaY = current.y - start.y;
 
       if ((!axis && Math.abs(deltaY) > Math.abs(deltaX)) || axis === 'y') {
         const percentY = (deltaY / window.innerHeight) * 100;
@@ -71,7 +66,7 @@ function registerPointerListener(vistaView: VistaView) {
 
       // handle vertical swipe
       if (axis === 'y') {
-        const deltaY = currentY - startY;
+        const deltaY = current.y - start.y;
         const movement = e.pointer.movementY;
         const threshold = 8; // px
 
@@ -100,7 +95,7 @@ function registerPointerListener(vistaView: VistaView) {
 
       // handle horizontal swipe
       if (axis === 'x') {
-        const deltaX = currentX - startX;
+        const deltaX = current.x - start.x;
         const movement = e.pointer.movementX;
         const threshold = 8; // px
 
