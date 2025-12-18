@@ -6,13 +6,14 @@ A lightweight, modern image lightbox library for the web. Zero dependencies, fra
 
 ## Features
 
-- 🪶 **Lightweight** — Minimal footprint, no external dependencies
-- 📱 **Mobile-first** — Touch gestures, smooth animations, responsive design
-- 🎨 **Customizable** — Configurable controls, animations, and styling
-- ♿ **Accessible** — Keyboard navigation, reduced motion support
+- 🪶 **Lightweight** — ~40KB ESM (~10KB gzip), minimal footprint, zero dependencies
+- 📱 **Touch-first** — Swipe gestures for navigation and closing, pinch-to-zoom support
+- 🎨 **Customizable** — Configurable controls, animations, and styling via CSS variables
+- ♿ **Accessible** — Keyboard navigation, ARIA labels, reduced motion support
 - 🔧 **Framework-agnostic** — Works with vanilla JS, React, Vue, Svelte, Solid, or any framework
 - 🖼️ **Progressive loading** — Low-res thumbnails → high-res images with smooth transitions
-- 🔍 **Zoom support** — Zoom in/out with buttons, respects actual image resolution
+- 🔍 **Smart zoom** — Pan and zoom with momentum physics, respects actual image resolution
+- 🎯 **Pointer-aware** — Advanced multi-touch tracking with context menu prevention
 
 ## Installation
 
@@ -103,7 +104,7 @@ vistaView({
 ## Options
 
 ```ts
-import { vistaView, vistaViewDownload } from 'vistaview'
+import { vistaView, vistaViewDownload } from 'vistaview';
 
 vistaView({
   // Required: specify elements (string selector, NodeList, or array)
@@ -112,12 +113,13 @@ vistaView({
   // Optional configuration
   animationDurationBase: 333, // Base animation duration in ms (default: 333)
   initialZIndex: 1, // Starting z-index for the lightbox (default: 1)
-  detectReducedMotion: true, // Respect prefers-reduced-motion (default: true)
   zoomStep: 500, // Pixels to zoom per step (default: 500)
   maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
   touchSpeedThreshold: 0.5, // Swipe speed threshold for navigation (default: 0.5)
   preloads: 1, // Number of adjacent images to preload on each side (default: 1)
   keyboardListeners: true, // Enable keyboard navigation (default: true)
+  arrowOnSmallScreens: false, // Show arrow buttons on small screens (default: false)
+  rapidLimit: 100, // Minimum time between rapid actions in ms (default: 100)
 
   // Control placement (defaults shown)
   controls: {
@@ -130,15 +132,15 @@ vistaView({
   },
 
   // Events
-  onOpen: (data) => {},      // Called when lightbox opens
-  onClose: (data) => {},     // Called when lightbox closes
+  onOpen: (vistaView) => {}, // Called when lightbox opens
+  onClose: (vistaView) => {}, // Called when lightbox closes
   onImageView: (data) => {}, // Called when viewing an image (including on open)
 
   // Custom behavior functions (advanced)
-  initFunction: (vistaView) => {},       // Custom initialization
-  setupFunction: (data) => {},           // Custom setup when navigating
-  transitionFunction: (data, abortSignal) => void,   // Custom transition animation
-  closeFunction: (vistaView) => {},      // Custom cleanup on close
+  initFunction: (vistaView) => {}, // Custom initialization (runs on open)
+  setupFunction: (data) => {}, // Custom setup when navigating
+  transitionFunction: (data, abortSignal) => Promise<void>, // Custom transition animation
+  closeFunction: (vistaView) => {}, // Custom cleanup on close
 });
 ```
 
@@ -182,34 +184,29 @@ vistaView({
 
 ## Exported Types & Functions
 
-VistaView exports all types for TypeScript users, plus default behavior functions for customization:
+VistaView exports all types for TypeScript users, plus helper functions:
 
 ```ts
 import {
   vistaView,
-  vistaViewDownload,
-  DefaultOptions,
-  // Default behavior functions (can be used as starting points)
-  defaultInit,
-  defaultSetup,
-  defaultTransition,
-  defaultClose,
-  setTouchActions,
-  removeTouchActions,
+  vistaViewDownload, // Helper function for download control
+  DefaultOptions, // Default configuration options
 } from 'vistaview';
 
 import type {
   VistaParams, // Full options including `elements`
   VistaOpt, // Base options (without `elements`)
   VistaImg, // Image object: { src, alt?, thumb? }
-  VistaImageIdx, // Image with index and DOM references
+  VistaImgIdx, // Image with index and DOM references
   VistaInterface, // Return type from vistaView()
-  VistaViewData, // Data passed to events/functions
+  VistaData, // Data passed to events/functions
   VistaSetupFn, // Type for setupFunction
   VistaTransitionFn, // Type for transitionFunction
   VistaCloseFn, // Type for closeFunction
-  VistaViewInitFunction, // Type for initFunction
+  VistaInitFn, // Type for initFunction
   VistaCustomCtrl, // Custom control definition
+  VistaDefaultCtrl, // Built-in control names
+  VistaElmProps, // Element property interface
 } from 'vistaview';
 ```
 
@@ -244,6 +241,16 @@ VistaView uses CSS custom properties for easy theming:
 | `↑` Up    | Zoom in        |
 | `↓` Down  | Zoom out       |
 | `Esc`     | Close lightbox |
+
+## Touch Gestures
+
+| Gesture          | Action                    |
+| ---------------- | ------------------------- |
+| Swipe left/right | Navigate between images   |
+| Swipe up/down    | Close lightbox            |
+| Pinch in/out     | Zoom in/out (when zoomed) |
+| Drag             | Pan image (when zoomed)   |
+| Single tap       | Toggle UI visibility      |
 
 ## Browser Support
 
@@ -284,33 +291,27 @@ function Gallery() {
 
 ```
 vite v6.4.1 building for production...
-✓ 10 modules transformed.
+✓ 18 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css  10.34 kB │ gzip: 1.85 kB
-dist/svelte.js       0.54 kB │ gzip: 0.27 kB
-dist/solid.js        1.11 kB │ gzip: 0.52 kB
-dist/vue.js          1.29 kB │ gzip: 0.56 kB
-dist/react.js        1.54 kB │ gzip: 0.57 kB
-dist/vistaview.js   38.86 kB │ gzip: 9.90 kB
-[vite:dts] Declaration files built in 694ms.
+dist/vistaview.css   6.66 kB │ gzip: 1.58 kB
+dist/svelte.js       0.62 kB │ gzip: 0.29 kB
+dist/solid.js        1.19 kB │ gzip: 0.54 kB
+dist/vue.js          1.36 kB │ gzip: 0.59 kB
+dist/react.js        1.67 kB │ gzip: 0.59 kB
+dist/vistaview.js   39.77 kB │ gzip: 9.66 kB
+[vite:dts] Declaration files built in 659ms.
 
-dist/vistaview.css  10.34 kB │ gzip: 1.85 kB
-dist/svelte.cjs      0.48 kB │ gzip: 0.29 kB
-dist/solid.cjs       0.92 kB │ gzip: 0.50 kB
-dist/vue.cjs         1.00 kB │ gzip: 0.51 kB
-dist/react.cjs       1.25 kB │ gzip: 0.52 kB
-dist/vistaview.cjs  30.20 kB │ gzip: 8.55 kB
-✓ built in 811ms
+✓ built in 768ms
 vite v6.4.1 building for production...
-✓ 6 modules transformed.
+✓ 14 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css     10.34 kB │ gzip: 1.85 kB
-dist/vistaview.umd.js  30.35 kB │ gzip: 8.67 kB
-[vite:dts] Declaration files built in 649ms.
+dist/vistaview.css      6.66 kB │ gzip: 1.58 kB
+dist/vistaview.umd.js  31.07 kB │ gzip: 8.61 kB
+[vite:dts] Declaration files built in 670ms.
 
-✓ built in 738ms
+✓ built in 766ms
 ```
 
 ## License
