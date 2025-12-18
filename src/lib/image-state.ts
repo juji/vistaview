@@ -136,19 +136,19 @@ export class VistaImageState {
     this.translate.x = limitPrecision(zoomTranslateX + panX);
     this.translate.y = limitPrecision(zoomTranslateY + panY);
 
-    console.log({
-      newWidth,
-      scale: this.scale,
-      translate: this.translate,
-      imgCenterX,
-      imgCenterY,
-      initialOffsetX,
-      initialOffsetY,
-      zoomTranslateX,
-      zoomTranslateY,
-      panX,
-      panY,
-    });
+    // console.log({
+    //   newWidth,
+    //   scale: this.scale,
+    //   translate: this.translate,
+    //   imgCenterX,
+    //   imgCenterY,
+    //   initialOffsetX,
+    //   initialOffsetY,
+    //   zoomTranslateX,
+    //   zoomTranslateY,
+    //   panX,
+    //   panY,
+    // });
 
     // Apply transform
     this.image.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;

@@ -30,6 +30,7 @@ export class VistaPointers {
     };
     this.pointers.push(pointer);
     this.lastLen = this.pointers.length - 1;
+    console.log('pointer down', this.pointers);
     this.listeners.forEach((l) =>
       l({
         event: 'down',
@@ -68,7 +69,12 @@ export class VistaPointers {
     if (!this.listeners.length) return;
 
     // Only handle if target is within our element
-    if (e.target instanceof Node && !this.elm.contains(e.target)) return;
+    if (
+      e.target instanceof Node &&
+      !this.elm.contains(e.target) &&
+      e.target !== document.querySelector('html')
+    )
+      return;
 
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
@@ -92,7 +98,12 @@ export class VistaPointers {
     if (!this.listeners.length) return;
 
     // Only handle if target is within our element
-    if (e.target instanceof Node && !this.elm.contains(e.target)) return;
+    if (
+      e.target instanceof Node &&
+      !this.elm.contains(e.target) &&
+      e.target !== document.querySelector('html')
+    )
+      return;
 
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
