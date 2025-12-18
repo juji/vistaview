@@ -15,11 +15,6 @@ export class VistaPointers {
   private recordPointerEvent: boolean = false;
   private lastPointerDownId: number | string | null = null;
 
-  // private preventContextMenu = (e: MouseEvent) => {
-  //   console.log('prevented context menu');
-  //   e.preventDefault();
-  // };
-
   private removeLastPointer = () => {
     if (!this.pointers.length) return;
     if (this.lastPointerDownId !== null) {
@@ -47,13 +42,7 @@ export class VistaPointers {
 
     e.preventDefault();
 
-    // Prevent context menu only for mouse (not touch/pen), to block right-click but allow mobile long-press
-    // if (e.pointerType === 'mouse') {
-    //   window.addEventListener('contextmenu', this.preventContextMenu);
-    // }
-
     this.lastPointerDownId = e.pointerId;
-
     window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
 
     let pointer: VistaPointer = {
@@ -97,6 +86,7 @@ export class VistaPointers {
       const { history, ...eventData } = pointer;
       pointer.history!.push(eventData);
     }
+
     this.listeners.forEach((l) =>
       l({
         event: 'move',
@@ -113,11 +103,6 @@ export class VistaPointers {
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0) return;
 
-    // Release context menu prevention only for mouse
-    // if (e.pointerType === 'mouse') {
-    //   window.removeEventListener('contextmenu', this.preventContextMenu);
-    // }
-
     window.removeEventListener('contextmenu', this.removeLastPointer);
 
     // Only handle if target is within our element
@@ -129,12 +114,16 @@ export class VistaPointers {
       return;
 
     e.preventDefault();
+
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     if (pointerIndex === -1) return;
+
     const pointer = this.pointers[pointerIndex];
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
     const lastLen = this.pointers.length;
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+
     this.pointers.splice(pointerIndex, 1);
+
     this.listeners.forEach((l) =>
       l({
         event: 'up',
@@ -157,12 +146,16 @@ export class VistaPointers {
       return;
 
     e.preventDefault();
+
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     if (pointerIndex === -1) return;
+
     const pointer = this.pointers[pointerIndex];
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
     const lastLen = this.pointers.length;
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+
     this.pointers.splice(pointerIndex, 1);
+
     this.listeners.forEach((l) =>
       l({
         event: 'cancel',
@@ -177,9 +170,6 @@ export class VistaPointers {
     this.elm.addEventListener('pointerdown', this.onPointerDown as EventListener);
     this.elm.addEventListener('pointermove', this.onPointerMove as EventListener);
 
-    // this.elm.addEventListener('pointerup', this.onPointerUp);
-    // this.elm.addEventListener('pointercancel', this.onPointerCancel);
-
     // Listen to up/cancel on document to catch events outside the element
     document.addEventListener('pointerup', this.onPointerUp);
     document.addEventListener('pointercancel', this.onPointerCancel);
@@ -188,9 +178,6 @@ export class VistaPointers {
   removeListeners() {
     this.elm.removeEventListener('pointerdown', this.onPointerDown as EventListener);
     this.elm.removeEventListener('pointermove', this.onPointerMove as EventListener);
-
-    // this.elm.removeEventListener('pointerup', this.onPointerUp);
-    // this.elm.removeEventListener('pointercancel', this.onPointerCancel);
 
     document.removeEventListener('pointerup', this.onPointerUp);
     document.removeEventListener('pointercancel', this.onPointerCancel);
