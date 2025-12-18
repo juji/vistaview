@@ -99,8 +99,6 @@ export class VistaImageState {
       center = this.initialCenter;
     }
 
-    console.log('scaleMove', ratio, center);
-
     const newWidth = clamp(
       this.rect.width * ratio,
       this.minDimension.minWidth,

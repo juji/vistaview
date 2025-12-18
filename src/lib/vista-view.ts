@@ -201,10 +201,6 @@ export class VistaView {
       }
 
       imgs.appendChild(vistaImg);
-      if (vistaImg.dataset.vvwPos === '0') {
-        console.log('vvw--ready', img.classList.contains('vvw--ready'));
-        console.log('vvw--loaded', img.classList.contains('vvw--loaded'));
-      }
 
       // for ready elements, set current image again
       if (img.classList.contains('vvw--ready')) {
@@ -323,7 +319,6 @@ export class VistaView {
       const im = img as HTMLImageElement;
 
       const onLoaded = () => {
-        console.log('onLoaded executed');
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
@@ -333,7 +328,6 @@ export class VistaView {
           'transitionend',
           () => {
             if (isCurrentIndex) {
-              console.log('waitForImagesToLoad: setting current image');
               this.imageState.setCurrentImage(im);
               this.imageState.setInitialCenter();
             }
@@ -345,10 +339,6 @@ export class VistaView {
         im.classList.add('vvw--loaded');
         requestAnimationFrame(() => {
           const { width, height } = getFullSizeDim(im);
-
-          if (isCurrentIndex) {
-            console.log(im.getBoundingClientRect().width, width);
-          }
 
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
