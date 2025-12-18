@@ -130,7 +130,9 @@ export class VistaView {
   }
 
   private lastSwapTime = 0;
+  private waitForDimensionsInterval: number | null = null;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
+    if (this.waitForDimensionsInterval) clearInterval(this.waitForDimensionsInterval);
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
 
@@ -180,6 +182,9 @@ export class VistaView {
     if (cleanup instanceof Function) cleanup();
     htmls.forEach((vistaImg: HTMLDivElement) => {
       // is this position 0?
+      let isLoaded = false;
+      const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
+
       if (
         vistaImg.dataset.vvwPos === '0' &&
         !abortControllerSignal.aborted &&
@@ -189,7 +194,6 @@ export class VistaView {
         width &&
         height
       ) {
-        const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
         img.classList.add('vvw--loaded');
         img.classList.add('vvw--ready');
         img.setAttribute('style', style);
@@ -197,17 +201,19 @@ export class VistaView {
         img.height = height;
         img.dataset.vvwWidth = width.toString();
         img.dataset.vvwHeight = height.toString();
+        isLoaded = true;
+      }
 
+      imgs.appendChild(vistaImg);
+      if (isLoaded) {
         // wait for dimensions
-        const waitDim = setInterval(() => {
+        this.waitForDimensionsInterval = setInterval(() => {
           if (img.getBoundingClientRect().width) {
-            clearInterval(waitDim);
+            clearInterval(this.waitForDimensionsInterval!);
             this.imageState.setCurrentImage(img);
           }
         }, 333);
       }
-
-      imgs.appendChild(vistaImg);
     });
 
     this.waitForImagesToLoad();
@@ -337,7 +343,6 @@ export class VistaView {
         im.classList.add('vvw--loaded');
         requestAnimationFrame(() => {
           const { width, height } = getFullSizeDim(im);
-
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
           im.dataset.vvwWidth = width.toString();
