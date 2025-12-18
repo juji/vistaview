@@ -120,8 +120,8 @@ export function vistaViewComponent({
       <div class="vvw-image-container"></div>
       <div class="vvw-top-bar vvw-ui"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
       <div class="vvw-bottom-bar vvw-ui"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
-      <div class="vvw-prev vvw-ui"><button>${chevronLeft}</button></div>
-      <div class="vvw-next vvw-ui"><button>${chevronRight}</button></div>
+      <div class="vvw-prev vvw-ui"><button aria-label="Previous">${chevronLeft}</button></div>
+      <div class="vvw-next vvw-ui"><button aria-label="Next">${chevronRight}</button></div>
     </div>
     </div>`
   );
