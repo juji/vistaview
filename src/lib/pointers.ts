@@ -71,7 +71,6 @@ export class VistaPointers {
       l({
         event: 'down',
         pointer: pointer,
-        domEvent: e,
         pointers: this.pointers,
         lastPointerLen: this.pointers.length - 1,
       })
@@ -100,7 +99,6 @@ export class VistaPointers {
       l({
         event: 'move',
         pointer: pointer,
-        domEvent: e,
         pointers: this.pointers,
         lastPointerLen: this.pointers.length - 1,
       })
@@ -139,7 +137,6 @@ export class VistaPointers {
       l({
         event: 'up',
         pointer: pointer,
-        domEvent: e,
         pointers: this.pointers,
         lastPointerLen: lastLen,
       })
@@ -168,7 +165,6 @@ export class VistaPointers {
       l({
         event: 'cancel',
         pointer: pointer,
-        domEvent: e,
         pointers: this.pointers,
         lastPointerLen: lastLen,
       })

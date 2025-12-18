@@ -118,7 +118,6 @@ export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
 export type VistaPointerListenerArgs = {
   event: VistaPointerEvent;
   pointer: VistaPointer | undefined;
-  domEvent: PointerEvent;
   pointers: VistaPointer[];
   lastPointerLen: number;
 };
