@@ -30,7 +30,7 @@ export class VistaPointers {
     };
     this.pointers.push(pointer);
     this.lastLen = this.pointers.length - 1;
-    console.log('pointer down', this.pointers);
+
     this.listeners.forEach((l) =>
       l({
         event: 'down',

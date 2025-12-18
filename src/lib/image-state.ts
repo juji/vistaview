@@ -169,12 +169,12 @@ export class VistaImageState {
         return;
       }
 
-      if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {
+      if (Math.abs(x) < 0.001 && Math.abs(y) < 0.001) {
         return this.normalize();
       }
 
-      x *= 0.95;
-      y *= 0.95;
+      x *= 0.9;
+      y *= 0.9;
       const bound = this.image!.getBoundingClientRect();
 
       this.translate.x = limitPrecision(this.translate.x + x);
@@ -182,19 +182,19 @@ export class VistaImageState {
 
       if (bound.right < window.innerWidth / 2) {
         this.translate.x += (window.innerWidth / 2 - bound.right) * 0.1;
-        x *= 0.5;
+        x *= 0.7;
       }
       if (bound.left > window.innerWidth / 2) {
         this.translate.x -= (bound.left - window.innerWidth / 2) * 0.1;
-        x *= 0.5;
+        x *= 0.7;
       }
       if (bound.bottom < window.innerHeight / 2) {
         this.translate.y += (window.innerHeight / 2 - bound.bottom) * 0.1;
-        y *= 0.5;
+        y *= 0.7;
       }
       if (bound.top > window.innerHeight / 2) {
         this.translate.y -= (bound.top - window.innerHeight / 2) * 0.1;
-        y *= 0.5;
+        y *= 0.7;
       }
 
       this.image!.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
@@ -208,6 +208,7 @@ export class VistaImageState {
     });
 
     return () => {
+      console.log('canceled');
       canceled = true;
       cancelAnimationFrame(raf);
       this.normalize(false);
@@ -328,11 +329,13 @@ export class VistaImageState {
       }
 
       if (changes) {
+        console.log('normalizing with bound changes');
         const img = this.image;
         img.addEventListener(
           'transitionend',
           () => {
             if (!img) return;
+            img.style.transition = '';
             this.rect = null;
           },
           { once: true }
@@ -340,6 +343,8 @@ export class VistaImageState {
         img.style.transition = 'all 222ms ease';
         img.style.left = `calc(50% + ${this.accumulatedTranslate.x}px)`;
         img.style.top = `calc(50% + ${this.accumulatedTranslate.y}px)`;
+      } else {
+        this.rect = null;
       }
     }
   }
