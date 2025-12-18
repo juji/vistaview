@@ -88,6 +88,13 @@ export class VistaImageState {
     this.image.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
   }
 
+  private snapToTargetIfClose(newSize: number, targetSize: number, pixelDiff: number = 1): number {
+    if (Math.abs(newSize - targetSize) <= pixelDiff) {
+      newSize = targetSize;
+    }
+    return newSize;
+  }
+
   scaleMove(ratio: number, center?: { x: number; y: number }) {
     if (!this.image) return;
 
@@ -99,10 +106,9 @@ export class VistaImageState {
       center = this.initialCenter;
     }
 
-    const newWidth = clamp(
-      this.rect.width * ratio,
-      this.minDimension.minWidth,
-      this.maxDimension.width
+    const newWidth = this.snapToTargetIfClose(
+      clamp(this.rect.width * ratio, this.minDimension.minWidth, this.maxDimension.width),
+      this.minDimension.initialWidth
     );
 
     this.onScale &&
@@ -236,12 +242,15 @@ export class VistaImageState {
     if (!this.image || !this.rect) return;
 
     // translate scale to width/height
-    let newWidth = this.rect.width * this.scale;
-    let newHeight = this.rect.height * this.scale;
-    if (Math.round(newWidth) === Math.round(this.minDimension.initialWidth)) {
-      newWidth = this.minDimension.initialWidth;
-      newHeight = this.minDimension.initialHeight;
-    }
+    const newWidth = this.snapToTargetIfClose(
+      this.rect.width * this.scale,
+      this.minDimension.initialWidth
+    );
+    const newHeight = this.snapToTargetIfClose(
+      this.rect.height * this.scale,
+      this.minDimension.initialHeight
+    );
+
     this.image.style.width = `${newWidth}px`;
     this.image.style.height = `${newHeight}px`;
     this.scale = 1;

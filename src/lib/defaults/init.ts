@@ -133,6 +133,8 @@ function registerPointerListener(vistaView: VistaView) {
 
       // reset
       axis = null;
+      start = { x: 0, y: 0 };
+      current = { x: 0, y: 0 };
     }
   });
 }

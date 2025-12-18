@@ -23,7 +23,7 @@ export async function transition(
     return;
   }
 
-  const duration = Math.round(options.animationDurationBase! * 1.5 * 100) / 100;
+  const duration = Math.round(options.animationDurationBase! * 100) / 100;
 
   // adjacent transition
   // with no reduced motion preference
