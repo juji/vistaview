@@ -71,8 +71,12 @@ export class VistaPointers {
 
     e.preventDefault();
 
+    // record last pointer down id for contextmenu/auxclick removal
     this.lastPointerDownId = e.pointerId;
+
+    // add one-time listeners to remove pointer on contextmenu/auxclick
     window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
+    window.addEventListener('auxclick', this.removeLastPointer, { once: true });
 
     let pointer: VistaPointer = {
       x: e.clientX,
@@ -129,7 +133,9 @@ export class VistaPointers {
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0 && this.ignoreNonPrimary) return;
 
+    // remove one-time listeners
     window.removeEventListener('contextmenu', this.removeLastPointer);
+    window.removeEventListener('auxclick', this.removeLastPointer);
 
     // Only handle if target is within our element
     if (
