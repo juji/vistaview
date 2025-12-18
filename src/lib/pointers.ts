@@ -16,6 +16,8 @@ export class VistaPointers {
 
   private onPointerDown = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+    // Ignore non-primary button clicks (right-click, middle-click, etc.)
+    if (e.button !== 0) return;
     e.preventDefault();
     const pointer = {
       x: e.clientX,
@@ -103,15 +105,16 @@ export class VistaPointers {
   startListeners() {
     this.elm.addEventListener('pointerdown', this.onPointerDown);
     this.elm.addEventListener('pointermove', this.onPointerMove);
-    this.elm.addEventListener('pointerup', this.onPointerUp);
-    this.elm.addEventListener('pointercancel', this.onPointerCancel);
+    // Listen to up/cancel on document to catch events outside the element
+    document.addEventListener('pointerup', this.onPointerUp);
+    document.addEventListener('pointercancel', this.onPointerCancel);
   }
 
   removeListeners() {
     this.elm.removeEventListener('pointerdown', this.onPointerDown);
     this.elm.removeEventListener('pointermove', this.onPointerMove);
-    this.elm.removeEventListener('pointerup', this.onPointerUp);
-    this.elm.removeEventListener('pointercancel', this.onPointerCancel);
+    document.removeEventListener('pointerup', this.onPointerUp);
+    document.removeEventListener('pointercancel', this.onPointerCancel);
 
     this.pointers = [];
   }
