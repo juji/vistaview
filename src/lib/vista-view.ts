@@ -182,7 +182,6 @@ export class VistaView {
     if (cleanup instanceof Function) cleanup();
     htmls.forEach((vistaImg: HTMLDivElement) => {
       // is this position 0?
-      let isLoaded = false;
       const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
 
       if (
@@ -201,11 +200,10 @@ export class VistaView {
         img.height = height;
         img.dataset.vvwWidth = width.toString();
         img.dataset.vvwHeight = height.toString();
-        isLoaded = true;
       }
 
       imgs.appendChild(vistaImg);
-      if (isLoaded) {
+      if (img.classList.contains('vvw--ready')) {
         // wait for dimensions
         this.waitForDimensionsInterval = setInterval(() => {
           if (img.getBoundingClientRect().width) {
