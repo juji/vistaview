@@ -128,7 +128,10 @@ export class VistaPointers {
 
     const pointer = this.pointers[pointerIndex];
     const lastLen = this.pointers.length;
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
 
     this.pointers.splice(pointerIndex, 1);
 
@@ -160,7 +163,10 @@ export class VistaPointers {
 
     const pointer = this.pointers[pointerIndex];
     const lastLen = this.pointers.length;
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
 
     this.pointers.splice(pointerIndex, 1);
 
