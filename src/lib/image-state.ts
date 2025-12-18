@@ -218,7 +218,6 @@ export class VistaImageState {
   private animationTimestamp: number = 0;
   animateZoom(targetScale: number) {
     if (!this.image) return;
-
     if (!this.rect) {
       this.rect = this.image.getBoundingClientRect();
     }
@@ -229,7 +228,7 @@ export class VistaImageState {
     // prevent zooming out too much
     const newWidth = this.rect.width * targetScale;
     if (newWidth < this.minDimension.closingWidth) return;
-    if (img.width < this.minDimension.initialWidth) return; // seems to prevent jankyness
+    if (img.width < Math.floor(this.minDimension.initialWidth)) return; // seems to prevent jankyness
 
     img.addEventListener(
       'transitionend',

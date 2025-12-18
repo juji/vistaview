@@ -265,8 +265,10 @@ export class VistaView {
 
   isZoomedIn: boolean = false;
   private zoomIn(): void {
+    console.log('zoomIn');
     this.throttle.fio(
       () => {
+        console.log('animating zoom in');
         this.imageState.animateZoom(1.68);
       },
       'zoom',
@@ -440,8 +442,6 @@ export class VistaView {
 
     // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
-      console.log(e);
-
       if (e.event === 'down') {
         cancelMove();
 
