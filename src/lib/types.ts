@@ -101,6 +101,7 @@ export type VistaPointerArgs = {
   startListeners?: boolean;
   enableHistory?: boolean;
   recordPointerEvent?: boolean;
+  ignoreNonPrimary?: boolean;
 };
 
 export type VistaPointerEventData = {

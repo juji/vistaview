@@ -12,9 +12,10 @@ export class VistaPointers {
   private elm: HTMLElement | Document;
   private listeners: VistaPointerListener[] = [];
   private enableHistory: boolean = false;
+  private lastPointerDownId: number | string | null = null;
+  private ignoreNonPrimary: boolean = true;
   private recordPointerEvent: boolean | ((e: PointerEvent) => Partial<VistaPointerEventData>) =
     false;
-  private lastPointerDownId: number | string | null = null;
 
   constructor({
     elm,
@@ -22,6 +23,7 @@ export class VistaPointers {
     startListeners = true,
     enableHistory = false,
     recordPointerEvent = false,
+    ignoreNonPrimary = true,
   }: VistaPointerArgs) {
     this.elm = elm ?? document;
 
@@ -33,6 +35,7 @@ export class VistaPointers {
 
     this.enableHistory = enableHistory;
     this.recordPointerEvent = recordPointerEvent;
+    this.ignoreNonPrimary = ignoreNonPrimary;
   }
 
   private removeLastPointer = () => {
@@ -64,7 +67,7 @@ export class VistaPointers {
     if (!this.listeners.length) return;
 
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
-    if (e.button !== 0) return;
+    if (e.button !== 0 && this.ignoreNonPrimary) return;
 
     e.preventDefault();
 
@@ -124,7 +127,7 @@ export class VistaPointers {
     if (!this.listeners.length) return;
 
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
-    if (e.button !== 0) return;
+    if (e.button !== 0 && this.ignoreNonPrimary) return;
 
     window.removeEventListener('contextmenu', this.removeLastPointer);
 
