@@ -297,17 +297,22 @@ export class VistaView {
     }
 
     const indexDisplay = this.qs<HTMLDivElement>('.vvw-index');
+    const indexText = `${cid + 1} / ${this.elements.length}`;
     if (indexDisplay) {
-      indexDisplay.textContent = `${cid + 1} / ${this.elements.length}`;
+      indexDisplay.textContent = indexText;
     }
 
     const description = this.qs<HTMLDivElement>('.vvw-desc');
     if (description) {
       const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
-      if (currentImg && currentImg.alt) {
-        description.textContent = currentImg.alt;
+      const descText = currentImg?.alt || '';
+
+      if (descText) {
+        description.textContent = descText;
+        description.setAttribute('aria-label', `Image ${indexText}: ${descText}`);
       } else {
         description.textContent = '';
+        description.setAttribute('aria-label', `Image ${indexText}`);
       }
     }
   }

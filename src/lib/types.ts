@@ -62,6 +62,7 @@ export type VistaImgIdx = {
 export type VistaCustomCtrl = {
   name: string;
   icon: string;
+  description?: string;
   onClick: (vistaImageIndex: VistaImgIdx, vistaView: VistaView) => void | Promise<void>;
 };
 

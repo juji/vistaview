@@ -66,21 +66,21 @@ function convertControlToHtml(control: VistaDefaultCtrl | VistaCustomCtrl): stri
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
-        return `<button class="vvw-zoom-in vvw-ui">${zoomInIcon}</button>`;
+        return `<button aria-label="Zoom In" class="vvw-zoom-in vvw-ui">${zoomInIcon}</button>`;
       case 'zoomOut':
-        return `<button disabled class="vvw-zoom-out vvw-ui">${zoomOutIcon}</button>`;
+        return `<button aria-label="Zoom Out" disabled class="vvw-zoom-out vvw-ui">${zoomOutIcon}</button>`;
       case 'close':
-        return `<button class="vvw-close vvw-ui">${closeIcon}</button>`;
+        return `<button aria-label="Close" class="vvw-close vvw-ui">${closeIcon}</button>`;
       case 'indexDisplay':
-        return `<div class="vvw-index vvw-ui"></div>`;
+        return `<div class="vvw-index vvw-ui" aria-hidden="true"></div>`;
       case 'description':
-        return `<div class="vvw-desc vvw-ui"></div>`;
+        return `<div class="vvw-desc vvw-ui" role="status" aria-live="polite" aria-atomic="true"></div>`;
       default:
         console.warn(`Unknown default control: ${control}. Will return empty string.`);
         return '';
     }
   }
-  return `<button data-vvw-control="${control.name}">${control.icon}</button>`;
+  return `<button aria-label="${control.description || control.name}" data-vvw-control="${control.name}">${control.icon}</button>`;
 }
 
 export function vistaViewItem(el: VistaImgIdx, positionalIndex?: number): HTMLDivElement {
