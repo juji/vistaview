@@ -6,6 +6,10 @@ export class VistaPointers {
   private listeners: VistaPointerListener[] = [];
   private lastLen: number = 0;
 
+  private preventDefaultContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+  };
+
   constructor(elm: HTMLElement, listeners?: VistaPointerListener[], startListeners = true) {
     this.elm = elm;
     if (listeners) {
@@ -16,9 +20,14 @@ export class VistaPointers {
 
   private onPointerDown = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0) return;
+
     e.preventDefault();
+
+    // prevent context menu on long press
+    window.addEventListener('contextmenu', this.preventDefaultContextMenu);
 
     const pointer = {
       x: e.clientX,
@@ -67,6 +76,12 @@ export class VistaPointers {
 
   private onPointerUp = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+
+    // Ignore non-primary button clicks (right-click, middle-click, etc.)
+    if (e.button !== 0) return;
+
+    // release context menu prevention
+    window.removeEventListener('contextmenu', this.preventDefaultContextMenu);
 
     // Only handle if target is within our element
     if (
