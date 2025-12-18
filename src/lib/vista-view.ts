@@ -433,7 +433,7 @@ export class VistaView {
 
   private getPointerListener = () => {
     const imgState = this.imageState;
-    // const throttle = new Throttle();
+
     let lastDistance = 0;
     let pinchMode = false;
     let cancelMove = () => {};
