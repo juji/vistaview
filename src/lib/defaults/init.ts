@@ -39,16 +39,30 @@ function registerPointerListener(vistaView: VistaView) {
       const deltaX = current.x - start.x;
       const deltaY = current.y - start.y;
 
-      if ((!axis && Math.abs(deltaY) > Math.abs(deltaX)) || axis === 'y') {
+      // prettier-ignore
+      if (
+        (!axis && Math.abs(deltaY) > Math.abs(deltaX)) || 
+        axis === 'y'
+      ) {
+
         const percentY = (deltaY / window.innerHeight) * 100;
         vistaView.imageContainer!.style.transition = 'none';
         vistaView.imageContainer!.style.transform = `translateY(${percentY}vh)`;
         axis = 'y';
-      } else if ((!axis && Math.abs(deltaX) > Math.abs(deltaY)) || axis === 'x') {
+
+      } 
+      
+      // prettier-ignore 
+      else if (
+        (!axis && Math.abs(deltaX) > Math.abs(deltaY)) || 
+        axis === 'x'
+      ) {
+
         const percentX = (deltaX / window.innerWidth) * 100;
         vistaView.imageContainer!.style.transition = 'none';
         vistaView.imageContainer!.style.transform = `translateX(${percentX}vw)`;
         axis = 'x';
+
       }
     }
 
