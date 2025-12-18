@@ -1,5 +1,6 @@
 import type { VistaPointer, VistaPointerListener } from './types.js';
 
+// Pointa
 export class VistaPointers {
   private pointers: VistaPointer[] = [];
   private elm: HTMLElement;
