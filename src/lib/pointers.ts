@@ -16,16 +16,6 @@ export class VistaPointers {
     false;
   private lastPointerDownId: number | string | null = null;
 
-  private removeLastPointer = () => {
-    if (!this.pointers.length) return;
-    if (this.lastPointerDownId !== null) {
-      const idx = this.pointers.findIndex((p) => p.id === this.lastPointerDownId);
-      if (idx !== -1) {
-        this.pointers.splice(idx, 1);
-      }
-    }
-  };
-
   constructor({
     elm,
     listeners,
@@ -44,6 +34,16 @@ export class VistaPointers {
     this.enableHistory = enableHistory;
     this.recordPointerEvent = recordPointerEvent;
   }
+
+  private removeLastPointer = () => {
+    if (!this.pointers.length) return;
+    if (this.lastPointerDownId !== null) {
+      const idx = this.pointers.findIndex((p) => p.id === this.lastPointerDownId);
+      if (idx !== -1) {
+        this.pointers.splice(idx, 1);
+      }
+    }
+  };
 
   private setHistoryObject(pointer: VistaPointer) {
     if (this.enableHistory) {
