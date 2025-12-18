@@ -19,6 +19,7 @@ export class VistaPointers {
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0) return;
     e.preventDefault();
+
     const pointer = {
       x: e.clientX,
       y: e.clientY,
@@ -42,6 +43,7 @@ export class VistaPointers {
 
   private onPointerMove = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+
     e.preventDefault();
     const pointer = this.pointers.find((p) => p.id === e.pointerId);
     if (pointer) {
@@ -64,6 +66,10 @@ export class VistaPointers {
 
   private onPointerUp = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+
+    // Only handle if target is within our element
+    if (e.target instanceof Node && !this.elm.contains(e.target)) return;
+
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
@@ -84,6 +90,10 @@ export class VistaPointers {
 
   private onPointerCancel = (e: PointerEvent) => {
     if (!this.listeners.length) return;
+
+    // Only handle if target is within our element
+    if (e.target instanceof Node && !this.elm.contains(e.target)) return;
+
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
@@ -105,6 +115,10 @@ export class VistaPointers {
   startListeners() {
     this.elm.addEventListener('pointerdown', this.onPointerDown);
     this.elm.addEventListener('pointermove', this.onPointerMove);
+
+    // this.elm.addEventListener('pointerup', this.onPointerUp);
+    // this.elm.addEventListener('pointercancel', this.onPointerCancel);
+
     // Listen to up/cancel on document to catch events outside the element
     document.addEventListener('pointerup', this.onPointerUp);
     document.addEventListener('pointercancel', this.onPointerCancel);
@@ -113,6 +127,10 @@ export class VistaPointers {
   removeListeners() {
     this.elm.removeEventListener('pointerdown', this.onPointerDown);
     this.elm.removeEventListener('pointermove', this.onPointerMove);
+
+    // this.elm.removeEventListener('pointerup', this.onPointerUp);
+    // this.elm.removeEventListener('pointercancel', this.onPointerCancel);
+
     document.removeEventListener('pointerup', this.onPointerUp);
     document.removeEventListener('pointercancel', this.onPointerCancel);
 
