@@ -130,9 +130,7 @@ export class VistaView {
   }
 
   private lastSwapTime = 0;
-  private waitForDimensionsInterval: number | null = null;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
-    if (this.waitForDimensionsInterval) clearInterval(this.waitForDimensionsInterval);
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
 
@@ -170,7 +168,7 @@ export class VistaView {
 
     const style = img0.getAttribute('style') || '';
     const loaded = img0.classList.contains('vvw--loaded');
-    const ready = img0.classList.contains('vvw--ready');
+    // const ready = img0.classList.contains('vvw--ready');
     const width = img0.width;
     const height = img0.height;
 
@@ -189,7 +187,7 @@ export class VistaView {
         !abortControllerSignal.aborted &&
         style &&
         loaded &&
-        ready &&
+        // ready &&
         width &&
         height
       ) {
@@ -203,15 +201,15 @@ export class VistaView {
       }
 
       imgs.appendChild(vistaImg);
+      if (vistaImg.dataset.vvwPos === '0') {
+        console.log('vvw--ready', img.classList.contains('vvw--ready'));
+        console.log('vvw--loaded', img.classList.contains('vvw--loaded'));
+      }
+
+      // for ready elements, set current image again
       if (img.classList.contains('vvw--ready')) {
-        // wait for dimensions
-        // prevent 0 width issue on some browsers
-        this.waitForDimensionsInterval = setInterval(() => {
-          if (img.getBoundingClientRect().width) {
-            clearInterval(this.waitForDimensionsInterval!);
-            this.imageState.setCurrentImage(img);
-          }
-        }, 333);
+        this.imageState.setCurrentImage(img);
+        this.imageState.setInitialCenter();
       }
     });
 
@@ -325,14 +323,19 @@ export class VistaView {
       const im = img as HTMLImageElement;
 
       const onLoaded = () => {
+        console.log('onLoaded executed');
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
+
+        const isCurrentIndex = im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`);
 
         im.addEventListener(
           'transitionend',
           () => {
-            if (im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`)) {
+            if (isCurrentIndex) {
+              console.log('waitForImagesToLoad: setting current image');
               this.imageState.setCurrentImage(im);
+              this.imageState.setInitialCenter();
             }
             im.classList.add('vvw--ready');
           },
@@ -342,6 +345,11 @@ export class VistaView {
         im.classList.add('vvw--loaded');
         requestAnimationFrame(() => {
           const { width, height } = getFullSizeDim(im);
+
+          if (isCurrentIndex) {
+            console.log(im.getBoundingClientRect().width, width);
+          }
+
           im.style.setProperty('--vvw-current-w', `${width}px`);
           im.style.setProperty('--vvw-current-h', `${height}px`);
           im.dataset.vvwWidth = width.toString();

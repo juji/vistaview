@@ -11,7 +11,7 @@ export const DefaultOptions: VistaOpt = {
   preloads: 1,
   keyboardListeners: true,
   arrowOnSmallScreens: false,
-  rapidLimit: 700,
+  rapidLimit: 222,
   controls: {
     topLeft: ['indexDisplay'],
     topRight: ['zoomIn', 'zoomOut', vistaViewDownload(), 'close'],

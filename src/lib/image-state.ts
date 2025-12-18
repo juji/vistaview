@@ -49,7 +49,7 @@ export class VistaImageState {
   }
 
   setCurrentImage(image: HTMLImageElement) {
-    this.rect = image.getBoundingClientRect();
+    this.rect = null;
     this.image = image;
     this.maxDimension = {
       width: image.naturalWidth * this.maxZoomLevel,
@@ -57,11 +57,6 @@ export class VistaImageState {
 
     if (!image.dataset.vvwWidth || !image.dataset.vvwHeight) {
       throw new Error('VistaImageState: Image dataset vvwWidth or vvwHeight not set.');
-    }
-
-    if (!this.rect.width) {
-      console.error('Error', image);
-      throw new Error('VistaImageState: Image rect width is zero.');
     }
 
     const width = parseFloat(image.dataset.vvwWidth);
@@ -75,12 +70,16 @@ export class VistaImageState {
     this.accumulatedTranslate = { x: 0, y: 0 };
   }
 
-  setInitialCenter(center: { x: number; y: number }) {
-    this.initialCenter = center;
+  setInitialCenter(center?: { x: number; y: number }) {
+    this.initialCenter = center || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   }
 
   move(center: { x: number; y: number }) {
-    if (!this.image || !this.rect) return;
+    if (!this.image) return;
+
+    if (!this.rect) {
+      this.rect = this.image.getBoundingClientRect();
+    }
 
     this.translate.x = limitPrecision(center.x - this.initialCenter.x);
     this.translate.y = limitPrecision(center.y - this.initialCenter.y);
@@ -90,11 +89,17 @@ export class VistaImageState {
   }
 
   scaleMove(ratio: number, center?: { x: number; y: number }) {
-    if (!this.image || !this.rect || !this.rect.width) return;
+    if (!this.image) return;
+
+    if (!this.rect) {
+      this.rect = this.image.getBoundingClientRect();
+    }
 
     if (!center) {
       center = this.initialCenter;
     }
+
+    console.log('scaleMove', ratio, center);
 
     const newWidth = clamp(
       this.rect.width * ratio,
@@ -132,6 +137,20 @@ export class VistaImageState {
 
     this.translate.x = limitPrecision(zoomTranslateX + panX);
     this.translate.y = limitPrecision(zoomTranslateY + panY);
+
+    console.log({
+      newWidth,
+      scale: this.scale,
+      translate: this.translate,
+      imgCenterX,
+      imgCenterY,
+      initialOffsetX,
+      initialOffsetY,
+      zoomTranslateX,
+      zoomTranslateY,
+      panX,
+      panY,
+    });
 
     // Apply transform
     this.image.style.transform = `translate3d(${this.translate.x}px, ${this.translate.y}px, 0px) scale(${this.scale})`;
@@ -199,7 +218,12 @@ export class VistaImageState {
 
   private animationTimestamp: number = 0;
   animateZoom(targetScale: number) {
-    if (!this.image || !this.rect) return;
+    if (!this.image) return;
+
+    if (!this.rect) {
+      this.rect = this.image.getBoundingClientRect();
+    }
+
     const now = Date.now();
     const img = this.image;
 
@@ -271,7 +295,7 @@ export class VistaImageState {
           () => {
             if (!img) return;
             this.clean();
-            this.rect = img.getBoundingClientRect();
+            this.rect = null;
           },
           { once: true }
         );
@@ -311,7 +335,7 @@ export class VistaImageState {
           'transitionend',
           () => {
             if (!img) return;
-            this.rect = img.getBoundingClientRect();
+            this.rect = null;
           },
           { once: true }
         );
