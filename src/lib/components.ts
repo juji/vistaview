@@ -91,8 +91,7 @@ export function vistaViewItem(el: VistaImgIdx, positionalIndex?: number): HTMLDi
 
   div.appendChild(
     createTrustedHtml(
-      `<p class="vvw-img-err">Error loading image</p>
-      <img class="vvw-img-lo" src="${el.thumb || el.src}" alt="${el.alt || ''}" />
+      `<img class="vvw-img-lo" src="${el.thumb || el.src}" alt="${el.alt || ''}" />
       <img class="vvw-img-hi" src="${el.src}" alt="${el.alt || ''}" />`
     )
   );

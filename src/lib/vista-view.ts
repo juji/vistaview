@@ -365,6 +365,11 @@ export class VistaView {
 
       im.addEventListener('error', () => {
         im.classList.add('vvw--loaderror');
+        const errorMsg = document.createElement('p');
+        errorMsg.className = 'vvw-img-err';
+        errorMsg.setAttribute('role', 'alert');
+        errorMsg.textContent = 'Error loading image';
+        im.parentNode?.appendChild(errorMsg);
       });
     });
   }
