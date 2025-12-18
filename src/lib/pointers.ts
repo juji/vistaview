@@ -12,7 +12,8 @@ export class VistaPointers {
   private elm: HTMLElement | Document;
   private listeners: VistaPointerListener[] = [];
   private enableHistory: boolean = false;
-  private recordPointerEvent: boolean = false;
+  private recordPointerEvent: boolean | ((e: PointerEvent) => Partial<VistaPointerEventData>) =
+    false;
   private lastPointerDownId: number | string | null = null;
 
   private removeLastPointer = () => {
@@ -55,7 +56,10 @@ export class VistaPointers {
     };
 
     if (this.enableHistory) pointer.history = [];
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
 
     this.pointers.push(pointer);
 
@@ -81,7 +85,11 @@ export class VistaPointers {
     pointer.y = e.clientY;
     pointer.lastTimestamp = e.timeStamp;
 
-    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
+
     if (this.enableHistory) {
       const { history, ...eventData } = pointer;
       pointer.history!.push(eventData);

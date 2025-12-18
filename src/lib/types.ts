@@ -152,7 +152,7 @@ export type VistaPointer = {
   velocityY: number;
   id: number | string;
   history?: VistaPointer[];
-  pointerEvent?: VistaPointerEventData;
+  pointerEvent?: Partial<VistaPointerEventData>;
 };
 
 export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
