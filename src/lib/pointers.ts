@@ -63,6 +63,7 @@ export class VistaPointers {
       velocityX: 0,
       velocityY: 0,
       id: e.pointerId,
+      e: e,
     };
     this.pointers.push(pointer);
 
@@ -82,19 +83,19 @@ export class VistaPointers {
 
     e.preventDefault();
     const pointer = this.pointers.find((p) => p.id === e.pointerId);
-    if (pointer) {
-      pointer.velocityX = (e.clientX - pointer.x) / (e.timeStamp - pointer.lastTimestamp);
-      pointer.velocityY = (e.clientY - pointer.y) / (e.timeStamp - pointer.lastTimestamp);
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
-      pointer.lastTimestamp = e.timeStamp;
-      pointer.history?.push({
-        x: e.clientX,
-        y: e.clientY,
-        pressure: e.pressure,
-        time: e.timeStamp,
-      });
-    }
+    if (!pointer) return;
+    pointer.velocityX = (e.clientX - pointer.x) / (e.timeStamp - pointer.lastTimestamp);
+    pointer.velocityY = (e.clientY - pointer.y) / (e.timeStamp - pointer.lastTimestamp);
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.lastTimestamp = e.timeStamp;
+    pointer.history?.push({
+      x: e.clientX,
+      y: e.clientY,
+      pressure: e.pressure,
+      time: e.timeStamp,
+    });
+    pointer.e = e;
     this.listeners.forEach((l) =>
       l({
         event: 'move',
@@ -129,7 +130,9 @@ export class VistaPointers {
 
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
+    if (pointerIndex === -1) return;
     const pointer = this.pointers[pointerIndex];
+    pointer.e = e;
     const lastLen = this.pointers.length;
     this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>
@@ -156,7 +159,9 @@ export class VistaPointers {
 
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
+    if (pointerIndex === -1) return;
     const pointer = this.pointers[pointerIndex];
+    pointer.e = e;
     const lastLen = this.pointers.length;
     this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>

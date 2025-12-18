@@ -111,6 +111,7 @@ export type VistaPointer = {
   velocityX: number;
   velocityY: number;
   id: number | string;
+  e: PointerEvent;
 };
 
 export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';
