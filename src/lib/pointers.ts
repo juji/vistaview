@@ -34,7 +34,9 @@ export class VistaPointers {
     const pointer = {
       x: e.clientX,
       y: e.clientY,
+      pressure: e.pressure,
       lastTimestamp: e.timeStamp,
+      history: [{ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp }],
       velocityX: 0,
       velocityY: 0,
       id: e.pointerId,
@@ -64,6 +66,7 @@ export class VistaPointers {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
       pointer.lastTimestamp = e.timeStamp;
+      pointer.history.push({ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp });
     }
     this.listeners.forEach((l) =>
       l({

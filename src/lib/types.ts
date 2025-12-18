@@ -98,7 +98,9 @@ export type VistaInterface = {
 export type VistaPointer = {
   x: number;
   y: number;
+  pressure: number;
   lastTimestamp: number;
+  history: { x: number; y: number; pressure: number; time: number }[];
   velocityX: number;
   velocityY: number;
   id: number | string;
