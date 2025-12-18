@@ -100,18 +100,59 @@ export type VistaPointerArgs = {
   listeners?: VistaPointerListener[];
   startListeners?: boolean;
   enableHistory?: boolean;
+  recordPointerEvent?: boolean;
+};
+
+export type VistaPointerEventData = {
+  // Position
+  clientX: number;
+  clientY: number;
+  pageX: number;
+  pageY: number;
+  screenX: number;
+  screenY: number;
+  offsetX: number;
+  offsetY: number;
+  movementX: number;
+  movementY: number;
+
+  // Pointer specific
+  pointerId: number;
+  pointerType: string; // 'mouse' | 'pen' | 'touch'
+  width: number;
+  height: number;
+  pressure: number;
+  tangentialPressure: number;
+  tiltX: number;
+  tiltY: number;
+  twist: number;
+
+  // Button state
+  button: number;
+  buttons: number;
+
+  // Modifiers
+  altKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
+
+  // Touch/pen
+  isPrimary: boolean;
+
+  // Timing
+  timeStamp: number;
 };
 
 export type VistaPointer = {
   x: number;
   y: number;
-  pressure: number;
   lastTimestamp: number;
-  history?: { x: number; y: number; pressure: number; time: number }[];
   velocityX: number;
   velocityY: number;
   id: number | string;
-  e: PointerEvent;
+  history?: VistaPointer[];
+  pointerEvent?: VistaPointerEventData;
 };
 
 export type VistaPointerEvent = 'down' | 'move' | 'up' | 'cancel';

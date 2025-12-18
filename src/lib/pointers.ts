@@ -1,4 +1,9 @@
-import type { VistaPointer, VistaPointerListener, VistaPointerArgs } from './types.js';
+import type {
+  VistaPointer,
+  VistaPointerListener,
+  VistaPointerArgs,
+  VistaPointerEventData,
+} from './types.js';
 
 // Pointahs
 // say it like the pepe julian onzima interviewer guy
@@ -7,6 +12,7 @@ export class VistaPointers {
   private elm: HTMLElement | Document;
   private listeners: VistaPointerListener[] = [];
   private enableHistory: boolean = false;
+  private recordPointerEvent: boolean = false;
   private lastPointerDownId: number | string | null = null;
 
   // private preventContextMenu = (e: MouseEvent) => {
@@ -50,21 +56,18 @@ export class VistaPointers {
 
     window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
 
-    const pointer = {
+    let pointer: VistaPointer = {
       x: e.clientX,
       y: e.clientY,
-      pressure: e.pressure,
       lastTimestamp: e.timeStamp,
-      ...(this.enableHistory
-        ? {
-            history: [{ x: e.clientX, y: e.clientY, pressure: e.pressure, time: e.timeStamp }],
-          }
-        : {}),
       velocityX: 0,
       velocityY: 0,
       id: e.pointerId,
-      e: e,
     };
+
+    if (this.enableHistory) pointer.history = [];
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+
     this.pointers.push(pointer);
 
     this.listeners.forEach((l) =>
@@ -83,18 +86,17 @@ export class VistaPointers {
     e.preventDefault();
     const pointer = this.pointers.find((p) => p.id === e.pointerId);
     if (!pointer) return;
-    pointer.velocityX = (e.clientX - pointer.x) / (e.timeStamp - pointer.lastTimestamp);
-    pointer.velocityY = (e.clientY - pointer.y) / (e.timeStamp - pointer.lastTimestamp);
+    pointer.velocityX = e.movementX / (e.timeStamp - pointer.lastTimestamp);
+    pointer.velocityY = e.movementY / (e.timeStamp - pointer.lastTimestamp);
     pointer.x = e.clientX;
     pointer.y = e.clientY;
     pointer.lastTimestamp = e.timeStamp;
-    pointer.history?.push({
-      x: e.clientX,
-      y: e.clientY,
-      pressure: e.pressure,
-      time: e.timeStamp,
-    });
-    pointer.e = e;
+
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
+    if (this.enableHistory) {
+      const { history, ...eventData } = pointer;
+      pointer.history!.push(eventData);
+    }
     this.listeners.forEach((l) =>
       l({
         event: 'move',
@@ -130,7 +132,7 @@ export class VistaPointers {
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     if (pointerIndex === -1) return;
     const pointer = this.pointers[pointerIndex];
-    pointer.e = e;
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
     const lastLen = this.pointers.length;
     this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>
@@ -158,7 +160,7 @@ export class VistaPointers {
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     if (pointerIndex === -1) return;
     const pointer = this.pointers[pointerIndex];
-    pointer.e = e;
+    if (this.recordPointerEvent) pointer.pointerEvent = { ...e } as VistaPointerEventData;
     const lastLen = this.pointers.length;
     this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>
