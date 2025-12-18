@@ -205,6 +205,7 @@ export class VistaView {
       imgs.appendChild(vistaImg);
       if (img.classList.contains('vvw--ready')) {
         // wait for dimensions
+        // prevent 0 width issue on some browsers
         this.waitForDimensionsInterval = setInterval(() => {
           if (img.getBoundingClientRect().width) {
             clearInterval(this.waitForDimensionsInterval!);
