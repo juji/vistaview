@@ -561,7 +561,7 @@ export class VistaView {
     window.addEventListener('keydown', this.onKeyDown);
 
     // scroll Events
-    this.root.addEventListener('wheel', this.onScroll, { passive: false });
+    window.addEventListener('wheel', this.onScroll, { passive: false });
 
     // resize listener
     window.addEventListener('resize', this.onResizeHandler);
@@ -673,7 +673,7 @@ export class VistaView {
 
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onResizeHandler);
-    this.root.removeEventListener('wheel', this.onScroll);
+    window.removeEventListener('wheel', this.onScroll);
     this.unregisterPointerListeners();
     this.pointers!.removeListeners();
     this.root.remove();
