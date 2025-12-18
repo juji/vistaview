@@ -26,13 +26,38 @@ export class VistaPointers {
     }
   };
 
-  constructor({ elm, listeners, startListeners = true, enableHistory = false }: VistaPointerArgs) {
+  constructor({
+    elm,
+    listeners,
+    startListeners = true,
+    enableHistory = false,
+    recordPointerEvent = false,
+  }: VistaPointerArgs) {
     this.elm = elm ?? document;
+
     if (listeners) {
       this.listeners = listeners;
     }
+
     if (startListeners) this.startListeners();
+
     this.enableHistory = enableHistory;
+    this.recordPointerEvent = recordPointerEvent;
+  }
+
+  private setHistoryObject(pointer: VistaPointer) {
+    if (this.enableHistory) {
+      if (!pointer.history) pointer.history = [];
+      const { history, ...eventData } = pointer;
+      pointer.history!.push(eventData);
+    }
+  }
+
+  private setPointerEventObject(pointer: VistaPointer, e: PointerEvent) {
+    if (this.recordPointerEvent) {
+      pointer.pointerEvent =
+        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
+    }
   }
 
   private onPointerDown = (e: PointerEvent) => {
@@ -55,11 +80,8 @@ export class VistaPointers {
       id: e.pointerId,
     };
 
-    if (this.enableHistory) pointer.history = [];
-    if (this.recordPointerEvent) {
-      pointer.pointerEvent =
-        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
-    }
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.push(pointer);
 
@@ -85,15 +107,8 @@ export class VistaPointers {
     pointer.y = e.clientY;
     pointer.lastTimestamp = e.timeStamp;
 
-    if (this.recordPointerEvent) {
-      pointer.pointerEvent =
-        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
-    }
-
-    if (this.enableHistory) {
-      const { history, ...eventData } = pointer;
-      pointer.history!.push(eventData);
-    }
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.listeners.forEach((l) =>
       l({
@@ -131,10 +146,9 @@ export class VistaPointers {
     pointer.y = e.clientY;
     pointer.lastTimestamp = e.timeStamp;
     const lastLen = this.pointers.length;
-    if (this.recordPointerEvent) {
-      pointer.pointerEvent =
-        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
-    }
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.splice(pointerIndex, 1);
 
@@ -169,10 +183,9 @@ export class VistaPointers {
     pointer.y = e.clientY;
     pointer.lastTimestamp = e.timeStamp;
     const lastLen = this.pointers.length;
-    if (this.recordPointerEvent) {
-      pointer.pointerEvent =
-        typeof this.recordPointerEvent === 'function' ? this.recordPointerEvent(e) : { ...e };
-    }
+
+    this.setHistoryObject(pointer);
+    this.setPointerEventObject(pointer, e);
 
     this.pointers.splice(pointerIndex, 1);
 
