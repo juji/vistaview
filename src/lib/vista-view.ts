@@ -265,10 +265,8 @@ export class VistaView {
 
   isZoomedIn: boolean = false;
   private zoomIn(): void {
-    console.log('zoomIn');
     this.throttle.fio(
       () => {
-        console.log('animating zoom in');
         this.imageState.animateZoom(1.68);
       },
       'zoom',
