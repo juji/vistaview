@@ -6,8 +6,8 @@ export class VistaPointers {
   private pointers: VistaPointer[] = [];
   private elm: HTMLElement | Document;
   private listeners: VistaPointerListener[] = [];
-  private lastLen: number = 0;
   private enableHistory: boolean = false;
+  private lastPointerDownId: number | string | null = null;
 
   // private preventContextMenu = (e: MouseEvent) => {
   //   console.log('prevented context menu');
@@ -16,9 +16,12 @@ export class VistaPointers {
 
   private removeLastPointer = () => {
     if (!this.pointers.length) return;
-    // console.log('removing last pointers');
-    this.pointers.pop();
-    ((this.lastLen = this.pointers.length - 1), 0);
+    if (this.lastPointerDownId !== null) {
+      const idx = this.pointers.findIndex((p) => p.id === this.lastPointerDownId);
+      if (idx !== -1) {
+        this.pointers.splice(idx, 1);
+      }
+    }
   };
 
   constructor({ elm, listeners, startListeners = true, enableHistory = false }: VistaPointerArgs) {
@@ -43,6 +46,8 @@ export class VistaPointers {
     //   window.addEventListener('contextmenu', this.preventContextMenu);
     // }
 
+    this.lastPointerDownId = e.pointerId;
+
     window.addEventListener('contextmenu', this.removeLastPointer, { once: true });
 
     const pointer = {
@@ -60,7 +65,6 @@ export class VistaPointers {
       id: e.pointerId,
     };
     this.pointers.push(pointer);
-    this.lastLen = this.pointers.length;
 
     this.listeners.forEach((l) =>
       l({
@@ -68,7 +72,7 @@ export class VistaPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        lastPointerLen: this.lastLen,
+        lastPointerLen: this.pointers.length - 1,
       })
     );
   };
@@ -97,7 +101,7 @@ export class VistaPointers {
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        lastPointerLen: this.lastLen,
+        lastPointerLen: this.pointers.length - 1,
       })
     );
   };
@@ -126,16 +130,15 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
-    if (pointer) {
-      this.pointers.splice(pointerIndex, 1);
-    }
+    const lastLen = this.pointers.length;
+    this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>
       l({
         event: 'up',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        lastPointerLen: this.lastLen,
+        lastPointerLen: lastLen,
       })
     );
   };
@@ -154,16 +157,15 @@ export class VistaPointers {
     e.preventDefault();
     const pointerIndex = this.pointers.findIndex((p) => p.id === e.pointerId);
     const pointer = this.pointers[pointerIndex];
-    if (pointer) {
-      this.pointers.splice(pointerIndex, 1);
-    }
+    const lastLen = this.pointers.length;
+    this.pointers.splice(pointerIndex, 1);
     this.listeners.forEach((l) =>
       l({
         event: 'cancel',
         pointer: pointer,
         domEvent: e,
         pointers: this.pointers,
-        lastPointerLen: this.lastLen,
+        lastPointerLen: lastLen,
       })
     );
   };
