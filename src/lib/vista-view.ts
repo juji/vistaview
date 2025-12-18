@@ -389,6 +389,8 @@ export class VistaView {
   private onScroll = (e: Event) => {
     e.preventDefault();
     const delta = (e as WheelEvent).deltaY;
+    const center = { x: (e as WheelEvent).clientX, y: (e as WheelEvent).clientY };
+    this.imageState.setInitialCenter(center);
     if (delta < 0) {
       this.zoomIn();
     } else if (delta > 0) {
