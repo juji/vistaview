@@ -6,7 +6,7 @@ export class VistaPointers {
   private listeners: VistaPointerListener[] = [];
   private lastLen: number = 0;
 
-  private preventDefaultContextMenu = (e: MouseEvent) => {
+  private preventContextMenu = (e: MouseEvent) => {
     e.preventDefault();
   };
 
@@ -26,8 +26,10 @@ export class VistaPointers {
 
     e.preventDefault();
 
-    // prevent context menu on long press
-    window.addEventListener('contextmenu', this.preventDefaultContextMenu);
+    // Prevent context menu only for mouse (not touch/pen), to block right-click but allow mobile long-press
+    if (e.pointerType === 'mouse') {
+      window.addEventListener('contextmenu', this.preventContextMenu);
+    }
 
     const pointer = {
       x: e.clientX,
@@ -80,8 +82,10 @@ export class VistaPointers {
     // Ignore non-primary button clicks (right-click, middle-click, etc.)
     if (e.button !== 0) return;
 
-    // release context menu prevention
-    window.removeEventListener('contextmenu', this.preventDefaultContextMenu);
+    // Release context menu prevention only for mouse
+    if (e.pointerType === 'mouse') {
+      window.removeEventListener('contextmenu', this.preventContextMenu);
+    }
 
     // Only handle if target is within our element
     if (
