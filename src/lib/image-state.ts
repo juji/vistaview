@@ -26,7 +26,7 @@ export class VistaImageState {
     this.onScale = onScale;
   }
 
-  close() {
+  clean() {
     if (!this.image) return;
     this.image.style.transform = ``;
     this.image.style.width = ``;
@@ -37,7 +37,7 @@ export class VistaImageState {
   }
 
   reset() {
-    this.close();
+    this.clean();
     this.image = null;
     this.rect = null;
     this.initialCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -257,7 +257,7 @@ export class VistaImageState {
 
     if (newWidth <= this.minDimension.closingWidth) {
       // close image
-      this.close();
+      this.clean();
       return true;
     } else if (newWidth < this.minDimension.initialWidth) {
       // animate back to initial size
@@ -270,7 +270,7 @@ export class VistaImageState {
           'transitionend',
           () => {
             if (!img) return;
-            img.style.transition = '';
+            this.clean();
             this.rect = img.getBoundingClientRect();
           },
           { once: true }
@@ -311,7 +311,6 @@ export class VistaImageState {
           'transitionend',
           () => {
             if (!img) return;
-            img.style.transition = '';
             this.rect = img.getBoundingClientRect();
           },
           { once: true }
