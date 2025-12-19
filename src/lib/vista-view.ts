@@ -560,7 +560,7 @@ export class VistaView {
     const PINCH_COOLDOWN = 33;
     let cancelMove = () => {};
 
-    function pinchCheck() {
+    function isPinching() {
       return pinchMode || performance.now() - lastPinchEndTime < PINCH_COOLDOWN;
     }
 
@@ -569,7 +569,7 @@ export class VistaView {
       if (e.event === 'down') {
         cancelMove();
 
-        if (this.isZoomedIn && e.pointers.length === 1 && !pinchCheck()) {
+        if (this.isZoomedIn && e.pointers.length === 1 && !isPinching()) {
           const center = this.pointers!.getCentroid();
           imgState.setInitialCenter(center!);
         }
@@ -581,7 +581,7 @@ export class VistaView {
           imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
-        if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0 && !pinchCheck()) {
+        if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0 && !isPinching()) {
           const center = this.pointers!.getCentroid();
           imgState.move(center!);
         }
@@ -601,7 +601,7 @@ export class VistaView {
               this.close();
             });
           }
-        } else if (this.isZoomedIn && e.pointers.length === 0 && !pinchCheck()) {
+        } else if (this.isZoomedIn && e.pointers.length === 0 && !isPinching()) {
           cancelMove = imgState.moveAndNormalize(e.pointer!);
         }
       }
@@ -610,7 +610,7 @@ export class VistaView {
       this.pointerListeners.forEach((l) =>
         l({
           ...e,
-          hasInternalExecution: this.isZoomedIn || pinchCheck(),
+          hasInternalExecution: this.isZoomedIn || isPinching(),
           abortController: this.abortController!,
         })
       );
