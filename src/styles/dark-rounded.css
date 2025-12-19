@@ -92,7 +92,6 @@
       transition: padding-left 333ms ease;
 
       svg {
-        position: relative;
         transition: transform 333ms 111ms ease;
       }
     }
@@ -102,14 +101,6 @@
         padding-left: 8px;
         svg {
           transform: translateX(-3px);
-        }
-      }
-    }
-
-    &:active {
-      button {
-        svg {
-          left: -2px;
         }
       }
     }
@@ -123,7 +114,6 @@
       padding: 18px 3px;
       transition: padding-right 333ms ease;
       svg {
-        position: relative;
         transition: transform 333ms 111ms ease;
       }
     }
@@ -133,14 +123,6 @@
         padding-right: 8px;
         svg {
           transform: translateX(3px);
-        }
-      }
-    }
-
-    &:active {
-      button {
-        svg {
-          left: 2px;
         }
       }
     }
