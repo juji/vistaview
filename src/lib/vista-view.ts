@@ -556,14 +556,20 @@ export class VistaView {
 
     let lastDistance = 0;
     let pinchMode = false;
+    let lastPinchEndTime = 0;
+    const PINCH_COOLDOWN = 33;
     let cancelMove = () => {};
+
+    function pinchCheck() {
+      return pinchMode || performance.now() - lastPinchEndTime < PINCH_COOLDOWN;
+    }
 
     // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
       if (e.event === 'down') {
         cancelMove();
 
-        if (this.isZoomedIn && e.pointers.length === 1) {
+        if (this.isZoomedIn && e.pointers.length === 1 && !pinchCheck()) {
           const center = this.pointers!.getCentroid();
           imgState.setInitialCenter(center!);
         }
@@ -575,7 +581,7 @@ export class VistaView {
           imgState.setInitialCenter(center!);
         }
       } else if (e.event === 'move') {
-        if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0) {
+        if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0 && !pinchCheck()) {
           const center = this.pointers!.getCentroid();
           imgState.move(center!);
         }
@@ -587,13 +593,15 @@ export class VistaView {
         }
       } else if ((e.event === 'up' || e.event === 'cancel') && (pinchMode || this.isZoomedIn)) {
         if (pinchMode) {
+          lastPinchEndTime = performance.now();
           pinchMode = false;
           const close = imgState.normalize();
-          if (close)
+          if (close) {
             requestAnimationFrame(() => {
               this.close();
             });
-        } else if (this.isZoomedIn && e.pointers.length === 0) {
+          }
+        } else if (this.isZoomedIn && e.pointers.length === 0 && !pinchCheck()) {
           cancelMove = imgState.moveAndNormalize(e.pointer!);
         }
       }
@@ -602,7 +610,7 @@ export class VistaView {
       this.pointerListeners.forEach((l) =>
         l({
           ...e,
-          hasInternalExecution: this.isZoomedIn || pinchMode,
+          hasInternalExecution: this.isZoomedIn || pinchCheck(),
           abortController: this.abortController!,
         })
       );
