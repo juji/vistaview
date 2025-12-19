@@ -129,6 +129,60 @@ export class VistaView {
   }
 
   // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
+  private getChildElements(
+    positionalIndex: number,
+    index: number
+  ): { htmls: HTMLDivElement[]; images: VistaImgIdx[] } {
+    const htmls: HTMLDivElement[] = [];
+    const images: VistaImgIdx[] = [];
+    for (let i = -positionalIndex; i <= positionalIndex; i++) {
+      const elmIndex = (index + i + this.elements.length) % this.elements.length;
+      const elm = this.elements[elmIndex];
+      const img =
+        elm instanceof HTMLImageElement
+          ? elm
+          : elm instanceof HTMLAnchorElement
+            ? elm.querySelector('img') || undefined
+            : undefined;
+
+      const vistaImg: VistaImgIdx =
+        elm instanceof HTMLElement
+          ? {
+              index: elmIndex,
+              imageElm: img instanceof HTMLImageElement ? img : undefined,
+              anchorElm: elm instanceof HTMLAnchorElement ? elm : undefined,
+              src:
+                elm.dataset.vistaviewSrc ||
+                elm.getAttribute('href') ||
+                elm.getAttribute('src') ||
+                '',
+              thumb:
+                elm.dataset.vistaviewThumb ||
+                (img instanceof HTMLImageElement ? img.getAttribute('src') : undefined) ||
+                elm.getAttribute('href') ||
+                undefined,
+              alt:
+                img instanceof HTMLImageElement ? img.getAttribute('alt') || undefined : undefined,
+            }
+          : {
+              index: elmIndex,
+              ...(elm as VistaImg),
+            };
+
+      images.push(vistaImg);
+      htmls.push(vistaViewItem(vistaImg, i));
+    }
+
+    return {
+      htmls,
+      images,
+    };
+  }
+
+  // ============================================================================
   // SWAP LOGIC - handles image transitions between prev/next
   // ============================================================================
 
@@ -200,9 +254,8 @@ export class VistaView {
     this.lastSwapTime = performance.now();
 
     // Preserve animation state from old center image to avoid jarring resets
+    // -----
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
-
-    // get info about old center image
     const img0 = imgs.querySelector(
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
     ) as HTMLImageElement;
@@ -215,6 +268,7 @@ export class VistaView {
     const ready = img0.classList.contains('vvw--ready');
     const width = img0.width;
     const height = img0.height;
+    // -----
 
     // reset image state
     this.imageState.reset();
@@ -223,9 +277,10 @@ export class VistaView {
     imgs.innerHTML = '';
     if (this.transitionCleanup) this.transitionCleanup();
     htmls.forEach((vistaImg: HTMLDivElement) => {
-      // is this position 0?
       const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
 
+      // is this position 0?
+      // setup styles accordingly
       if (
         vistaImg.dataset.vvwPos === '0' &&
         !abortControllerSignal.aborted &&
@@ -248,11 +303,12 @@ export class VistaView {
 
       imgs.appendChild(vistaImg);
 
-      // for ready elements, set current image again
       if (vistaImg.dataset.vvwPos === '0' && !abortControllerSignal.aborted && ready) {
+        // for ready elements, set current image again
         this.imageState.setCurrentImage(img);
         this.imageState.setInitialCenter();
       } else if (
+        // for non-ready elements, restore animation state
         vistaImg.dataset.vvwPos === '0' &&
         !abortControllerSignal.aborted &&
         style &&
@@ -262,75 +318,17 @@ export class VistaView {
         animation
       ) {
         this.imageTransitions.set(img, animation);
-        this.transitionImage(
-          img,
-          () => {
-            this.imageState.setCurrentImage(img);
-            this.imageState.setInitialCenter();
-            img.classList.add('vvw--ready');
-          }
-          // false
-        );
+        this.transitionImage(img, () => {
+          this.imageState.setCurrentImage(img);
+          this.imageState.setInitialCenter();
+          img.classList.add('vvw--ready');
+        });
       }
     });
 
     this.isRapidSwap = false;
     this.waitForImagesToLoad();
     this.options.onImageView && this.options.onImageView(vistaData);
-  }
-
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-
-  private getChildElements(
-    positionalIndex: number,
-    index: number
-  ): { htmls: HTMLDivElement[]; images: VistaImgIdx[] } {
-    const htmls: HTMLDivElement[] = [];
-    const images: VistaImgIdx[] = [];
-    for (let i = -positionalIndex; i <= positionalIndex; i++) {
-      const elmIndex = (index + i + this.elements.length) % this.elements.length;
-      const elm = this.elements[elmIndex];
-      const img =
-        elm instanceof HTMLImageElement
-          ? elm
-          : elm instanceof HTMLAnchorElement
-            ? elm.querySelector('img') || undefined
-            : undefined;
-
-      const vistaImg: VistaImgIdx =
-        elm instanceof HTMLElement
-          ? {
-              index: elmIndex,
-              imageElm: img instanceof HTMLImageElement ? img : undefined,
-              anchorElm: elm instanceof HTMLAnchorElement ? elm : undefined,
-              src:
-                elm.dataset.vistaviewSrc ||
-                elm.getAttribute('href') ||
-                elm.getAttribute('src') ||
-                '',
-              thumb:
-                elm.dataset.vistaviewThumb ||
-                (img instanceof HTMLImageElement ? img.getAttribute('src') : undefined) ||
-                elm.getAttribute('href') ||
-                undefined,
-              alt:
-                img instanceof HTMLImageElement ? img.getAttribute('alt') || undefined : undefined,
-            }
-          : {
-              index: elmIndex,
-              ...(elm as VistaImg),
-            };
-
-      images.push(vistaImg);
-      htmls.push(vistaViewItem(vistaImg, i));
-    }
-
-    return {
-      htmls,
-      images,
-    };
   }
 
   // ============================================================================
@@ -401,7 +399,9 @@ export class VistaView {
   // IMAGE LOADING & TRANSITIONS
   // ============================================================================
 
+  // to make image (.vvw-img-hi) transitions smoothly to target size
   private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
+    // rapid swaps will cancel transitions
     if (img.classList.contains('vvw--load-cancelled')) return;
 
     if (this.isRapidSwap) {
@@ -411,12 +411,13 @@ export class VistaView {
       return;
     }
 
-    const animation = this.imageTransitions.get(img);
-    if (!animation) {
-      return;
-    }
-
     requestAnimationFrame(() => {
+      // this is also possible, that the animation was removed in between frames
+      const animation = this.imageTransitions.get(img);
+      if (!animation) {
+        return;
+      }
+
       if (img.classList.contains('vvw--load-cancelled')) return;
       const { current, target } = animation;
       const now = {
@@ -445,6 +446,7 @@ export class VistaView {
     });
   }
 
+  // wait, and add classes to high-res images when they load
   private waitForImagesToLoad(): void {
     const imgs = this.imageContainer!;
     const imgElements = imgs.querySelectorAll('img.vvw-img-hi:not(.vvw--loaded)');
@@ -463,6 +465,7 @@ export class VistaView {
         im.dataset.vvwWidth = width.toString();
         im.dataset.vvwHeight = height.toString();
         im.classList.add('vvw--loaded');
+
         this.imageTransitions.set(im, {
           current: {
             width: im.style.getPropertyValue('--vvw-current-w')
@@ -477,28 +480,35 @@ export class VistaView {
           },
           target: { width: width, height: height, radius: 0 },
         });
+
         this.transitionImage(im, () => {
           if (im.classList.contains('vvw--load-cancelled')) return;
+
           const isCurrentIndex = im.parentElement?.matches(
             `[data-vvw-idx="${this.currentIndex}"][data-vvw-pos="0"]`
           );
+
           if (isCurrentIndex) {
             this.imageState.setCurrentImage(im);
             this.imageState.setInitialCenter();
           }
+
           im.classList.add('vvw--ready');
         });
       };
 
+      // sometimes the image is already loaded
       if (im.complete && im.naturalWidth !== 0) {
         onLoaded();
         return;
       }
 
+      // and otherwise, wait for load event
       im.addEventListener('load', () => {
         onLoaded();
       });
 
+      // handle image load errors
       im.addEventListener('error', () => {
         im.classList.add('vvw--loaderror');
         const errorMsg = document.createElement('p');
@@ -579,6 +589,7 @@ export class VistaView {
   // POINTER EVENT MANAGEMENT
   // ============================================================================
 
+  // register external pointer listener
   registerPointerListener(listener: (e: VistaExternalPointerListenerArgs) => void): void {
     this.pointerListeners.push(listener);
   }
@@ -586,7 +597,10 @@ export class VistaView {
     this.pointerListeners = [];
   }
 
-  private getInternalPointerListener = () => {
+  // internal pointer listener
+  // this is a function, called at open
+  // the closure makes it easier to have local variables without polluting class scope
+  private getInternalPointerListener() {
     const imgState = this.imageState;
 
     // Pinch gesture state
@@ -665,7 +679,7 @@ export class VistaView {
         })
       );
     };
-  };
+  }
 
   /// OPEN
   // ============================================================================
@@ -873,6 +887,20 @@ export class VistaView {
     this.options.onClose && this.options.onClose(this);
   }
 
+  destroy(): void {
+    // close without animation
+    this.close(false);
+
+    // remove click listeners on elements
+    if (this.elements instanceof NodeList) {
+      this.elements.forEach((el) => {
+        el.removeAttribute('data-vista-idx');
+        el.removeEventListener('click', this.defaultOnClickHandler);
+        el.removeEventListener('pointerup', this.onClickElements);
+      });
+    }
+  }
+
   // ============================================================================
   // NAVIGATION METHODS - next, prev, view
   // ============================================================================
@@ -895,27 +923,6 @@ export class VistaView {
     this.view(index, { next: false, prev: true });
   }
 
-  destroy(): void {
-    // close without animation
-    this.close(false);
-
-    // remove click listeners on elements
-    if (this.elements instanceof NodeList) {
-      this.elements.forEach((el) => {
-        el.removeAttribute('data-vista-idx');
-        el.removeEventListener('click', this.defaultOnClickHandler);
-        el.removeEventListener('pointerup', this.onClickElements);
-      });
-    }
-  }
-
-  getCurrentIndex(): number {
-    if (GlobalVistaState.somethingOpened !== this) {
-      return -1;
-    }
-    return this.currentIndex;
-  }
-
   view(index: number, via?: { next: boolean; prev: boolean }): void {
     if (GlobalVistaState.somethingOpened !== this) {
       console.warn('This VistaView instance is not opened.');
@@ -935,5 +942,16 @@ export class VistaView {
     // set abort controller
     this.abortController = new AbortController();
     this.swap(before, via);
+  }
+
+  // ============================================================================
+  // GETTERS
+  // ============================================================================
+
+  getCurrentIndex(): number {
+    if (GlobalVistaState.somethingOpened !== this) {
+      return -1;
+    }
+    return this.currentIndex;
   }
 }
