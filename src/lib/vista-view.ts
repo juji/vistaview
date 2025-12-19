@@ -163,15 +163,22 @@ export class VistaView {
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
 
+    // get center image index
+    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
+
     if (rapid) {
+      this.imageState.reset();
+
       imgs.innerHTML = '';
       this.transitionCleanup && this.transitionCleanup();
       htmls.forEach((vistaImg: HTMLDivElement) => {
         imgs.appendChild(vistaImg);
       });
       this.lastSwapTime = performance.now();
+
       this.waitForImagesToLoad();
       this.options.onImageView && this.options.onImageView(vistaData);
+
       return;
     }
 
@@ -183,7 +190,6 @@ export class VistaView {
     this.lastSwapTime = performance.now();
 
     // get info about old center image
-    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
     const img0 = imgs.querySelector(
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
     ) as HTMLImageElement;
@@ -370,15 +376,15 @@ export class VistaView {
     requestAnimationFrame(() => {
       const { current, target } = animation;
       const now = {
-        width: current.width + (target.width - current.width) * 0.1,
-        height: current.height + (target.height - current.height) * 0.1,
-        radius: current.radius + (target.radius - current.radius) * 0.1,
+        width: current.width + (target.width - current.width) * 0.2,
+        height: current.height + (target.height - current.height) * 0.2,
+        radius: current.radius + (target.radius - current.radius) * 0.2,
       };
 
       if (
-        Math.abs(now.width - target.width) < 0.5 &&
-        Math.abs(now.height - target.height) < 0.5 &&
-        Math.abs(now.radius - target.radius) < 0.5
+        Math.abs(now.width - target.width) < 1 &&
+        Math.abs(now.height - target.height) < 1 &&
+        Math.abs(now.radius - target.radius) < 1
       ) {
         img.style.setProperty('--vvw-current-w', `${target.width}px`);
         img.style.setProperty('--vvw-current-h', `${target.height}px`);
@@ -405,8 +411,6 @@ export class VistaView {
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
-        const isCurrentIndex = im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`);
-
         const { width, height } = getFullSizeDim(im);
         im.dataset.vvwWidth = width.toString();
         im.dataset.vvwHeight = height.toString();
@@ -426,6 +430,9 @@ export class VistaView {
           target: { width: width, height: height, radius: 0 },
         });
         this.transitionImage(im, () => {
+          const isCurrentIndex = im.parentElement?.matches(
+            `[data-vvw-idx="${this.currentIndex}"][data-vvw-pos="0"]`
+          );
           if (isCurrentIndex) {
             this.imageState.setCurrentImage(im);
             this.imageState.setInitialCenter();
@@ -707,8 +714,8 @@ export class VistaView {
         'transitionend',
         () => {
           this.root?.classList.add('vvw--settled');
-          this.waitForImagesToLoad();
           this.imageState.reset();
+          this.waitForImagesToLoad();
         },
         { once: true }
       );
