@@ -6,7 +6,7 @@ A lightweight, modern image lightbox library for the web. Zero dependencies, fra
 
 ## Features
 
-- 🪶 **Lightweight** — ~40KB ESM (~10KB gzip), minimal footprint, zero dependencies
+- 🪶 **Lightweight** — ~43KB ESM (~10KB gzip), minimal footprint, zero dependencies
 - 📱 **Touch-first** — Swipe gestures for navigation and closing, pinch-to-zoom support
 - 🎨 **Customizable** — Configurable controls, animations, and styling via CSS variables
 - ♿ **Accessible** — Keyboard navigation, ARIA labels, reduced motion support
@@ -189,6 +189,10 @@ import {
   vistaView,
   vistaViewDownload, // Helper function for download control
   DefaultOptions, // Default configuration options
+  setup, // Default setup function
+  init, // Default init function
+  close, // Default close function
+  transition, // Default transition function
 } from 'vistaview';
 
 import type {
@@ -326,24 +330,24 @@ vite v6.4.1 building for production...
 ✓ 19 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/styles/dark-rounded.css   2.15 kB │ gzip: 0.46 kB
-dist/style.css                 7.09 kB │ gzip: 1.67 kB
-dist/svelte.js                 0.62 kB │ gzip: 0.29 kB
-dist/solid.js                  1.19 kB │ gzip: 0.54 kB
-dist/vue.js                    1.36 kB │ gzip: 0.59 kB
-dist/react.js                  1.67 kB │ gzip: 0.59 kB
-dist/vistaview.js             40.61 kB │ gzip: 9.86 kB
-[vite:dts] Declaration files built in 678ms.
+dist/styles/dark-rounded.css   1.55 kB │ gzip:  0.41 kB
+dist/style.css                 6.88 kB │ gzip:  1.65 kB
+dist/svelte.js                 0.62 kB │ gzip:  0.29 kB
+dist/solid.js                  1.19 kB │ gzip:  0.54 kB
+dist/vue.js                    1.36 kB │ gzip:  0.59 kB
+dist/react.js                  1.67 kB │ gzip:  0.59 kB
+dist/vistaview.js             43.30 kB │ gzip: 10.43 kB
+[vite:dts] Declaration files built in 664ms.
 
-✓ built in 790ms
+✓ built in 772ms
 vite v6.4.1 building for production...
 ✓ 13 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.umd.js  31.78 kB │ gzip: 8.82 kB
-[vite:dts] Declaration files built in 680ms.
+dist/vistaview.umd.js  33.94 kB │ gzip: 9.29 kB
+[vite:dts] Declaration files built in 657ms.
 
-✓ built in 769ms
+✓ built in 751ms
 ```
 
 ## License

@@ -137,6 +137,8 @@ export class VistaView {
   }
 
   private lastSwapTime = 0;
+  private isRapidSwap = false;
+  private isRapidSwapRelease = 0;
   private transitionCleanup: (() => void) | null = null;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
@@ -162,9 +164,12 @@ export class VistaView {
 
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
+    this.isRapidSwap = rapid;
 
-    // get center image index
-    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
+    // add flag to previous image to cancel animation after loading
+    imgs
+      .querySelectorAll(`.vvw-item img.vvw-img-hi`)
+      .forEach((img) => img.classList.add('vvw--load-cancelled'));
 
     if (rapid) {
       this.imageState.reset();
@@ -178,7 +183,10 @@ export class VistaView {
 
       this.waitForImagesToLoad();
       this.options.onImageView && this.options.onImageView(vistaData);
-
+      if (this.isRapidSwapRelease) clearTimeout(this.isRapidSwapRelease);
+      this.isRapidSwapRelease = setTimeout(() => {
+        this.isRapidSwap = false;
+      }, 333);
       return;
     }
 
@@ -188,6 +196,9 @@ export class VistaView {
       await res.transitionEnded;
     }
     this.lastSwapTime = performance.now();
+
+    // get center image index
+    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
 
     // get info about old center image
     const img0 = imgs.querySelector(
@@ -249,14 +260,19 @@ export class VistaView {
         animation
       ) {
         this.imageTransitions.set(img, animation);
-        this.transitionImage(img, () => {
-          this.imageState.setCurrentImage(img);
-          this.imageState.setInitialCenter();
-          img.classList.add('vvw--ready');
-        });
+        this.transitionImage(
+          img,
+          () => {
+            this.imageState.setCurrentImage(img);
+            this.imageState.setInitialCenter();
+            img.classList.add('vvw--ready');
+          }
+          // false
+        );
       }
     });
 
+    this.isRapidSwap = false;
     this.waitForImagesToLoad();
     this.options.onImageView && this.options.onImageView(vistaData);
   }
@@ -367,13 +383,22 @@ export class VistaView {
   }
 
   private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
+    if (img.classList.contains('vvw--load-cancelled')) return;
+
+    if (this.isRapidSwap) {
+      requestAnimationFrame(() => {
+        this.transitionImage(img, onEnd);
+      });
+      return;
+    }
+
     const animation = this.imageTransitions.get(img);
     if (!animation) {
-      console.log('transitionImage cancelled', img);
       return;
     }
 
     requestAnimationFrame(() => {
+      if (img.classList.contains('vvw--load-cancelled')) return;
       const { current, target } = animation;
       const now = {
         width: current.width + (target.width - current.width) * 0.2,
@@ -396,7 +421,7 @@ export class VistaView {
         img.style.setProperty('--vvw-current-h', `${now.height}px`);
         img.style.setProperty('--vvw-current-radius', `${now.radius}px`);
         this.imageTransitions.set(img, { current: now, target });
-        this.transitionImage(img, onEnd);
+        this.transitionImage(img, onEnd /* false */);
       }
     });
   }
@@ -407,7 +432,11 @@ export class VistaView {
     imgElements.forEach((img) => {
       const im = img as HTMLImageElement;
 
+      if (im.classList.contains('vvw--load-cancelled')) return;
+
       const onLoaded = () => {
+        if (im.classList.contains('vvw--load-cancelled')) return;
+
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
@@ -430,6 +459,7 @@ export class VistaView {
           target: { width: width, height: height, radius: 0 },
         });
         this.transitionImage(im, () => {
+          if (im.classList.contains('vvw--load-cancelled')) return;
           const isCurrentIndex = im.parentElement?.matches(
             `[data-vvw-idx="${this.currentIndex}"][data-vvw-pos="0"]`
           );
