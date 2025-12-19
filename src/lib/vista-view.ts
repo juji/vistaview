@@ -370,15 +370,15 @@ export class VistaView {
     requestAnimationFrame(() => {
       const { current, target } = animation;
       const now = {
-        width: current.width + (target.width - current.width) * 0.1,
-        height: current.height + (target.height - current.height) * 0.1,
-        radius: current.radius + (target.radius - current.radius) * 0.1,
+        width: current.width + (target.width - current.width) * 0.2,
+        height: current.height + (target.height - current.height) * 0.2,
+        radius: current.radius + (target.radius - current.radius) * 0.2,
       };
 
       if (
-        Math.abs(now.width - target.width) < 0.5 &&
-        Math.abs(now.height - target.height) < 0.5 &&
-        Math.abs(now.radius - target.radius) < 0.5
+        Math.abs(now.width - target.width) < 1 &&
+        Math.abs(now.height - target.height) < 1 &&
+        Math.abs(now.radius - target.radius) < 1
       ) {
         img.style.setProperty('--vvw-current-w', `${target.width}px`);
         img.style.setProperty('--vvw-current-h', `${target.height}px`);
