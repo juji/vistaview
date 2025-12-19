@@ -128,10 +128,15 @@ export class VistaView {
     }
   }
 
+  // ============================================================================
+  // SWAP LOGIC - handles image transitions between prev/next
+  // ============================================================================
+
   private lastSwapTime = 0;
   private isRapidSwap = false;
   private isRapidSwapRelease = 0;
   private transitionCleanup: (() => void) | null = null;
+
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
@@ -154,15 +159,17 @@ export class VistaView {
 
     const abortControllerSignal = this.abortController!.signal;
 
+    // Check if this is a rapid swap (user navigating quickly)
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
     this.isRapidSwap = rapid;
 
-    // add flag to previous image to cancel animation after loading
+    // Cancel pending image loads from previous swap
     imgs
       .querySelectorAll(`.vvw-item img.vvw-img-hi`)
       .forEach((img) => img.classList.add('vvw--load-cancelled'));
 
+    // RAPID SWAP: Skip transition, just update DOM immediately
     if (rapid) {
       this.imageState.reset();
 
@@ -175,6 +182,8 @@ export class VistaView {
 
       this.waitForImagesToLoad();
       this.options.onImageView && this.options.onImageView(vistaData);
+
+      // Set cooldown period before allowing normal transitions again
       if (this.isRapidSwapRelease) clearTimeout(this.isRapidSwapRelease);
       this.isRapidSwapRelease = setTimeout(() => {
         this.isRapidSwap = false;
@@ -182,6 +191,7 @@ export class VistaView {
       return;
     }
 
+    // NORMAL SWAP: Run transition animation
     const res = this.transitionFunction(vistaData, abortControllerSignal);
     if (res) {
       this.transitionCleanup = res.cleanup;
@@ -189,7 +199,7 @@ export class VistaView {
     }
     this.lastSwapTime = performance.now();
 
-    // get center image index
+    // Preserve animation state from old center image to avoid jarring resets
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
 
     // get info about old center image
@@ -269,6 +279,10 @@ export class VistaView {
     this.options.onImageView && this.options.onImageView(vistaData);
   }
 
+  // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
   private getChildElements(
     positionalIndex: number,
     index: number
@@ -319,7 +333,12 @@ export class VistaView {
     };
   }
 
+  // ============================================================================
+  // ZOOM CONTROLS
+  // ============================================================================
+
   isZoomedIn: boolean = false;
+
   private zoomIn(): void {
     this.throttle.fio(
       () => {
@@ -338,6 +357,10 @@ export class VistaView {
       222
     );
   }
+
+  // ============================================================================
+  // UI UPDATES
+  // ============================================================================
 
   private displayActiveIndex(): void {
     const cid = this.currentIndex;
@@ -373,6 +396,10 @@ export class VistaView {
       }
     }
   }
+
+  // ============================================================================
+  // IMAGE LOADING & TRANSITIONS
+  // ============================================================================
 
   private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
     if (img.classList.contains('vvw--load-cancelled')) return;
@@ -483,6 +510,10 @@ export class VistaView {
     });
   }
 
+  // ============================================================================
+  // EVENT HANDLERS
+  // ============================================================================
+
   private onKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowLeft':
@@ -544,6 +575,10 @@ export class VistaView {
 
   /// POINTERS
   private pointerListeners: ((e: VistaExternalPointerListenerArgs) => void)[] = [];
+  // ============================================================================
+  // POINTER EVENT MANAGEMENT
+  // ============================================================================
+
   registerPointerListener(listener: (e: VistaExternalPointerListenerArgs) => void): void {
     this.pointerListeners.push(listener);
   }
@@ -554,48 +589,59 @@ export class VistaView {
   private getInternalPointerListener = () => {
     const imgState = this.imageState;
 
+    // Pinch gesture state
     let lastDistance = 0;
     let pinchMode = false;
     let lastPinchEndTime = 0;
     const PINCH_COOLDOWN = 33;
     let cancelMove = () => {};
 
-    // to detect if we are pinching
-    // to prevent conflict with single pointer move
-    // adds a small cooldown after pinch ends to avoid immediate single pointer move
+    // Detect if we are pinching - to prevent conflict with single pointer move
+    // Adds a small cooldown after pinch ends to avoid immediate single pointer move
     function isPinching() {
       return pinchMode || performance.now() - lastPinchEndTime < PINCH_COOLDOWN;
     }
 
-    // handle internal pinch zoom
     return (e: VistaPointerListenerArgs) => {
+      // POINTER DOWN - Start drag or pinch
       if (e.event === 'down') {
         cancelMove();
 
+        // Single finger: prepare for drag (if zoomed in)
         if (this.isZoomedIn && e.pointers.length === 1 && !isPinching()) {
           const center = this.pointers!.getCentroid();
           imgState.setInitialCenter(center!);
         }
 
+        // Two fingers: start pinch zoom
         if (e.pointers.length >= 2) {
           pinchMode = true;
           const center = this.pointers!.getCentroid();
           lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
           imgState.setInitialCenter(center!);
         }
-      } else if (e.event === 'move') {
+      }
+
+      // POINTER MOVE - Drag or pinch zoom
+      else if (e.event === 'move') {
+        // Single finger drag (when zoomed in)
         if (this.isZoomedIn && e.pointers.length === 1 && e.lastPointerLen === 0 && !isPinching()) {
           const center = this.pointers!.getCentroid();
           imgState.move(center!);
         }
 
+        // Two finger pinch zoom
         if (e.pointers.length >= 2 && pinchMode) {
           const center = this.pointers!.getCentroid();
           const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
           imgState.scaleMove(distance / lastDistance, center!);
         }
-      } else if ((e.event === 'up' || e.event === 'cancel') && (pinchMode || this.isZoomedIn)) {
+      }
+
+      // POINTER UP - End drag/pinch, normalize position
+      else if ((e.event === 'up' || e.event === 'cancel') && (pinchMode || this.isZoomedIn)) {
         if (pinchMode) {
+          // End pinch: normalize zoom level, close if zoomed out too far
           lastPinchEndTime = performance.now();
           pinchMode = false;
           const close = imgState.normalize();
@@ -605,11 +651,12 @@ export class VistaView {
             });
           }
         } else if (this.isZoomedIn && e.pointers.length === 0 && !isPinching()) {
+          // End drag: animate back to bounds if necessary
           cancelMove = imgState.moveAndNormalize(e.pointer!);
         }
       }
 
-      // external listeners
+      // Notify external listeners (user-registered pointer handlers)
       this.pointerListeners.forEach((l) =>
         l({
           ...e,
@@ -621,6 +668,10 @@ export class VistaView {
   };
 
   /// OPEN
+  // ============================================================================
+  // LIFECYCLE METHODS - open, close, destroy
+  // ============================================================================
+
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -821,6 +872,10 @@ export class VistaView {
     this.closeFunction(this);
     this.options.onClose && this.options.onClose(this);
   }
+
+  // ============================================================================
+  // NAVIGATION METHODS - next, prev, view
+  // ============================================================================
 
   next(): void {
     if (GlobalVistaState.somethingOpened !== this) {
