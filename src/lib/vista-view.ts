@@ -560,6 +560,9 @@ export class VistaView {
     const PINCH_COOLDOWN = 33;
     let cancelMove = () => {};
 
+    // to detect if we are pinching
+    // to prevent conflict with single pointer move
+    // adds a small cooldown after pinch ends to avoid immediate single pointer move
     function isPinching() {
       return pinchMode || performance.now() - lastPinchEndTime < PINCH_COOLDOWN;
     }
