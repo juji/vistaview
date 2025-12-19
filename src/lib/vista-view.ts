@@ -627,13 +627,6 @@ export class VistaView {
         () => {
           this.root?.classList.add('vvw--settled');
           this.waitForImagesToLoad();
-
-          // background click to close
-          this.qs('.vvw-bg')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.close();
-          });
-
           this.imageState.reset();
         },
         { once: true }

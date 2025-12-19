@@ -81,21 +81,19 @@ function registerPointerListener(vistaView: VistaView) {
       // handle vertical swipe
       if (axis === 'y') {
         const deltaY = current.y - start.y;
-        const movement = e.pointer.movementY;
-        const threshold = 8; // px
 
         // reset transition
         vistaView.imageContainer!.style.transition = '';
 
         // swipe down
-        if (deltaY > 0 && Math.abs(movement) > threshold) {
+        if (deltaY > 0) {
           vistaView.imageContainer!.style.transition = 'transform 222ms ease';
           vistaView.imageContainer!.style.transform = `translateY(0vh)`;
           vistaView.close();
         }
 
         // swipe up
-        else if (deltaY < 0 && Math.abs(movement) > threshold) {
+        else if (deltaY < 0) {
           vistaView.imageContainer!.style.transition = 'transform 222ms ease';
           vistaView.imageContainer!.style.transform = `translateY(0vh)`;
           vistaView.close();
