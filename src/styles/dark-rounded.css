@@ -89,17 +89,19 @@
     overflow: hidden;
     button {
       padding: 18px 3px;
-      padding-left: 3px;
-      padding-right: 3px;
-      transition:
-        padding-right 222ms 111ms ease,
-        padding-left 333ms ease;
+      transition: padding-left 333ms ease;
+
+      svg {
+        transition: transform 333ms 111ms ease;
+      }
     }
 
     &:hover {
       button {
-        padding-right: 13px;
-        padding-left: 21px;
+        padding-left: 8px;
+        svg {
+          transform: translateX(-3px);
+        }
       }
     }
   }
@@ -110,17 +112,18 @@
     overflow: hidden;
     button {
       padding: 18px 3px;
-      padding-left: 3px;
-      padding-right: 3px;
-      transition:
-        padding-right 333ms ease,
-        padding-left 222ms 111ms ease;
+      transition: padding-right 333ms ease;
+      svg {
+        transition: transform 333ms 111ms ease;
+      }
     }
 
     &:hover {
       button {
-        padding-left: 13px;
-        padding-right: 21px;
+        padding-right: 8px;
+        svg {
+          transform: translateX(3px);
+        }
       }
     }
   }
