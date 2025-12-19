@@ -386,7 +386,6 @@ export class VistaView {
 
     const animation = this.imageTransitions.get(img);
     if (!animation) {
-      console.log('transitionImage cancelled', img);
       return;
     }
 

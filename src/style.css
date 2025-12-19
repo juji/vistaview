@@ -174,13 +174,6 @@
     overflow: hidden;
     object-fit: cover;
     opacity: 0;
-    /* transition:
-      opacity calc(var(--vvw-anim-dur) * 0.5ms) ease; */
-
-    /* transition:
-      width calc(var(--vvw-anim-dur) * 1.5ms) ease,
-      height calc(var(--vvw-anim-dur) * 1.5ms) ease,
-      border-radius calc(var(--vvw-anim-dur) * 1.5ms) ease; */
   }
 }
 
