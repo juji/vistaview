@@ -1,4 +1,3 @@
-import './style.css';
 export type * from './lib/types';
 
 export { vistaView } from './lib/main';

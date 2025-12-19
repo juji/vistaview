@@ -48,6 +48,7 @@ export default defineConfig({
             vue: resolve(__dirname, 'src/vue.ts'),
             svelte: resolve(__dirname, 'src/svelte.ts'),
             solid: resolve(__dirname, 'src/solid.ts'),
+            style: resolve(__dirname, 'src/style.css'),
             ...styleFiles,
           },
           name: 'VistaView',
@@ -66,7 +67,7 @@ export default defineConfig({
             },
             exports: 'named',
             assetFileNames: (assetInfo) => {
-              if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+              if (assetInfo.names[0] && assetInfo.names[0].endsWith('.css')) {
                 return '[name][extname]';
               }
               return 'assets/[name]-[hash][extname]';
