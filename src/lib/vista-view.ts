@@ -163,8 +163,10 @@ export class VistaView {
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
 
-    // get center image index
-    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
+    // add flag to previous image to cancel animation after loading
+    imgs
+      .querySelectorAll(`.vvw-item img.vvw-img-hi`)
+      .forEach((img) => img.classList.add('vvw--load-cancelled'));
 
     if (rapid) {
       this.imageState.reset();
@@ -188,6 +190,9 @@ export class VistaView {
       await res.transitionEnded;
     }
     this.lastSwapTime = performance.now();
+
+    // get center image index
+    const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
 
     // get info about old center image
     const img0 = imgs.querySelector(
@@ -407,7 +412,11 @@ export class VistaView {
     imgElements.forEach((img) => {
       const im = img as HTMLImageElement;
 
+      if (im.classList.contains('vvw--load-cancelled')) return;
+
       const onLoaded = () => {
+        if (im.classList.contains('vvw--load-cancelled')) return;
+
         im.width = im.naturalWidth;
         im.height = im.naturalHeight;
 
@@ -430,6 +439,7 @@ export class VistaView {
           target: { width: width, height: height, radius: 0 },
         });
         this.transitionImage(im, () => {
+          if (im.classList.contains('vvw--load-cancelled')) return;
           const isCurrentIndex = im.parentElement?.matches(
             `[data-vvw-idx="${this.currentIndex}"][data-vvw-pos="0"]`
           );
