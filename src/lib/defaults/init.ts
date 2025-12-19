@@ -82,18 +82,8 @@ function registerPointerListener(vistaView: VistaView) {
       if (axis === 'y') {
         const deltaY = current.y - start.y;
 
-        // reset transition
-        vistaView.imageContainer!.style.transition = '';
-
         // swipe down
-        if (deltaY > 0) {
-          vistaView.imageContainer!.style.transition = 'transform 222ms ease';
-          vistaView.imageContainer!.style.transform = `translateY(0vh)`;
-          vistaView.close();
-        }
-
-        // swipe up
-        else if (deltaY < 0) {
+        if (Math.abs(deltaY) > 144) {
           vistaView.imageContainer!.style.transition = 'transform 222ms ease';
           vistaView.imageContainer!.style.transform = `translateY(0vh)`;
           vistaView.close();
