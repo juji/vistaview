@@ -241,15 +241,17 @@ export class VistaImageState {
   normalize(checkBound: boolean = true): boolean | void {
     if (!this.image || !this.rect) return;
 
+    const currentWidth = this.rect.width * this.scale;
+    const isClosing = currentWidth <= this.minDimension.closingWidth;
+
     // translate scale to width/height
-    const newWidth = this.snapToTargetIfClose(
-      this.rect.width * this.scale,
-      this.minDimension.initialWidth
-    );
-    const newHeight = this.snapToTargetIfClose(
-      this.rect.height * this.scale,
-      this.minDimension.initialHeight
-    );
+    const newWidth = isClosing
+      ? currentWidth
+      : this.snapToTargetIfClose(this.rect.width * this.scale, this.minDimension.initialWidth);
+
+    const newHeight = isClosing
+      ? this.rect.height * this.scale
+      : this.snapToTargetIfClose(this.rect.height * this.scale, this.minDimension.initialHeight);
 
     this.image.style.width = `${newWidth}px`;
     this.image.style.height = `${newHeight}px`;
@@ -271,9 +273,8 @@ export class VistaImageState {
     // update rect
     this.rect = this.image.getBoundingClientRect();
 
-    if (newWidth <= this.minDimension.closingWidth) {
-      // close image
-      this.clean();
+    if (isClosing) {
+      // close image viewer
       return true;
     } else if (newWidth < this.minDimension.initialWidth) {
       // animate back to initial size
