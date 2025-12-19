@@ -675,7 +675,7 @@ export class VistaView {
         l({
           ...e,
           hasInternalExecution: this.isZoomedIn || isPinching(),
-          abortController: this.abortController!,
+          abortController: this.abortController,
         })
       );
     };
