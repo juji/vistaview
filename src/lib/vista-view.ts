@@ -742,7 +742,9 @@ export class VistaView {
     // call init function, before activation
     this.initFunction(this);
 
-    requestAnimationFrame(() => {
+    // using setTimeout to allow CSS transitions
+    // when using raf, sometimes the thumbnmail jumps
+    setTimeout(() => {
       this.root?.addEventListener(
         'transitionend',
         () => {
@@ -757,7 +759,7 @@ export class VistaView {
       this.displayActiveIndex();
       this.options.onOpen && this.options.onOpen(this);
       this.options.onImageView && this.options.onImageView(vistaData);
-    });
+    }, 0);
   }
 
   /// CLOSE
