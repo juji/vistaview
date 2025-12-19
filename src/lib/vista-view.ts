@@ -742,24 +742,25 @@ export class VistaView {
     // call init function, before activation
     this.initFunction(this);
 
-    // using setTimeout to allow CSS transitions
-    // when using raf, sometimes the thumbnmail jumps
-    setTimeout(() => {
-      this.root?.addEventListener(
-        'transitionend',
-        () => {
-          this.root?.classList.add('vvw--settled');
-          this.imageState.reset();
-          this.waitForImagesToLoad();
-        },
-        { once: true }
-      );
+    // when using single raf, sometimes the thumbnmail jumps
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.root?.addEventListener(
+          'transitionend',
+          () => {
+            this.root?.classList.add('vvw--settled');
+            this.imageState.reset();
+            this.waitForImagesToLoad();
+          },
+          { once: true }
+        );
 
-      this.root!.classList.add('vvw--active');
-      this.displayActiveIndex();
-      this.options.onOpen && this.options.onOpen(this);
-      this.options.onImageView && this.options.onImageView(vistaData);
-    }, 0);
+        this.root!.classList.add('vvw--active');
+        this.displayActiveIndex();
+        this.options.onOpen && this.options.onOpen(this);
+        this.options.onImageView && this.options.onImageView(vistaData);
+      });
+    });
   }
 
   /// CLOSE
