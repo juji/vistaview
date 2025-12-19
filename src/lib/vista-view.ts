@@ -129,7 +129,7 @@ export class VistaView {
   }
 
   // ============================================================================
-  // HELPER METHODS
+  // HELPER METHODS used in open and swap
   // ============================================================================
 
   private getChildElements(
@@ -681,11 +681,11 @@ export class VistaView {
     };
   }
 
-  /// OPEN
   // ============================================================================
   // LIFECYCLE METHODS - open, close, destroy
   // ============================================================================
 
+  // OPEN
   open(startIndex: number = 0): void {
     if (GlobalVistaState.somethingOpened) {
       console.warn(
@@ -887,6 +887,7 @@ export class VistaView {
     this.options.onClose && this.options.onClose(this);
   }
 
+  // DESTROY
   destroy(): void {
     // close without animation
     this.close(false);
