@@ -1,7 +1,7 @@
 import type { VistaData } from '../types';
 
 // run on every image transition
-export async function transition(
+export function transition(
   {
     vistaView: { isReducedMotion },
     htmlElements: { to: HtmlTo },
@@ -23,30 +23,39 @@ export async function transition(
     return;
   }
 
-  const duration = Math.round(options.animationDurationBase! * 100) / 100;
-
   // adjacent transition
   // with no reduced motion preference
   // slide left/right
 
-  return new Promise<() => void>((r) => {
-    imgc!.addEventListener(
-      'transitionend',
-      () => {
-        r(() => {
-          imgc!.style.transition = '';
-          imgc!.style.transform = '';
-        });
-      },
-      { once: true }
-    );
+  return {
+    cleanup: () => {
+      imgc!.style.transition = '';
+      imgc!.style.transform = '';
+    },
+    transitionEnded: new Promise<void>((r) => {
+      imgc!.addEventListener(
+        'transitionend',
+        () => {
+          r();
+        },
+        { once: true }
+      );
+      imgc!.addEventListener(
+        'transitioncancel',
+        () => {
+          if (signal.aborted) r();
+        },
+        { once: true }
+      );
 
-    const transform =
-      toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
-        ? 'translateX(-100vw)'
-        : 'translateX(100vw)';
+      const duration = Math.round(options.animationDurationBase! * 100) / 100;
+      const transform =
+        toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
+          ? 'translateX(-100vw)'
+          : 'translateX(100vw)';
 
-    imgc!.style.transition = `transform ${duration}ms ease`;
-    imgc!.style.transform = transform;
-  });
+      imgc!.style.transition = `transform ${duration}ms ease`;
+      imgc!.style.transform = transform;
+    }),
+  };
 }

@@ -99,7 +99,7 @@ function registerPointerListener(vistaView: VistaView) {
       if (axis === 'x') {
         const deltaX = current.x - start.x;
         const movement = e.pointer.movementX;
-        const threshold = 8; // px
+        const threshold = 3; // px
 
         vistaView.imageContainer!.style.transition = '';
 

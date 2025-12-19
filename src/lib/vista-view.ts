@@ -40,7 +40,13 @@ export class VistaView {
   private transitionFunction: VistaTransitionFn = transition;
   private pointers: VistaPointers | null = null;
   private imageState: VistaImageState;
-  private imageTransitions: Map<HTMLImageElement, boolean> = new Map();
+  private imageTransitions: Map<
+    HTMLImageElement,
+    {
+      current: { width: number; height: number; radius: number };
+      target: { width: number; height: number; radius: number };
+    }
+  > = new Map();
 
   root: HTMLElement | null = null;
   imageContainer: HTMLElement | null = null;
@@ -131,6 +137,7 @@ export class VistaView {
   }
 
   private lastSwapTime = 0;
+  private transitionCleanup: (() => void) | null = null;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
     const index = this.currentIndex;
@@ -155,11 +162,25 @@ export class VistaView {
 
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
-    let cleanup: void | (() => void) | null = null;
-    if (!rapid) {
-      cleanup = await this.transitionFunction(vistaData, abortControllerSignal);
+
+    if (rapid) {
+      imgs.innerHTML = '';
+      this.transitionCleanup && this.transitionCleanup();
+      htmls.forEach((vistaImg: HTMLDivElement) => {
+        imgs.appendChild(vistaImg);
+      });
+      this.lastSwapTime = performance.now();
+      this.waitForImagesToLoad();
+      this.options.onImageView && this.options.onImageView(vistaData);
+      return;
     }
-    this.lastSwapTime = now;
+
+    const res = this.transitionFunction(vistaData, abortControllerSignal);
+    if (res) {
+      this.transitionCleanup = res.cleanup;
+      await res.transitionEnded;
+    }
+    this.lastSwapTime = performance.now();
 
     // get info about old center image
     const idx = htmls[Math.floor(htmls.length / 2)].dataset.vvwIdx;
@@ -167,7 +188,8 @@ export class VistaView {
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
     ) as HTMLImageElement;
 
-    this.imageTransitions.set(img0, false);
+    const animation = this.imageTransitions.get(img0);
+    this.imageTransitions.delete(img0);
 
     const style = img0.getAttribute('style') || '';
     const loaded = img0.classList.contains('vvw--loaded');
@@ -180,7 +202,7 @@ export class VistaView {
 
     // swap elements
     imgs.innerHTML = '';
-    if (cleanup instanceof Function) cleanup();
+    if (this.transitionCleanup) this.transitionCleanup();
     htmls.forEach((vistaImg: HTMLDivElement) => {
       // is this position 0?
       const img = vistaImg.querySelector('img.vvw-img-hi') as HTMLImageElement;
@@ -208,7 +230,7 @@ export class VistaView {
       imgs.appendChild(vistaImg);
 
       // for ready elements, set current image again
-      if (img.classList.contains('vvw--ready')) {
+      if (vistaImg.dataset.vvwPos === '0' && !abortControllerSignal.aborted && ready) {
         this.imageState.setCurrentImage(img);
         this.imageState.setInitialCenter();
       } else if (
@@ -217,33 +239,15 @@ export class VistaView {
         style &&
         width &&
         height &&
-        loaded
+        loaded &&
+        animation
       ) {
-        this.imageTransitions.set(img, true);
-        this.transitionImage(
-          img,
-          {
-            width: img.style.getPropertyValue('--vvw-current-w')
-              ? parseFloat(img.style.getPropertyValue('--vvw-current-w'))
-              : 0,
-            height: img.style.getPropertyValue('--vvw-current-h')
-              ? parseFloat(img.style.getPropertyValue('--vvw-current-h'))
-              : 0,
-            radius: img.style.getPropertyValue('--vvw-current-radius')
-              ? parseFloat(img.style.getPropertyValue('--vvw-current-radius'))
-              : 0,
-          },
-          {
-            width: img.dataset.vvwWidth ? parseFloat(img.dataset.vvwWidth) : 0,
-            height: img.dataset.vvwHeight ? parseFloat(img.dataset.vvwHeight) : 0,
-            radius: 0,
-          },
-          () => {
-            this.imageState.setCurrentImage(img);
-            this.imageState.setInitialCenter();
-            img.classList.add('vvw--ready');
-          }
-        );
+        this.imageTransitions.set(img, animation);
+        this.transitionImage(img, () => {
+          this.imageState.setCurrentImage(img);
+          this.imageState.setInitialCenter();
+          img.classList.add('vvw--ready');
+        });
       }
     });
 
@@ -356,42 +360,37 @@ export class VistaView {
     }
   }
 
-  private transitionImage(
-    img: HTMLImageElement,
-    currentDim: { width: number; height: number; radius: number },
-    targetDim: { width: number; height: number; radius: number },
-    onEnd: () => void
-  ): void {
-    const isAnimating = this.imageTransitions.get(img);
-    if (!isAnimating) {
+  private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
+    const animation = this.imageTransitions.get(img);
+    if (!animation) {
       console.log('transitionImage cancelled', img);
-      // onEnd();
-      this.imageTransitions.delete(img);
       return;
     }
 
     requestAnimationFrame(() => {
+      const { current, target } = animation;
       const now = {
-        width: currentDim.width + (targetDim.width - currentDim.width) * 0.2,
-        height: currentDim.height + (targetDim.height - currentDim.height) * 0.2,
-        radius: currentDim.radius + (targetDim.radius - currentDim.radius) * 0.2,
+        width: current.width + (target.width - current.width) * 0.2,
+        height: current.height + (target.height - current.height) * 0.2,
+        radius: current.radius + (target.radius - current.radius) * 0.2,
       };
 
       if (
-        Math.abs(now.width - targetDim.width) < 0.5 &&
-        Math.abs(now.height - targetDim.height) < 0.5 &&
-        Math.abs(now.radius - targetDim.radius) < 0.5
+        Math.abs(now.width - target.width) < 0.5 &&
+        Math.abs(now.height - target.height) < 0.5 &&
+        Math.abs(now.radius - target.radius) < 0.5
       ) {
-        img.style.setProperty('--vvw-current-w', `${targetDim.width}px`);
-        img.style.setProperty('--vvw-current-h', `${targetDim.height}px`);
-        img.style.setProperty('--vvw-current-radius', `${targetDim.radius}px`);
+        img.style.setProperty('--vvw-current-w', `${target.width}px`);
+        img.style.setProperty('--vvw-current-h', `${target.height}px`);
+        img.style.setProperty('--vvw-current-radius', `${target.radius}px`);
         this.imageTransitions.delete(img);
         onEnd();
       } else {
         img.style.setProperty('--vvw-current-w', `${now.width}px`);
         img.style.setProperty('--vvw-current-h', `${now.height}px`);
         img.style.setProperty('--vvw-current-radius', `${now.radius}px`);
-        this.transitionImage(img, now, targetDim, onEnd);
+        this.imageTransitions.set(img, { current: now, target });
+        this.transitionImage(img, onEnd);
       }
     });
   }
@@ -412,10 +411,8 @@ export class VistaView {
         im.dataset.vvwWidth = width.toString();
         im.dataset.vvwHeight = height.toString();
         im.classList.add('vvw--loaded');
-        this.imageTransitions.set(im, true);
-        this.transitionImage(
-          im,
-          {
+        this.imageTransitions.set(im, {
+          current: {
             width: im.style.getPropertyValue('--vvw-current-w')
               ? parseFloat(im.style.getPropertyValue('--vvw-current-w'))
               : 0,
@@ -426,15 +423,15 @@ export class VistaView {
               ? parseFloat(im.style.getPropertyValue('--vvw-current-radius'))
               : 0,
           },
-          { width: width, height: height, radius: 0 },
-          () => {
-            if (isCurrentIndex) {
-              this.imageState.setCurrentImage(im);
-              this.imageState.setInitialCenter();
-            }
-            im.classList.add('vvw--ready');
+          target: { width: width, height: height, radius: 0 },
+        });
+        this.transitionImage(im, () => {
+          if (isCurrentIndex) {
+            this.imageState.setCurrentImage(im);
+            this.imageState.setInitialCenter();
           }
-        );
+          im.classList.add('vvw--ready');
+        });
       };
 
       if (im.complete && im.naturalWidth !== 0) {
