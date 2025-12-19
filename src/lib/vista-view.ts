@@ -749,13 +749,13 @@ export class VistaView {
         'transitionend',
         () => {
           this.root?.classList.add('vvw--settled');
+          this.imageState.reset();
           this.waitForImagesToLoad();
         },
         { once: true }
       );
 
       this.root!.classList.add('vvw--active');
-      this.imageState.reset();
       this.displayActiveIndex();
       this.options.onOpen && this.options.onOpen(this);
       this.options.onImageView && this.options.onImageView(vistaData);
