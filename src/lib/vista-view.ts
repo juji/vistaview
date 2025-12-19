@@ -137,6 +137,8 @@ export class VistaView {
   }
 
   private lastSwapTime = 0;
+  private isRapidSwap = false;
+  private isRapidSwapRelease = 0;
   private transitionCleanup: (() => void) | null = null;
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
     const allImage = this.options.preloads || 0;
@@ -162,6 +164,7 @@ export class VistaView {
 
     const now = performance.now();
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
+    this.isRapidSwap = rapid;
 
     // add flag to previous image to cancel animation after loading
     imgs
@@ -180,7 +183,10 @@ export class VistaView {
 
       this.waitForImagesToLoad();
       this.options.onImageView && this.options.onImageView(vistaData);
-
+      if (this.isRapidSwapRelease) clearTimeout(this.isRapidSwapRelease);
+      this.isRapidSwapRelease = setTimeout(() => {
+        this.isRapidSwap = false;
+      }, 333);
       return;
     }
 
@@ -260,12 +266,13 @@ export class VistaView {
             this.imageState.setCurrentImage(img);
             this.imageState.setInitialCenter();
             img.classList.add('vvw--ready');
-          },
-          false
+          }
+          // false
         );
       }
     });
 
+    this.isRapidSwap = false;
     this.waitForImagesToLoad();
     this.options.onImageView && this.options.onImageView(vistaData);
   }
@@ -375,13 +382,14 @@ export class VistaView {
     }
   }
 
-  private async transitionImage(
-    img: HTMLImageElement,
-    onEnd: () => void,
-    delay: boolean = true
-  ): Promise<void> {
-    if (delay) {
-      await new Promise((res) => setTimeout(res, 333));
+  private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
+    if (img.classList.contains('vvw--load-cancelled')) return;
+
+    if (this.isRapidSwap) {
+      requestAnimationFrame(() => {
+        this.transitionImage(img, onEnd);
+      });
+      return;
     }
 
     const animation = this.imageTransitions.get(img);
@@ -390,6 +398,7 @@ export class VistaView {
     }
 
     requestAnimationFrame(() => {
+      if (img.classList.contains('vvw--load-cancelled')) return;
       const { current, target } = animation;
       const now = {
         width: current.width + (target.width - current.width) * 0.2,
@@ -412,7 +421,7 @@ export class VistaView {
         img.style.setProperty('--vvw-current-h', `${now.height}px`);
         img.style.setProperty('--vvw-current-radius', `${now.radius}px`);
         this.imageTransitions.set(img, { current: now, target });
-        this.transitionImage(img, onEnd, false);
+        this.transitionImage(img, onEnd /* false */);
       }
     });
   }
