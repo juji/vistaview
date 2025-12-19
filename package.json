@@ -43,7 +43,8 @@
       "types": "./dist/solid.d.ts",
       "import": "./dist/solid.js"
     },
-    "./style.css": "./dist/vistaview.css"
+    "./style.css": "./dist/vistaview.css",
+    "./styles/*": "./dist/styles/*"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
