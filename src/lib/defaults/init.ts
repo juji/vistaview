@@ -32,7 +32,8 @@ function registerPointerListener(vistaView: VistaView) {
       current = { x: e.pointer.x, y: e.pointer.y };
 
       // abort any slide animation
-      // this will move the slide to the next in line (or previous)
+      // if currently animating to a different slide,
+      // this will instantly move the slider to that slide
       e.abortController?.abort();
     }
 
