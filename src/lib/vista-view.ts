@@ -85,17 +85,9 @@ export class VistaView {
         if (par.isMin) {
           this.isZoomedIn = false;
           this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
-          this.qs('.vvw-item[data-vvw-idx="' + this.currentIndex + '"]')?.style.setProperty(
-            'pointer-events',
-            'none'
-          );
         } else {
           this.isZoomedIn = true;
           this.qs('.vvw-zoom-out')?.removeAttribute('disabled');
-          this.qs('.vvw-item[data-vvw-idx="' + this.currentIndex + '"]')?.style.setProperty(
-            'pointer-events',
-            'auto'
-          );
         }
 
         if (par.isMax) {
