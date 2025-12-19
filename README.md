@@ -27,11 +27,11 @@ For quick prototyping or non-bundler environments, use the UMD build via CDN:
 
 ```html
 <!-- unpkg -->
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/vistaview.css" />
+<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
 <script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
 
 <!-- or jsDelivr -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
 <script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
 
 <script>
@@ -113,12 +113,10 @@ vistaView({
   // Optional configuration
   animationDurationBase: 333, // Base animation duration in ms (default: 333)
   initialZIndex: 1, // Starting z-index for the lightbox (default: 1)
-  zoomStep: 500, // Pixels to zoom per step (default: 500)
   maxZoomLevel: 2, // Maximum zoom multiplier (default: 2)
-  touchSpeedThreshold: 0.5, // Swipe speed threshold for navigation (default: 0.5)
   preloads: 1, // Number of adjacent images to preload on each side (default: 1)
   keyboardListeners: true, // Enable keyboard navigation (default: true)
-  arrowOnSmallScreens: false, // Show arrow buttons on small screens (default: false)
+  arrowOnSmallScreens: false, // Show prev/next arrows on screens < 768px (default: false)
   rapidLimit: 100, // Minimum time between rapid actions in ms (default: 100)
 
   // Control placement (defaults shown)
@@ -212,15 +210,38 @@ import type {
 
 ## Styling
 
-VistaView uses CSS custom properties for easy theming:
+### CSS Import
+
+VistaView CSS is now separate from the JavaScript bundle for better control:
+
+```js
+import 'vistaview/style.css';
+```
+
+### Theme System
+
+VistaView supports custom themes that can be imported separately:
+
+```js
+import 'vistaview/style.css'; // Base styles (required)
+import 'vistaview/styles/dark-rounded.css'; // Optional theme
+```
+
+Available themes:
+
+- `dark-rounded` - Dark theme with rounded corners and animated navigation buttons
+
+### CSS Custom Properties
+
+VistaView uses CSS custom properties for easy customization:
 
 ```css
 :root {
-  --vistaview-bg-color: #000000;
-  --vistaview-text-color: #ffffff;
-  --vistaview-background-blur: 10px;
-  --vistaview-background-opacity: 0.8;
-  --vistaview-animation-duration: 333;
+  --vvw-bg-color: #000000; /* Background color */
+  --vvw-text-color: #ffffff; /* Text color */
+  --vvw-bg-blur: 10px; /* Background blur amount */
+  --vvw-bg-opacity: 0.8; /* Background opacity */
+  --vvw-anim-dur: 333; /* Animation duration in ms */
 }
 ```
 
@@ -287,31 +308,42 @@ function Gallery() {
 }
 ```
 
+## Accessibility
+
+VistaView is built with accessibility in mind:
+
+- **Screen reader support** - ARIA labels and live regions announce navigation and image information
+- **Keyboard navigation** - Full keyboard control (can be disabled with `keyboardListeners: false`)
+- **Reduced motion** - Respects `prefers-reduced-motion` user preference
+- **Focus management** - Proper focus handling when opening/closing
+- **Error announcements** - Failed image loads are announced to screen readers
+- **Semantic HTML** - Proper button elements with descriptive labels
+
 ## Last built
 
 ```
 vite v6.4.1 building for production...
-✓ 18 modules transformed.
+✓ 19 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css   6.66 kB │ gzip: 1.58 kB
-dist/svelte.js       0.62 kB │ gzip: 0.29 kB
-dist/solid.js        1.19 kB │ gzip: 0.54 kB
-dist/vue.js          1.36 kB │ gzip: 0.59 kB
-dist/react.js        1.67 kB │ gzip: 0.59 kB
-dist/vistaview.js   39.77 kB │ gzip: 9.66 kB
-[vite:dts] Declaration files built in 659ms.
+dist/styles/dark-rounded.css   2.15 kB │ gzip: 0.46 kB
+dist/style.css                 7.09 kB │ gzip: 1.67 kB
+dist/svelte.js                 0.62 kB │ gzip: 0.29 kB
+dist/solid.js                  1.19 kB │ gzip: 0.54 kB
+dist/vue.js                    1.36 kB │ gzip: 0.59 kB
+dist/react.js                  1.67 kB │ gzip: 0.59 kB
+dist/vistaview.js             40.61 kB │ gzip: 9.86 kB
+[vite:dts] Declaration files built in 678ms.
 
-✓ built in 768ms
+✓ built in 790ms
 vite v6.4.1 building for production...
-✓ 14 modules transformed.
+✓ 13 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.css      6.66 kB │ gzip: 1.58 kB
-dist/vistaview.umd.js  31.07 kB │ gzip: 8.61 kB
-[vite:dts] Declaration files built in 670ms.
+dist/vistaview.umd.js  31.78 kB │ gzip: 8.82 kB
+[vite:dts] Declaration files built in 680ms.
 
-✓ built in 766ms
+✓ built in 769ms
 ```
 
 ## License

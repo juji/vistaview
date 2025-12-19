@@ -16,9 +16,7 @@ export type VistaElmProps = {
 export type VistaOpt = {
   animationDurationBase?: number;
   initialZIndex?: number;
-  zoomStep?: number;
   maxZoomLevel?: number;
-  touchSpeedThreshold?: number;
   preloads?: number;
   keyboardListeners?: boolean;
   arrowOnSmallScreens?: boolean;

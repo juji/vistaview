@@ -1,10 +1,21 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
+import { readdirSync } from 'fs';
 
 // Check if building UMD specifically
 const isUMD = process.env.BUILD_UMD === 'true';
 const isProd = process.env.BUILD_ENV === 'prod';
+
+// Get all CSS files from styles directory
+const stylesDir = resolve(__dirname, 'src/styles');
+const styleFiles = readdirSync(stylesDir)
+  .filter((file) => file.endsWith('.css'))
+  .reduce((acc, file) => {
+    const name = file.replace('.css', '');
+    acc[`styles/${name}`] = resolve(stylesDir, file);
+    return acc;
+  }, {});
 
 export default defineConfig({
   server: {
@@ -37,11 +48,13 @@ export default defineConfig({
             vue: resolve(__dirname, 'src/vue.ts'),
             svelte: resolve(__dirname, 'src/svelte.ts'),
             solid: resolve(__dirname, 'src/solid.ts'),
+            style: resolve(__dirname, 'src/style.css'),
+            ...styleFiles,
           },
           name: 'VistaView',
           formats: ['es'],
         },
-        cssCodeSplit: false,
+        cssCodeSplit: true,
         rollupOptions: {
           external: ['react', 'react/jsx-runtime', 'vue', 'svelte', 'solid-js'],
           output: {
@@ -53,6 +66,12 @@ export default defineConfig({
               'solid-js': 'solid',
             },
             exports: 'named',
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.names[0] && assetInfo.names[0].endsWith('.css')) {
+                return '[name][extname]';
+              }
+              return 'assets/[name]-[hash][extname]';
+            },
           },
         },
       },
