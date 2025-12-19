@@ -120,4 +120,5 @@ export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
 
 export type VistaExternalPointerListenerArgs = VistaPointerListenerArgs & {
   hasInternalExecution: boolean;
+  abortController: AbortController;
 };

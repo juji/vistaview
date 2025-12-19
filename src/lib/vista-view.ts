@@ -370,9 +370,9 @@ export class VistaView {
     requestAnimationFrame(() => {
       const { current, target } = animation;
       const now = {
-        width: current.width + (target.width - current.width) * 0.2,
-        height: current.height + (target.height - current.height) * 0.2,
-        radius: current.radius + (target.radius - current.radius) * 0.2,
+        width: current.width + (target.width - current.width) * 0.1,
+        height: current.height + (target.height - current.height) * 0.1,
+        radius: current.radius + (target.radius - current.radius) * 0.1,
       };
 
       if (
@@ -574,6 +574,7 @@ export class VistaView {
         l({
           ...e,
           hasInternalExecution: this.isZoomedIn || pinchMode,
+          abortController: this.abortController!,
         })
       );
     };

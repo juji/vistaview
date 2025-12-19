@@ -30,6 +30,10 @@ function registerPointerListener(vistaView: VistaView) {
     if (e.event === 'down') {
       start = { x: e.pointer.x, y: e.pointer.y };
       current = { x: e.pointer.x, y: e.pointer.y };
+
+      // abort any slide animation
+      // this will move the slide to the next in line (or previous)
+      e.abortController?.abort();
     }
 
     // on move, calculate deltas and translate image container
@@ -99,7 +103,7 @@ function registerPointerListener(vistaView: VistaView) {
       if (axis === 'x') {
         const deltaX = current.x - start.x;
         const movement = e.pointer.movementX;
-        const threshold = 3; // px
+        const threshold = 1; // px
 
         vistaView.imageContainer!.style.transition = '';
 
