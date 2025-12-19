@@ -254,11 +254,15 @@ export class VistaView {
         animation
       ) {
         this.imageTransitions.set(img, animation);
-        this.transitionImage(img, () => {
-          this.imageState.setCurrentImage(img);
-          this.imageState.setInitialCenter();
-          img.classList.add('vvw--ready');
-        });
+        this.transitionImage(
+          img,
+          () => {
+            this.imageState.setCurrentImage(img);
+            this.imageState.setInitialCenter();
+            img.classList.add('vvw--ready');
+          },
+          false
+        );
       }
     });
 
@@ -371,7 +375,15 @@ export class VistaView {
     }
   }
 
-  private transitionImage(img: HTMLImageElement, onEnd: () => void): void {
+  private async transitionImage(
+    img: HTMLImageElement,
+    onEnd: () => void,
+    delay: boolean = true
+  ): Promise<void> {
+    if (delay) {
+      await new Promise((res) => setTimeout(res, 333));
+    }
+
     const animation = this.imageTransitions.get(img);
     if (!animation) {
       console.log('transitionImage cancelled', img);
@@ -401,7 +413,7 @@ export class VistaView {
         img.style.setProperty('--vvw-current-h', `${now.height}px`);
         img.style.setProperty('--vvw-current-radius', `${now.radius}px`);
         this.imageTransitions.set(img, { current: now, target });
-        this.transitionImage(img, onEnd);
+        this.transitionImage(img, onEnd, false);
       }
     });
   }
