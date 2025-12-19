@@ -534,7 +534,11 @@ export class VistaView {
     }
 
     if (this.options.initialZIndex !== undefined) {
-      this.root.style.setProperty('--vvw-init-z', `${this.options.initialZIndex}`);
+      this.root.style.setProperty('--vvw-init-z', `${this.options.initialZIndex ?? 0}`);
+    }
+
+    if (this.options.arrowOnSmallScreens) {
+      this.root.classList.add('vvw-arrow-sm');
     }
 
     // setting up image, with preloads
@@ -566,7 +570,7 @@ export class VistaView {
     this.qs('.vvw-next>button')?.addEventListener('click', () => this.next());
 
     // keyboard events
-    window.addEventListener('keydown', this.onKeyDown);
+    if (this.options.keyboardListeners) window.addEventListener('keydown', this.onKeyDown);
 
     // scroll Events
     window.addEventListener('wheel', this.onScroll, { passive: false });
@@ -682,7 +686,7 @@ export class VistaView {
       }
     }
 
-    window.removeEventListener('keydown', this.onKeyDown);
+    if (this.options.keyboardListeners) window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.onResizeHandler);
     window.removeEventListener('wheel', this.onScroll);
     this.unregisterPointerListeners();
