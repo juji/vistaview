@@ -171,10 +171,10 @@
     overflow: hidden;
     object-fit: cover;
     opacity: 0;
-    transition:
+    /* transition:
       width calc(var(--vvw-anim-dur) * 1.5ms) ease,
       height calc(var(--vvw-anim-dur) * 1.5ms) ease,
-      border-radius calc(var(--vvw-anim-dur) * 1.5ms) ease;
+      border-radius calc(var(--vvw-anim-dur) * 1.5ms) ease; */
   }
 }
 
@@ -356,9 +356,9 @@
     border-radius: var(--vvw-current-radius);
   }
 
-  .vvw-img-hi.vvw--ready {
+  /* .vvw-img-hi.vvw--ready {
     transition: none;
-  }
+  } */
 }
 
 .vvw-root.vvw--closing {

@@ -40,6 +40,7 @@ export class VistaView {
   private transitionFunction: VistaTransitionFn = transition;
   private pointers: VistaPointers | null = null;
   private imageState: VistaImageState;
+  private imageTransitions: Map<HTMLImageElement, boolean> = new Map();
 
   root: HTMLElement | null = null;
   imageContainer: HTMLElement | null = null;
@@ -166,9 +167,11 @@ export class VistaView {
       `.vvw-item[data-vvw-idx="${idx}"] img.vvw-img-hi`
     ) as HTMLImageElement;
 
+    this.imageTransitions.set(img0, false);
+
     const style = img0.getAttribute('style') || '';
     const loaded = img0.classList.contains('vvw--loaded');
-    // const ready = img0.classList.contains('vvw--ready');
+    const ready = img0.classList.contains('vvw--ready');
     const width = img0.width;
     const height = img0.height;
 
@@ -186,18 +189,20 @@ export class VistaView {
         vistaImg.dataset.vvwPos === '0' &&
         !abortControllerSignal.aborted &&
         style &&
-        loaded &&
-        // ready &&
         width &&
         height
       ) {
-        img.classList.add('vvw--loaded');
-        img.classList.add('vvw--ready');
+        if (loaded) {
+          img.classList.add('vvw--loaded');
+          img.dataset.vvwWidth = img0.dataset.vvwWidth || '';
+          img.dataset.vvwHeight = img0.dataset.vvwHeight || '';
+        }
+        if (ready) {
+          img.classList.add('vvw--ready');
+          img.width = width;
+          img.height = height;
+        }
         img.setAttribute('style', style);
-        img.width = width;
-        img.height = height;
-        img.dataset.vvwWidth = width.toString();
-        img.dataset.vvwHeight = height.toString();
       }
 
       imgs.appendChild(vistaImg);
@@ -206,6 +211,39 @@ export class VistaView {
       if (img.classList.contains('vvw--ready')) {
         this.imageState.setCurrentImage(img);
         this.imageState.setInitialCenter();
+      } else if (
+        vistaImg.dataset.vvwPos === '0' &&
+        !abortControllerSignal.aborted &&
+        style &&
+        width &&
+        height &&
+        loaded
+      ) {
+        this.imageTransitions.set(img, true);
+        this.transitionImage(
+          img,
+          {
+            width: img.style.getPropertyValue('--vvw-current-w')
+              ? parseFloat(img.style.getPropertyValue('--vvw-current-w'))
+              : 0,
+            height: img.style.getPropertyValue('--vvw-current-h')
+              ? parseFloat(img.style.getPropertyValue('--vvw-current-h'))
+              : 0,
+            radius: img.style.getPropertyValue('--vvw-current-radius')
+              ? parseFloat(img.style.getPropertyValue('--vvw-current-radius'))
+              : 0,
+          },
+          {
+            width: img.dataset.vvwWidth ? parseFloat(img.dataset.vvwWidth) : 0,
+            height: img.dataset.vvwHeight ? parseFloat(img.dataset.vvwHeight) : 0,
+            radius: 0,
+          },
+          () => {
+            this.imageState.setCurrentImage(img);
+            this.imageState.setInitialCenter();
+            img.classList.add('vvw--ready');
+          }
+        );
       }
     });
 
@@ -318,6 +356,46 @@ export class VistaView {
     }
   }
 
+  private transitionImage(
+    img: HTMLImageElement,
+    currentDim: { width: number; height: number; radius: number },
+    targetDim: { width: number; height: number; radius: number },
+    onEnd: () => void
+  ): void {
+    const isAnimating = this.imageTransitions.get(img);
+    if (!isAnimating) {
+      console.log('transitionImage cancelled', img);
+      // onEnd();
+      this.imageTransitions.delete(img);
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const now = {
+        width: currentDim.width + (targetDim.width - currentDim.width) * 0.2,
+        height: currentDim.height + (targetDim.height - currentDim.height) * 0.2,
+        radius: currentDim.radius + (targetDim.radius - currentDim.radius) * 0.2,
+      };
+
+      if (
+        Math.abs(now.width - targetDim.width) < 0.5 &&
+        Math.abs(now.height - targetDim.height) < 0.5 &&
+        Math.abs(now.radius - targetDim.radius) < 0.5
+      ) {
+        img.style.setProperty('--vvw-current-w', `${targetDim.width}px`);
+        img.style.setProperty('--vvw-current-h', `${targetDim.height}px`);
+        img.style.setProperty('--vvw-current-radius', `${targetDim.radius}px`);
+        this.imageTransitions.delete(img);
+        onEnd();
+      } else {
+        img.style.setProperty('--vvw-current-w', `${now.width}px`);
+        img.style.setProperty('--vvw-current-h', `${now.height}px`);
+        img.style.setProperty('--vvw-current-radius', `${now.radius}px`);
+        this.transitionImage(img, now, targetDim, onEnd);
+      }
+    });
+  }
+
   private waitForImagesToLoad(): void {
     const imgs = this.imageContainer!;
     const imgElements = imgs.querySelectorAll('img.vvw-img-hi:not(.vvw--loaded)');
@@ -330,28 +408,33 @@ export class VistaView {
 
         const isCurrentIndex = im.parentElement?.matches(`[data-vvw-idx="${this.currentIndex}"]`);
 
-        im.addEventListener(
-          'transitionend',
+        const { width, height } = getFullSizeDim(im);
+        im.dataset.vvwWidth = width.toString();
+        im.dataset.vvwHeight = height.toString();
+        im.classList.add('vvw--loaded');
+        this.imageTransitions.set(im, true);
+        this.transitionImage(
+          im,
+          {
+            width: im.style.getPropertyValue('--vvw-current-w')
+              ? parseFloat(im.style.getPropertyValue('--vvw-current-w'))
+              : 0,
+            height: im.style.getPropertyValue('--vvw-current-h')
+              ? parseFloat(im.style.getPropertyValue('--vvw-current-h'))
+              : 0,
+            radius: im.style.getPropertyValue('--vvw-current-radius')
+              ? parseFloat(im.style.getPropertyValue('--vvw-current-radius'))
+              : 0,
+          },
+          { width: width, height: height, radius: 0 },
           () => {
             if (isCurrentIndex) {
               this.imageState.setCurrentImage(im);
               this.imageState.setInitialCenter();
             }
             im.classList.add('vvw--ready');
-          },
-          { once: true }
+          }
         );
-
-        im.classList.add('vvw--loaded');
-        requestAnimationFrame(() => {
-          const { width, height } = getFullSizeDim(im);
-
-          im.style.setProperty('--vvw-current-w', `${width}px`);
-          im.style.setProperty('--vvw-current-h', `${height}px`);
-          im.dataset.vvwWidth = width.toString();
-          im.dataset.vvwHeight = height.toString();
-          im.style.setProperty('--vvw-current-radius', `0px`);
-        });
       };
 
       if (im.complete && im.naturalWidth !== 0) {
