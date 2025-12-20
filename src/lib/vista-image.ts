@@ -20,7 +20,7 @@ type VistaPicAttr = {
   };
 };
 
-type VistaImageElm = {
+type VistaElm = {
   type: 'img' | 'a' | 'picture';
   childElm?: 'img' | 'picture';
   thumb?: {
@@ -44,7 +44,7 @@ type VistaImageElm = {
 
 export class VistaImage {
   original: HTMLImageElement | HTMLAnchorElement | HTMLPictureElement;
-  imageElm: VistaImageElm;
+  imageElm: VistaElm;
 
   constructor(elm: HTMLImageElement | HTMLAnchorElement | HTMLPictureElement) {
     this.original = elm;
@@ -160,7 +160,7 @@ export class VistaImage {
 
   private constructImageElm(
     elm: HTMLImageElement | HTMLAnchorElement | HTMLPictureElement
-  ): VistaImageElm {
+  ): VistaElm {
     const styles = this.getStyles(elm);
 
     if (elm instanceof HTMLImageElement) {
