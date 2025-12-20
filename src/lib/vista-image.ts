@@ -73,6 +73,7 @@ export class VistaImage {
     if (elm.type === 'img') {
       const im = document.createElement('img');
       im.src = img.src;
+
       if (img.alt) im.alt = img.alt!;
       if (img.srcSet) im.srcset = img.srcSet!;
       if (img.sizes) im.sizes = img.sizes!;
@@ -82,6 +83,7 @@ export class VistaImage {
     } else if (elm.type === 'picture') {
       const picture = document.createElement('picture');
       const sources = elm.picture!.sources;
+
       sources.forEach((sourceData) => {
         const source = document.createElement('source');
         source.srcset = sourceData.srcSet;
@@ -116,6 +118,7 @@ export class VistaImage {
       const thumbAttr = elm.thumb!.attributes as VistaImgAttr;
       const img = document.createElement('img');
       img.src = thumbAttr.src;
+
       if (thumbAttr.alt) img.alt = thumbAttr.alt!;
       if (thumbAttr.srcSet) img.srcset = thumbAttr.srcSet!;
       if (thumbAttr.sizes) img.sizes = thumbAttr.sizes!;
@@ -127,6 +130,7 @@ export class VistaImage {
       const picture = document.createElement('picture');
       const sources = thumbAttr.sources;
       const imageAlt = thumbAttr.img.alt || '';
+
       sources.forEach((sourceData) => {
         const source = document.createElement('source');
         source.srcset = sourceData.srcSet;
@@ -165,6 +169,7 @@ export class VistaImage {
       return {};
     } else if (elm instanceof HTMLPictureElement) {
       const elmBorderRadius = getComputedStyle(elm).borderRadius;
+
       if (isNotZeroCssValue(elmBorderRadius)) {
         return {
           borderRadius: elmBorderRadius,
@@ -174,6 +179,7 @@ export class VistaImage {
 
       const image = elm.querySelector('img') as HTMLImageElement | null;
       const styles = image ? this.getStyles(image) : { borderRadius: '', objectFit: '' };
+
       if (styles.borderRadius && isNotZeroCssValue(styles.borderRadius)) {
         return styles;
       }
