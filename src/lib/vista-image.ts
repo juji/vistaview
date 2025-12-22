@@ -311,12 +311,12 @@ export class VistaImage {
 
       img.classList.add('vvw--loaded');
       // requestAnimationFrame(() => { animateIn(); });
-      // i found set timeout looks better, than requestAnimationFrame
+      // i found settimeout looks better, than requestAnimationFrame
       setTimeout(() => {
         // return to prevent scaled image on rapid slide
         if (this.isCancelled) return;
         animateIn();
-      }, 111);
+      }, 333);
     }
   }
 
