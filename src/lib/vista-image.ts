@@ -60,7 +60,7 @@ export class VistaImage {
     },
     set translate(value: { x: number; y: number }) {
       this._translate = value;
-      this._t.image!.style.translate = `${value.x}px ${value.y}px`;
+      this._t.image!.style.translate = `calc(-50% + ${value.x}px) calc(-50% + ${value.y}px)`;
     },
     get translate() {
       return this._translate;
@@ -475,50 +475,34 @@ export class VistaImage {
     });
   }
 
-  animateZoom(targetScale: number, center?: { x: number; y: number }) {
-    const img = this.image!;
-    const rect = img.getBoundingClientRect();
-    const initialScale = this.state.transform.scale;
-    const scaleDiff = targetScale - initialScale;
-
-    const animate = (progress: number) => {
-      const easedProgress = 0.5 - Math.cos(progress * Math.PI) / 2; // easeInOut
-      const currentScale = initialScale + scaleDiff * easedProgress;
-
-      // calculate the position to keep the zoom centered at the pinch center
-      let offsetX = 0;
-      let offsetY = 0;
-      if (center) {
-        const imgCenter = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        };
-        offsetX = (center.x - imgCenter.x) * (currentScale / this.state.transform.scale - 1);
-        offsetY = (center.y - imgCenter.y) * (currentScale / this.state.transform.scale - 1);
-      }
-
-      this.state.transform = {
-        x: this.state.transform.x - offsetX,
-        y: this.state.transform.y - offsetY,
-        scale: currentScale,
-      };
-
-      if (progress < 1) {
-        requestAnimationFrame(() => animate(progress + 0.1));
-      } else {
-        // notify scale change
-        const scaledWidth = rect.width * targetScale;
-        this.isZoomedIn = scaledWidth > this.fullW;
-        this.onScale({
-          vistaImage: this,
-          scale: scaledWidth / this.fullW,
-          isMax: scaledWidth >= this.maxW,
-          isMin: scaledWidth <= this.fullW,
-        });
-      }
-    };
-
-    animate(0);
+  animateZoom(targetScale: number) {
+    VistaHiresTransition.stop(this);
+    VistaHiresTransition.start({
+      vistaImage: this,
+      target: {
+        transform: {
+          scale: targetScale,
+        },
+      },
+      onComplete: () => {
+        this.setFinalTransform();
+        if (this.state._width > this.maxW) {
+          this.animateZoom(this.maxW / this.state._width);
+        } else if (this.state._width < this.fullW) {
+          this.animateZoom(this.fullW / this.state._width);
+        } else {
+          this.isZoomedIn = this.state._width > this.fullW;
+          const scaledWidth = this.state._width;
+          this.onScale({
+            vistaImage: this,
+            scale: scaledWidth / this.fullW,
+            isMax: scaledWidth >= this.maxW,
+            isMin: scaledWidth <= this.fullW,
+          });
+        }
+      },
+      shouldWait: () => false,
+    });
   }
 
   momentumThrow(par: { x: number; y: number }) {
@@ -623,6 +607,7 @@ export class VistaImage {
       this.state.translate.y = 0;
     }
 
+    this.state.translate = this.state.translate;
     this.state.transform = { x: 0, y: 0, scale: 1 };
 
     // normalize if zoomed out
