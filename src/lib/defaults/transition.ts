@@ -48,7 +48,7 @@ export function transition(
 
       const duration = Math.round(options.animationDurationBase! * 100) / 100;
       const transform =
-        toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
+        toIndex! === fromIndex! + 1 || (fromIndex === vistaView.elmLength - 1 && toIndex === 0)
           ? 'translateX(-100vw)'
           : 'translateX(100vw)';
 
