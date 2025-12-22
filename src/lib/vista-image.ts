@@ -186,12 +186,18 @@ export class VistaImage {
       this.image!.classList.add('vvw--loaded');
       this.state.width = img.state.width;
       this.state.height = img.state.height;
+      this.fullH = img.fullH;
+      this.fullW = img.fullW;
+      this.initH = img.initH;
+      this.initW = img.initW;
+      this.minW = img.minW;
+      this.maxW = img.maxW;
     }
 
     if (img.image!.classList.contains('vvw--ready')) {
       this.image!.classList.add('vvw--ready');
     }
-    // console.log('VistaImage: cloneStyleFrom', this.image, img.image);
+    console.log('VistaImage: cloneStyleFrom', this.image, img.image);
   }
 
   private createPreview() {
@@ -271,24 +277,12 @@ export class VistaImage {
       this.transitionState.current.width &&
       this.transitionState.current.height
     ) {
-      // img.style.width = `${this.transitionState.current.width}px`;
-      // img.style.height = `${this.transitionState.current.height}px`;
       this.state.width = this.transitionState.current.width;
       this.state.height = this.transitionState.current.height;
     } else if (!img.classList.contains('vvw--loaded')) {
-      // img.style.width = this.initW + 'px';
-      // img.style.height = this.initH + 'px';
       this.state.width = this.initW;
       this.state.height = this.initH;
     }
-
-    // if(this.pos === 0) console.log('VistaImage: Image loaded', img, {
-    //   initW: this.initW,
-    //   initH: this.initH,
-    //   fullW: this.fullW,
-    //   fullH: this.fullH,
-    //   initRad: this.initRad,
-    // }, img.classList.toString());
 
     const animateIn = () => {
       if (this.isCancelled) return;
@@ -308,43 +302,22 @@ export class VistaImage {
       });
     };
 
-    // why does this need to be delayed?
-    // i dont know...
-    // this makes the transitionend event can be captured properly
     if (img.classList.contains('vvw--loaded')) {
       if (!img.classList.contains('vvw--ready')) {
         animateIn();
       }
     } else {
-      img.addEventListener(
-        'transitionend',
-        () => {
-          animateIn();
-        },
-        { once: true }
-      );
+      if (this.pos === 0) console.log('Adding transitionend listener');
 
       img.classList.add('vvw--loaded');
-      // animateIn();
-      // setTimeout(() => {
-      //   if( this.isCancelled ) return;
-      // }, 777);
+      // requestAnimationFrame(() => { animateIn(); });
+      // i found set timeout looks better, than requestAnimationFrame
+      setTimeout(() => {
+        // return to prevent scaled image on rapid slide
+        if (this.isCancelled) return;
+        animateIn();
+      }, 111);
     }
-
-    // even this one fails
-    // requestAnimationFrame(() => {
-    //   requestAnimationFrame(() => {
-    //     requestAnimationFrame(() => {
-    //       requestAnimationFrame(() => {
-    //         requestAnimationFrame(() => {
-    //           if( this.isCancelled ) return;
-    //           img.classList.add('vvw--loaded');
-    //         });
-    //       })
-    //     })
-    //   })
-    // });
-    // this.onImageLoaded();
   }
 
   prepareClose() {

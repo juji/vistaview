@@ -225,7 +225,7 @@ export class VistaView {
       const img0 = this.state.children!.images.find((img) => img.index === index)!;
       const transitionState = img0 ? VistaHiresTransition.stop(img0) : undefined;
       const nextImg0 = images.find((img) => img.index === index);
-      if (transitionState && nextImg0 && img0) {
+      if (nextImg0 && img0) {
         nextImg0.cloneStyleFrom(img0, transitionState);
       }
     }
