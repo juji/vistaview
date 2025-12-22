@@ -9,12 +9,12 @@
   --vvw-anim-dur: 333;
 
   /* calculated */
-  --vvw-init-w: 0;
+  /* --vvw-init-w: 0;
   --vvw-init-h: 0;
   --vvw-init-t: 0;
   --vvw-init-l: 0;
   --vvw-idx: 0;
-  --vvw-radius: 0px;
+  --vvw-radius: 0px; */
 }
 
 @keyframes vvw-pulse {
@@ -162,12 +162,6 @@
     --vvw-init-radius: 0px;
     --vvw-init-w: 0px;
     --vvw-init-h: 0px;
-    --vvw-current-w: 0px;
-    --vvw-current-h: 0px;
-    --vvw-current-radius: 0px;
-
-    width: var(--vvw-init-w);
-    height: var(--vvw-init-h);
     border-radius: var(--vvw-init-radius);
 
     z-index: 1;
@@ -349,10 +343,9 @@
   }
 
   .vvw-img-hi.vvw--loaded {
+    transition: border-radius calc(var(--vvw-anim-dur) * 1ms) ease;
     opacity: 1;
-    width: var(--vvw-current-w);
-    height: var(--vvw-current-h);
-    border-radius: var(--vvw-current-radius);
+    border-radius: 0;
   }
 
   /* .vvw-img-hi.vvw--ready {
@@ -383,7 +376,7 @@
       top calc(var(--vvw-anim-dur) * 1ms) ease,
       left calc(var(--vvw-anim-dur) * 1ms) ease,
       opacity 0ms calc(var(--vvw-anim-dur) * 1ms) ease;
-    opacity: 0;
+    opacity: 0 !important;
     top: 50% !important;
     left: 50% !important;
     width: var(--vvw-init-w) !important;

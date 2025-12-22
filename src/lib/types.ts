@@ -1,3 +1,4 @@
+import type { VistaImage } from './vista-image';
 import type { VistaView } from './vista-view';
 
 export type VistaElmProps = {
@@ -45,28 +46,16 @@ export type VistaOpt = {
 
 export type VistaDefaultCtrl = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'close' | 'description';
 
-export type VistaImg = {
-  src: string;
-  alt?: string;
-  thumb?: string;
-};
-
-export type VistaImgIdx = {
-  index: number;
-  imageElm?: HTMLImageElement;
-  anchorElm?: HTMLAnchorElement;
-} & VistaImg;
-
 export type VistaCustomCtrl = {
   name: string;
   icon: string;
   description?: string;
-  onClick: (vistaImageIndex: VistaImgIdx, vistaView: VistaView) => void | Promise<void>;
+  onClick: (vistaImage: VistaImage, vistaView: VistaView) => void | Promise<void>;
 };
 
 export type VistaData = {
   htmlElements: { from: HTMLElement[] | null; to: HTMLElement[] | null };
-  images: { from: VistaImgIdx[] | null; to: VistaImgIdx[] | null };
+  images: { from: VistaImage[] | null; to: VistaImage[] | null };
   index: { from: number | null; to: number | null };
   via: { next: boolean; prev: boolean };
   vistaView: VistaView;
@@ -80,10 +69,6 @@ export type VistaTransitionFn = (
 export type VistaSetupFn = (params: VistaData) => void;
 export type VistaCloseFn = (vistaView: VistaView) => void;
 export type VistaInitFn = (vistaView: VistaView) => void;
-
-export type VistaParams = {
-  elements: string | NodeListOf<HTMLElement> | VistaImg[];
-} & VistaOpt;
 
 export type VistaInterface = {
   open: (startIndex?: number) => void;
@@ -122,3 +107,24 @@ export type VistaExternalPointerListenerArgs = VistaPointerListenerArgs & {
   hasInternalExecution: boolean;
   abortController: AbortController | null;
 };
+
+// new
+
+export type VistaImgConfig = {
+  src: string;
+  alt?: string;
+  srcSet?: string;
+};
+
+export type VistaImgOrigin = {
+  anchor?: HTMLAnchorElement;
+  image: HTMLImageElement;
+  src: string;
+  srcSet: string;
+  borderRadius: string;
+  objectFit: string;
+};
+
+export type VistaParamsNeo = {
+  elements: string | VistaImgConfig[];
+} & VistaOpt;

@@ -1,49 +1,65 @@
 import type { 
-  VistaImg,
-  VistaParams,
   VistaInterface,
+  VistaImgConfig,
+  VistaParamsNeo
 } from "./types";
 
 import { VistaView } from "./vista-view";
 
-function checkElementsCorrectness(
-  elements: string | NodeListOf<HTMLElement> | VistaImg[]
-): string | (NodeListOf<HTMLElement> | VistaImg[]) {
+function checkCorrectness(
+  elements: string | VistaImgConfig[]
+): string | VistaImgConfig[] | Error {
+  
   let els: NodeListOf<HTMLElement> | null = null;
-  // check for correctness
+  
+  // get elements as node list
   if (typeof elements === 'string') {
+    
     els = document.querySelectorAll<HTMLElement>(elements);
-  } else if (elements instanceof NodeList) {
-    els = elements;
-  }
+    
+    if(els.length === 0) {
+      return new Error('No elements found in node list.').toString();
+    }
 
-  if (els) {
+    // Validate DOM elements - must be img or a
     for (let i = 0; i < els.length; i++) {
       const el = els[i];
-      let src = el.dataset.vistaviewSrc || el.getAttribute('href') || el.getAttribute('src') || '';
-
-      if (!src) {
-        return `Element at index ${i} is missing 'src' / 'data-vistaview-src' / 'href' attribute.`;
+      const tagName = el.tagName.toLowerCase();
+      
+      if (tagName !== 'img' && tagName !== 'a') {
+        return new Error(`Invalid element at index ${i}: expected <img>, <a>, got <${tagName}>`);
+      }
+      
+      // If anchor, must contain img
+      if (tagName === 'a') {
+        const hasImg = el.querySelector('img') !== null;
+        if (!hasImg) {
+          return new Error(`Invalid <a> element at index ${i}: must contain <img>`);
+        }
       }
     }
   } else {
-    const images = elements as VistaImg[];
-    for (let i = 0; i < images.length; i++) {
-      const el = images[i];
-      if (!el.src) {
-        return `Element at index ${i} is missing 'src' attribute.`;
+    // Validate VistaImgConfig array
+    const data = elements as VistaImgConfig[];
+    
+    for (let i = 0; i < data.length; i++) {
+      const img = data[i];
+      
+      if (!img.src) {
+        return new Error(`Invalid image data at index ${i}: must have 'src'`);
       }
+      
     }
   }
 
-  return els || (elements as VistaImg[]);
+  return elements;
 }
 
-export function vistaView({ elements, ...opts }: VistaParams): VistaInterface | null {
+export function vistaView({ elements, ...opts }: VistaParamsNeo): VistaInterface | null {
   if (!elements) throw new Error('No elements');
 
-  let elms = checkElementsCorrectness(elements);
-  if (typeof elms === 'string') {
+  let elms = checkCorrectness(elements);
+  if (elms instanceof Error) {
     console.error(elms);
     console.warn('VistaView: silently returning.');
     return null;

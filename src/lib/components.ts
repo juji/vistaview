@@ -1,7 +1,7 @@
 /// <reference types="trusted-types" />
 
-import type { VistaDefaultCtrl, VistaCustomCtrl, VistaOpt, VistaImgIdx } from './types';
-import { setImageStyles } from './utils';
+import type { VistaDefaultCtrl, VistaCustomCtrl, VistaOpt } from './types';
+import type { VistaImage } from './vista-image';
 
 // Optimized SVG icons - common attributes applied via CSS
 const chevronLeft = `<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>`;
@@ -48,8 +48,8 @@ export function vistaViewDownload(): VistaCustomCtrl {
   return {
     name: 'download',
     icon: downloadIcon,
-    onClick: async (image: VistaImgIdx) => {
-      const response = await fetch(image.src);
+    onClick: async (image: VistaImage) => {
+      const response = await fetch(image.config.src);
       const blob = await response.blob();
       const finalUrl = response.url; // This is the redirected URL
       const link = document.createElement('a');
@@ -80,28 +80,9 @@ function convertControlToHtml(control: VistaDefaultCtrl | VistaCustomCtrl): stri
         return '';
     }
   }
-  return `<button class="vvw-ui" aria-label="${control.description || control.name}" data-vvw-control="${control.name}">${control.icon}</button>`;
-}
-
-export function vistaViewItem(el: VistaImgIdx, positionalIndex?: number): HTMLDivElement {
-  const div = document.createElement('div');
-  div.className = 'vvw-item';
-  div.dataset.vvwPos = `${positionalIndex !== undefined ? positionalIndex : ''}`;
-  div.dataset.vvwIdx = el.index.toString();
-
-  div.appendChild(
-    createTrustedHtml(
-      `<img class="vvw-img-lo" src="${el.thumb || el.src}" alt="${el.alt || ''}" />
-      <img class="vvw-img-hi" src="${el.src}" alt="${el.alt || ''}" />`
-    )
-  );
-
-  const lo = div.querySelector('img.vvw-img-lo') as HTMLImageElement;
-  const hi = div.querySelector('img.vvw-img-hi') as HTMLImageElement;
-
-  setImageStyles(el, hi, lo, positionalIndex === 0);
-
-  return div;
+  return `<button class="vvw-ui" 
+    aria-label="${control.description || control.name}" 
+    data-vvw-control="${control.name}">${control.icon}</button>`;
 }
 
 export function vistaViewComponent({
@@ -117,8 +98,16 @@ export function vistaViewComponent({
     <div class="vvw-container">
       <div class="vvw-bg"></div>
       <div class="vvw-image-container"></div>
-      <div class="vvw-top-bar"><div>${mapCtrl(controls?.topLeft)}</div><div>${mapCtrl(controls?.topCenter)}</div><div>${mapCtrl(controls?.topRight)}</div></div>
-      <div class="vvw-bottom-bar"><div>${mapCtrl(controls?.bottomLeft)}</div><div>${mapCtrl(controls?.bottomCenter)}</div><div>${mapCtrl(controls?.bottomRight)}</div></div>
+      <div class="vvw-top-bar">
+        <div>${mapCtrl(controls?.topLeft)}</div>
+        <div>${mapCtrl(controls?.topCenter)}</div>
+        <div>${mapCtrl(controls?.topRight)}</div>
+      </div>
+      <div class="vvw-bottom-bar">
+        <div>${mapCtrl(controls?.bottomLeft)}</div>
+        <div>${mapCtrl(controls?.bottomCenter)}</div>
+        <div>${mapCtrl(controls?.bottomRight)}</div>
+      </div>
       <div class="vvw-prev vvw-ui"><button aria-label="Previous">${chevronLeft}</button></div>
       <div class="vvw-next vvw-ui"><button aria-label="Next">${chevronRight}</button></div>
     </div>
