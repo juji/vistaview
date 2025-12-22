@@ -230,6 +230,11 @@ export class VistaView {
       }
     }
 
+    // RESET ZOOM STATE
+    this.state.zoomedIn = false;
+    this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+    this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
+
     // swap elements
     imgs.innerHTML = '';
     if (this.transitionCleanup) {
