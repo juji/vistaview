@@ -24,95 +24,90 @@ export class VistaEventHandlers {
     this.pointerListeners.push(listener);
   }
 
-  // internal pointer listener
-  // this is a function, called at open
-  // the closure makes it easier to have local variables without polluting class scope
-  private getInternalPointerListener() {
+  private isPinching = () => {
+    return this.pinchMode || performance.now() - this.lastPinchEndTime < this.PINCH_COOLDOWN;
+  };
+
+  private internalPointerListener = (e: VistaPointerListenerArgs) => {
     // Detect if we are pinching - to prevent conflict with single pointer move
     // Adds a small cooldown after pinch ends to avoid immediate single pointer move
-    const isPinching = () => {
-      return this.pinchMode || performance.now() - this.lastPinchEndTime < this.PINCH_COOLDOWN;
-    };
+    const vistaImage = this.vvw.state.images[Math.floor(this.vvw.state.images.length / 2)];
 
-    return (e: VistaPointerListenerArgs) => {
-      const vistaImage = this.vvw.state.images[Math.floor(this.vvw.state.images.length / 2)];
+    // POINTER DOWN - Start drag or pinch
+    if (e.event === 'down') {
+      this.cancelMove();
 
-      // POINTER DOWN - Start drag or pinch
-      if (e.event === 'down') {
-        this.cancelMove();
-
-        // Single finger: prepare for drag (if zoomed in)
-        if (this.vvw.state.zoomedIn && e.pointers.length === 1 && !isPinching()) {
-          const center = this.pointers!.getCentroid();
-          vistaImage.setInitialCenter(center!);
-        }
-
-        // Two fingers: start pinch zoom
-        if (e.pointers.length >= 2) {
-          this.pinchMode = true;
-          const center = this.pointers!.getCentroid();
-          this.lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-          vistaImage.setInitialCenter(center!);
-        }
+      // Single finger: prepare for drag (if zoomed in)
+      if (this.vvw.state.zoomedIn && e.pointers.length === 1 && !this.isPinching()) {
+        const center = this.pointers!.getCentroid();
+        vistaImage.setInitialCenter(center!);
       }
 
-      // POINTER MOVE - Drag or pinch zoom
-      else if (e.event === 'move') {
-        // Single finger drag (when zoomed in)
-        if (
-          this.vvw.state.zoomedIn &&
-          e.pointers.length === 1 &&
-          e.lastPointerLen === 0 &&
-          !isPinching()
-        ) {
-          const center = this.pointers!.getCentroid();
-          vistaImage.move(center!);
-        }
-
-        // Two finger pinch zoom
-        if (e.pointers.length >= 2 && this.pinchMode) {
-          const center = this.pointers!.getCentroid();
-          const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
-          vistaImage.scaleMove(distance / this.lastDistance, center!);
-        }
+      // Two fingers: start pinch zoom
+      if (e.pointers.length >= 2) {
+        this.pinchMode = true;
+        const center = this.pointers!.getCentroid();
+        this.lastDistance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+        vistaImage.setInitialCenter(center!);
       }
+    }
 
-      // POINTER UP - End drag/pinch, normalize position
-      else if (
-        (e.event === 'up' || e.event === 'cancel') &&
-        (this.pinchMode || this.vvw.state.zoomedIn)
+    // POINTER MOVE - Drag or pinch zoom
+    else if (e.event === 'move') {
+      // Single finger drag (when zoomed in)
+      if (
+        this.vvw.state.zoomedIn &&
+        e.pointers.length === 1 &&
+        e.lastPointerLen === 0 &&
+        !this.isPinching()
       ) {
-        if (this.pinchMode) {
-          // End pinch: normalize zoom level, close if zoomed out too far
-          this.lastPinchEndTime = performance.now();
-          this.pinchMode = false;
-          // const close = vistaImage.normalize();
-          const close = vistaImage.setFinalTransform();
-          if (close) {
-            requestAnimationFrame(() => {
-              this.vvw.close();
-            });
-          }
-        } else if (this.vvw.state.zoomedIn && e.pointers.length === 0 && !isPinching()) {
-          // End drag: animate back to bounds if necessary
-          vistaImage.isThrowing = true;
-          this.cancelMove = vistaImage.momentumThrow({
-            x: e.pointer.movementX,
-            y: e.pointer.movementY,
+        const center = this.pointers!.getCentroid();
+        vistaImage.move(center!);
+      }
+
+      // Two finger pinch zoom
+      if (e.pointers.length >= 2 && this.pinchMode) {
+        const center = this.pointers!.getCentroid();
+        const distance = this.pointers!.getPointerDistance(e.pointers[0], e.pointers[1]);
+        vistaImage.scaleMove(distance / this.lastDistance, center!);
+      }
+    }
+
+    // POINTER UP - End drag/pinch, normalize position
+    else if (
+      (e.event === 'up' || e.event === 'cancel') &&
+      (this.pinchMode || this.vvw.state.zoomedIn)
+    ) {
+      if (this.pinchMode) {
+        // End pinch: normalize zoom level, close if zoomed out too far
+        this.lastPinchEndTime = performance.now();
+        this.pinchMode = false;
+        // const close = vistaImage.normalize();
+        const close = vistaImage.setFinalTransform();
+        if (close) {
+          requestAnimationFrame(() => {
+            this.vvw.close();
           });
         }
+      } else if (this.vvw.state.zoomedIn && e.pointers.length === 0 && !this.isPinching()) {
+        // End drag: animate back to bounds if necessary
+        vistaImage.isThrowing = true;
+        this.cancelMove = vistaImage.momentumThrow({
+          x: e.pointer.movementX,
+          y: e.pointer.movementY,
+        });
       }
+    }
 
-      // Notify external listeners (user-registered pointer handlers)
-      this.pointerListeners.forEach((l) =>
-        l({
-          ...e,
-          hasInternalExecution: this.vvw.state.zoomedIn || isPinching(),
-          abortController: this.vvw.state.abortController,
-        })
-      );
-    };
-  }
+    // Notify external listeners (user-registered pointer handlers)
+    this.pointerListeners.forEach((l) =>
+      l({
+        ...e,
+        hasInternalExecution: this.vvw.state.zoomedIn || this.isPinching(),
+        abortController: this.vvw.state.abortController,
+      })
+    );
+  };
 
   onKeyDown = (e: KeyboardEvent) => {
     const vvw = this.vvw;
@@ -177,7 +172,7 @@ export class VistaEventHandlers {
 
     this.pointers = new VistaPointers({
       elm: imageContainer,
-      listeners: [this.getInternalPointerListener()],
+      listeners: [this.internalPointerListener],
     });
   }
 
