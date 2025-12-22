@@ -135,9 +135,21 @@ export class VistaView {
         index: elmIndex,
         maxZoomLevel: this.options.maxZoomLevel!,
         transitionShouldWait: () => this.isRapidSwap,
-        onScale: ({ vistaImage, isMin }) => {
+        onScale: ({ vistaImage, isMin, isMax }) => {
           if (vistaImage.index === this.state.currentIndex) {
             this.state.zoomedIn = !isMin;
+
+            if (isMin) {
+              this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+            } else {
+              this.qs('.vvw-zoom-out')?.removeAttribute('disabled');
+            }
+
+            if (isMax) {
+              this.qs('.vvw-zoom-in')?.setAttribute('disabled', 'true');
+            } else {
+              this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
+            }
           }
         },
       });
