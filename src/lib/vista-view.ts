@@ -209,15 +209,15 @@ export class VistaView {
     const rapid = now - this.lastSwapTime < this.options.rapidLimit!;
     this.isRapidSwap = rapid;
 
-    // Cancel pending image loads from previous swap
-    c.images.forEach((img) => {
-      img.cancelPendingLoad();
-    });
-
     // can only setDescription after state.children is updated
     const setDescription = this.displayActiveIndex();
 
-    if (!rapid) {
+    if (rapid) {
+      // Cancel pending image loads from previous swap
+      c.images.forEach((img) => {
+        img.cancelPendingLoad();
+      });
+    } else {
       // NORMAL SWAP: Run transition animation
       const abortControllerSignal = this.state.abortController!.signal;
       const res = this.transitionFunction(vistaData, abortControllerSignal);
@@ -226,6 +226,11 @@ export class VistaView {
         await res.transitionEnded;
       }
       this.lastSwapTime = performance.now();
+
+      // Cancel pending image loads from previous swap
+      c.images.forEach((img) => {
+        img.cancelPendingLoad();
+      });
 
       // Preserve animation state from old center image to avoid jarring resets
       // -----
