@@ -72,6 +72,8 @@ export function vistaView({ elements, ...opts }: VistaParamsNeo): VistaInterface
     close: () => v.close(),
     next: () => v.next(),
     prev: () => v.prev(),
+    zoomIn: () => v.zoomIn(),
+    zoomOut: () => v.zoomOut(),
     destroy: () => v.destroy(),
     getCurrentIndex: () => v.getCurrentIndex(),
     view: (index: number) => {
