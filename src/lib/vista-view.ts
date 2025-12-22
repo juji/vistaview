@@ -186,7 +186,7 @@ export class VistaView {
     const index = this.state.currentIndex;
 
     const { htmls, images } = this.getChildElements(allImage, index);
-    const imgs = this.imageContainer!;
+    const imgc = this.imageContainer!;
     const c = this.state.children;
 
     const vistaData = {
@@ -199,7 +199,10 @@ export class VistaView {
 
     this.setupFunction(vistaData);
 
-    const abortControllerSignal = this.state.abortController!.signal;
+    // RESET ZOOM STATE
+    this.state.zoomedIn = false;
+    this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+    this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
 
     // Check if this is a rapid swap (user navigating quickly)
     const now = performance.now();
@@ -211,8 +214,12 @@ export class VistaView {
       img.cancelPendingLoad();
     });
 
+    // can only setDescription after state.children is updated
+    const setDescription = this.displayActiveIndex();
+
     if (!rapid) {
       // NORMAL SWAP: Run transition animation
+      const abortControllerSignal = this.state.abortController!.signal;
       const res = this.transitionFunction(vistaData, abortControllerSignal);
       if (res) {
         this.transitionCleanup = res.cleanup;
@@ -230,19 +237,15 @@ export class VistaView {
       }
     }
 
-    // RESET ZOOM STATE
-    this.state.zoomedIn = false;
-    this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
-    this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
-
     // swap elements
-    imgs.innerHTML = '';
+    imgc.innerHTML = '';
     if (this.transitionCleanup) {
       this.transitionCleanup();
       this.transitionCleanup = null;
     }
+
     htmls.forEach((vistaImg: HTMLDivElement) => {
-      imgs.appendChild(vistaImg);
+      imgc.appendChild(vistaImg);
     });
 
     images.forEach((img) => {
@@ -251,7 +254,7 @@ export class VistaView {
 
     // -----
     this.state.children = { htmls, images };
-    this.displayActiveIndex();
+    setDescription();
 
     if (rapid) {
       // Set cooldown period before allowing normal transitions again
@@ -270,7 +273,7 @@ export class VistaView {
   // UI UPDATES
   // ============================================================================
 
-  private displayActiveIndex(): void {
+  private displayActiveIndex(): () => void {
     const cid = this.state.currentIndex;
 
     // set opacity in element
@@ -290,19 +293,24 @@ export class VistaView {
       indexDisplay.textContent = `${indexText} / ${indexTotal}`;
     }
 
-    const description = this.qs<HTMLDivElement>('.vvw-desc');
-    if (description) {
-      const currentImg = this.state.children.images.find((img) => img.index === cid);
-      const descText = currentImg?.config.alt || '';
+    return () => {
+      const description = this.qs<HTMLDivElement>('.vvw-desc');
+      if (description) {
+        const currentImg = this.state.children.images.find((img) => img.index === cid);
+        const descText = currentImg?.config.alt || '';
 
-      if (descText) {
-        description.textContent = descText;
-        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}: ${descText}`);
-      } else {
-        description.textContent = '';
-        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
+        if (descText) {
+          description.textContent = descText;
+          description.setAttribute(
+            'aria-label',
+            `Image ${indexText} of ${indexTotal}: ${descText}`
+          );
+        } else {
+          description.textContent = '';
+          description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
+        }
       }
-    }
+    };
   }
 
   // ============================================================================
