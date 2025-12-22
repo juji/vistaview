@@ -1,109 +1,120 @@
+import type { VistaImage, VistaImageState } from './vista-image';
+
 export type VistaHiresTransitionOpt = {
-  current: {
-    width?: number;
-    height?: number;
-    x?: number;
-    y?: number;
-    scale?: number;
-  };
+  current: VistaImageState;
   target: {
     width?: number;
     height?: number;
-    x?: number;
-    y?: number;
-    scale?: number;
+    transform?: {
+      x?: number;
+      y?: number;
+      scale?: number;
+    };
   };
   log?: boolean;
 };
 
 export class VistaHiresTransition {
-  private static map: Map<HTMLImageElement, VistaHiresTransitionOpt> = new Map();
+  private static map: Map<VistaImage, VistaHiresTransitionOpt> = new Map();
 
-  private static setStyles(img: HTMLImageElement, styles: VistaHiresTransitionOpt['current']) {
-    const transformParts: string[] = [];
-    if (styles.x !== undefined || styles.y !== undefined)
-      transformParts.push(`translate3d(${styles.x || 0}px, ${styles.y || 0}px, 0px)`);
-    if (styles.scale !== undefined)
-      transformParts.push(`scale3d(${styles.scale}, ${styles.scale}, 1)`);
-    if (styles.width !== undefined) img.style.width = `${styles.width}px`;
-    if (styles.height !== undefined) img.style.height = `${styles.height}px`;
-    if (transformParts.length > 0) img.style.transform = transformParts.join(' ');
-  }
-
-  private static play(img: HTMLImageElement, onComplete: () => void, shouldWait: () => boolean) {
+  private static play(vistaImage: VistaImage, onComplete: () => void, shouldWait: () => boolean) {
     if (shouldWait()) {
       requestAnimationFrame(() => {
-        this.play(img, onComplete, shouldWait);
+        this.play(vistaImage, onComplete, shouldWait);
       });
       return;
     }
 
     // this is possible, that the animation was removed in between frames
-    if (!this.map.get(img)) return;
+    if (!this.map.get(vistaImage)) return;
 
     // check if the animation was cancelled in between frames
-    if (img.classList.contains('vvw--load-cancelled')) return;
+    if (vistaImage.image!.classList.contains('vvw--load-cancelled')) return;
 
     requestAnimationFrame(() => {
       // check again
-      const animation = this.map.get(img);
+      const animation = this.map.get(vistaImage);
       if (!animation) return;
-      if (img.classList.contains('vvw--load-cancelled')) return;
+      if (vistaImage.image!.classList.contains('vvw--load-cancelled')) return;
 
       const { current, target, log } = animation;
 
-      let now: VistaHiresTransitionOpt['current'] = {};
-      if (current.width && target.width)
-        now.width = current.width + (target.width - current.width) * 0.1;
-      if (current.height && target.height)
-        now.height = current.height + (target.height - current.height) * 0.1;
-      if (current.x && target.x) now.x = current.x + (target.x - current.x) * 0.1;
-      if (current.y && target.y) now.y = current.y + (target.y - current.y) * 0.1;
-      if (current.scale && target.scale)
-        now.scale = current.scale + (target.scale - current.scale) * 0.1;
-      const allIsDone = Object.keys(now).every((key) => {
-        const k = key as keyof VistaHiresTransitionOpt['current'];
-        if (now[k] !== undefined && target[k] !== undefined) {
-          const diff =
-            k === 'scale'
-              ? (now[k] as number) / (target[k] as number)
-              : Math.abs((now[k] as number) - (target[k] as number));
+      let now: VistaHiresTransitionOpt['target'] = {};
+      if (target.width !== undefined) {
+        const diffW = target.width - current._width;
+        now.width = current._width + diffW * 0.2;
+        if (Math.abs(diffW) < 0.5) now.width = target.width;
+      }
+      if (target.height !== undefined) {
+        const diffH = target.height - current._height;
+        now.height = current._height + diffH * 0.2;
+        if (Math.abs(diffH) < 0.5) now.height = target.height;
+      }
+      if (target.transform?.x !== undefined) {
+        const diffX = target.transform.x - current.translate.x;
+        now.transform = now.transform || {};
+        now.transform.x = current.translate.x + diffX * 0.2;
+        if (Math.abs(diffX) < 0.5) now.transform.x = target.transform.x;
+      }
+      if (target.transform?.y !== undefined) {
+        const diffY = target.transform.y - current.translate.y;
+        now.transform = now.transform || {};
+        now.transform.y = current.translate.y + diffY * 0.2;
+        if (Math.abs(diffY) < 0.5) now.transform.y = target.transform.y;
+      }
+      if (target.transform?.scale !== undefined) {
+        const diffS = target.transform.scale - current.transform.scale;
+        now.transform = now.transform || {};
+        now.transform.scale = current.transform.scale + diffS * 0.2;
+        if (Math.abs(diffS) < 0.005) now.transform.scale = target.transform.scale;
+      }
 
-          return k === 'scale' ? diff > 0.99 && diff < 1.01 : diff < 1;
-        }
-        return true;
-      });
+      // apply now to image state
+      if (now.width !== undefined) current.width = now.width;
+      if (now.height !== undefined) current.height = now.height;
+      if (now.transform?.x !== undefined) current.translate.x = now.transform.x;
+      if (now.transform?.y !== undefined) current.translate.y = now.transform.y;
+      if (now.transform?.scale !== undefined) current.transform.scale = now.transform.scale;
+
+      const allIsDone =
+        (target.width === undefined || current._width === target.width) &&
+        (target.height === undefined || current._height === target.height) &&
+        (target.transform?.x === undefined || current._translate.x === target.transform.x) &&
+        (target.transform?.y === undefined || current._translate.y === target.transform.y) &&
+        (target.transform?.scale === undefined ||
+          current._transform.scale === target.transform.scale);
 
       if (allIsDone) {
-        this.setStyles(img, target);
-        this.map.delete(img);
+        this.map.delete(vistaImage);
         onComplete();
       } else {
-        this.map.set(img, { current: now, target, log });
-        this.setStyles(img, now);
-        this.play(img, onComplete, shouldWait);
+        this.map.set(vistaImage, { current, target, log });
+        this.play(vistaImage, onComplete, shouldWait);
       }
     });
   }
 
-  static stop(img: HTMLImageElement) {
-    const map = this.map.get(img);
-    this.map.delete(img);
+  static stop(vistaImage: VistaImage) {
+    const map = this.map.get(vistaImage);
+    this.map.delete(vistaImage);
     return map;
   }
 
   static start({
-    img,
-    options,
+    vistaImage,
+    target,
     onComplete,
     shouldWait,
   }: {
-    img: HTMLImageElement;
-    options: VistaHiresTransitionOpt;
+    vistaImage: VistaImage;
+    target: VistaHiresTransitionOpt['target'];
     onComplete: () => void;
     shouldWait: () => boolean;
   }) {
-    this.map.set(img, options);
-    this.play(img, onComplete, shouldWait);
+    this.map.set(vistaImage, {
+      current: vistaImage.state,
+      target,
+    });
+    this.play(vistaImage, onComplete, shouldWait);
   }
 }

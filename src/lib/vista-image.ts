@@ -7,6 +7,32 @@ import { VistaHiresTransition } from './vista-hires-transition';
 import type { VistaHiresTransitionOpt } from './vista-hires-transition';
 // import { init } from '../vistaview';
 
+export type VistaImageState = {
+  _t: VistaImage;
+  _width: number;
+  _height: number;
+  _transform: {
+    x: number;
+    y: number;
+    scale: number;
+  };
+  _translate: {
+    x: number;
+    y: number;
+  };
+  translate: {
+    x: number;
+    y: number;
+  };
+  transform: {
+    x: number;
+    y: number;
+    scale: number;
+  };
+  width: number;
+  height: number;
+};
+
 export class VistaImage {
   private initH: number = 0;
   private initW: number = 0;
@@ -19,17 +45,48 @@ export class VistaImage {
   // private initRad: string = '0px'
   private maxZoomLevel: number = 1;
 
-  private state = {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  };
-
-  private transform = {
-    x: 0,
-    y: 0,
-    scale: 1,
+  state: VistaImageState = {
+    _t: this,
+    _width: 0,
+    _height: 0,
+    _transform: {
+      x: 0,
+      y: 0,
+      scale: 1,
+    },
+    _translate: {
+      x: 0,
+      y: 0,
+    },
+    set translate(value: { x: number; y: number }) {
+      this._translate = value;
+      this._t.image!.style.translate = `${value.x}px ${value.y}px`;
+    },
+    get translate() {
+      return this._translate;
+    },
+    set transform(value: { x: number; y: number; scale: number }) {
+      this._transform = value;
+      const transform = `translate3d(${value.x}px, ${value.y}px, 0px) scale3d(${value.scale}, ${value.scale}, 1)`;
+      this._t.image!.style.transform = transform;
+    },
+    get transform() {
+      return this._transform;
+    },
+    set width(value: number) {
+      this._width = value;
+      this._t.image!.style.width = `${value}px`;
+    },
+    get width() {
+      return this._width;
+    },
+    set height(value: number) {
+      this._height = value;
+      this._t.image!.style.height = `${value}px`;
+    },
+    get height() {
+      return this._height;
+    },
   };
 
   private initPointerCenter = { x: 0, y: 0 };
@@ -37,6 +94,15 @@ export class VistaImage {
   private transitionState: VistaHiresTransitionOpt | null = null;
 
   private transitionShouldWait = () => false;
+
+  private onScale: (par: {
+    vistaImage: VistaImage;
+    scale: number;
+    isMax: boolean;
+    isMin: boolean;
+  }) => void = (_par) => {
+    // do nothing
+  };
 
   isZoomedIn: boolean = false;
   isThrowing: boolean = false;
@@ -56,10 +122,6 @@ export class VistaImage {
   pos: number;
   index: number;
 
-  private onScale: (par: { scale: number; isMax: boolean; isMin: boolean }) => void = (_par) => {
-    // do nothing
-  };
-
   config: VistaImgConfig;
   origin: VistaImgOrigin | null = null;
 
@@ -68,7 +130,12 @@ export class VistaImage {
     pos: number;
     index: number;
     maxZoomLevel: number;
-    onScale?: (par: { scale: number; isMax: boolean; isMin: boolean }) => void;
+    onScale?: (par: {
+      vistaImage: VistaImage;
+      scale: number;
+      isMax: boolean;
+      isMin: boolean;
+    }) => void;
     transitionState?: VistaHiresTransitionOpt;
     transitionShouldWait?: () => boolean;
   }) {
@@ -117,8 +184,8 @@ export class VistaImage {
 
     if (img.image!.classList.contains('vvw--loaded')) {
       this.image!.classList.add('vvw--loaded');
-      this.image!.style.width = img.image!.style.width;
-      this.image!.style.height = img.image!.style.height;
+      this.state.width = img.state.width;
+      this.state.height = img.state.height;
     }
 
     if (img.image!.classList.contains('vvw--ready')) {
@@ -204,11 +271,15 @@ export class VistaImage {
       this.transitionState.current.width &&
       this.transitionState.current.height
     ) {
-      img.style.width = `${this.transitionState.current.width}px`;
-      img.style.height = `${this.transitionState.current.height}px`;
+      // img.style.width = `${this.transitionState.current.width}px`;
+      // img.style.height = `${this.transitionState.current.height}px`;
+      this.state.width = this.transitionState.current.width;
+      this.state.height = this.transitionState.current.height;
     } else if (!img.classList.contains('vvw--loaded')) {
-      img.style.width = this.initW + 'px';
-      img.style.height = this.initH + 'px';
+      // img.style.width = this.initW + 'px';
+      // img.style.height = this.initH + 'px';
+      this.state.width = this.initW;
+      this.state.height = this.initH;
     }
 
     // if(this.pos === 0) console.log('VistaImage: Image loaded', img, {
@@ -222,17 +293,10 @@ export class VistaImage {
     const animateIn = () => {
       if (this.isCancelled) return;
       VistaHiresTransition.start({
-        img,
-        options: this.transitionState || {
-          current: {
-            width: this.initW,
-            height: this.initH,
-          },
-          target: {
-            width: this.fullW,
-            height: this.fullH,
-          },
-          // log: this.pos === 0
+        vistaImage: this,
+        target: {
+          width: this.fullW,
+          height: this.fullH,
         },
         onComplete: () => {
           if (this.isCancelled) return;
@@ -285,7 +349,7 @@ export class VistaImage {
 
   prepareClose() {
     if (!this.isLoaded || !this.image) return;
-    VistaHiresTransition.stop(this.image);
+    VistaHiresTransition.stop(this);
   }
 
   destroy() {
@@ -368,33 +432,22 @@ export class VistaImage {
   }
 
   normalize() {
-    this.transform = { x: 0, y: 0, scale: 1 };
-    this.state = {
+    this.state.transform = { x: 0, y: 0, scale: 1 };
+    this.state.translate = {
       x: 0,
       y: 0,
-      width: this.fullW,
-      height: this.fullH,
     };
+    this.state.width = this.fullW;
+    this.state.height = this.fullH;
     this.isZoomedIn = false;
     const img = this.image!;
-    img.style.width = this.fullW + 'px';
-    img.style.height = this.fullH + 'px';
     img.style.objectFit = 'cover';
     img.style.borderRadius = '0';
-    img.style.translate = `50% 50%`;
-    img.style.transform = ``;
   }
 
   cancelPendingLoad() {
     this.isCancelled = true;
     this.image?.classList.add('vvw--load-cancelled');
-  }
-
-  setTransform({ x, y, scale }: { x: number; y: number; scale: number }) {
-    this.transform = { x, y, scale };
-    const img = this.image!;
-    const transform = `translate3d(${x}px, ${y}px, 0px) scale3d(${scale}, ${scale}, 1)`;
-    img.style.transform = transform;
   }
 
   setInitialCenter(center: { x: number; y: number }) {
@@ -404,11 +457,11 @@ export class VistaImage {
   move(center: { x: number; y: number }) {
     const deltaX = center.x - this.initPointerCenter.x;
     const deltaY = center.y - this.initPointerCenter.y;
-    this.setTransform({
+    this.state.transform = {
       x: deltaX,
       y: deltaY,
-      scale: this.transform.scale,
-    });
+      scale: this.state.transform.scale,
+    };
   }
 
   scaleMove(scaleFactor: number, center?: { x: number; y: number }) {
@@ -418,7 +471,7 @@ export class VistaImage {
 
     const img = this.image!;
     const rect = img.getBoundingClientRect();
-    let newScale = this.transform.scale * scaleFactor;
+    let newScale = this.state.transform.scale * scaleFactor;
     if (rect.width * newScale > this.maxW) {
       newScale = this.maxW / rect.width;
     }
@@ -429,19 +482,20 @@ export class VistaImage {
       y: rect.top + rect.height / 2,
     };
 
-    const offsetX = (center.x - imgCenter.x) * (newScale / this.transform.scale - 1);
-    const offsetY = (center.y - imgCenter.y) * (newScale / this.transform.scale - 1);
+    const offsetX = (center.x - imgCenter.x) * (newScale / this.state.transform.scale - 1);
+    const offsetY = (center.y - imgCenter.y) * (newScale / this.state.transform.scale - 1);
 
-    this.setTransform({
-      x: this.transform.x - offsetX,
-      y: this.transform.y - offsetY,
+    this.state.transform = {
+      x: this.state.transform.x - offsetX,
+      y: this.state.transform.y - offsetY,
       scale: newScale,
-    });
+    };
 
     // notify scale change
     const scaledWidth = rect.width * newScale;
     this.isZoomedIn = scaledWidth > this.fullW;
     this.onScale({
+      vistaImage: this,
       scale: scaledWidth / this.fullW,
       isMax: scaledWidth >= this.maxW,
       isMin: scaledWidth <= this.fullW,
@@ -451,7 +505,7 @@ export class VistaImage {
   animateZoom(targetScale: number, center?: { x: number; y: number }) {
     const img = this.image!;
     const rect = img.getBoundingClientRect();
-    const initialScale = this.transform.scale;
+    const initialScale = this.state.transform.scale;
     const scaleDiff = targetScale - initialScale;
 
     const animate = (progress: number) => {
@@ -466,15 +520,15 @@ export class VistaImage {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2,
         };
-        offsetX = (center.x - imgCenter.x) * (currentScale / this.transform.scale - 1);
-        offsetY = (center.y - imgCenter.y) * (currentScale / this.transform.scale - 1);
+        offsetX = (center.x - imgCenter.x) * (currentScale / this.state.transform.scale - 1);
+        offsetY = (center.y - imgCenter.y) * (currentScale / this.state.transform.scale - 1);
       }
 
-      this.setTransform({
-        x: this.transform.x - offsetX,
-        y: this.transform.y - offsetY,
+      this.state.transform = {
+        x: this.state.transform.x - offsetX,
+        y: this.state.transform.y - offsetY,
         scale: currentScale,
-      });
+      };
 
       if (progress < 1) {
         requestAnimationFrame(() => animate(progress + 0.1));
@@ -483,6 +537,7 @@ export class VistaImage {
         const scaledWidth = rect.width * targetScale;
         this.isZoomedIn = scaledWidth > this.fullW;
         this.onScale({
+          vistaImage: this,
           scale: scaledWidth / this.fullW,
           isMax: scaledWidth >= this.maxW,
           isMin: scaledWidth <= this.fullW,
@@ -505,13 +560,9 @@ export class VistaImage {
       const img = this.image!;
       const bound = img.getBoundingClientRect();
       VistaHiresTransition.start({
-        img,
-        options: {
-          current: {
-            x: this.transform.x,
-            y: this.transform.y,
-          },
-          target: {
+        vistaImage: this,
+        target: {
+          transform: {
             x:
               bound.right < window.innerWidth / 2
                 ? window.innerWidth / 2 - bound.right
@@ -541,32 +592,34 @@ export class VistaImage {
       if (!this.isThrowing) return this.momentumThrow({ x: 0, y: 0 });
 
       const img = this.image!;
-      this.transform.x += par.x;
-      this.transform.y += par.y;
+      const t = this.state.transform;
+      t.x += par.x;
+      t.y += par.y;
 
       const bound = img.getBoundingClientRect();
 
-      this.transform.x = this.transform.x + par.x;
-      this.transform.y = this.transform.y + par.y;
+      t.x = t.x + par.x;
+      t.y = t.y + par.y;
 
       if (bound.right < window.innerWidth / 2) {
-        this.transform.x += (window.innerWidth / 2 - bound.right) * 0.1;
+        t.x += (window.innerWidth / 2 - bound.right) * 0.1;
         par.x *= 0.7;
       }
       if (bound.left > window.innerWidth / 2) {
-        this.transform.x -= (bound.left - window.innerWidth / 2) * 0.1;
+        t.x -= (bound.left - window.innerWidth / 2) * 0.1;
         par.x *= 0.7;
       }
       if (bound.bottom < window.innerHeight / 2) {
-        this.transform.y += (window.innerHeight / 2 - bound.bottom) * 0.1;
+        t.y += (window.innerHeight / 2 - bound.bottom) * 0.1;
         par.y *= 0.7;
       }
       if (bound.top > window.innerHeight / 2) {
-        this.transform.y -= (bound.top - window.innerHeight / 2) * 0.1;
+        t.y -= (bound.top - window.innerHeight / 2) * 0.1;
         par.y *= 0.7;
       }
 
-      this.setTransform(this.transform);
+      this.state.transform = t;
+
       this.momentumThrow({
         x: par.x * 0.95,
         y: par.y * 0.95,
@@ -579,41 +632,42 @@ export class VistaImage {
   }
 
   setFinalTransform() {
-    this.state.x += this.transform.x;
-    this.state.y += this.transform.y;
-    this.state.width *= this.transform.scale;
-    this.state.height *= this.transform.scale;
+    this.state.translate.x += this.state.transform.x;
+    this.state.translate.y += this.state.transform.y;
+    this.state.width *= this.state.transform.scale;
+    this.state.height *= this.state.transform.scale;
 
     if (Math.abs(this.state.width - this.fullW) < 1) {
       this.state.width = this.fullW;
       this.state.height = this.fullH;
     }
 
-    if (Math.abs(this.state.x) < 1) {
-      this.state.x = 0;
+    if (Math.abs(this.state.translate.x) < 1) {
+      this.state.translate.x = 0;
     }
 
-    if (Math.abs(this.state.y) < 1) {
-      this.state.y = 0;
+    if (Math.abs(this.state.translate.y) < 1) {
+      this.state.translate.y = 0;
     }
 
-    this.transform = { x: 0, y: 0, scale: 1 };
+    this.state.transform = { x: 0, y: 0, scale: 1 };
 
     // normalize if zoomed out
     if (
       this.state.width === this.fullW &&
       this.state.height === this.fullH &&
-      this.state.x === 0 &&
-      this.state.y === 0
+      this.state.translate.x === 0 &&
+      this.state.translate.y === 0
     ) {
       this.normalize();
-    } else {
-      const img = this.image!;
-      img.style.width = `${this.state.width}px`;
-      img.style.height = `${this.state.height}px`;
-      img.style.translate = `calc(50% + ${this.state.x}px) calc(50% + ${this.state.y}px)`;
-      img.style.transform = ``;
     }
+    // else {
+    //   const img = this.image!;
+    //   img.style.width = `${this.state.width}px`;
+    //   img.style.height = `${this.state.height}px`;
+    //   img.style.translate = `calc(50% + ${this.state.x}px) calc(50% + ${this.state.y}px)`;
+    //   img.style.transform = ``;
+    // }
 
     // determine if this should be closed
     return this.state.width < this.minW;

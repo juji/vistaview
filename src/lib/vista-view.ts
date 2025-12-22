@@ -15,12 +15,8 @@ import { setup } from './defaults/setup';
 import { init } from './defaults/init';
 import { close } from './defaults/close';
 import { transition } from './defaults/transition';
-// import { getFullSizeDim } from './utils';
-// import { VistaPointers } from './pointers';
-// import { VistaImageState, type VistaImageStateScaleParams } from './image-state';
 import { VistaImage } from './vista-image';
 import { Throttle } from './throttle';
-// import { VistaHiresTransition } from './vista-hires-transition';
 import { VistaEventHandlers } from './vista-event-handlers';
 import { VistaState } from './vista-state';
 import { VistaHiresTransition } from './vista-hires-transition';
@@ -36,7 +32,6 @@ export class VistaView {
   elmLength: number = 0;
 
   private elements: string | VistaImgConfig[];
-  private currentChildren: { htmls: HTMLDivElement[]; images: VistaImage[] } | null = null;
 
   private setupFunction: VistaSetupFn = setup;
   private initFunction: VistaInitFn = init;
@@ -114,10 +109,6 @@ export class VistaView {
     return document.querySelectorAll(selector) as T;
   }
 
-  getCurrentChildren(): { htmls: HTMLDivElement[]; images: VistaImage[] } | null {
-    return this.currentChildren;
-  }
-
   registerPointerListener(listener: (e: VistaExternalPointerListenerArgs) => void): void {
     this.eventHandlers.registerPointerListener(listener);
   }
@@ -144,6 +135,11 @@ export class VistaView {
         index: elmIndex,
         maxZoomLevel: this.options.maxZoomLevel!,
         transitionShouldWait: () => this.isRapidSwap,
+        onScale: ({ vistaImage, isMin }) => {
+          if (vistaImage.index === this.state.currentIndex) {
+            this.state.zoomedIn = !isMin;
+          }
+        },
       });
 
       const div = document.createElement('div');
@@ -179,7 +175,7 @@ export class VistaView {
 
     const { htmls, images } = this.getChildElements(allImage, index);
     const imgs = this.imageContainer!;
-    const c = this.currentChildren!;
+    const c = this.state.children;
 
     const vistaData = {
       htmlElements: { from: c.htmls, to: htmls },
@@ -203,70 +199,32 @@ export class VistaView {
       img.cancelPendingLoad();
     });
 
-    // RAPID SWAP: Skip transition, just update DOM immediately
-    if (rapid) {
-      this.currentChildren = { htmls, images };
-      this.displayActiveIndex();
-
-      imgs.innerHTML = '';
-      this.transitionCleanup && this.transitionCleanup();
-      htmls.forEach((vistaImg: HTMLDivElement) => {
-        imgs.appendChild(vistaImg);
-      });
+    if (!rapid) {
+      // NORMAL SWAP: Run transition animation
+      const res = this.transitionFunction(vistaData, abortControllerSignal);
+      if (res) {
+        this.transitionCleanup = res.cleanup;
+        await res.transitionEnded;
+      }
       this.lastSwapTime = performance.now();
 
-      images.forEach((img) => {
-        img.waitForLoad();
-      });
-
-      this.options.onImageView && this.options.onImageView(vistaData);
-
-      // Set cooldown period before allowing normal transitions again
-      if (this.isRapidSwapRelease) clearTimeout(this.isRapidSwapRelease);
-      this.isRapidSwapRelease = setTimeout(() => {
-        this.isRapidSwap = false;
-      }, 333);
-      return;
-    }
-
-    // NORMAL SWAP: Run transition animation
-    const res = this.transitionFunction(vistaData, abortControllerSignal);
-    if (res) {
-      this.transitionCleanup = res.cleanup;
-      await res.transitionEnded;
-    }
-    this.lastSwapTime = performance.now();
-
-    // Preserve animation state from old center image to avoid jarring resets
-    // -----
-    // const index = images.find((img) => img.pos === 0)!.index;
-    const img0 = this.currentChildren!.images.find((img) => img.index === index)!;
-
-    const transitionState = img0?.image ? VistaHiresTransition.stop(img0.image!) : undefined;
-    const nextImg0 = images.find((img) => img.pos === 0)!;
-    if (img0?.image) {
-      nextImg0.cloneStyleFrom(img0, transitionState);
-    } else {
-      console.warn('No img0 image to clone from');
+      // Preserve animation state from old center image to avoid jarring resets
+      // -----
+      const img0 = this.state.children!.images.find((img) => img.index === index)!;
+      const transitionState = img0 ? VistaHiresTransition.stop(img0) : undefined;
+      const nextImg0 = images.find((img) => img.index === index);
+      if (transitionState && nextImg0 && img0) {
+        nextImg0.cloneStyleFrom(img0, transitionState);
+      }
     }
 
     // swap elements
     imgs.innerHTML = '';
-    if (this.transitionCleanup) this.transitionCleanup();
+    if (this.transitionCleanup) {
+      this.transitionCleanup();
+      this.transitionCleanup = null;
+    }
     htmls.forEach((vistaImg: HTMLDivElement) => {
-      // const img = images[i];
-
-      // is this position 0?
-      // setup styles accordingly
-      // if (
-      //   img.pos === 0 &&
-      //   !abortControllerSignal.aborted
-      // ) {
-      //   // console.log(img)
-      //   img.cloneStyleFrom(img0);
-      //   img.setTransitionState( transitionState );
-      // }
-
       imgs.appendChild(vistaImg);
     });
 
@@ -275,10 +233,19 @@ export class VistaView {
     });
 
     // -----
-    this.currentChildren = { htmls, images };
+    this.state.children = { htmls, images };
     this.displayActiveIndex();
 
-    this.isRapidSwap = false;
+    if (rapid) {
+      // Set cooldown period before allowing normal transitions again
+      if (this.isRapidSwapRelease) clearTimeout(this.isRapidSwapRelease);
+      this.isRapidSwapRelease = setTimeout(() => {
+        this.isRapidSwap = false;
+      }, 333);
+    } else {
+      this.isRapidSwap = false;
+    }
+
     this.options.onImageView && this.options.onImageView(vistaData);
   }
 
@@ -308,7 +275,7 @@ export class VistaView {
 
     const description = this.qs<HTMLDivElement>('.vvw-desc');
     if (description) {
-      const currentImg = this.currentChildren?.images.find((img) => img.index === cid);
+      const currentImg = this.state.children.images.find((img) => img.index === cid);
       const descText = currentImg?.config.alt || '';
 
       if (descText) {
@@ -382,7 +349,7 @@ export class VistaView {
 
     this.setupFunction(vistaData);
 
-    this.currentChildren = { htmls, images };
+    this.state.children = { htmls, images };
     htmls.forEach((vistaImg) => {
       this.imageContainer!.appendChild(vistaImg);
     });
@@ -420,7 +387,7 @@ export class VistaView {
       btn.addEventListener('click', (e: MouseEvent) => {
         const name = (e.currentTarget as HTMLButtonElement).dataset.vvwControl!;
         const control = customControls[name];
-        const currentImage = this.currentChildren!.images.find(
+        const currentImage = this.state.children.images.find(
           (img) => img.index === this.state.currentIndex
         );
         if (control && currentImage) {
@@ -468,7 +435,7 @@ export class VistaView {
       return;
     }
 
-    this.currentChildren?.images.forEach((img) => {
+    this.state.children.images.forEach((img) => {
       img.prepareClose();
     });
 
@@ -507,7 +474,7 @@ export class VistaView {
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
-    this.currentChildren = null;
+    this.state.children = { htmls: [], images: [] };
     this.state.currentIndex = -1;
 
     // Restore body scrolling
@@ -585,7 +552,7 @@ export class VistaView {
   zoomIn(): void {
     this.throttle.fio(
       () => {
-        const image = this.currentChildren?.images.find((img) => img.pos === 0);
+        const image = this.state.children.images.find((img) => img.pos === 0);
         image?.animateZoom(1.68);
       },
       'zoom',
@@ -596,7 +563,7 @@ export class VistaView {
   zoomOut(): void {
     this.throttle.fio(
       () => {
-        const image = this.currentChildren?.images.find((img) => img.pos === 0);
+        const image = this.state.children.images.find((img) => img.pos === 0);
         image?.animateZoom(0.68);
       },
       'zoom',

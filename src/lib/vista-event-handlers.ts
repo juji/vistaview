@@ -31,7 +31,8 @@ export class VistaEventHandlers {
   private internalPointerListener = (e: VistaPointerListenerArgs) => {
     // Detect if we are pinching - to prevent conflict with single pointer move
     // Adds a small cooldown after pinch ends to avoid immediate single pointer move
-    const vistaImage = this.vvw.state.images[Math.floor(this.vvw.state.images.length / 2)];
+    const vistaImage =
+      this.vvw.state.children.images[Math.floor(this.vvw.state.children.images.length / 2)];
 
     // POINTER DOWN - Start drag or pinch
     if (e.event === 'down') {
@@ -138,7 +139,8 @@ export class VistaEventHandlers {
   onScroll = (e: Event) => {
     e.preventDefault();
     const vvw = this.vvw;
-    const vistaImage = vvw.state.images[Math.floor(this.vvw.state.images.length / 2)];
+    const vistaImage =
+      vvw.state.children.images[Math.floor(this.vvw.state.children.images.length / 2)];
     const delta = (e as WheelEvent).deltaY;
 
     vistaImage.setInitialCenter({
@@ -154,8 +156,7 @@ export class VistaEventHandlers {
   };
 
   onResizeHandler = () => {
-    const images = this.vvw.state.images;
-    images.forEach((vistaImage) => {
+    this.vvw.state.children.images.forEach((vistaImage) => {
       vistaImage.setSizes();
     });
   };

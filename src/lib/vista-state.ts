@@ -5,7 +5,15 @@ export class VistaState {
   settled = false;
   closing = false;
   zoomedIn = false;
-  images: VistaImage[] = [];
+
+  children: {
+    htmls: HTMLElement[];
+    images: VistaImage[];
+  } = {
+    htmls: [],
+    images: [],
+  };
+
   currentIndex = -1;
   abortController: AbortController = new AbortController();
   isReducedMotion = false;
