@@ -18,6 +18,8 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
     close: useCallback(() => instance.current?.close() ?? Promise.resolve(), []),
     next: useCallback(() => instance.current?.next(), []),
     prev: useCallback(() => instance.current?.prev(), []),
+    zoomIn: useCallback(() => instance.current?.zoomIn(), []),
+    zoomOut: useCallback(() => instance.current?.zoomOut(), []),
     getCurrentIndex: useCallback(() => instance.current?.getCurrentIndex() ?? -1, []),
     view: useCallback((i: number) => instance.current?.view(i), []),
     destroy: useCallback(() => instance.current?.destroy(), []),
