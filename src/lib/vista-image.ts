@@ -145,7 +145,7 @@ export class VistaImage {
   });
 
   image: HTMLImageElement | null = null;
-  thumb: HTMLImageElement | null = null;
+  thumb: HTMLDivElement | null = null;
   pos: number;
   index: number;
 
@@ -153,6 +153,11 @@ export class VistaImage {
   origin: VistaImgOrigin | null = null;
 
   private rect: DOMRect | null = null;
+  private replacement: HTMLImageElement | null = null;
+  private originalParent: HTMLElement | null = null;
+  private originalNextSibling: ChildNode | null = null;
+  private originalStyle = '';
+  private thumbImage: HTMLImageElement | null = null;
 
   constructor(par: {
     elm: HTMLImageElement | HTMLAnchorElement | VistaImgConfig;
@@ -245,28 +250,37 @@ export class VistaImage {
   }
 
   private createPreview() {
-    const origin = this.origin?.image;
-
     // Reuse the existing thumbnail if available (prevents flicker)
-    const thumb = origin
-      ? (origin.cloneNode(false) as HTMLImageElement)
-      : document.createElement('img');
+    const thumb = this.pos === 0 ? this.origin?.image : null;
 
-    if (origin) {
-      // Explicitly set src for Safari compatibility
-      thumb.src = origin.src;
-    } else {
-      thumb.src = this.config.src;
-      thumb.alt = this.config.alt || '';
-      thumb.width = this.defaultWH;
-      thumb.height = this.defaultWH;
+    // setup thumb styling
+    if (thumb) {
+      this.originalParent = thumb.parentElement;
+      this.originalNextSibling = thumb.nextSibling;
+      this.thumbImage = thumb;
+      if (!this.origin?.anchor) {
+        const replacement = document.createElement('img');
+        replacement.className = thumb.className;
+        replacement.id = thumb.id;
+        replacement.style.opacity = '0';
+        replacement.style.cssText = thumb.style.cssText;
+        thumb.parentElement?.insertBefore(replacement, this.thumb);
+        this.replacement = replacement;
+      }
+
+      this.originalStyle = thumb.style.cssText;
+      this.thumb = document.createElement('div');
+      this.thumb.appendChild(thumb);
+      thumb.style.width = '100%';
+      thumb.style.height = '100%';
+      thumb.style.objectFit = this.origin!.objectFit;
+
+      this.thumb.classList.add('vvw-img-lo');
+
+      // this.thumb.style.zIndex = (this.initZIndex + 1) + '';
+      // this.thumb.style.position = 'fixed';
+      // this.thumb.classList.add('vvw-img-lo');
     }
-
-    // don't use srcset for thumb to save memory
-    // thumb.srcset = '';
-
-    thumb.classList.add('vvw-img-lo');
-    this.thumb = thumb;
 
     //
     const img = document.createElement('img');
@@ -387,6 +401,27 @@ export class VistaImage {
   }
 
   destroy() {
+    // place image on it's place
+
+    if (this.originalParent && this.thumbImage) {
+      this.thumbImage.style.cssText = this.originalStyle;
+      if (this.originalNextSibling) {
+        this.originalParent.insertBefore(this.thumbImage, this.originalNextSibling);
+      } else {
+        this.originalParent.appendChild(this.thumbImage);
+      }
+    }
+
+    this.originalParent = null;
+    this.originalNextSibling = null;
+    this.originalStyle = '';
+    this.thumbImage = null;
+
+    if (this.replacement) {
+      this.replacement.remove();
+      this.replacement = null;
+    }
+
     // remove images from dom
     this.thumb?.remove();
     this.image?.remove();
@@ -402,41 +437,53 @@ export class VistaImage {
     if (!this.origin) return;
 
     const thumb = this.thumb;
-    const dim = (this.origin!.anchor || this.origin!.image).getBoundingClientRect() || {
-      width: this.defaultWH,
-      height: this.defaultWH,
-      top: 0,
-      left: 0,
-    };
+    // const dim = (this.origin!.anchor || this.origin!.image).getBoundingClientRect() || {
+    //   width: this.defaultWH,
+    //   height: this.defaultWH,
+    //   top: 0,
+    //   left: 0,
+    // };
 
-    // update thumb styles
-    const ts = thumb!.style;
-    thumb!.width = dim.width;
-    thumb!.height = dim.height;
-    ts.width = dim.width + 'px';
-    ts.height = dim.height + 'px';
-    ts.objectFit = this.origin!.objectFit;
-    ts.borderRadius = this.origin!.borderRadius;
+    let dim = { width: this.defaultWH, height: this.defaultWH, top: 0, left: 0 };
 
-    // this.initRad = im.origin!.borderRadius;
+    if (thumb) {
+      dim = (this.origin?.anchor || this.replacement)!.getBoundingClientRect();
+      console.log('dim', dim);
+      // return;
 
-    const translateLeft =
-      Math.min(Math.max(dim.left, -dim.width), window.innerWidth + dim.width) -
-      window.innerWidth / 2 +
-      dim.width / 2;
-    const translateTop =
-      Math.min(Math.max(dim.top, -dim.height), window.innerHeight + dim.height) -
-      window.innerHeight / 2 +
-      dim.height / 2;
+      // update thumb styles
+      const ts = thumb!.style;
+      // thumb!.width = dim.width;
+      // thumb!.height = dim.height;
+      ts.width = dim.width + 'px';
+      ts.height = dim.height + 'px';
+      ts.top = '50%';
+      ts.left = '50%';
+      ts.translate = '-50% -50%';
+      ts.position = 'fixed';
+      ts.objectFit = this.origin!.objectFit;
+      ts.borderRadius = this.origin!.borderRadius;
 
-    ts.setProperty('--vvw-init-radius', ts.borderRadius);
-    ts.setProperty('--vvw-pulse-radius', `calc(1.3 * ${ts.borderRadius})`);
-    ts.setProperty('--vvw-init-x', `${translateLeft}px`);
-    ts.setProperty('--vvw-init-y', `${translateTop}px`);
+      // this.initRad = im.origin!.borderRadius;
 
-    if (initDimension) {
-      ts.setProperty('--vvw-current-x', `${translateLeft}px`);
-      ts.setProperty('--vvw-current-y', `${translateTop}px`);
+      const translateLeft =
+        Math.min(Math.max(dim.left, -dim.width), window.innerWidth + dim.width) -
+        window.innerWidth / 2 +
+        dim.width / 2;
+      const translateTop =
+        Math.min(Math.max(dim.top, -dim.height), window.innerHeight + dim.height) -
+        window.innerHeight / 2 +
+        dim.height / 2;
+
+      ts.setProperty('--vvw-init-radius', ts.borderRadius);
+      ts.setProperty('--vvw-pulse-radius', `calc(1.3 * ${ts.borderRadius})`);
+      ts.setProperty('--vvw-init-x', `${translateLeft}px`);
+      ts.setProperty('--vvw-init-y', `${translateTop}px`);
+
+      if (initDimension) {
+        ts.setProperty('--vvw-current-x', `${translateLeft}px`);
+        ts.setProperty('--vvw-current-y', `${translateTop}px`);
+      }
     }
 
     // update hires data

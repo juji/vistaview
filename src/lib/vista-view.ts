@@ -159,7 +159,7 @@ export class VistaView {
       div.dataset.vvwPos = `${i}`;
       div.dataset.vvwIdx = `${elmIndex}`;
 
-      div.appendChild(vistaImg.thumb!);
+      if (vistaImg.thumb) div.appendChild(vistaImg.thumb!);
       div.appendChild(vistaImg.image!);
 
       images.push(vistaImg);
@@ -255,6 +255,10 @@ export class VistaView {
 
     images.forEach((img) => {
       img.waitForLoad();
+    });
+
+    c.images.forEach((img) => {
+      img.destroy();
     });
 
     // -----
@@ -479,6 +483,9 @@ export class VistaView {
 
           if (current === 2) {
             if (typeof this.elements === 'string') {
+              this.state.children.images.forEach((img) => {
+                img.destroy();
+              });
               this.qsOrigin(this.elements as string).forEach((el) => {
                 el.style.opacity = '';
               });
@@ -493,6 +500,9 @@ export class VistaView {
       });
     } else {
       if (typeof this.elements === 'string') {
+        this.state.children.images.forEach((img) => {
+          img.destroy();
+        });
         this.qsOrigin(this.elements as string).forEach((el) => {
           el.style.opacity = '';
         });
