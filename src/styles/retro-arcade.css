@@ -1,5 +1,5 @@
 .vvw-ui {
-  outline: 3px solid #ff0000;
+  border: 3px solid #ff0000;
 
   &:is(button),
   & > button,
@@ -11,7 +11,7 @@
   }
 
   &:is(button) {
-    outline: 3px solid #ff0000;
+    border: 3px solid #ff0000;
 
     svg {
       width: 21px;
@@ -21,19 +21,20 @@
     &:hover {
       background-color: #ff0000;
       color: #ffffff;
-      outline-color: #00ff00;
+      border-color: #00ff00;
     }
   }
 
   &.vvw-prev,
   &.vvw-next {
-    overflow: hidden;
+    overflow: visible;
 
     button {
       padding: 18px 3px;
       transition:
         padding-left 200ms linear,
         padding-right 200ms linear;
+      overflow: hidden;
 
       svg {
         transition: transform 200ms linear;
@@ -49,6 +50,11 @@
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 
+    button {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
     &:hover button {
       padding-left: 8px;
     }
@@ -57,6 +63,11 @@
   &.vvw-next {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+
+    button {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
 
     &:hover button {
       padding-right: 8px;
