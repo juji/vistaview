@@ -342,7 +342,7 @@ export class VistaView {
       controls: this.options.controls,
     });
 
-    document.body.prepend(root);
+    document.body.append(root);
     this.root = document.body.querySelector('#vvw-root');
 
     if (!this.root) {

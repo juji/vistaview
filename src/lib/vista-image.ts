@@ -252,7 +252,10 @@ export class VistaImage {
       ? (origin.cloneNode(false) as HTMLImageElement)
       : document.createElement('img');
 
-    if (!origin) {
+    if (origin) {
+      // Explicitly set src for Safari compatibility
+      thumb.src = origin.src;
+    } else {
       thumb.src = this.config.src;
       thumb.alt = this.config.alt || '';
       thumb.width = this.defaultWH;
