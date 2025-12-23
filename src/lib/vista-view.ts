@@ -573,6 +573,11 @@ export class VistaView {
       console.warn('Index out of bounds:', index);
       return;
     }
+
+    if (this.elmLength < 2) {
+      return;
+    }
+
     const before = this.state.currentIndex;
     this.state.currentIndex = index;
 
