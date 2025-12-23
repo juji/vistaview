@@ -1,5 +1,7 @@
 # VistaView
 
+> ⚠️ **Not Ready for Production** — This library is currently under active development and is not yet stable. APIs may change without notice. Use at your own risk.
+
 A lightweight, modern image lightbox library for the web. Zero dependencies, framework-agnostic, and highly customizable.
 
 ## Features
