@@ -125,6 +125,8 @@ export class VistaImage {
   config: VistaImgConfig;
   origin: VistaImgOrigin | null = null;
 
+  private rect: DOMRect | null = null;
+
   constructor(par: {
     elm: HTMLImageElement | HTMLAnchorElement | VistaImgConfig;
     pos: number;
@@ -176,8 +178,6 @@ export class VistaImage {
   cloneStyleFrom(img: VistaImage, state?: VistaHiresTransitionOpt) {
     if (!img?.image) return;
 
-    // console.log('VistaImage: cloneStyleFrom', {img, state})
-
     if (state) {
       this.transitionState = state || null;
     }
@@ -197,7 +197,6 @@ export class VistaImage {
     if (img.image!.classList.contains('vvw--ready')) {
       this.image!.classList.add('vvw--ready');
     }
-    console.log('VistaImage: cloneStyleFrom', this.image, img.image);
   }
 
   private createPreview() {
@@ -307,8 +306,6 @@ export class VistaImage {
         animateIn();
       }
     } else {
-      if (this.pos === 0) console.log('Adding transitionend listener');
-
       img.classList.add('vvw--loaded');
       // requestAnimationFrame(() => { animateIn(); });
       // i found settimeout looks better, than requestAnimationFrame
@@ -321,8 +318,11 @@ export class VistaImage {
   }
 
   prepareClose() {
-    if (!this.isLoaded || !this.image) return;
+    // stop any ongoing transition
     VistaHiresTransition.stop(this);
+
+    // finalize position
+    this.setFinalTransform();
   }
 
   destroy() {
@@ -333,6 +333,8 @@ export class VistaImage {
     // clean up references
     this.thumb = null;
     this.image = null;
+    this.origin = null;
+    this.config = { src: '', alt: '' };
   }
 
   setSizes(stableSize: boolean = true, initDimension?: boolean) {
@@ -427,45 +429,61 @@ export class VistaImage {
     this.initPointerCenter = center;
   }
 
-  move(center: { x: number; y: number }) {
-    const deltaX = center.x - this.initPointerCenter.x;
-    const deltaY = center.y - this.initPointerCenter.y;
-    this.state.transform = {
-      x: deltaX,
-      y: deltaY,
-      scale: this.state.transform.scale,
-    };
-  }
+  scaleMove(scaleFactor: number, center?: { x: number; y: number }, animate: boolean = false) {
+    if (!this.isReady) return;
 
-  scaleMove(scaleFactor: number, center?: { x: number; y: number }) {
+    if (!this.rect) {
+      this.rect = this.image!.getBoundingClientRect();
+    }
+
     if (!center) {
       center = this.initPointerCenter;
     }
 
-    const img = this.image!;
-    const rect = img.getBoundingClientRect();
-    let newScale = this.state.transform.scale * scaleFactor;
-    if (rect.width * newScale > this.maxW) {
-      newScale = this.maxW / rect.width;
+    // Calculate translation to keep the INITIAL center point fixed during zoom
+    // Current image center position
+    const imgCenterX = this.rect.left + this.rect.width / 2;
+    const imgCenterY = this.rect.top + this.rect.height / 2;
+
+    // Distance from INITIAL pinch center to image center (when gesture started)
+    const initialOffsetX = this.initPointerCenter.x - imgCenterX;
+    const initialOffsetY = this.initPointerCenter.y - imgCenterY;
+
+    // Zoom translation: keep initial pinch point fixed
+    const zoomTranslateX = initialOffsetX * (1 - scaleFactor);
+    const zoomTranslateY = initialOffsetY * (1 - scaleFactor);
+
+    // Pan translation: account for finger movement during pinch
+    const panX = center.x - this.initPointerCenter.x;
+    const panY = center.y - this.initPointerCenter.y;
+
+    if (animate) {
+      VistaHiresTransition.stop(this);
+      VistaHiresTransition.start({
+        vistaImage: this,
+        target: {
+          transform: {
+            x: zoomTranslateX + panX,
+            y: zoomTranslateY + panY,
+            scale: scaleFactor,
+          },
+        },
+        onComplete: () => {
+          this.setFinalTransform();
+        },
+        shouldWait: () => false,
+      });
+    } else {
+      this.state.transform = {
+        x: zoomTranslateX + panX,
+        y: zoomTranslateY + panY,
+        scale: scaleFactor,
+      };
     }
 
-    // calculate the position to keep the zoom centered at the pinch center
-    const imgCenter = {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    };
-
-    const offsetX = (center.x - imgCenter.x) * (newScale / this.state.transform.scale - 1);
-    const offsetY = (center.y - imgCenter.y) * (newScale / this.state.transform.scale - 1);
-
-    this.state.transform = {
-      x: this.state.transform.x - offsetX,
-      y: this.state.transform.y - offsetY,
-      scale: newScale,
-    };
-
     // notify scale change
-    const scaledWidth = rect.width * newScale;
+    const rect = this.image!.getBoundingClientRect();
+    const scaledWidth = rect.width * scaleFactor;
     this.isZoomedIn = scaledWidth > this.fullW;
     this.onScale({
       vistaImage: this,
@@ -475,42 +493,21 @@ export class VistaImage {
     });
   }
 
-  animateZoom(targetScale: number) {
-    VistaHiresTransition.stop(this);
-    VistaHiresTransition.start({
-      vistaImage: this,
-      target: {
-        transform: {
-          scale: targetScale,
-        },
-      },
-      onComplete: () => {
-        this.setFinalTransform();
-        if (this.state._width > this.maxW) {
-          this.animateZoom(this.maxW / this.state._width);
-        } else if (this.state._width < this.fullW) {
-          this.animateZoom(this.fullW / this.state._width);
-        } else {
-          this.isZoomedIn = this.state._width > this.fullW;
-          const scaledWidth = this.state._width;
-          this.onScale({
-            vistaImage: this,
-            scale: scaledWidth / this.fullW,
-            isMax: scaledWidth >= this.maxW,
-            isMin: scaledWidth <= this.fullW,
-          });
-        }
-      },
-      shouldWait: () => false,
-    });
+  animateZoom(scaleFactor: number, center?: { x: number; y: number }) {
+    if (this.state.width * scaleFactor < this.minW) return;
+    this.scaleMove(scaleFactor, center, true);
   }
 
   momentumThrow(par: { x: number; y: number }) {
+    if (!this.isReady) {
+      return () => {};
+    }
+
+    VistaHiresTransition.stop(this);
+
     if (!this.isThrowing) {
       this.setFinalTransform();
-      return () => {
-        this.isThrowing = false;
-      };
+      return () => {};
     }
 
     if (Math.abs(par.x) < 0.1 && Math.abs(par.y) < 0.1) {
@@ -522,16 +519,16 @@ export class VistaImage {
           transform: {
             x:
               bound.right < window.innerWidth / 2
-                ? window.innerWidth / 2 - bound.right
+                ? this.state.transform.x + (window.innerWidth / 2 - bound.right)
                 : bound.left > window.innerWidth / 2
-                  ? -(bound.left - window.innerWidth / 2)
-                  : 0,
+                  ? this.state.transform.x - (bound.left - window.innerWidth / 2)
+                  : this.state.transform.x,
             y:
               bound.bottom < window.innerHeight / 2
-                ? window.innerHeight / 2 - bound.bottom
+                ? this.state.transform.y + (window.innerHeight / 2 - bound.bottom)
                 : bound.top > window.innerHeight / 2
-                  ? -(bound.top - window.innerHeight / 2)
-                  : 0,
+                  ? this.state.transform.y - (bound.top - window.innerHeight / 2)
+                  : this.state.transform.y,
           },
         },
         onComplete: () => {
@@ -540,9 +537,8 @@ export class VistaImage {
         },
         shouldWait: () => false,
       });
-      return () => {
-        this.isThrowing = false;
-      };
+
+      return () => {};
     }
 
     requestAnimationFrame(() => {
@@ -578,17 +574,48 @@ export class VistaImage {
       this.state.transform = t;
 
       this.momentumThrow({
-        x: par.x * 0.95,
-        y: par.y * 0.95,
+        x: par.x * 0.9,
+        y: par.y * 0.9,
       });
     });
 
     return () => {
+      VistaHiresTransition.stop(this);
       this.isThrowing = false;
+      this.setFinalTransform();
     };
   }
 
+  private animateNormalizeTimeout: number | null = null;
+  private animateNormalize() {
+    if (this.animateNormalizeTimeout) {
+      clearTimeout(this.animateNormalizeTimeout);
+    }
+    this.animateNormalizeTimeout = setTimeout(() => {
+      VistaHiresTransition.stop(this);
+      VistaHiresTransition.start({
+        vistaImage: this,
+        target: {
+          width: this.fullW,
+          height: this.fullH,
+          translate: { x: 0, y: 0 },
+          transform: { x: 0, y: 0, scale: 1 },
+        },
+        onComplete: () => {
+          this.setFinalTransform();
+        },
+        shouldWait: () => false,
+      });
+    }, 50);
+  }
+
   setFinalTransform() {
+    if (!this.isReady) return;
+
+    // remove this.rect
+    this.rect = null;
+
+    // finalize current transform into translate and size
     this.state.translate.x += this.state.transform.x;
     this.state.translate.y += this.state.transform.y;
     this.state.width *= this.state.transform.scale;
@@ -607,27 +634,25 @@ export class VistaImage {
       this.state.translate.y = 0;
     }
 
-    this.state.translate = this.state.translate;
+    this.state.translate = { ...this.state.translate };
     this.state.transform = { x: 0, y: 0, scale: 1 };
 
-    // normalize if zoomed out
-    if (
-      this.state.width === this.fullW &&
-      this.state.height === this.fullH &&
-      this.state.translate.x === 0 &&
-      this.state.translate.y === 0
-    ) {
-      this.normalize();
+    const close = this.state.width <= this.minW;
+
+    // animate back to max if over max
+    if (this.state.width > this.maxW) {
+      this.animateZoom(this.maxW / this.state.width);
     }
-    // else {
-    //   const img = this.image!;
-    //   img.style.width = `${this.state.width}px`;
-    //   img.style.height = `${this.state.height}px`;
-    //   img.style.translate = `calc(50% + ${this.state.x}px) calc(50% + ${this.state.y}px)`;
-    //   img.style.transform = ``;
-    // }
+
+    // animate back to full if under full
+    if (!close && this.state.width < this.fullW) {
+      this.animateNormalize();
+    }
 
     // determine if this should be closed
-    return this.state.width < this.minW;
+    return {
+      close,
+      cancel: () => VistaHiresTransition.stop(this),
+    };
   }
 }

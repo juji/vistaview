@@ -375,10 +375,12 @@
       border-radius calc(var(--vvw-anim-dur) * 1ms) ease,
       top calc(var(--vvw-anim-dur) * 1ms) ease,
       left calc(var(--vvw-anim-dur) * 1ms) ease,
+      translate calc(var(--vvw-anim-dur) * 1ms) ease,
       opacity 0ms calc(var(--vvw-anim-dur) * 1ms) ease;
     opacity: 0 !important;
     top: 50% !important;
     left: 50% !important;
+    translate: -50% -50% !important;
     width: var(--vvw-init-w) !important;
     height: var(--vvw-init-h) !important;
     border-radius: var(--vvw-init-radius) !important;

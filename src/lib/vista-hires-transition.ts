@@ -10,6 +10,7 @@ export type VistaHiresTransitionOpt = {
       y?: number;
       scale?: number;
     };
+    translate?: { x?: number; y?: number };
   };
   log?: boolean;
 };
@@ -32,10 +33,14 @@ export class VistaHiresTransition {
     }
 
     // this is possible, that the animation was removed in between frames
-    if (!this.map.get(vistaImage)) return;
+    if (!this.map.get(vistaImage)) {
+      return;
+    }
 
     // check if the animation was cancelled in between frames
-    if (vistaImage.image!.classList.contains('vvw--load-cancelled')) return;
+    if (vistaImage.image!.classList.contains('vvw--load-cancelled')) {
+      return;
+    }
 
     requestAnimationFrame(() => {
       // check again
@@ -64,12 +69,22 @@ export class VistaHiresTransition {
         now.transform = now.transform || {};
         now.transform.scale = this.ease(current._transform.scale, target.transform.scale, 0.005);
       }
+      if (target.translate?.x !== undefined) {
+        now.translate = now.translate || {};
+        now.translate.x = this.ease(current._translate.x, target.translate.x, 0.5);
+      }
+      if (target.translate?.y !== undefined) {
+        now.translate = now.translate || {};
+        now.translate.y = this.ease(current._translate.y, target.translate.y, 0.5);
+      }
 
       // apply now to image state
       if (now.width !== undefined) current.width = now.width;
       if (now.height !== undefined) current.height = now.height;
 
       // make the change trigger re-render
+
+      if (now.translate) current.translate = { ...current.translate, ...now.translate };
       if (now.transform) current.transform = { ...current.transform, ...now.transform };
 
       const allIsDone =
@@ -78,7 +93,9 @@ export class VistaHiresTransition {
         (target.transform?.x === undefined || current._transform.x === target.transform.x) &&
         (target.transform?.y === undefined || current._transform.y === target.transform.y) &&
         (target.transform?.scale === undefined ||
-          current._transform.scale === target.transform.scale);
+          current._transform.scale === target.transform.scale) &&
+        (target.translate?.x === undefined || current._translate.x === target.translate.x) &&
+        (target.translate?.y === undefined || current._translate.y === target.translate.y);
 
       if (allIsDone) {
         this.map.delete(vistaImage);

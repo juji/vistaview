@@ -10,7 +10,7 @@ export class VistaEventHandlers {
   private lastDistance = 0;
   private pinchMode = false;
   private lastPinchEndTime = 0;
-  private PINCH_COOLDOWN = 33;
+  private PINCH_COOLDOWN = 111;
   private cancelMove = () => {};
   private pointerListeners: ((e: VistaExternalPointerListenerArgs) => void)[] = [];
   private vvw: VistaView;
@@ -63,7 +63,7 @@ export class VistaEventHandlers {
         !this.isPinching()
       ) {
         const center = this.pointers!.getCentroid();
-        vistaImage.move(center!);
+        vistaImage.scaleMove(1, center!);
       }
 
       // Two finger pinch zoom
@@ -84,8 +84,11 @@ export class VistaEventHandlers {
         this.lastPinchEndTime = performance.now();
         this.pinchMode = false;
         // const close = vistaImage.normalize();
-        const close = vistaImage.setFinalTransform();
-        if (close) {
+        const ret = vistaImage.setFinalTransform();
+        if (ret?.cancel) {
+          this.cancelMove = ret.cancel;
+        }
+        if (ret?.close) {
           requestAnimationFrame(() => {
             this.vvw.close();
           });
@@ -101,12 +104,12 @@ export class VistaEventHandlers {
     }
 
     // Notify external listeners (user-registered pointer handlers)
-    console.log(
-      'Pointer Event',
-      e,
-      'hasInternalExecution:',
-      this.vvw.state.zoomedIn || this.isPinching()
-    );
+    // console.log(
+    //   'Pointer Event',
+    //   e,
+    //   'hasInternalExecution:',
+    //   this.vvw.state.zoomedIn || this.isPinching()
+    // );
     this.pointerListeners.forEach((l) =>
       l({
         ...e,

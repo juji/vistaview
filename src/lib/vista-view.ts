@@ -507,6 +507,11 @@ export class VistaView {
     this.state.children = { htmls: [], images: [] };
     this.state.currentIndex = -1;
 
+    //
+    this.state.children.images.forEach((img) => {
+      img.destroy();
+    });
+
     // Restore body scrolling
     document.body.style.overflow = '';
 
