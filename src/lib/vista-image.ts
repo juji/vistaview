@@ -437,12 +437,6 @@ export class VistaImage {
     if (!this.origin) return;
 
     const thumb = this.thumb;
-    // const dim = (this.origin!.anchor || this.origin!.image).getBoundingClientRect() || {
-    //   width: this.defaultWH,
-    //   height: this.defaultWH,
-    //   top: 0,
-    //   left: 0,
-    // };
 
     let dim = { width: this.defaultWH, height: this.defaultWH, top: 0, left: 0 };
 
@@ -488,15 +482,14 @@ export class VistaImage {
 
     // update hires data
     const img = this.image!;
+    img.style.setProperty('--vvw-init-w', dim.width + 'px');
+    img.style.setProperty('--vvw-init-h', dim.height + 'px');
+    img.style.setProperty('--vvw-init-radius', this.origin!.borderRadius);
+    img.style.objectFit = 'cover';
+    this.initW = dim.width;
+    this.initH = dim.height;
 
-    if (initDimension) {
-      img.style.objectFit = 'cover';
-      img.style.setProperty('--vvw-init-radius', this.origin!.borderRadius);
-      img.style.setProperty('--vvw-init-w', dim.width + 'px');
-      img.style.setProperty('--vvw-init-h', dim.height + 'px');
-      this.initW = dim.width;
-      this.initH = dim.height;
-    } else {
+    if (!initDimension) {
       // setting initDimension to true will prevent this from happening,
 
       // e.g., when called from constructor, sizes will not be set here
