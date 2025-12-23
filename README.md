@@ -182,32 +182,57 @@ vistaView({
 
 ## Exported Types & Functions
 
-VistaView exports all types for TypeScript users, plus helper functions:
+VistaView exports all types for TypeScript users, plus helper functions and internal classes:
 
 ```ts
 import {
+  // Main function
   vistaView,
+
+  // Helper components
   vistaViewDownload, // Helper function for download control
+
+  // Default behavior functions
   DefaultOptions, // Default configuration options
   setup, // Default setup function
   init, // Default init function
   close, // Default close function
   transition, // Default transition function
+
+  // Internal classes (advanced usage)
+  VistaEventHandlers, // Event handling system
+  VistaHiresTransition, // High-resolution image transition manager
+  VistaImage, // Individual image instance class
+  VistaPointers, // Multi-pointer tracking system
+  VistaState, // State management class
+  VistaView, // Main view controller class
 } from 'vistaview';
 
 import type {
+  // Configuration types
   VistaParamsNeo, // Full options including `elements`
   VistaOpt, // Base options (without `elements`)
+
+  // Image types
   VistaImgConfig, // Image configuration: { src, alt?, srcSet? }
   VistaImgOrigin, // Origin element properties
+
+  // Interface types
   VistaInterface, // Return type from vistaView()
   VistaData, // Data passed to events/functions
+  VistaImageState, // Image state interface
+
+  // Function types
   VistaSetupFn, // Type for setupFunction
   VistaTransitionFn, // Type for transitionFunction
   VistaCloseFn, // Type for closeFunction
   VistaInitFn, // Type for initFunction
+
+  // Control types
   VistaCustomCtrl, // Custom control definition
   VistaDefaultCtrl, // Built-in control names
+
+  // Pointer types
   VistaPointerArgs, // Pointer system arguments
   VistaPointer, // Single pointer state
   VistaPointerEvent, // Pointer event types
