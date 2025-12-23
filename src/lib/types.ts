@@ -117,3 +117,31 @@ export type VistaImgOrigin = {
 export type VistaParamsNeo = {
   elements: string | VistaImgConfig[];
 } & VistaOpt;
+
+export type VistaImageState = {
+  _t: VistaImage;
+  _width: number;
+  _height: number;
+  _transform: {
+    x: number;
+    y: number;
+    scale: number;
+  };
+  _translate: {
+    x: number;
+    y: number;
+  };
+  _lessThanMinWidth: boolean;
+  gonnaClose: boolean;
+  translate: {
+    x: number;
+    y: number;
+  };
+  transform: {
+    x: number;
+    y: number;
+    scale: number;
+  };
+  width: number;
+  height: number;
+};

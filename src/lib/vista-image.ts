@@ -3,34 +3,7 @@ import { parseElement } from './utils/parse-element';
 import { getFullSizeDim } from './utils/get-full-size-dim';
 import { VistaHiresTransition } from './vista-hires-transition';
 import type { VistaHiresTransitionOpt } from './vista-hires-transition';
-
-export type VistaImageState = {
-  _t: VistaImage;
-  _width: number;
-  _height: number;
-  _transform: {
-    x: number;
-    y: number;
-    scale: number;
-  };
-  _translate: {
-    x: number;
-    y: number;
-  };
-  _lessThanMinWidth: boolean;
-  gonnaClose: boolean;
-  translate: {
-    x: number;
-    y: number;
-  };
-  transform: {
-    x: number;
-    y: number;
-    scale: number;
-  };
-  width: number;
-  height: number;
-};
+import type { VistaImageState } from './types';
 
 export class VistaImage {
   private initH: number = 0;

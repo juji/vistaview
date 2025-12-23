@@ -1,4 +1,5 @@
-import type { VistaImage, VistaImageState } from './vista-image';
+import type { VistaImage } from './vista-image';
+import type { VistaImageState } from './types';
 
 export type VistaHiresTransitionOpt = {
   current: VistaImageState;
