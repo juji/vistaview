@@ -1,23 +1,15 @@
-import type { 
-  VistaInterface,
-  VistaImgConfig,
-  VistaParamsNeo
-} from "./types";
+import type { VistaInterface, VistaImgConfig, VistaParamsNeo } from './types';
 
-import { VistaView } from "./vista-view";
+import { VistaView } from './vista-view';
 
-function checkCorrectness(
-  elements: string | VistaImgConfig[]
-): string | VistaImgConfig[] | Error {
-  
+function checkCorrectness(elements: string | VistaImgConfig[]): string | VistaImgConfig[] | Error {
   let els: NodeListOf<HTMLElement> | null = null;
-  
+
   // get elements as node list
   if (typeof elements === 'string') {
-    
     els = document.querySelectorAll<HTMLElement>(elements);
-    
-    if(els.length === 0) {
+
+    if (els.length === 0) {
       return new Error('No elements found in node list.').toString();
     }
 
@@ -25,11 +17,11 @@ function checkCorrectness(
     for (let i = 0; i < els.length; i++) {
       const el = els[i];
       const tagName = el.tagName.toLowerCase();
-      
+
       if (tagName !== 'img' && tagName !== 'a') {
         return new Error(`Invalid element at index ${i}: expected <img>, <a>, got <${tagName}>`);
       }
-      
+
       // If anchor, must contain img
       if (tagName === 'a') {
         const hasImg = el.querySelector('img') !== null;
@@ -41,14 +33,13 @@ function checkCorrectness(
   } else {
     // Validate VistaImgConfig array
     const data = elements as VistaImgConfig[];
-    
+
     for (let i = 0; i < data.length; i++) {
       const img = data[i];
-      
+
       if (!img.src) {
         return new Error(`Invalid image data at index ${i}: must have 'src'`);
       }
-      
     }
   }
 
