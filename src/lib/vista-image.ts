@@ -257,6 +257,7 @@ export class VistaImage {
     if (thumb) {
       this.originalParent = thumb.parentElement;
       this.originalNextSibling = thumb.nextSibling;
+      this.originalStyle = thumb.style.cssText;
       this.thumbImage = thumb;
       if (!this.origin?.anchor) {
         const replacement = document.createElement('img');
@@ -264,11 +265,10 @@ export class VistaImage {
         replacement.id = thumb.id;
         replacement.style.opacity = '0';
         replacement.style.cssText = thumb.style.cssText;
-        thumb.parentElement?.insertBefore(replacement, this.thumb);
+        thumb.parentElement?.insertBefore(replacement, thumb);
         this.replacement = replacement;
       }
 
-      this.originalStyle = thumb.style.cssText;
       this.thumb = document.createElement('div');
       this.thumb.appendChild(thumb);
       thumb.style.width = '100%';
@@ -437,12 +437,6 @@ export class VistaImage {
     if (!this.origin) return;
 
     const thumb = this.thumb;
-    // const dim = (this.origin!.anchor || this.origin!.image).getBoundingClientRect() || {
-    //   width: this.defaultWH,
-    //   height: this.defaultWH,
-    //   top: 0,
-    //   left: 0,
-    // };
 
     let dim = { width: this.defaultWH, height: this.defaultWH, top: 0, left: 0 };
 
@@ -488,15 +482,14 @@ export class VistaImage {
 
     // update hires data
     const img = this.image!;
+    img.style.setProperty('--vvw-init-w', dim.width + 'px');
+    img.style.setProperty('--vvw-init-h', dim.height + 'px');
+    img.style.setProperty('--vvw-init-radius', this.origin!.borderRadius);
+    img.style.objectFit = 'cover';
+    this.initW = dim.width;
+    this.initH = dim.height;
 
-    if (initDimension) {
-      img.style.objectFit = 'cover';
-      img.style.setProperty('--vvw-init-radius', this.origin!.borderRadius);
-      img.style.setProperty('--vvw-init-w', dim.width + 'px');
-      img.style.setProperty('--vvw-init-h', dim.height + 'px');
-      this.initW = dim.width;
-      this.initH = dim.height;
-    } else {
+    if (!initDimension) {
       // setting initDimension to true will prevent this from happening,
 
       // e.g., when called from constructor, sizes will not be set here
