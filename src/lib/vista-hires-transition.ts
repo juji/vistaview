@@ -124,6 +124,15 @@ export class VistaHiresTransition {
     onComplete: () => void;
     shouldWait: () => boolean;
   }) {
+    // stop any existing animation
+    // keep in mind this is dangerously close to breaking
+    // when another function that relies on 'stop' is called,
+    // such as 'swap' in vista-view.ts
+    // but for now, this is acceptable,
+    // since vista-view.ts only care about initial animation
+    this.stop(vistaImage);
+
+    // start new animation
     this.map.set(vistaImage, {
       current: vistaImage.state,
       target,

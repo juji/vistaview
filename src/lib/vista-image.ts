@@ -473,7 +473,6 @@ export class VistaImage {
     const panY = center.y - this.initPointerCenter.y;
 
     if (animate) {
-      VistaHiresTransition.stop(this);
       VistaHiresTransition.start({
         vistaImage: this,
         target: {
@@ -518,8 +517,6 @@ export class VistaImage {
     if (!this.isReady) {
       return () => {};
     }
-
-    VistaHiresTransition.stop(this);
 
     if (!this.isThrowing) {
       this.setFinalTransform();
@@ -608,7 +605,6 @@ export class VistaImage {
       clearTimeout(this.animateNormalizeTimeout);
     }
     this.animateNormalizeTimeout = setTimeout(() => {
-      VistaHiresTransition.stop(this);
       VistaHiresTransition.start({
         vistaImage: this,
         target: {
