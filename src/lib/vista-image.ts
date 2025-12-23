@@ -43,6 +43,7 @@ export class VistaImage {
   private minW: number = 0;
   // private initRad: string = '0px'
   private maxZoomLevel: number = 1;
+  private defaultWH: number = 200;
 
   private parsedSrcSet: { src: string; width: number }[] | undefined = undefined;
 
@@ -244,26 +245,25 @@ export class VistaImage {
   }
 
   private createPreview() {
-    const thumb = document.createElement('img');
-    thumb.src = this.origin?.src || this.config.src;
-    thumb.alt = this.config.alt || '';
+    const origin = this.origin?.image;
+
+    // Reuse the existing thumbnail if available (prevents flicker)
+    const thumb = origin
+      ? (origin.cloneNode(false) as HTMLImageElement)
+      : document.createElement('img');
+
+    if (!origin) {
+      thumb.src = this.config.src;
+      thumb.alt = this.config.alt || '';
+      thumb.width = this.defaultWH;
+      thumb.height = this.defaultWH;
+    }
 
     // don't use srcset for thumb to save memory
-    // thumb.srcset = this.origin?.srcSet || this.config.srcSet || '';
+    // thumb.srcset = '';
 
     thumb.classList.add('vvw-img-lo');
     this.thumb = thumb;
-
-    // width and height
-    const origin = this.origin?.image;
-
-    if (origin && origin.width && origin.height) {
-      thumb.width = origin.width;
-      thumb.height = origin.height;
-    } else {
-      thumb.width = 200;
-      thumb.height = 200;
-    }
 
     //
     const img = document.createElement('img');
@@ -400,8 +400,8 @@ export class VistaImage {
 
     const thumb = this.thumb;
     const dim = (this.origin!.anchor || this.origin!.image).getBoundingClientRect() || {
-      width: 200,
-      height: 200,
+      width: this.defaultWH,
+      height: this.defaultWH,
       top: 0,
       left: 0,
     };
