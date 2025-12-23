@@ -452,7 +452,8 @@ export class VistaView {
         );
 
         this.root!.classList.add('vvw--active');
-        this.displayActiveIndex();
+        const setDesc = this.displayActiveIndex();
+        setDesc();
         this.options.onOpen && this.options.onOpen(this);
         this.options.onImageView && this.options.onImageView(vistaData);
       });
