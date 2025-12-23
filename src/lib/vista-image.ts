@@ -247,7 +247,6 @@ export class VistaImage {
         ? getFittedSize(this.thumbImage)
         : { width: 0, height: 0 };
       this.fittedSize = { width, height };
-      console.log(this.fittedSize, 'fitted size');
       this.thumb.appendChild(thumb);
       thumb.style.width = '100%';
       thumb.style.height = '100%';

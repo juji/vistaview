@@ -396,7 +396,6 @@ export class VistaView {
     this.qs('.vvw-prev>button')?.addEventListener('click', () => this.prev());
     this.qs('.vvw-next>button')?.addEventListener('click', () => this.next());
 
-    console.log('elmLength', this.state.elmLength);
     if (this.state.elmLength < 2) {
       this.qs('.vvw-prev')?.classList.add('vvw--hidden');
       this.qs('.vvw-next')?.classList.add('vvw--hidden');
