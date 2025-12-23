@@ -210,12 +210,16 @@ export class VistaView {
     this.isRapidSwap = rapid;
 
     // can only setDescription after state.children is updated
-    const setDescription = this.displayActiveIndex();
+    // so we cache current images first
+    const { images: currentImages } = this.state.children;
+    this.state.children = { htmls, images };
+    this.displayCurrentInfo();
 
     if (rapid) {
       // Cancel pending image loads from previous swap
-      c.images.forEach((img) => {
+      currentImages.forEach((img) => {
         img.cancelPendingLoad();
+        img.destroy();
       });
     } else {
       // NORMAL SWAP: Run transition animation
@@ -228,18 +232,22 @@ export class VistaView {
       this.lastSwapTime = performance.now();
 
       // Cancel pending image loads from previous swap
-      c.images.forEach((img) => {
+      currentImages.forEach((img) => {
         img.cancelPendingLoad();
       });
 
       // Preserve animation state from old center image to avoid jarring resets
       // -----
-      const img0 = this.state.children!.images.find((img) => img.index === index)!;
+      const img0 = currentImages.find((img) => img.index === index)!;
       const transitionState = img0 ? VistaHiresTransition.stop(img0) : undefined;
       const nextImg0 = images.find((img) => img.index === index);
       if (nextImg0 && img0) {
         nextImg0.cloneStyleFrom(img0, transitionState);
       }
+
+      currentImages.forEach((img) => {
+        img.destroy();
+      });
     }
 
     // swap elements
@@ -256,14 +264,6 @@ export class VistaView {
     images.forEach((img) => {
       img.waitForLoad();
     });
-
-    c.images.forEach((img) => {
-      img.destroy();
-    });
-
-    // -----
-    this.state.children = { htmls, images };
-    setDescription();
 
     if (rapid) {
       // Set cooldown period before allowing normal transitions again
@@ -282,7 +282,7 @@ export class VistaView {
   // UI UPDATES
   // ============================================================================
 
-  private displayActiveIndex(): () => void {
+  private displayCurrentInfo(): void {
     const cid = this.state.currentIndex;
 
     // set opacity in element
@@ -302,24 +302,19 @@ export class VistaView {
       indexDisplay.textContent = `${indexText} / ${indexTotal}`;
     }
 
-    return () => {
-      const description = this.qs<HTMLDivElement>('.vvw-desc');
-      if (description) {
-        const currentImg = this.state.children.images.find((img) => img.index === cid);
-        const descText = currentImg?.config.alt || '';
+    const description = this.qs<HTMLDivElement>('.vvw-desc');
+    if (description) {
+      const currentImg = this.state.children.images.find((img) => img.index === cid);
+      const descText = currentImg?.config.alt || '';
 
-        if (descText) {
-          description.textContent = descText;
-          description.setAttribute(
-            'aria-label',
-            `Image ${indexText} of ${indexTotal}: ${descText}`
-          );
-        } else {
-          description.textContent = '';
-          description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
-        }
+      if (descText) {
+        description.textContent = descText;
+        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}: ${descText}`);
+      } else {
+        description.textContent = '';
+        description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
       }
-    };
+    }
   }
 
   // ============================================================================
@@ -452,8 +447,7 @@ export class VistaView {
         );
 
         this.root!.classList.add('vvw--active');
-        const setDesc = this.displayActiveIndex();
-        setDesc();
+        this.displayCurrentInfo();
         this.options.onOpen && this.options.onOpen(this);
         this.options.onImageView && this.options.onImageView(vistaData);
       });

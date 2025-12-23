@@ -196,6 +196,10 @@ export class VistaImage {
     this.origin = conf.origin;
     this.parsedSrcSet = conf.parsedSrcSet;
 
+    const thumb = this.pos === 0 ? this.origin?.image : null;
+    this.originalParent = thumb?.parentElement || null;
+    this.originalNextSibling = thumb?.nextSibling || null;
+
     this.createPreview();
 
     // trigger setSizes to setup thumb and hires image
@@ -208,6 +212,12 @@ export class VistaImage {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
     };
+
+    if (this.pos === 0) {
+      console.log('-----------------------');
+      console.log('created VistaImage', this.config.src);
+      console.log(JSON.stringify(this.config));
+    }
   }
 
   cloneStyleFrom(img: VistaImage, state?: VistaHiresTransitionOpt) {
@@ -254,20 +264,12 @@ export class VistaImage {
     const thumb = this.pos === 0 ? this.origin?.image : null;
 
     // setup thumb styling
-    if (thumb) {
-      this.originalParent = thumb.parentElement;
-      this.originalNextSibling = thumb.nextSibling;
+    if (thumb && this.originalParent) {
       this.originalStyle = thumb.style.cssText;
       this.thumbImage = thumb;
-      if (!this.origin?.anchor) {
-        const replacement = document.createElement('img');
-        replacement.className = thumb.className;
-        replacement.id = thumb.id;
-        replacement.style.opacity = '0';
-        replacement.style.cssText = thumb.style.cssText;
-        thumb.parentElement?.insertBefore(replacement, thumb);
-        this.replacement = replacement;
-      }
+      const replacement = thumb.cloneNode(true) as HTMLImageElement;
+      this.originalParent.insertBefore(replacement, thumb);
+      this.replacement = replacement;
 
       this.thumb = document.createElement('div');
       this.thumb.appendChild(thumb);
@@ -402,14 +404,26 @@ export class VistaImage {
 
   destroy() {
     // place image on it's place
+    if (this.pos === 0) {
+      console.log('destroying current image', this.config.src);
+    }
 
     if (this.originalParent && this.thumbImage) {
+      console.log('restore thumb image');
       this.thumbImage.style.cssText = this.originalStyle;
       if (this.originalNextSibling) {
         this.originalParent.insertBefore(this.thumbImage, this.originalNextSibling);
       } else {
         this.originalParent.appendChild(this.thumbImage);
       }
+    } else if (this.pos === 0) {
+      console.log('-----------------------');
+      console.log(JSON.stringify(this.config));
+      console.log('no thumb to restore');
+      console.log('originalParent', this.originalParent?.toString());
+      console.log('thumbImage', this.thumbImage?.toString());
+      console.log('original image', this.origin?.image);
+      console.log('origin object', this.origin?.toString());
     }
 
     this.originalParent = null;
@@ -430,7 +444,7 @@ export class VistaImage {
     this.thumb = null;
     this.image = null;
     this.origin = null;
-    this.config = { src: '', alt: '' };
+    // this.config = { src: '', alt: '' };
   }
 
   setSizes(stableSize: boolean = true, initDimension?: boolean) {
@@ -442,8 +456,6 @@ export class VistaImage {
 
     if (thumb) {
       dim = (this.origin?.anchor || this.replacement)!.getBoundingClientRect();
-      console.log('dim', dim);
-      // return;
 
       // update thumb styles
       const ts = thumb!.style;
