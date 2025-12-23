@@ -20,6 +20,8 @@ export type VistaImageState = {
     x: number;
     y: number;
   };
+  _lessThanMinWidth: boolean;
+  gonnaClose: boolean;
   translate: {
     x: number;
     y: number;
@@ -58,6 +60,19 @@ export class VistaImage {
       x: 0,
       y: 0,
     },
+    _lessThanMinWidth: false,
+    set gonnaClose(value: boolean) {
+      this._lessThanMinWidth = value;
+      if (value) {
+        this._t.image!.style.opacity = `0.5`;
+      } else {
+        this._t.image!.style.opacity = ``;
+      }
+    },
+    get gonnaClose() {
+      return this._lessThanMinWidth;
+    },
+
     set translate(value: { x: number; y: number }) {
       this._translate = value;
       this._t.image!.style.translate = `calc(-50% + ${value.x}px) calc(-50% + ${value.y}px)`;
@@ -260,7 +275,7 @@ export class VistaImage {
     const { width: fullWidth, height: fullHeight } = getFullSizeDim(img);
     this.fullH = fullHeight;
     this.fullW = fullWidth;
-    this.minW = this.fullW * 0.3;
+    this.minW = this.fullW * 0.5;
     // this.minH = this.fullH * 0.3
 
     this.isLoadedResolved!(true);
@@ -485,6 +500,7 @@ export class VistaImage {
     const rect = this.image!.getBoundingClientRect();
     const scaledWidth = rect.width * scaleFactor;
     this.isZoomedIn = scaledWidth > this.fullW;
+    this.state.gonnaClose = scaledWidth <= this.minW;
     this.onScale({
       vistaImage: this,
       scale: scaledWidth / this.fullW,

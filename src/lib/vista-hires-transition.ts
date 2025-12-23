@@ -52,18 +52,18 @@ export class VistaHiresTransition {
 
       let now: VistaHiresTransitionOpt['target'] = {};
       if (target.width !== undefined) {
-        now.width = this.ease(current._width, target.width, 0.5);
+        now.width = this.ease(current._width, target.width, 1);
       }
       if (target.height !== undefined) {
-        now.height = this.ease(current._height, target.height, 0.5);
+        now.height = this.ease(current._height, target.height, 1);
       }
       if (target.transform?.x !== undefined) {
         now.transform = now.transform || {};
-        now.transform.x = this.ease(current._transform.x, target.transform.x, 0.5);
+        now.transform.x = this.ease(current._transform.x, target.transform.x, 1);
       }
       if (target.transform?.y !== undefined) {
         now.transform = now.transform || {};
-        now.transform.y = this.ease(current._transform.y, target.transform.y, 0.5);
+        now.transform.y = this.ease(current._transform.y, target.transform.y, 1);
       }
       if (target.transform?.scale !== undefined) {
         now.transform = now.transform || {};
@@ -71,11 +71,11 @@ export class VistaHiresTransition {
       }
       if (target.translate?.x !== undefined) {
         now.translate = now.translate || {};
-        now.translate.x = this.ease(current._translate.x, target.translate.x, 0.5);
+        now.translate.x = this.ease(current._translate.x, target.translate.x, 1);
       }
       if (target.translate?.y !== undefined) {
         now.translate = now.translate || {};
-        now.translate.y = this.ease(current._translate.y, target.translate.y, 0.5);
+        now.translate.y = this.ease(current._translate.y, target.translate.y, 1);
       }
 
       // apply now to image state
