@@ -93,7 +93,7 @@ export class VistaView {
         e.addEventListener('pointerup', this.onClickElements);
       });
     } else {
-      this.elmLength = this.elmLength;
+      this.elmLength = this.elements.length;
     }
   }
 
@@ -310,9 +310,11 @@ export class VistaView {
       if (descText) {
         description.textContent = descText;
         description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}: ${descText}`);
+        description.style.opacity = '';
       } else {
         description.textContent = '';
         description.setAttribute('aria-label', `Image ${indexText} of ${indexTotal}`);
+        description.style.opacity = '0';
       }
     }
   }

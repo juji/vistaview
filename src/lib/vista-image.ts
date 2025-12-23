@@ -248,6 +248,7 @@ export class VistaImage {
     }
 
     //
+    // console.log(this.config)
     const img = document.createElement('img');
     img.alt = this.config.alt || '';
 
@@ -491,9 +492,10 @@ export class VistaImage {
 
   scaleMove(scaleFactor: number, center?: { x: number; y: number }, animate: boolean = false) {
     if (!this.isReady) return;
+    if (!this.image) return;
 
     if (!this.rect) {
-      this.rect = this.image!.getBoundingClientRect();
+      this.rect = this.image.getBoundingClientRect();
     }
 
     if (!center) {
