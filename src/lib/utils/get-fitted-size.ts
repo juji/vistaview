@@ -1,3 +1,5 @@
+// this function calculates the rendered size of an image element
+// according to its CSS object-fit property
 export function getFittedSize(img: HTMLImageElement): {
   width: number;
   height: number;
@@ -7,6 +9,8 @@ export function getFittedSize(img: HTMLImageElement): {
 
   // Rendered <img> size
   const { width: boxW, height: boxH } = img.getBoundingClientRect();
+
+  console.log('getFittedSize', { boxW, boxH, objectFit });
 
   // Natural image size
   const natW = img.naturalWidth;

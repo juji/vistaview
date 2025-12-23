@@ -4,6 +4,7 @@ import { getFullSizeDim } from './utils/get-full-size-dim';
 import { VistaHiresTransition } from './vista-hires-transition';
 import type { VistaHiresTransitionOpt } from './vista-hires-transition';
 import type { VistaImageState } from './types';
+import { getFittedSize } from './utils/get-fitted-size';
 
 export class VistaImage {
   private initH: number = 0;
@@ -131,6 +132,7 @@ export class VistaImage {
   private originalNextSibling: ChildNode | null = null;
   private originalStyle = '';
   private thumbImage: HTMLImageElement | null = null;
+  private fittedSize: { width: number; height: number } | null = null;
 
   constructor(par: {
     elm: HTMLImageElement | HTMLAnchorElement | VistaImgConfig;
@@ -239,12 +241,17 @@ export class VistaImage {
       this.replacement = replacement;
 
       this.thumb = document.createElement('div');
+      this.thumb.classList.add('vvw-img-lo');
+
+      const { width, height } = this.thumbImage
+        ? getFittedSize(this.thumbImage)
+        : { width: 0, height: 0 };
+      this.fittedSize = { width, height };
+      console.log(this.fittedSize, 'fitted size');
       this.thumb.appendChild(thumb);
       thumb.style.width = '100%';
       thumb.style.height = '100%';
       thumb.style.objectFit = this.origin!.objectFit;
-
-      this.thumb.classList.add('vvw-img-lo');
     }
 
     //
@@ -441,14 +448,22 @@ export class VistaImage {
       }
     }
 
+    if (!initDimension) {
+      // recaluculate fitted size
+      const { width, height } = this.thumbImage
+        ? getFittedSize(this.thumbImage)
+        : { width: 0, height: 0 };
+      this.fittedSize = { width, height };
+    }
+
     // update hires data
     const img = this.image!;
-    img.style.setProperty('--vvw-init-w', dim.width + 'px');
-    img.style.setProperty('--vvw-init-h', dim.height + 'px');
+    this.initW = Math.min(this.fittedSize?.width ?? 0, dim.width);
+    this.initH = Math.min(this.fittedSize?.height ?? 0, dim.height);
+    img.style.setProperty('--vvw-init-w', this.initW + 'px');
+    img.style.setProperty('--vvw-init-h', this.initH + 'px');
     img.style.setProperty('--vvw-init-radius', this.origin!.borderRadius);
     img.style.objectFit = 'cover';
-    this.initW = dim.width;
-    this.initH = dim.height;
 
     if (!initDimension) {
       // setting initDimension to true will prevent this from happening,
