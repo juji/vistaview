@@ -1,19 +1,6 @@
 import type { VistaImage } from './vista-image';
 import type { VistaView } from './vista-view';
 
-export type VistaElmProps = {
-  objectFit: string;
-  borderRadius: string;
-  objectPosition: string;
-  overflow: string;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  naturalWidth?: number;
-  naturalHeight?: number;
-};
-
 export type VistaOpt = {
   animationDurationBase?: number;
   initialZIndex?: number;
