@@ -267,6 +267,14 @@
     outline: 1px solid hsl(from var(--vvw-bg-color) h s calc(l + 30));
   }
 
+  &.vvw-prev button,
+  &.vvw-next button {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
   &.vvw-prev {
     position: absolute;
     top: 50%;
