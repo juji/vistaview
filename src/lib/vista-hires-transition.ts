@@ -47,7 +47,8 @@ export class VistaHiresTransition {
       // check again
       const animation = this.map.get(vistaImage);
       if (!animation) return;
-      if (vistaImage.image!.classList.contains('vvw--load-cancelled')) return;
+      if (!vistaImage.image) return;
+      if (vistaImage.image.classList.contains('vvw--load-cancelled')) return;
 
       const { current, target, log } = animation;
 

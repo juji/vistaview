@@ -47,7 +47,12 @@ function checkCorrectness(elements: string | VistaImgConfig[]): string | VistaIm
 }
 
 export function vistaView({ elements, ...opts }: VistaParamsNeo): VistaInterface | null {
-  if (!elements) throw new Error('No elements');
+  if (!elements) {
+    console.error(elements);
+    console.error('no elements provided');
+    console.warn('VistaView: silently returning.');
+    return null;
+  }
 
   let elms = checkCorrectness(elements);
   if (elms instanceof Error) {
