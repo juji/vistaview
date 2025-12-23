@@ -435,10 +435,7 @@ export class VistaImage {
     if (thumb) {
       dim = (this.origin?.anchor || this.replacement)!.getBoundingClientRect();
 
-      // update thumb styles
       const ts = thumb!.style;
-      // thumb!.width = dim.width;
-      // thumb!.height = dim.height;
       ts.width = dim.width + 'px';
       ts.height = dim.height + 'px';
       ts.top = '50%';
@@ -488,9 +485,6 @@ export class VistaImage {
         this.fullH = fullHeight;
         this.fullW = fullWidth;
       }
-
-      // set sizes attribute for better loading performance?
-      // img.sizes = `${this.fullW}px`;
 
       // when not zoomed in, reset to initial size
       if (!this.isZoomedIn && stableSize) {
