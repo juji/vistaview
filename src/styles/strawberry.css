@@ -1,0 +1,102 @@
+.vvw-ui {
+  outline: 2px solid #c41e3a;
+
+  &:is(button),
+  & > button,
+  &.vvw-index,
+  &.vvw-desc {
+    background-color: #d63447;
+    color: #fff5f7;
+  }
+
+  &:is(button) {
+    outline: 2px solid #c41e3a;
+
+    svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    &:hover {
+      background-color: #e84a5f;
+    }
+  }
+
+  &.vvw-prev,
+  &.vvw-next {
+    overflow: hidden;
+
+    button {
+      padding: 18px 3px;
+      transition:
+        padding-left 333ms ease,
+        padding-right 333ms ease;
+
+      svg {
+        transition: transform 333ms 111ms ease;
+      }
+    }
+
+    &:hover button svg {
+      transform: translateX(-3px);
+    }
+  }
+
+  &.vvw-prev {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+
+    &:hover button {
+      padding-left: 8px;
+    }
+  }
+
+  &.vvw-next {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    &:hover button {
+      padding-right: 8px;
+
+      svg {
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
+.vvw-bottom-bar,
+.vvw-top-bar {
+  & > div:nth-child(2) {
+    padding: 0 1rem;
+  }
+}
+
+.vvw-bottom-bar {
+  & > div:first-child :is(button, div):last-child,
+  & > div:nth-child(2) :is(button, div):last-child {
+    border-top-right-radius: 12px;
+  }
+
+  & > div:nth-child(2) :is(button, div):first-child,
+  & > div:last-child :is(button, div):first-child {
+    border-top-left-radius: 12px;
+  }
+}
+
+.vvw-top-bar {
+  & > div:first-child :is(button, div):last-child,
+  & > div:nth-child(2) :is(button, div):last-child {
+    border-bottom-right-radius: 12px;
+  }
+
+  & > div:nth-child(2) :is(button, div):first-child,
+  & > div:last-child :is(button, div):first-child {
+    border-bottom-left-radius: 12px;
+  }
+}
+
+:root {
+  --vvw-bg-color: #1a0006;
+  --vvw-text-color: #fff5f7;
+}
