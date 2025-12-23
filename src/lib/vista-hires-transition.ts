@@ -127,7 +127,7 @@ export class VistaHiresTransition {
     // stop any existing animation
     // keep in mind this is dangerously close to breaking
     // when another function that relies on 'stop' is called,
-    // such as 'swap' in vista-view.ts
+    // such as 'swap' in vista-view.ts: it relies on the returned value of 'stop'
     // but for now, this is acceptable,
     // since vista-view.ts only care about initial animation
     this.stop(vistaImage);
