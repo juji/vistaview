@@ -25,8 +25,26 @@ function getComputedStyleProps(elm: HTMLImageElement | HTMLAnchorElement): {
   };
 }
 
+function getSrcset(srcSetStr: string): { src: string; width: number }[] {
+  const parts = srcSetStr.split(',').map((s) => s.trim());
+  const srcset: { src: string; width: number }[] = [];
+
+  for (const part of parts) {
+    const [src, widthStr] = part.split(' ').map((s) => s.trim());
+    if (src && widthStr && widthStr.endsWith('w')) {
+      const width = parseInt(widthStr.slice(0, -1), 10);
+      if (!isNaN(width)) {
+        srcset.push({ src, width });
+      }
+    }
+  }
+
+  return srcset;
+}
+
 export function parseElement(elm: HTMLImageElement | HTMLAnchorElement): {
   config: VistaImgConfig;
+  parsedSrcSet?: { src: string; width: number }[];
   origin: VistaImgOrigin;
 } {
   const image = elm instanceof HTMLImageElement ? elm : elm.querySelector('img');
@@ -49,6 +67,8 @@ export function parseElement(elm: HTMLImageElement | HTMLAnchorElement): {
     throw new Error('VistaView: Element must have href, src, or srcSet');
   }
 
+  const parsedSrcSet = srcSet ? getSrcset(srcSet) : undefined;
+
   const styles = getComputedStyleProps(elm);
 
   return {
@@ -57,6 +77,7 @@ export function parseElement(elm: HTMLImageElement | HTMLAnchorElement): {
       alt: elm.getAttribute('alt') || image?.getAttribute('alt') || '',
       srcSet: srcSet || undefined,
     },
+    parsedSrcSet: parsedSrcSet?.length ? parsedSrcSet : undefined,
     origin: {
       anchor: elm instanceof HTMLAnchorElement ? elm : undefined,
       image: image!,

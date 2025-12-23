@@ -1,11 +1,8 @@
-// import { getStyleProps } from './utils/get-style-props';
-// import { getFittedSize } from './utils/get-fitted-size';
 import type { VistaImgConfig, VistaImgOrigin } from './types';
 import { parseElement } from './utils/parse-element';
 import { getFullSizeDim } from './utils/get-full-size-dim';
 import { VistaHiresTransition } from './vista-hires-transition';
 import type { VistaHiresTransitionOpt } from './vista-hires-transition';
-// import { init } from '../vistaview';
 
 export type VistaImageState = {
   _t: VistaImage;
@@ -46,6 +43,8 @@ export class VistaImage {
   private minW: number = 0;
   // private initRad: string = '0px'
   private maxZoomLevel: number = 1;
+
+  private parsedSrcSet: { src: string; width: number }[] | undefined = undefined;
 
   state: VistaImageState = {
     _t: this,
@@ -91,6 +90,18 @@ export class VistaImage {
     set width(value: number) {
       this._width = value;
       this._t.image!.style.width = `${value}px`;
+      const url = this._t.getFromParsedSrcSet(value);
+      if (url && this._t.image!.src !== url) {
+        // create new image element and replace existing
+        const newImg = new Image();
+        newImg.onload = () => {
+          newImg.decode().then(() => {
+            if (this._t.isCancelled) return;
+            this._t.image!.src = url;
+          });
+        };
+        newImg.src = url;
+      }
     },
     get width() {
       return this._width;
@@ -171,10 +182,13 @@ export class VistaImage {
     }
 
     const conf =
-      par.elm instanceof HTMLElement ? parseElement(par.elm) : { config: par.elm, origin: null };
+      par.elm instanceof HTMLElement
+        ? parseElement(par.elm)
+        : { config: par.elm, origin: null, parsedSrcSet: undefined };
 
     this.config = conf.config;
     this.origin = conf.origin;
+    this.parsedSrcSet = conf.parsedSrcSet;
 
     this.createPreview();
 
@@ -214,11 +228,29 @@ export class VistaImage {
     }
   }
 
+  private getFromParsedSrcSet(targetWidth: number): string | null {
+    if (!this.parsedSrcSet || this.parsedSrcSet.length === 0) {
+      return null;
+    }
+    // find the closest width that is greater than or equal to targetWidth
+    let selected = this.parsedSrcSet[this.parsedSrcSet.length - 1];
+    for (const item of this.parsedSrcSet) {
+      if (item.width >= targetWidth) {
+        selected = item;
+        break;
+      }
+    }
+    return selected.src;
+  }
+
   private createPreview() {
     const thumb = document.createElement('img');
     thumb.src = this.origin?.src || this.config.src;
     thumb.alt = this.config.alt || '';
-    thumb.srcset = this.origin?.srcSet || this.config.srcSet || '';
+
+    // don't use srcset for thumb to save memory
+    // thumb.srcset = this.origin?.srcSet || this.config.srcSet || '';
+
     thumb.classList.add('vvw-img-lo');
     this.thumb = thumb;
 
@@ -236,7 +268,9 @@ export class VistaImage {
     //
     const img = document.createElement('img');
     img.alt = this.config.alt || '';
-    img.srcset = this.config.srcSet || '';
+
+    // adding srcset actually makes the load time longer for me
+    // img.srcset = this.config.srcSet || '';
     img.classList.add('vvw-img-hi');
     this.image = img;
 
@@ -316,19 +350,28 @@ export class VistaImage {
       });
     };
 
-    if (img.classList.contains('vvw--loaded')) {
-      if (!img.classList.contains('vvw--ready')) {
-        animateIn();
-      }
+    if (this.pos < -1 || this.pos > 1) {
+      // dont animate if the image will never be in view
+      this.state.width = this.fullW;
+      this.state.height = this.fullH;
+      img.classList.contains('vvw--loaded');
+      img.classList.add('vvw--ready');
+      this.isReady = true;
     } else {
-      img.classList.add('vvw--loaded');
-      // requestAnimationFrame(() => { animateIn(); });
-      // i found settimeout looks better, than requestAnimationFrame
-      setTimeout(() => {
-        // return to prevent scaled image on rapid slide
-        if (this.isCancelled) return;
-        animateIn();
-      }, 333);
+      if (img.classList.contains('vvw--loaded')) {
+        if (!img.classList.contains('vvw--ready')) {
+          animateIn();
+        }
+      } else {
+        img.classList.add('vvw--loaded');
+        // requestAnimationFrame(() => { animateIn(); });
+        // i found settimeout looks better, than requestAnimationFrame
+        setTimeout(() => {
+          // return to prevent scaled image on rapid slide
+          if (this.isCancelled) return;
+          animateIn();
+        }, 333);
+      }
     }
   }
 
