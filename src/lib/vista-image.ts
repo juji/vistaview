@@ -272,10 +272,6 @@ export class VistaImage {
       thumb.style.objectFit = this.origin!.objectFit;
 
       this.thumb.classList.add('vvw-img-lo');
-
-      // this.thumb.style.zIndex = (this.initZIndex + 1) + '';
-      // this.thumb.style.position = 'fixed';
-      // this.thumb.classList.add('vvw-img-lo');
     }
 
     //
@@ -426,7 +422,7 @@ export class VistaImage {
     this.thumb = null;
     this.image = null;
     this.origin = null;
-    // this.config = { src: '', alt: '' };
+    this.config = { src: '', alt: '' };
   }
 
   setSizes(stableSize: boolean = true, initDimension?: boolean) {
