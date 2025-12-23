@@ -212,12 +212,6 @@ export class VistaImage {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
     };
-
-    if (this.pos === 0) {
-      console.log('-----------------------');
-      console.log('created VistaImage', this.config.src);
-      console.log(JSON.stringify(this.config));
-    }
   }
 
   cloneStyleFrom(img: VistaImage, state?: VistaHiresTransitionOpt) {
@@ -404,26 +398,14 @@ export class VistaImage {
 
   destroy() {
     // place image on it's place
-    if (this.pos === 0) {
-      console.log('destroying current image', this.config.src);
-    }
 
     if (this.originalParent && this.thumbImage) {
-      console.log('restore thumb image');
       this.thumbImage.style.cssText = this.originalStyle;
       if (this.originalNextSibling) {
         this.originalParent.insertBefore(this.thumbImage, this.originalNextSibling);
       } else {
         this.originalParent.appendChild(this.thumbImage);
       }
-    } else if (this.pos === 0) {
-      console.log('-----------------------');
-      console.log(JSON.stringify(this.config));
-      console.log('no thumb to restore');
-      console.log('originalParent', this.originalParent?.toString());
-      console.log('thumbImage', this.thumbImage?.toString());
-      console.log('original image', this.origin?.image);
-      console.log('origin object', this.origin?.toString());
     }
 
     this.originalParent = null;
