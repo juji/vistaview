@@ -407,9 +407,11 @@ export class VistaImage {
       // setting initDimension to true will prevent this from happening,
 
       // e.g., when called from constructor, sizes will not be set here
-      const { width: fullWidth, height: fullHeight } = getFullSizeDim(this.image!);
-      this.fullH = Math.min(dim.width, fullWidth);
-      this.fullW = Math.min(dim.height, fullHeight);
+      if (this.isReady && !this.isCancelled && this.image?.naturalWidth) {
+        const { width: fullWidth, height: fullHeight } = getFullSizeDim(this.image!);
+        this.fullH = fullHeight;
+        this.fullW = fullWidth;
+      }
 
       // set sizes attribute for better loading performance?
       // img.sizes = `${this.fullW}px`;

@@ -1,12 +1,10 @@
 # VistaView
 
-⚠️ **This is still in development, do not use**
-
 A lightweight, modern image lightbox library for the web. Zero dependencies, framework-agnostic, and highly customizable.
 
 ## Features
 
-- 🪶 **Lightweight** — ~43KB ESM (~10KB gzip), minimal footprint, zero dependencies
+- 🪶 **Lightweight** — ~47KB ESM (~11KB gzip), minimal footprint, zero dependencies
 - 📱 **Touch-first** — Swipe gestures for navigation and closing, pinch-to-zoom support
 - 🎨 **Customizable** — Configurable controls, animations, and styling via CSS variables
 - ♿ **Accessible** — Keyboard navigation, ARIA labels, reduced motion support
@@ -327,27 +325,27 @@ VistaView is built with accessibility in mind:
 
 ```
 vite v6.4.1 building for production...
-✓ 19 modules transformed.
+✓ 24 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/styles/dark-rounded.css   1.55 kB │ gzip:  0.41 kB
-dist/style.css                 6.88 kB │ gzip:  1.65 kB
-dist/svelte.js                 0.62 kB │ gzip:  0.29 kB
-dist/solid.js                  1.19 kB │ gzip:  0.54 kB
-dist/vue.js                    1.36 kB │ gzip:  0.59 kB
-dist/react.js                  1.67 kB │ gzip:  0.59 kB
-dist/vistaview.js             43.30 kB │ gzip: 10.43 kB
-[vite:dts] Declaration files built in 664ms.
+dist/style.css                 6.74 kB │ gzip:  1.62 kB
+dist/svelte.js                 0.72 kB │ gzip:  0.31 kB
+dist/solid.js                  1.38 kB │ gzip:  0.61 kB
+dist/vue.js                    1.56 kB │ gzip:  0.66 kB
+dist/react.js                  1.96 kB │ gzip:  0.64 kB
+dist/vistaview.js             46.80 kB │ gzip: 11.34 kB
+[vite:dts] Declaration files built in 667ms.
 
-✓ built in 772ms
+✓ built in 787ms
 vite v6.4.1 building for production...
-✓ 13 modules transformed.
+✓ 18 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.umd.js  33.94 kB │ gzip: 9.29 kB
-[vite:dts] Declaration files built in 657ms.
+dist/vistaview.umd.js  35.22 kB │ gzip: 9.85 kB
+[vite:dts] Declaration files built in 654ms.
 
-✓ built in 751ms
+✓ built in 755ms
 ```
 
 ## License

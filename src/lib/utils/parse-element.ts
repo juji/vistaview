@@ -39,7 +39,7 @@ export function parseElement(elm: HTMLImageElement | HTMLAnchorElement): {
     '';
 
   const srcSet =
-    elm.dataset.vistaviewSrcSet ||
+    elm.dataset.vistaviewSrcset ||
     elm.getAttribute('srcset') ||
     image?.getAttribute('srcset') ||
     '';
