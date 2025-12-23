@@ -264,6 +264,22 @@ import 'vistaview/styles/dark-rounded.css'; // Optional theme
 Available themes:
 
 - `dark-rounded` - Dark theme with rounded corners and animated navigation buttons
+- `green-lake` - Calming teal and green palette with smooth transitions
+- `strawberry` - Vibrant pink and red gradient theme
+- `midnight-ocean` - Deep navy blues with cyan accents
+- `autumn-amber` - Warm oranges and browns with earthy tones
+- `lavender-fields` - Soft purple palette with gentle animations
+- `forest-moss` - Earthy greens inspired by nature
+- `neon-nights` - Cyberpunk-inspired magenta and cyan with glowing effects
+- `midnight-gold` - Elegant black background with gold accents
+- `ice-crystal` - Cool light blue palette with crisp styling
+- `ember-glow` - Dark theme with orange glow effects
+- `stark-minimal` - Pure black and white, zero border radius, minimalist design
+- `soft-neutral` - Warm beige and cream tones with maximum roundness
+- `paper-light` - Light theme with subtle shadows and paper-like appearance
+- `cotton-candy` - Playful pastel pink with soft styling
+- `retro-arcade` - Bold primary colors with classic arcade aesthetics
+- `mint-chocolate` - Brown and mint green combination
 
 ### CSS Custom Properties
 
