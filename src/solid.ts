@@ -1,8 +1,8 @@
 import { onCleanup, onMount, type JSX } from 'solid-js';
 import { vistaView } from './vistaview';
-import type { VistaParams, VistaInterface, VistaOpt } from './vistaview';
+import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
 
-export function useVistaView(options: VistaParams): VistaInterface {
+export function useVistaView(options: VistaParamsNeo): VistaInterface {
   const instance = vistaView(options);
 
   onCleanup(() => {
@@ -14,6 +14,8 @@ export function useVistaView(options: VistaParams): VistaInterface {
     close: () => instance?.close() ?? Promise.resolve(),
     next: () => instance?.next(),
     prev: () => instance?.prev(),
+    zoomIn: () => instance?.zoomIn(),
+    zoomOut: () => instance?.zoomOut(),
     getCurrentIndex: () => instance?.getCurrentIndex() ?? -1,
     view: (i: number) => instance?.view(i),
     destroy: () => instance?.destroy(),
@@ -35,7 +37,10 @@ export function VistaView(props: VistaViewProps): JSX.Element {
     if (!container) return;
     if (!props.selector) throw new Error('VistaView: selector is required');
     const { children, class: _, selector, ref: __, ...options } = props;
-    instance = vistaView({ ...options, elements: container.querySelectorAll(selector) });
+    const containerId = `vvw-container-${Math.random().toString(36).substring(7)}`;
+    container.id = containerId;
+    const fullSelector = `#${containerId} ${selector}`;
+    instance = vistaView({ ...options, elements: fullSelector });
   });
 
   onCleanup(() => {

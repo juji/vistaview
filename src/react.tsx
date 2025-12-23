@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { vistaView } from './vistaview';
-import type { VistaParams, VistaInterface } from './vistaview';
+import type { VistaParamsNeo, VistaInterface } from './vistaview';
 
-export function useVistaView(options: VistaParams): VistaInterface {
+export function useVistaView(options: VistaParamsNeo): VistaInterface {
   const instance = useRef<VistaInterface | null>(null);
 
   useEffect(() => {
@@ -18,13 +18,15 @@ export function useVistaView(options: VistaParams): VistaInterface {
     close: useCallback(() => instance.current?.close() ?? Promise.resolve(), []),
     next: useCallback(() => instance.current?.next(), []),
     prev: useCallback(() => instance.current?.prev(), []),
+    zoomIn: useCallback(() => instance.current?.zoomIn(), []),
+    zoomOut: useCallback(() => instance.current?.zoomOut(), []),
     getCurrentIndex: useCallback(() => instance.current?.getCurrentIndex() ?? -1, []),
     view: useCallback((i: number) => instance.current?.view(i), []),
     destroy: useCallback(() => instance.current?.destroy(), []),
   };
 }
 
-type VistaViewProps = VistaParams & {
+type VistaViewProps = VistaParamsNeo & {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -44,7 +46,9 @@ export function VistaView({
   useEffect(() => {
     if (!ref.current) return;
     if (!selector) throw new Error('VistaView: selector is required');
-    instance.current = vistaView({ ...options, elements: ref.current.querySelectorAll(selector) });
+    const fullSelector = `#${ref.current.id || 'vvw-container'} ${selector}`;
+    if (!ref.current.id) ref.current.id = 'vvw-container';
+    instance.current = vistaView({ ...options, elements: fullSelector });
     return () => {
       instance.current?.destroy();
       instance.current = null;

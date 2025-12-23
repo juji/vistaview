@@ -103,18 +103,16 @@ function registerPointerListener(vistaView: VistaView) {
       // handle horizontal swipe
       if (axis === 'x') {
         const deltaX = current.x - start.x;
-        const movement = e.pointer.movementX;
-        const threshold = 1; // px
 
         vistaView.imageContainer!.style.transition = '';
 
         // swipe right
-        if (deltaX > 0 && Math.abs(movement) > threshold) {
+        if (deltaX > 144) {
           vistaView.prev();
         }
 
         // swipe left
-        else if (deltaX < 0 && Math.abs(movement) > threshold) {
+        else if (deltaX < -144) {
           vistaView.next();
         }
 

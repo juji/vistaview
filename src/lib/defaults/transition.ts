@@ -2,20 +2,18 @@ import type { VistaData } from '../types';
 
 // run on every image transition
 export function transition(
-  {
-    vistaView: { isReducedMotion },
-    htmlElements: { to: HtmlTo },
-    index: { from: fromIndex, to: toIndex },
-    vistaView: { elements, imageContainer: imgc, options },
-  }: VistaData,
+  { vistaView, htmlElements: { to: HtmlTo }, index: { from: fromIndex, to: toIndex } }: VistaData,
   signal: AbortSignal
 ) {
+  const { imageContainer: imgc, options } = vistaView;
+  const { isReducedMotion } = vistaView.state;
+
   if (!HtmlTo || signal.aborted || isReducedMotion) return;
 
   const adjacent =
     Math.abs(toIndex! - fromIndex!) === 1 ||
-    (fromIndex === 0 && toIndex === elements.length - 1) ||
-    (fromIndex === elements.length - 1 && toIndex === 0);
+    (fromIndex === 0 && toIndex === vistaView.elmLength - 1) ||
+    (fromIndex === vistaView.elmLength - 1 && toIndex === 0);
 
   // for non-adjacent
   // just return
@@ -50,7 +48,7 @@ export function transition(
 
       const duration = Math.round(options.animationDurationBase! * 100) / 100;
       const transform =
-        toIndex! === fromIndex! + 1 || (fromIndex === elements.length - 1 && toIndex === 0)
+        toIndex! === fromIndex! + 1 || (fromIndex === vistaView.elmLength - 1 && toIndex === 0)
           ? 'translateX(-100vw)'
           : 'translateX(100vw)';
 
