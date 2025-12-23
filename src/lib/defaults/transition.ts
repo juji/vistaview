@@ -12,8 +12,8 @@ export function transition(
 
   const adjacent =
     Math.abs(toIndex! - fromIndex!) === 1 ||
-    (fromIndex === 0 && toIndex === vistaView.elmLength - 1) ||
-    (fromIndex === vistaView.elmLength - 1 && toIndex === 0);
+    (fromIndex === 0 && toIndex === vistaView.state.elmLength - 1) ||
+    (fromIndex === vistaView.state.elmLength - 1 && toIndex === 0);
 
   // for non-adjacent
   // just return
@@ -48,7 +48,8 @@ export function transition(
 
       const duration = Math.round(options.animationDurationBase! * 100) / 100;
       const transform =
-        toIndex! === fromIndex! + 1 || (fromIndex === vistaView.elmLength - 1 && toIndex === 0)
+        toIndex! === fromIndex! + 1 ||
+        (fromIndex === vistaView.state.elmLength - 1 && toIndex === 0)
           ? 'translateX(-100vw)'
           : 'translateX(100vw)';
 

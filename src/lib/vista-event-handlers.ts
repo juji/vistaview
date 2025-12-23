@@ -107,6 +107,7 @@ export class VistaEventHandlers {
     this.pointerListeners.forEach((l) =>
       l({
         ...e,
+        state: this.vvw.state,
         hasInternalExecution: this.vvw.state.zoomedIn || this.isPinching(),
         abortController: this.vvw.state.abortController,
       })

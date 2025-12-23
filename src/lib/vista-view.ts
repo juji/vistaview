@@ -29,7 +29,6 @@ export class VistaView {
   options: VistaOpt;
   state = new VistaState();
   imageContainer: HTMLElement | null = null;
-  elmLength: number = 0;
 
   private elements: string | VistaImgConfig[];
 
@@ -85,7 +84,7 @@ export class VistaView {
     // set click listeners on elements
     if (typeof this.elements === 'string') {
       const list = this.qsOrigin(this.elements as string);
-      this.elmLength = list.length;
+      this.state.elmLength = list.length;
       list.forEach((el, index) => {
         const e = el as HTMLElement;
         e.dataset.vvwIdx = index.toString();
@@ -93,7 +92,7 @@ export class VistaView {
         e.addEventListener('pointerup', this.onClickElements);
       });
     } else {
-      this.elmLength = this.elements.length;
+      this.state.elmLength = this.elements.length;
     }
   }
 
@@ -297,7 +296,7 @@ export class VistaView {
 
     const indexDisplay = this.qs<HTMLDivElement>('.vvw-index');
     const indexText = `${cid + 1}`;
-    const indexTotal = `${this.elmLength}`;
+    const indexTotal = `${this.state.elmLength}`;
     if (indexDisplay) {
       indexDisplay.textContent = `${indexText} / ${indexTotal}`;
     }
@@ -396,6 +395,12 @@ export class VistaView {
     this.qs('.vvw-zoom-out')?.addEventListener('click', () => this.zoomOut());
     this.qs('.vvw-prev>button')?.addEventListener('click', () => this.prev());
     this.qs('.vvw-next>button')?.addEventListener('click', () => this.next());
+
+    console.log('elmLength', this.state.elmLength);
+    if (this.state.elmLength < 2) {
+      this.qs('.vvw-prev')?.classList.add('vvw--hidden');
+      this.qs('.vvw-next')?.classList.add('vvw--hidden');
+    }
 
     // set event handlers
     this.eventHandlers.start(this.imageContainer!);
@@ -551,7 +556,7 @@ export class VistaView {
       console.warn('This VistaView instance is not opened.');
       return;
     }
-    const index = (this.state.currentIndex + 1) % this.elmLength;
+    const index = (this.state.currentIndex + 1) % this.state.elmLength;
     this.view(index, { next: true, prev: false });
   }
 
@@ -560,7 +565,7 @@ export class VistaView {
       console.warn('This VistaView instance is not opened.');
       return;
     }
-    const index = (this.state.currentIndex - 1 + this.elmLength) % this.elmLength;
+    const index = (this.state.currentIndex - 1 + this.state.elmLength) % this.state.elmLength;
     this.view(index, { next: false, prev: true });
   }
 
@@ -569,12 +574,12 @@ export class VistaView {
       console.warn('This VistaView instance is not opened.');
       return;
     }
-    if (index < 0 || index >= this.elmLength) {
+    if (index < 0 || index >= this.state.elmLength) {
       console.warn('Index out of bounds:', index);
       return;
     }
 
-    if (this.elmLength < 2) {
+    if (this.state.elmLength < 2) {
       return;
     }
 

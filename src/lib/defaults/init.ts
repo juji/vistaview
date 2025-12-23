@@ -60,7 +60,7 @@ function registerPointerListener(vistaView: VistaView) {
       // prettier-ignore 
       else if (
         (!axis && Math.abs(deltaX) > Math.abs(deltaY)) || 
-        axis === 'x'
+        axis === 'x' && e.state.elmLength > 1
       ) {
 
         const percentX = (deltaX / window.innerWidth) * 100;
@@ -101,7 +101,7 @@ function registerPointerListener(vistaView: VistaView) {
       }
 
       // handle horizontal swipe
-      if (axis === 'x') {
+      if (axis === 'x' && e.state.elmLength > 1) {
         const deltaX = current.x - start.x;
 
         vistaView.imageContainer!.style.transition = '';

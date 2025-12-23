@@ -15,6 +15,7 @@ export class VistaState {
   };
 
   currentIndex = -1;
+  elmLength = 0;
   abortController: AbortController = new AbortController();
   isReducedMotion = false;
 }

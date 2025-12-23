@@ -1,4 +1,5 @@
 import type { VistaImage } from './vista-image';
+import type { VistaState } from './vista-state';
 import type { VistaView } from './vista-view';
 
 export type VistaOpt = {
@@ -93,6 +94,7 @@ export type VistaPointerListenerArgs = {
 export type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
 
 export type VistaExternalPointerListenerArgs = VistaPointerListenerArgs & {
+  state: VistaState;
   hasInternalExecution: boolean;
   abortController: AbortController | null;
 };

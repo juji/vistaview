@@ -408,6 +408,10 @@
   }
 }
 
+.vvw--hidden {
+  display: none !important;
+}
+
 /* @media (prefers-reduced-motion: reduce) {
   :root {
     --vvw-anim-dur: 0;
