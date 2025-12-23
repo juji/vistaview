@@ -257,6 +257,7 @@ export class VistaImage {
     if (thumb) {
       this.originalParent = thumb.parentElement;
       this.originalNextSibling = thumb.nextSibling;
+      this.originalStyle = thumb.style.cssText;
       this.thumbImage = thumb;
       if (!this.origin?.anchor) {
         const replacement = document.createElement('img');
@@ -264,11 +265,10 @@ export class VistaImage {
         replacement.id = thumb.id;
         replacement.style.opacity = '0';
         replacement.style.cssText = thumb.style.cssText;
-        thumb.parentElement?.insertBefore(replacement, this.thumb);
+        thumb.parentElement?.insertBefore(replacement, thumb);
         this.replacement = replacement;
       }
 
-      this.originalStyle = thumb.style.cssText;
       this.thumb = document.createElement('div');
       this.thumb.appendChild(thumb);
       thumb.style.width = '100%';
