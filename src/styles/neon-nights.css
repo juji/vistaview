@@ -8,7 +8,6 @@
   &.vvw-desc {
     background-color: #1a0033;
     color: #00ffff;
-    border: 1px solid #ff00ff;
   }
 
   &:is(button) {

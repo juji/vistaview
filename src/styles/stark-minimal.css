@@ -1,5 +1,5 @@
 .vvw-ui {
-  outline: 2px solid #000;
+  outline: 2px solid #222;
 
   &:is(button),
   & > button,
@@ -10,7 +10,7 @@
   }
 
   &:is(button) {
-    outline: 2px solid #000;
+    outline: 2px solid #222;
 
     svg {
       width: 21px;
