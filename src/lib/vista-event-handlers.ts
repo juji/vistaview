@@ -104,12 +104,6 @@ export class VistaEventHandlers {
     }
 
     // Notify external listeners (user-registered pointer handlers)
-    // console.log(
-    //   'Pointer Event',
-    //   e,
-    //   'hasInternalExecution:',
-    //   this.vvw.state.zoomedIn || this.isPinching()
-    // );
     this.pointerListeners.forEach((l) =>
       l({
         ...e,
