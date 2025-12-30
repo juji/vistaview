@@ -1,5 +1,6 @@
 import type { VistaData, VistaExtension } from '../types';
 import type { VistaView } from '../vista-view';
+import type { VistaBox } from '../vista-box';
 
 // okayy
 const downloadIcon = `<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`;
@@ -62,12 +63,12 @@ export function download(): VistaExtension {
 
       currentAlt = config.alt || null;
     },
-    onDeactivateUi: (names: string[], _v: VistaView) => {
+    onDeactivateUi: (names: string[], _requestBy: VistaBox | null, _v: VistaView) => {
       if (names.includes('download') && button) {
         button.setAttribute('disabled', 'true');
       }
     },
-    onReactivateUi: (names: string[], _v: VistaView) => {
+    onReactivateUi: (names: string[], _requestBy: VistaBox | null, _v: VistaView) => {
       if (names.includes('download') && button) {
         button.removeAttribute('disabled');
       }

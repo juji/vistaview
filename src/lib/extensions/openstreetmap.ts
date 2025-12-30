@@ -263,7 +263,7 @@ export function openStreetMap(config: OpenStreetMapConfig = {}): VistaExtension 
     onImageView: async (data: VistaData, v: VistaView) => {
       const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
       if (mainData instanceof VistaOpenStreetMap) {
-        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut'], mainData);
       }
     },
   };

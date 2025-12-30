@@ -384,7 +384,8 @@ export class VistaView {
   // ============================================================================
 
   private tempDeactivatedUi: string[] = [];
-  deactivateUi(names: string[]) {
+  private tempDeactivationRequestBy: VistaBox | null = null;
+  deactivateUi(names: string[], requestBy?: VistaBox) {
     names.forEach((name) => {
       if (name === 'zoomIn') {
         this.qs('.vvw-zoom-in')?.setAttribute('disabled', 'true');
@@ -393,8 +394,9 @@ export class VistaView {
       }
       this.tempDeactivatedUi.push(name);
     });
+    this.tempDeactivationRequestBy = requestBy || null;
     this.state.extensions.forEach((ext) => {
-      ext.onDeactivateUi && ext.onDeactivateUi(names, this);
+      ext.onDeactivateUi && ext.onDeactivateUi(names, this.tempDeactivationRequestBy, this);
     });
   }
 
@@ -407,9 +409,11 @@ export class VistaView {
       }
     });
     this.state.extensions.forEach((ext) => {
-      ext.onReactivateUi && ext.onReactivateUi(this.tempDeactivatedUi, this);
+      ext.onReactivateUi &&
+        ext.onReactivateUi(this.tempDeactivatedUi, this.tempDeactivationRequestBy, this);
     });
     this.tempDeactivatedUi = [];
+    this.tempDeactivationRequestBy = null;
   }
 
   // ============================================================================

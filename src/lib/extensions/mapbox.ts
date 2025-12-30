@@ -253,7 +253,7 @@ export function mapbox(config: MapboxConfig): VistaExtension {
     onImageView: async (data: VistaData, v: VistaView) => {
       const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
       if (mainData instanceof VistaMapbox) {
-        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut'], mainData);
       }
     },
   };
