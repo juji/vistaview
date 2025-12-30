@@ -101,6 +101,7 @@ export class VistaOpenStreetMap extends VistaBox {
   element: HTMLDivElement | HTMLImageElement;
   private osmConfig: OpenStreetMapConfig;
   private location: OpenStreetMapLocation;
+  private loadingText?: HTMLDivElement;
 
   constructor(par: VistaImageParams, config: OpenStreetMapConfig, location: OpenStreetMapLocation) {
     super(par);
@@ -116,6 +117,21 @@ export class VistaOpenStreetMap extends VistaBox {
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';
+
+    // Add loading indicator
+    this.loadingText = document.createElement('div');
+    this.loadingText.textContent = 'Loading...';
+    this.loadingText.style.position = 'absolute';
+    this.loadingText.style.bottom = '10px';
+    this.loadingText.style.left = '50%';
+    this.loadingText.style.transform = 'translateX(-50%)';
+    this.loadingText.style.color = 'white';
+    this.loadingText.style.fontSize = '14px';
+    this.loadingText.style.padding = '4px 8px';
+    this.loadingText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    this.loadingText.style.borderRadius = '4px';
+    this.loadingText.style.pointerEvents = 'none';
+    div.appendChild(this.loadingText);
 
     this.element = div;
 
@@ -224,6 +240,7 @@ export class VistaOpenStreetMap extends VistaBox {
       this.onImageReady = () => {
         map.invalidateSize();
         mapDiv.style.opacity = '1';
+        this.loadingText?.remove();
       };
 
       this.isLoadedResolved!(true);
