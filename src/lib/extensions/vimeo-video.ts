@@ -68,15 +68,16 @@ export class VistaVimeoVideo extends VistaBox {
     const loadingText = document.createElement('div');
     loadingText.textContent = 'Loading...';
     loadingText.style.position = 'absolute';
-    loadingText.style.bottom = '10px';
+    loadingText.style.top = '50%';
     loadingText.style.left = '50%';
-    loadingText.style.transform = 'translateX(-50%)';
+    loadingText.style.transform = 'translate(-50%, -50%)';
     loadingText.style.color = 'white';
     loadingText.style.fontSize = '14px';
     loadingText.style.padding = '4px 8px';
     loadingText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
     loadingText.style.borderRadius = '4px';
     loadingText.style.pointerEvents = 'none';
+    loadingText.classList.add('vvw--pulsing');
     div.appendChild(loadingText);
 
     this.element = div;
