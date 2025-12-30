@@ -178,6 +178,11 @@ export class VistaMapbox extends VistaBox {
     mapDiv.style.transition = 'opacity 1s ease';
     container.appendChild(mapDiv);
 
+    // Stop pointer events from propagating to VistaView's drag handlers
+    mapDiv.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+    });
+
     mapboxgl.accessToken = this.mapboxConfig.accessToken;
 
     const map = new mapboxgl.Map({

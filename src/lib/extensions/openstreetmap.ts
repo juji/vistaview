@@ -117,11 +117,6 @@ export class VistaOpenStreetMap extends VistaBox {
     image.style.height = '100%';
     image.style.objectFit = 'cover';
 
-    // div.addEventListener('pointerdown', (e) => {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // });
-
     this.element = div;
 
     this.element.classList.add('vvw-img-hi');
@@ -195,6 +190,11 @@ export class VistaOpenStreetMap extends VistaBox {
     mapDiv.style.opacity = '0';
     mapDiv.style.transition = 'opacity 1s ease';
     container.appendChild(mapDiv);
+
+    // Stop pointer events from propagating to VistaView's drag handlers
+    mapDiv.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+    });
 
     // Initialize Leaflet map
     const map = L.map(mapDiv, {
