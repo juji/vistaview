@@ -1,5 +1,4 @@
-/** @jsxImportSource solid-js */
-import { onCleanup, onMount, mergeProps, splitProps, type JSX } from 'solid-js';
+import { onCleanup, onMount } from 'solid-js';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
 
@@ -24,32 +23,30 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewProps extends VistaParamsNeo {
-  children: JSX.Element;
-  class?: string;
+export interface VistaViewOptions extends VistaParamsNeo {
   id?: string;
   selector?: '> a' | '> img';
   ref?: (instance: VistaInterface) => void;
 }
 
-export function VistaView(props: VistaViewProps): JSX.Element {
-  const merged = mergeProps({ selector: '> a' as const }, props);
-  const [local, options] = splitProps(merged, ['children', 'class', 'id', 'selector', 'ref']);
-  
-  let containerRef!: HTMLDivElement;
+export function createVistaView(element: HTMLElement, options: VistaViewOptions) {
   let instance: VistaInterface | null = null;
-  const galleryId = local.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
+  const { selector = '> a', ref, ...vistaOptions } = options;
+  const galleryId =
+    options.id || element.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
+
+  if (!element.id) {
+    element.id = galleryId;
+  }
 
   onMount(() => {
-    if (!containerRef) return;
-
     instance = vistaView({
-      ...options,
-      elements: options.elements || `#${galleryId} ${local.selector}`,
+      ...vistaOptions,
+      elements: vistaOptions.elements || `#${galleryId} ${selector}`,
     });
 
-    if (local.ref && instance) {
-      local.ref(instance);
+    if (ref && instance) {
+      ref(instance);
     }
   });
 
@@ -57,10 +54,4 @@ export function VistaView(props: VistaViewProps): JSX.Element {
     instance?.destroy();
     instance = null;
   });
-
-  return (
-    <div ref={containerRef} id={galleryId} class={local.class}>
-      {local.children}
-    </div>
-  );
 }
