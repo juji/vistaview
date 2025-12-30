@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useId, forwardRef, useImperativeHandle } from 'react';
+import type { ReactNode } from 'react';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
 
@@ -26,3 +27,42 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
     destroy: useCallback(() => instance.current?.destroy(), []),
   };
 }
+
+export interface VistaViewProps extends VistaParamsNeo {
+  children: ReactNode;
+  className?: string;
+  id?: string;
+  selector?: '> a' | '> img';
+}
+
+export const VistaView = forwardRef<VistaInterface, VistaViewProps>(
+  ({ children, className, id, selector = '> a', ...options }, ref) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const instanceRef = useRef<VistaInterface | null>(null);
+    const generatedId = useId();
+    const galleryId = id || `vvw-gallery-${generatedId.replace(/:/g, '')}`;
+
+    useImperativeHandle(ref, () => instanceRef.current!, []);
+
+    useEffect(() => {
+      if (!containerRef.current) return;
+
+      instanceRef.current = vistaView({
+        ...options,
+        elements: options.elements || `#${galleryId} ${selector}`,
+      });
+
+      return () => {
+        instanceRef.current?.destroy();
+        instanceRef.current = null;
+      };
+    }, [galleryId, selector]);
+
+    return (
+      <div ref={containerRef} id={galleryId} className={className}>
+        {children}
+      </div>
+    );
+  }
+);
+
