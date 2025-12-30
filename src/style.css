@@ -49,7 +49,7 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.8;
   }
   100% {
     opacity: 1;
@@ -430,7 +430,7 @@
 }
 
 .vvw--pulsing {
-  animation: vvw-simple-pulse 500ms ease-in-out infinite;
+  animation: vvw-simple-pulse 1000ms ease-in-out infinite;
 }
 
 /* @media (prefers-reduced-motion: reduce) {

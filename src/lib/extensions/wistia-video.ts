@@ -58,7 +58,6 @@ export async function getWistiaThumbnail(videoUrl: string): Promise<string> {
 export class VistaWistiaVideo extends VistaBox {
   element: HTMLDivElement | HTMLImageElement;
   url: string;
-  private loadingText?: HTMLDivElement;
 
   constructor(par: VistaImageParams) {
     super(par);
@@ -74,22 +73,7 @@ export class VistaWistiaVideo extends VistaBox {
     image.style.height = '100%';
     image.style.objectFit = 'cover';
     image.src = this.origin?.image.src || ''; // use existing thumbnail if available
-
-    // Add loading indicator
-    this.loadingText = document.createElement('div');
-    this.loadingText.textContent = 'Loading...';
-    this.loadingText.style.position = 'absolute';
-    this.loadingText.style.top = '50%';
-    this.loadingText.style.left = '50%';
-    this.loadingText.style.transform = 'translate(-50%, -50%)';
-    this.loadingText.style.color = 'white';
-    this.loadingText.style.fontSize = '14px';
-    this.loadingText.style.padding = '4px 8px';
-    this.loadingText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    this.loadingText.style.borderRadius = '4px';
-    this.loadingText.style.pointerEvents = 'none';
-    this.loadingText.classList.add('vvw--pulsing');
-    div.appendChild(this.loadingText);
+    image.classList.add('vvw--pulsing');
 
     this.element = div;
 
@@ -124,7 +108,7 @@ export class VistaWistiaVideo extends VistaBox {
 
       iframe.onload = () => {
         iframe.style.opacity = '1';
-        this.loadingText?.remove();
+        image.classList.remove('vvw--pulsing');
       };
     }
 

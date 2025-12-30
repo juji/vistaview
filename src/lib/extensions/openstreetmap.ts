@@ -101,7 +101,7 @@ export class VistaOpenStreetMap extends VistaBox {
   element: HTMLDivElement | HTMLImageElement;
   private osmConfig: OpenStreetMapConfig;
   private location: OpenStreetMapLocation;
-  private loadingText?: HTMLDivElement;
+  private thumbnailImage: HTMLImageElement;
 
   constructor(par: VistaImageParams, config: OpenStreetMapConfig, location: OpenStreetMapLocation) {
     super(par);
@@ -111,28 +111,14 @@ export class VistaOpenStreetMap extends VistaBox {
 
     const div = document.createElement('div');
     div.style.position = 'relative';
-    const image = document.createElement('img');
-    div.appendChild(image);
-    image.src = this.origin?.image.src || getOpenStreetMapStaticImage(location, config);
-    image.style.width = '100%';
-    image.style.height = '100%';
-    image.style.objectFit = 'cover';
-
-    // Add loading indicator
-    this.loadingText = document.createElement('div');
-    this.loadingText.textContent = 'Loading...';
-    this.loadingText.style.position = 'absolute';
-    this.loadingText.style.top = '50%';
-    this.loadingText.style.left = '50%';
-    this.loadingText.style.transform = 'translate(-50%, -50%)';
-    this.loadingText.style.color = 'white';
-    this.loadingText.style.fontSize = '14px';
-    this.loadingText.style.padding = '4px 8px';
-    this.loadingText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    this.loadingText.style.borderRadius = '4px';
-    this.loadingText.style.pointerEvents = 'none';
-    this.loadingText.classList.add('vvw--pulsing');
-    div.appendChild(this.loadingText);
+    this.thumbnailImage = document.createElement('img');
+    div.appendChild(this.thumbnailImage);
+    this.thumbnailImage.src =
+      this.origin?.image.src || getOpenStreetMapStaticImage(location, config);
+    this.thumbnailImage.style.width = '100%';
+    this.thumbnailImage.style.height = '100%';
+    this.thumbnailImage.style.objectFit = 'cover';
+    this.thumbnailImage.classList.add('vvw--pulsing');
 
     this.element = div;
 
@@ -241,7 +227,7 @@ export class VistaOpenStreetMap extends VistaBox {
       this.onImageReady = () => {
         map.invalidateSize();
         mapDiv.style.opacity = '1';
-        this.loadingText?.remove();
+        this.thumbnailImage.classList.remove('vvw--pulsing');
       };
 
       this.isLoadedResolved!(true);

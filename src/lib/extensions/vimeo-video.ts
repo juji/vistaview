@@ -63,22 +63,7 @@ export class VistaVimeoVideo extends VistaBox {
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';
-
-    // Add loading indicator
-    const loadingText = document.createElement('div');
-    loadingText.textContent = 'Loading...';
-    loadingText.style.position = 'absolute';
-    loadingText.style.top = '50%';
-    loadingText.style.left = '50%';
-    loadingText.style.transform = 'translate(-50%, -50%)';
-    loadingText.style.color = 'white';
-    loadingText.style.fontSize = '14px';
-    loadingText.style.padding = '4px 8px';
-    loadingText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    loadingText.style.borderRadius = '4px';
-    loadingText.style.pointerEvents = 'none';
-    loadingText.classList.add('vvw--pulsing');
-    div.appendChild(loadingText);
+    image.classList.add('vvw--pulsing');
 
     this.element = div;
 
@@ -113,7 +98,7 @@ export class VistaVimeoVideo extends VistaBox {
 
       iframe.onload = () => {
         iframe.style.opacity = '1';
-        loadingText.remove();
+        image.classList.remove('vvw--pulsing');
       };
     }
 
