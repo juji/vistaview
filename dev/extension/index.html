@@ -91,20 +91,21 @@
     const streamableVideoUrl = 'https://streamable.com/wx6lvl';
     const streamableThumbnailUrl = getStreamableThumbnail(streamableVideoUrl);
 
-    // Maps configuration - replace with your own API keys
-    const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Get from: https://console.cloud.google.com/
-    const mapboxAccessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Get from: https://account.mapbox.com/
+    // Maps configuration - loaded from environment variables
+    // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
+    const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
     // Example map locations
     const googleMapsUrl = 'https://www.google.com/maps/@40.7128,-74.0060,15z'; // New York City
     const googleMapsLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
-    const googleMapsThumbnail = googleMapsApiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' 
+    const googleMapsThumbnail = googleMapsApiKey 
       ? getGoogleMapsStaticImage(googleMapsLocation, { apiKey: googleMapsApiKey, zoom: 15 })
       : 'https://via.placeholder.com/400x300?text=Google+Maps+%28API+Key+Required%29';
 
     const mapboxUrl = 'mapbox://-74.0060,40.7128,15'; // New York City
     const mapboxLocation = { lng: -74.0060, lat: 40.7128, zoom: 15 };
-    const mapboxThumbnail = mapboxAccessToken !== 'YOUR_MAPBOX_ACCESS_TOKEN'
+    const mapboxThumbnail = mapboxAccessToken
       ? getMapboxStaticImage(mapboxLocation, { accessToken: mapboxAccessToken, zoom: 15 })
       : 'https://via.placeholder.com/400x300?text=Mapbox+%28Access+Token+Required%29';
 
@@ -194,11 +195,11 @@
         vidyardVideo(),
         streamableVideo(),
         // Map extensions - only enabled if API keys are provided
-        ...(googleMapsApiKey !== 'YOUR_GOOGLE_MAPS_API_KEY' 
+        ...(googleMapsApiKey 
           ? [googleMaps({ apiKey: googleMapsApiKey, zoom: 15 })]
           : []
         ),
-        ...(mapboxAccessToken !== 'YOUR_MAPBOX_ACCESS_TOKEN'
+        ...(mapboxAccessToken
           ? [mapbox({ accessToken: mapboxAccessToken, zoom: 15, style: 'streets-v12' })]
           : []
         ),

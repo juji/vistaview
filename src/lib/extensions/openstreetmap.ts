@@ -116,6 +116,12 @@ export class VistaOpenStreetMap extends VistaBox {
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';
+
+    // div.addEventListener('pointerdown', (e) => {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // });
+
     this.element = div;
 
     this.element.classList.add('vvw-img-hi');
