@@ -400,61 +400,133 @@ dist/styles/retro-arcade.css             2.03 kB │ gzip:  0.49 kB
 dist/styles/extensions/image-story.css   2.52 kB │ gzip:  0.72 kB
 dist/style.css                           7.06 kB │ gzip:  1.72 kB
 dist/extensions/logger.js                0.61 kB │ gzip:  0.23 kB
-dist/svelte.js                           0.77 kB │ gzip:  0.31 kB
-dist/solid.js                            0.77 kB │ gzip:  0.31 kB
-dist/vue.js                              0.82 kB │ gzip:  0.32 kB
-dist/extensions/download.js              1.42 kB │ gzip:  0.70 kB
-dist/react.js                            1.45 kB │ gzip:  0.41 kB
-dist/extensions/vimeo-video.js           2.65 kB │ gzip:  1.24 kB
-dist/extensions/streamable-video.js      2.69 kB │ gzip:  1.24 kB
-dist/extensions/vidyard-video.js         2.73 kB │ gzip:  1.24 kB
-dist/extensions/dailymotion-video.js     2.80 kB │ gzip:  1.26 kB
-dist/extensions/wistia-video.js          2.93 kB │ gzip:  1.35 kB
-dist/extensions/youtube-video.js         3.10 kB │ gzip:  1.42 kB
-dist/extensions/google-maps.js           3.65 kB │ gzip:  1.60 kB
-dist/extensions/openstreetmap.js         4.79 kB │ gzip:  1.90 kB
-dist/extensions/mapbox.js                4.99 kB │ gzip:  1.93 kB
+dist/solid.js                            1.16 kB │ gzip:  0.51 kB
+dist/svelte.js                           1.23 kB │ gzip:  0.54 kB
+dist/extensions/download.js              1.65 kB │ gzip:  0.76 kB
+dist/vue.js                              1.84 kB │ gzip:  0.74 kB
+dist/react.js                            2.12 kB │ gzip:  0.70 kB
+dist/extensions/vimeo-video.js           2.91 kB │ gzip:  1.34 kB
+dist/extensions/streamable-video.js      2.95 kB │ gzip:  1.34 kB
+dist/extensions/vidyard-video.js         2.99 kB │ gzip:  1.35 kB
+dist/extensions/dailymotion-video.js     3.05 kB │ gzip:  1.37 kB
+dist/extensions/wistia-video.js          3.18 kB │ gzip:  1.46 kB
+dist/extensions/youtube-video.js         3.35 kB │ gzip:  1.52 kB
+dist/extensions/google-maps.js           3.91 kB │ gzip:  1.71 kB
+dist/extensions/openstreetmap.js         5.28 kB │ gzip:  2.06 kB
+dist/extensions/mapbox.js                5.48 kB │ gzip:  2.08 kB
 dist/vista-box-CQvGrjln.js              15.00 kB │ gzip:  3.93 kB
 dist/extensions/image-story.js          33.60 kB │ gzip: 10.84 kB
-dist/vistaview.js                       40.72 kB │ gzip: 10.04 kB
-[vite:dts] Declaration files built in 721ms.
+dist/vistaview.js                       42.03 kB │ gzip: 10.28 kB
+[vite:dts] Declaration files built in 798ms.
 
-✓ built in 947ms
+✓ built in 1.03s
 
-> vistaview@0.10.2 build:umd
+> vistaview@0.10.7 build:umd
 
 vite v6.4.1 building for production...
 ✓ 21 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.umd.js  41.81 kB │ gzip: 11.38 kB
-[vite:dts] Declaration files built in 809ms.
+dist/vistaview.umd.js  42.71 kB │ gzip: 11.57 kB
+[vite:dts] Declaration files built in 786ms.
 
-✓ built in 920ms
+✓ built in 892ms
 vite v6.4.1 building for production...
 ✓ 1 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/extensions/download.umd.js  1.41 kB │ gzip: 0.79 kB
-[vite:dts] Declaration files built in 717ms.
+dist/extensions/download.umd.js  1.58 kB │ gzip: 0.84 kB
+[vite:dts] Declaration files built in 789ms.
 
-✓ built in 757ms
+✓ built in 822ms
 vite v6.4.1 building for production...
 ✓ 1 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/logger.umd.js  0.76 kB │ gzip: 0.37 kB
-[vite:dts] Declaration files built in 724ms.
+[vite:dts] Declaration files built in 767ms.
 
-✓ built in 748ms
+✓ built in 793ms
 vite v6.4.1 building for production...
 ✓ 5 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/image-story.umd.js  25.28 kB │ gzip: 9.81 kB
-[vite:dts] Declaration files built in 754ms.
+[vite:dts] Declaration files built in 771ms.
 
-✓ built in 855ms
+✓ built in 865ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/youtube-video.umd.js  14.28 kB │ gzip: 4.46 kB
+[vite:dts] Declaration files built in 782ms.
+
+✓ built in 845ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/vimeo-video.umd.js  13.90 kB │ gzip: 4.29 kB
+[vite:dts] Declaration files built in 782ms.
+
+✓ built in 842ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/dailymotion-video.umd.js  14.03 kB │ gzip: 4.31 kB
+[vite:dts] Declaration files built in 802ms.
+
+✓ built in 863ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/wistia-video.umd.js  14.13 kB │ gzip: 4.38 kB
+[vite:dts] Declaration files built in 765ms.
+
+✓ built in 825ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/vidyard-video.umd.js  13.97 kB │ gzip: 4.29 kB
+[vite:dts] Declaration files built in 763ms.
+
+✓ built in 824ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/streamable-video.umd.js  13.94 kB │ gzip: 4.29 kB
+[vite:dts] Declaration files built in 770ms.
+
+✓ built in 831ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/google-maps.umd.js  14.78 kB │ gzip: 4.66 kB
+[vite:dts] Declaration files built in 769ms.
+
+✓ built in 834ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/mapbox.umd.js  16.07 kB │ gzip: 4.96 kB
+[vite:dts] Declaration files built in 801ms.
+
+✓ built in 863ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/openstreetmap.umd.js  15.87 kB │ gzip: 4.93 kB
+[vite:dts] Declaration files built in 792ms.
+
+✓ built in 856ms
 ```
 
 ## License
