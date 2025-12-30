@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 /**
  * Parse Vidyard URL and extract video ID
@@ -130,6 +131,12 @@ export function vidyardVideo(): VistaExtension {
       if (!videoId) return;
 
       return new VistaVidyardVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaVidyardVideo) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

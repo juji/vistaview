@@ -14,6 +14,8 @@ type VistaExtension = {
   onInitializeImage?: (image: VistaParsedElm) => VistaBox | void | null | undefined;
   onImageView?: (params: VistaData, vistaView: VistaView) => void;
   onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
+  onDeactivateUi?: (names: string[], vistaView: VistaView) => void;
+  onReactivateUi?: (names: string[], vistaView: VistaView) => void;
   onOpen?: (vistaView: VistaView) => void;
   onClose?: (vistaView: VistaView) => void;
 };
@@ -27,6 +29,8 @@ type VistaExtension = {
 - **`onInitializeImage`** (optional): Called when each image is initialized. Receives `VistaParsedElm` and can return a custom `VistaBox` implementation to override the default `VistaImage`
 - **`onImageView`** (optional): Called when navigating to an image (including initial open)
 - **`onContentChange`** (optional): Called when the image content changes
+- **`onDeactivateUi`** (optional): Called when UI elements should be deactivated/disabled. Receives an array of control names and the VistaView instance
+- **`onReactivateUi`** (optional): Called when UI elements should be reactivated/enabled. Receives an array of control names and the VistaView instance
 - **`onOpen`** (optional): Called when the lightbox opens
 - **`onClose`** (optional): Called when the lightbox closes
 
@@ -90,6 +94,22 @@ export function download(): VistaExtension {
       if (centerImage) {
         currentImage = centerImage.image;
         currentAlt = centerImage.config.alt || null;
+    onDeactivateUi: (names: string[], _v: VistaView) => {
+      if (names.includes('download') && button) {
+        button.setAttribute('disabled', 'true');
+      }
+    },
+    onReactivateUi: (names: string[], _v: VistaView) => {
+      if (names.includes('download') && button) {
+        button.removeAttribute('disabled');
+      }
+    },
+    onClose: (_vistaView: VistaView) => {
+      button?.remove();
+      button = null;
+      currentImage = null;
+      currentAlt = null;
+    },
       }
     },
   };
@@ -512,7 +532,70 @@ control: () => {
 
 ### 6. TypeScript Types
 
-Import and use proper types:
+ImpUI Deactivation and Reactivation
+
+Extensions can respond to UI deactivation and reactivation requests. This is useful when certain content types (like videos or maps) don't support specific features like download or zoom.
+
+**Example: Handling UI Deactivation**
+
+```typescript
+export function myControl(): VistaExtension {
+  let button: HTMLButtonElement | null = null;
+
+  return {
+    name: 'myControl',
+    control: () => {
+      button = document.createElement('button');
+      button.textContent = 'My Action';
+      return button;
+    },
+    onDeactivateUi: (names: string[], _v: VistaView) => {
+      // Disable this control if its name is in the deactivation list
+      if (names.includes('myControl') && button) {
+        button.setAttribute('disabled', 'true');
+        button.style.opacity = '0.5';
+        button.style.cursor = 'not-allowed';
+      }
+    },
+    onReactivateUi: (names: string[], _v: VistaView) => {
+      // Re-enable this control if its name is in the reactivation list
+      if (names.includes('myControl') && button) {
+        button.removeAttribute('disabled');
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+      }
+    },
+  };
+}
+```
+
+**Triggering Deactivation from Extensions**
+
+Extensions can trigger UI deactivation for specific content types. For example, video and map extensions deactivate download and zoom controls since these features don't apply to embedded content:
+
+```typescript
+export function youtubeVideo(): VistaExtension {
+  return {
+    name: 'youtubeVideo',
+    onInitializeImage: (params: VistaImageParams) => {
+      const videoId = parseYouTubeVideoId(params.elm.config.src);
+      if (!videoId) return;
+      return new VistaYoutubeVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaYoutubeVideo) {
+        // Deactivate controls that don't apply to videos
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
+    },
+  };
+}
+```
+
+When the user navigates away from video/map content to regular images, the UI controls are automatically reactivated.
+
+## ort and use proper types:
 
 ```typescript
 import type { VistaData, VistaExtension, VistaImageClone } from 'vistaview';
@@ -543,6 +626,7 @@ Understanding the order of lifecycle events helps build robust extensions:
 
 3. **On Navigation:**
    - `onImageView()` is called with from/to data
+   - `onDeactivateUi()` or `onReactivateUi()` may be called based on content type
    - `onContentChange()` is called when new content loads
 
 4. **On Close:**

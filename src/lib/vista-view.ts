@@ -235,6 +235,10 @@ export class VistaView {
   private transitionCleanup: (() => void) | null = null;
 
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {
+    // reactivate UI elements
+    // before anything
+    this.reactivateUi();
+
     const allImage = this.options.preloads || 0;
     const index = this.state.currentIndex;
 
@@ -373,6 +377,39 @@ export class VistaView {
         description.style.opacity = '0';
       }
     }
+  }
+
+  // ============================================================================
+  // ACTIVATE/DEACTIVATE UI ELEMENTS
+  // ============================================================================
+
+  private tempDeactivatedUi: string[] = [];
+  deactivateUi(names: string[]) {
+    names.forEach((name) => {
+      if (name === 'zoomIn') {
+        this.qs('.vvw-zoom-in')?.setAttribute('disabled', 'true');
+      } else if (name === 'zoomOut') {
+        this.qs('.vvw-zoom-out')?.setAttribute('disabled', 'true');
+      }
+      this.tempDeactivatedUi.push(name);
+    });
+    this.state.extensions.forEach((ext) => {
+      ext.onDeactivateUi && ext.onDeactivateUi(names, this);
+    });
+  }
+
+  private reactivateUi() {
+    this.tempDeactivatedUi.forEach((name) => {
+      if (name === 'zoomIn') {
+        this.qs('.vvw-zoom-in')?.removeAttribute('disabled');
+      } else if (name === 'zoomOut') {
+        this.qs('.vvw-zoom-out')?.removeAttribute('disabled');
+      }
+    });
+    this.state.extensions.forEach((ext) => {
+      ext.onReactivateUi && ext.onReactivateUi(this.tempDeactivatedUi, this);
+    });
+    this.tempDeactivatedUi = [];
   }
 
   // ============================================================================

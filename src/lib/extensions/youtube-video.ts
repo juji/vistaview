@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 /**
  * Parse YouTube URL and extract video ID
@@ -148,6 +149,12 @@ export function youtubeVideo(): VistaExtension {
       if (!videoId) return;
 
       return new VistaYoutubeVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaYoutubeVideo) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

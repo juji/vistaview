@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 /**
  * Parse Dailymotion URL and extract video ID
@@ -132,6 +133,12 @@ export function dailymotionVideo(): VistaExtension {
       if (!videoId) return;
 
       return new VistaDailymotionVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaDailymotionVideo) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

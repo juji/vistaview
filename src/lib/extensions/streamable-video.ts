@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 /**
  * Parse Streamable URL and extract video ID
@@ -125,6 +126,12 @@ export function streamableVideo(): VistaExtension {
       if (!videoId) return;
 
       return new VistaStreamableVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaStreamableVideo) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 /**
  * Parse Wistia URL and extract video ID
@@ -141,6 +142,12 @@ export function wistiaVideo(): VistaExtension {
       if (!videoId) return;
 
       return new VistaWistiaVideo(params);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaWistiaVideo) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

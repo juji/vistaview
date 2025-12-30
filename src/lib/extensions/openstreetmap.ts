@@ -1,5 +1,6 @@
-import type { VistaExtension, VistaImageParams } from '../types';
+import type { VistaData, VistaExtension, VistaImageParams } from '../types';
 import { VistaBox } from '../vista-box';
+import type { VistaView } from '../vista-view';
 
 export interface OpenStreetMapConfig {
   zoom?: number; // Default zoom level (0-19)
@@ -258,6 +259,12 @@ export function openStreetMap(config: OpenStreetMapConfig = {}): VistaExtension 
       if (!location) return;
 
       return new VistaOpenStreetMap(params, config, location);
+    },
+    onImageView: async (data: VistaData, v: VistaView) => {
+      const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
+      if (mainData instanceof VistaOpenStreetMap) {
+        v.deactivateUi(['download', 'zoomIn', 'zoomOut']);
+      }
     },
   };
 }

@@ -62,6 +62,16 @@ export function download(): VistaExtension {
 
       currentAlt = config.alt || null;
     },
+    onDeactivateUi: (names: string[], _v: VistaView) => {
+      if (names.includes('download') && button) {
+        button.setAttribute('disabled', 'true');
+      }
+    },
+    onReactivateUi: (names: string[], _v: VistaView) => {
+      if (names.includes('download') && button) {
+        button.removeAttribute('disabled');
+      }
+    },
     onClose: (_vistaView: VistaView) => {
       button?.remove();
       button = null;
