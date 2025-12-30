@@ -4,7 +4,52 @@ VistaView provides official bindings for popular frameworks via subpath exports.
 
 ## React
 
-VistaView provides a React hook:
+### Component (Recommended)
+
+VistaView provides a declarative `VistaView` component:
+
+```tsx
+import { VistaView } from 'vistaview/react';
+import 'vistaview/style.css';
+
+function Gallery() {
+  return (
+    <VistaView selector="> a">
+      <a href="/images/full.jpg">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </VistaView>
+  );
+}
+```
+
+With ref for imperative control:
+
+```tsx
+import { useRef } from 'react';
+import { VistaView } from 'vistaview/react';
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const vistaRef = useRef<VistaInterface>(null);
+
+  return (
+    <>
+      <VistaView ref={vistaRef} selector="> a">
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </VistaView>
+      <button onClick={() => vistaRef.current?.open(0)}>Open Gallery</button>
+    </>
+  );
+}
+```
+
+### Hook
+
+Alternatively, use the `useVistaView` hook for more control:
 
 ```tsx
 import { useId } from 'react';
@@ -30,7 +75,53 @@ function Gallery() {
 
 ## Vue 3
 
-VistaView provides a Vue composable:
+### Component (Recommended)
+
+VistaView provides a declarative `VistaView` component:
+
+```vue
+<script setup>
+import { VistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+</script>
+
+<template>
+  <VistaView selector="> a">
+    <a href="/images/full.jpg">
+      <img src="/images/thumb.jpg" alt="Photo" />
+    </a>
+  </VistaView>
+</template>
+```
+
+With ref for imperative control:
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import { VistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+
+const vistaRef = ref();
+
+const openGallery = () => {
+  vistaRef.value?.instance?.open(0);
+};
+</script>
+
+<template>
+  <VistaView ref="vistaRef" selector="> a">
+    <a href="/images/full.jpg">
+      <img src="/images/thumb.jpg" alt="Photo" />
+    </a>
+  </VistaView>
+  <button @click="openGallery">Open Gallery</button>
+</template>
+```
+
+### Composable
+
+Alternatively, use the `useVistaView` composable for more control:
 
 ```vue
 <script setup>
@@ -56,7 +147,48 @@ const vista = useVistaView({
 
 ## Svelte
 
-VistaView provides a Svelte hook:
+### Action (Recommended)
+
+VistaView provides a `createVistaView` action for use with the `use:` directive:
+
+```svelte
+<script>
+import { createVistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
+</script>
+
+<div use:createVistaView={{ selector: '> a' }}>
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</div>
+```
+
+With ref for imperative control:
+
+```svelte
+<script>
+import { createVistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
+
+let vista;
+
+const openGallery = () => {
+  vista?.open(0);
+};
+</script>
+
+<div use:createVistaView={{ selector: '> a', ref: vista }}>
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</div>
+<button on:click={openGallery}>Open Gallery</button>
+```
+
+### Hook
+
+Alternatively, use the `useVistaView` hook for more control:
 
 ```svelte
 <script>
@@ -79,7 +211,51 @@ const vista = useVistaView({
 
 ## Solid
 
-VistaView provides a Solid hook:
+### Directive (Recommended)
+
+VistaView provides a `createVistaView` directive function:
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  return (
+    <div use:createVistaView={{ selector: '> a' }}>
+      <a href="/images/full.jpg">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+    </div>
+  );
+}
+```
+
+With ref for imperative control:
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+function Gallery() {
+  let vista: VistaInterface | undefined;
+
+  return (
+    <>
+      <div use:createVistaView={{ selector: '> a', ref: (v) => (vista = v) }}>
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </div>
+      <button onClick={() => vista?.open(0)}>Open Gallery</button>
+    </>
+  );
+}
+```
+
+### Hook
+
+Alternatively, use the `useVistaView` hook for more control:
 
 ```tsx
 import { useVistaView } from 'vistaview/solid';
