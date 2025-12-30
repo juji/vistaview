@@ -25,7 +25,7 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
 
 export interface VistaViewOptions extends VistaParamsNeo {
   id?: string;
-  selector?: '> a' | '> img';
+  selector?: string;
   ref?: (instance: VistaInterface) => void;
 }
 

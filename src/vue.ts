@@ -31,7 +31,7 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
 export interface VistaViewProps extends VistaParamsNeo {
   id?: string;
   class?: string;
-  selector?: '> a' | '> img';
+  selector?: string;
 }
 
 export const VistaView = defineComponent({
@@ -40,7 +40,7 @@ export const VistaView = defineComponent({
     id: String,
     class: String,
     selector: {
-      type: String as PropType<'> a' | '> img'>,
+      type: String,
       default: '> a',
     },
     elements: String,

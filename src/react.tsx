@@ -32,7 +32,7 @@ export interface VistaViewProps extends VistaParamsNeo {
   children: ReactNode;
   className?: string;
   id?: string;
-  selector?: '> a' | '> img';
+  selector?: string;
 }
 
 export const VistaView = forwardRef<VistaInterface, VistaViewProps>(
