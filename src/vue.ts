@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
 
@@ -27,3 +27,63 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
     destroy: () => instance?.destroy(),
   };
 }
+
+export interface VistaViewProps extends VistaParamsNeo {
+  id?: string;
+  class?: string;
+  selector?: '> a' | '> img';
+}
+
+export const VistaView = defineComponent({
+  name: 'VistaView',
+  props: {
+    id: String,
+    class: String,
+    selector: {
+      type: String as PropType<'> a' | '> img'>,
+      default: '> a',
+    },
+    elements: String,
+    extensions: Array as PropType<VistaParamsNeo['extensions']>,
+    closeOnScroll: Boolean,
+    history: Boolean,
+  },
+  setup(props, { slots, expose }) {
+    const containerRef = ref<HTMLElement | null>(null);
+    const instanceRef = ref<VistaInterface | null>(null);
+    const galleryId = props.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
+
+    onMounted(() => {
+      if (!containerRef.value) return;
+
+      const { id, class: className, selector, ...options } = props;
+
+      instanceRef.value = vistaView({
+        ...options,
+        elements: options.elements || `#${galleryId} ${selector}`,
+      });
+    });
+
+    onUnmounted(() => {
+      instanceRef.value?.destroy();
+      instanceRef.value = null;
+    });
+
+    expose({
+      get instance() {
+        return instanceRef.value;
+      },
+    });
+
+    return () =>
+      h(
+        'div',
+        {
+          ref: containerRef,
+          id: galleryId,
+          class: props.class,
+        },
+        slots.default?.()
+      );
+  },
+});

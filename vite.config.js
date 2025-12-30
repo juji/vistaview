@@ -90,7 +90,7 @@ export default defineConfig({
             react: resolve(__dirname, 'src/react.tsx'),
             vue: resolve(__dirname, 'src/vue.ts'),
             svelte: resolve(__dirname, 'src/svelte.ts'),
-            solid: resolve(__dirname, 'src/solid.ts'),
+            solid: resolve(__dirname, 'src/solid.tsx'),
             style: resolve(__dirname, 'src/style.css'),
             ...styleFiles,
             ...styleExtFiles,
