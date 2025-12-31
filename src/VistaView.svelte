@@ -2,25 +2,16 @@
 import { onMount } from 'svelte';
 import { useVistaView } from './svelte';
 import type { VistaViewProps } from './svelte';
-import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 import type { VistaOpt } from './vistaview';
 
-const { 
-  children, 
-  id, 
-  selector = '> a', 
-  ref,
-  options,
-  ...rest
-} = $props<
-  VistaViewProps & 
-  { options: VistaOpt } &
-  { children?: Snippet } & 
-  HTMLAttributes<HTMLDivElement>
->();
+export let id: string | undefined = undefined;
+export let selector: string = '> a';
+export let ref: any = undefined;
+export let options: VistaOpt = {};
 
 let vista: ReturnType<typeof useVistaView>;
+let element: HTMLDivElement;
 
 const initialId = `vvw-gallery-${Math.random().toString(36).slice(2)}`;
 
@@ -37,6 +28,6 @@ onMount(() => {
 });
 </script>
 
-<div {...rest} id={id || initialId}>
-  {@render children()}
+<div bind:this={element} {...$$restProps} id={id || initialId}>
+  <slot />
 </div>
