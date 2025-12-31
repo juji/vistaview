@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import LinkButton from '../../node_modules/@astrojs/starlight/user-components/LinkButton.astro';
-import HeroContentBox from './HeroContentBox.astro';
+import VueHeroContentBox from './VueHeroContentBox.vue';
 
 const PAGE_TITLE_ID = '_top';
 
@@ -42,7 +42,7 @@ if (image) {
 	}
 	{rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
 	
-	<HeroContentBox />
+	<VueHeroContentBox client:only="vue" />
 	
 	<div class="sl-flex stack">
 		<div class="sl-flex copy">
