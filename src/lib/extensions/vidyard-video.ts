@@ -46,7 +46,7 @@ export function getVidyardThumbnail(videoUrl: string): string {
 }
 
 export class VistaVidyardVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

@@ -95,7 +95,7 @@ export function getGoogleMapsStaticImage(
 }
 
 export class VistaGoogleMaps extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   private mapsConfig: GoogleMapsConfig;
   private location: GoogleMapsLocation;
 

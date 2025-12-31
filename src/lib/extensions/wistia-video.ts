@@ -57,7 +57,7 @@ export async function getWistiaThumbnail(videoUrl: string): Promise<string> {
 }
 
 export class VistaWistiaVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

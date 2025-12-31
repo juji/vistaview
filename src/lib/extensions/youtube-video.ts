@@ -64,7 +64,7 @@ export function getYouTubeThumbnail(
 }
 
 export class VistaYoutubeVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

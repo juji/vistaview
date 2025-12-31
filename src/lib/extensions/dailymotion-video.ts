@@ -48,7 +48,7 @@ export function getDailymotionThumbnail(videoUrl: string): string {
 }
 
 export class VistaDailymotionVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

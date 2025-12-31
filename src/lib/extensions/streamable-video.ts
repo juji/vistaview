@@ -41,7 +41,7 @@ export function getStreamableThumbnail(videoUrl: string): string {
 }
 
 export class VistaStreamableVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

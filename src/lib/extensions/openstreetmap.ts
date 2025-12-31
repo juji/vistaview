@@ -99,7 +99,7 @@ export function getOpenStreetMapStaticImage(
 }
 
 export class VistaOpenStreetMap extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   private osmConfig: OpenStreetMapConfig;
   private location: OpenStreetMapLocation;
   private thumbnailImage: HTMLImageElement;

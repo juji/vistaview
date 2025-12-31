@@ -47,7 +47,7 @@ export function getVimeoThumbnail(videoUrl: string): string {
 }
 
 export class VistaVimeoVideo extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   url: string;
 
   constructor(par: VistaImageParams) {

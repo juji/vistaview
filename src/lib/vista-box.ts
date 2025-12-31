@@ -11,7 +11,7 @@ import { getFittedSize } from './utils/get-fitted-size';
 import { VistaHiresTransition } from './vista-hires-transition';
 
 export abstract class VistaBox {
-  abstract element: HTMLImageElement | HTMLIFrameElement | HTMLDivElement;
+  abstract element: HTMLImageElement | HTMLDivElement;
 
   state: VistaImageState;
 

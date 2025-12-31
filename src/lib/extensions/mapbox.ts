@@ -87,7 +87,7 @@ export function getMapboxStaticImage(location: MapboxLocation, config: MapboxCon
 }
 
 export class VistaMapbox extends VistaBox {
-  element: HTMLDivElement | HTMLImageElement;
+  element: HTMLDivElement;
   private mapboxConfig: MapboxConfig;
   private location: MapboxLocation;
   private thumbnailImage: HTMLImageElement;
