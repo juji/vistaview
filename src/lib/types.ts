@@ -14,12 +14,12 @@ export type VistaOpt = {
   rapidLimit?: number;
 
   controls?: {
-    topLeft?: (VistaDefaultCtrl | VistaExtension)[];
-    topRight?: (VistaDefaultCtrl | VistaExtension)[];
-    topCenter?: (VistaDefaultCtrl | VistaExtension)[];
-    bottomCenter?: (VistaDefaultCtrl | VistaExtension)[];
-    bottomLeft?: (VistaDefaultCtrl | VistaExtension)[];
-    bottomRight?: (VistaDefaultCtrl | VistaExtension)[];
+    topLeft?: (VistaDefaultCtrl | string)[];
+    topRight?: (VistaDefaultCtrl | string)[];
+    topCenter?: (VistaDefaultCtrl | string)[];
+    bottomCenter?: (VistaDefaultCtrl | string)[];
+    bottomLeft?: (VistaDefaultCtrl | string)[];
+    bottomRight?: (VistaDefaultCtrl | string)[];
   };
 
   extensions?: VistaExtension[];

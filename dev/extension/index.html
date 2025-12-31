@@ -168,8 +168,13 @@
     vistaView({
       elements: '#image-grid-many a',
       controls: {
-        topRight: ['zoomIn', 'zoomOut',  download(), 'close'],
-        bottomCenter: [imageStory({
+        topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
+        bottomCenter: ['imageStory'],
+      },
+      extensions: [
+        // logger(), 
+        download(),
+        imageStory({
           getStory: async (index) => ({
             content: `
             <p style="margin-top: 0">This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -184,10 +189,7 @@
               console.log(`Story for image #${index + 1} unloaded.`);
             },
           })
-        })],
-      },
-      extensions: [
-        // logger(), 
+        }),
         youtubeVideo(),
         dailymotionVideo(),
         vimeoVideo(),

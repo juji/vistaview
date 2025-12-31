@@ -84,18 +84,7 @@ export class VistaView {
       this.transitionFunction = this.options.transitionFunction;
     }
 
-    // set custom controls' event listeners
-    [
-      ...(this.options.controls!.topLeft || []),
-      ...(this.options.controls!.topRight || []),
-      ...(this.options.controls!.topCenter || []),
-      ...(this.options.controls!.bottomCenter || []),
-      ...(this.options.controls!.bottomLeft || []),
-      ...(this.options.controls!.bottomRight || []),
-    ].forEach((ext) => {
-      if (typeof ext !== 'string') this.state.extensions.add(ext);
-    });
-
+    // Register all extensions
     this.options.extensions?.forEach((ext) => {
       this.state.extensions.add(ext);
     });
@@ -448,6 +437,7 @@ export class VistaView {
     // setting up root component
     const root = vistaViewComponent({
       controls: this.options.controls,
+      extensions: this.state.extensions,
     });
 
     document.body.append(root);

@@ -42,7 +42,10 @@ function createTrustedHtml(htmlString: string): DocumentFragment {
   return html;
 }
 
-function convertControlToHtml(control: VistaDefaultCtrl | VistaExtension): string {
+function convertControlToHtml(
+  control: VistaDefaultCtrl | string,
+  extensions: { [key: string]: VistaExtension }
+): string {
   if (typeof control === 'string') {
     switch (control) {
       case 'zoomIn':
@@ -56,22 +59,34 @@ function convertControlToHtml(control: VistaDefaultCtrl | VistaExtension): strin
       case 'description':
         return `<div class="vvw-desc vvw-ui" role="status" aria-live="polite" aria-atomic="true"></div>`;
       default:
-        console.warn(`Unknown default control: ${control}. Will return empty string.`);
+        // Check if it's an extension control name
+        const ext = extensions[control];
+        if (ext) {
+          return `<div class="vvw-ext vvw-ui" aria-label="${ext.description || ext.name}" data-vvw-control="${ext.name}"></div>`;
+        }
+        console.warn(`Unknown control: ${control}. Will return empty string.`);
         return '';
     }
   }
 
-  // For extensions, just return the container structure
-  return `<div class="vvw-ext vvw-ui" aria-label="${control.description || control.name}" data-vvw-control="${control.name}"></div>`;
+  return '';
 }
 
 export function vistaViewComponent({
   controls,
+  extensions,
 }: {
   controls: VistaOpt['controls'];
+  extensions: Set<VistaExtension>;
 }): DocumentFragment {
-  const mapCtrl = (arr?: (VistaDefaultCtrl | VistaExtension)[]) =>
-    arr ? arr.map(convertControlToHtml).join('') : '';
+  // convert extensions to object for faster search
+  const objectExtensions: { [key: string]: VistaExtension } = {};
+  extensions.forEach((ext) => {
+    objectExtensions[ext.name] = ext;
+  });
+
+  const mapCtrl = (arr?: (VistaDefaultCtrl | string)[]) =>
+    arr ? arr.map((ctrl) => convertControlToHtml(ctrl, objectExtensions)).join('') : '';
 
   const html = createTrustedHtml(
     `<div class="vvw-root" id="vvw-root">
@@ -102,8 +117,11 @@ export function vistaViewComponent({
     ...(controls?.bottomLeft || []),
     ...(controls?.bottomCenter || []),
     ...(controls?.bottomRight || []),
-  ].forEach((ext) => {
-    if (typeof ext !== 'string' && ext.control) {
+  ].forEach((ctrl) => {
+    // Look up extension by name (ctrl is always a string now)
+    const ext = objectExtensions[ctrl];
+
+    if (ext && ext.control) {
       const container = html.querySelector(`[data-vvw-control="${ext.name}"]`);
       const el = ext.control();
       if (container && el) {
