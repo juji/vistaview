@@ -4,18 +4,20 @@ import { useVistaView } from './svelte';
 import type { VistaViewProps } from './svelte';
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
+import type { VistaOpt } from './vistaview';
 
 const { 
   children, 
   id, 
   selector = '> a', 
-  ref,  
-  divProps,
+  ref,
+  options,
   ...rest
 } = $props<
   VistaViewProps & 
+  { options: VistaOpt } &
   { children?: Snippet } & 
-  { divProps: HTMLAttributes<HTMLDivElement> }
+  HTMLAttributes<HTMLDivElement>
 >();
 
 let vista: ReturnType<typeof useVistaView>;
@@ -27,7 +29,7 @@ onMount(() => {
 
   // Initialize Vista with the computed galleryId and selector.
   vista = useVistaView({
-    ...rest,
+    ...options,
     elements: `#${galleryId} ${selector}`,
   });
 
@@ -35,6 +37,6 @@ onMount(() => {
 });
 </script>
 
-<div {...divProps} id={id || initialId}>
+<div {...rest} id={id || initialId}>
   {@render children()}
 </div>

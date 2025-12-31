@@ -36,8 +36,6 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
 }
 
 export interface VistaViewProps extends VistaOpt {
-  id?: string;
-  class?: string;
   selector?: string;
   ref?: VistaInterface;
 }
