@@ -61,7 +61,7 @@ function convertControlToHtml(
       default:
         // Check if it's an extension control name
         const ext = extensions[control];
-        if (ext) {
+        if (ext && ext.control) {
           return `<div class="vvw-ext vvw-ui" aria-label="${ext.description || ext.name}" data-vvw-control="${ext.name}"></div>`;
         }
         console.warn(`Unknown control: ${control}. Will return empty string.`);
