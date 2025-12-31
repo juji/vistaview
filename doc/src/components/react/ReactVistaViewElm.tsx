@@ -2,8 +2,9 @@ import { useRef } from 'react';
 import { VistaView } from 'vistaview/react';
 import type { VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
+import './styles.css';
 
-export default function ReactVistaViewDemo() {
+export default function ReactVistaViewElm() {
   const vistaRef = useRef<VistaInterface>(null);
   return (
     <div className="hero-content-box">

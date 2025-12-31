@@ -1,10 +1,17 @@
-import { VistaView } from 'vistaview/solid';
+import { useId } from 'react';
+import { useVistaView } from 'vistaview/react';
 import 'vistaview/style.css';
+import './styles.css';
 
-export default function SolidVistaViewDemo() {
+export default function ReactVistaViewHook() {
+  const id = useId();
+  const vista = useVistaView({
+    elements: `#${CSS.escape(id)} a`,
+  });
+
   return (
     <div className="hero-content-box">
-      <VistaView selector="> a" className="image-grid vista-view">
+      <div id={id} className="image-grid vista-view">
         <a href="https://picsum.photos/seed/2222/1200/600" data-title="Image 1" className="img-1" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/2222/400/200" alt="Image 1" />
         </a>
@@ -17,8 +24,7 @@ export default function SolidVistaViewDemo() {
         <a href="https://picsum.photos/seed/8888/1200/600" data-title="Image 4" className="img-4" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/8888/400/200" alt="Image 4" />
         </a>
-      </VistaView>
+      </div>
     </div>
   );
 }
-// Add styles for .hero-content-box, .image-grid, etc. (same as VueHeroContentBox)

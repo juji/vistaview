@@ -1,11 +1,23 @@
 ---
 import { Image } from 'astro:assets';
 import LinkButton from '../../node_modules/@astrojs/starlight/user-components/LinkButton.astro';
-// import VueHeroContentBox from './VueHeroContentBox.vue';
-// import SvelteHeroContentBox from './SvelteHeroContentBox.svelte';
-// import SolidHeroContentBox from './SolidHeroContentBox';
-import ReactHeroContentBox from './ReactHeroContentBox';
+import HeroContentBox from './HeroContentBox.astro';
 
+import VueHeroContentBox from './VueHeroContentBox.vue';
+import VueVistaViewElm from './VueVistaViewElm.vue';
+import VueVistaViewHook from './VueVistaViewHook.vue';
+
+import SvelteHeroContentBox from './SvelteHeroContentBox.svelte';
+import SvelteVistaViewElm from './SvelteVistaViewElm.svelte';
+import SvelteVistaViewHook from './SvelteVistaViewHook.svelte';
+
+import ReactHeroContentBox from './react/ReactHeroContentBox';
+import ReactVistaViewElm from './react/ReactVistaViewElm';
+import ReactVistaViewHook from './react/ReactVistaViewHook';
+
+import SolidHeroContentBox from './solid/SolidHeroContentBox';
+import SolidVistaViewElm from './solid/SolidVistaViewElm';
+import SolidVistaViewHook from './solid/SolidVistaViewHook';
 const PAGE_TITLE_ID = '_top';
 
 const { data } = Astro.locals.starlightRoute.entry;
@@ -45,7 +57,24 @@ if (image) {
 	}
 	{rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
 	
-	<ReactHeroContentBox client:load />
+	<!-- <HeroContentBox client:load /> -->
+
+	<!-- <SvelteHeroContentBox client:load /> -->
+	<SvelteVistaViewElm client:only="svelte" /> <!-- not working -->
+	<!-- <SvelteVistaViewHook client:only="svelte" /> -->
+	
+	<!-- <VueHeroContentBox client:load /> -->
+	<!-- <VueVistaViewElm client:only="vue" /> -->
+	<!-- <VueVistaViewHook client:only="vue" /> -->
+
+
+	<!-- <ReactHeroContentBox client:load /> -->
+	<!-- <ReactVistaViewElm client:only="react" /> --> <!-- not working -->
+	<!-- <ReactVistaViewHook client:only="react" /> -->
+
+	<!-- <SolidHeroContentBox client:load /> -->
+	<!-- <SolidVistaViewElm client:only="solid" /> -->
+	<!-- <SolidVistaViewHook client:only="solid" /> -->
 	
 	<div class="sl-flex stack">
 		<div class="sl-flex copy">
