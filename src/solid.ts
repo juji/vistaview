@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from 'solid-js';
 import { vistaView } from './vistaview';
-import type { VistaParamsNeo, VistaInterface } from './vistaview';
+import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
 
 export function useVistaView(options: VistaParamsNeo): VistaInterface {
   const instance = vistaView(options);
@@ -23,7 +23,7 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewOptions extends VistaParamsNeo {
+export interface VistaViewOptions extends VistaOpt {
   id?: string;
   selector?: string;
   ref?: (instance: VistaInterface) => void;
@@ -31,17 +31,13 @@ export interface VistaViewOptions extends VistaParamsNeo {
 
 export function createVistaView(element: HTMLElement, options: VistaViewOptions) {
   const { selector = '> a', ref, ...vistaOptions } = options;
-  const galleryId =
-    options.id || element.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
-
-  if (!element.id) {
-    element.id = galleryId;
-  }
+  const galleryId = options.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
+  element.id = galleryId;
 
   onMount(() => {
     const instance = vistaView({
       ...vistaOptions,
-      elements: vistaOptions.elements || `#${galleryId} ${selector}`,
+      elements: `#${galleryId} ${selector}`,
     });
 
     if (ref && instance) {

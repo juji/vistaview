@@ -22,6 +22,7 @@ import { onMounted } from 'vue';
 import { vistaView } from 'vistaview';
 import 'vistaview/style.css';
 onMounted(() => {
+  console.log('Initializing VistaView for VueHeroContentBox');
   vistaView({ elements: '#vue-image-grid a' });
 });
 </script>

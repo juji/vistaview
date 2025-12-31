@@ -1,6 +1,7 @@
 import { onDestroy, onMount } from 'svelte';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
+import type { VistaOpt } from './vistaview';
 
 export function useVistaView(options: VistaParamsNeo): VistaInterface {
   const instance = vistaView(options);
@@ -23,7 +24,7 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewProps extends VistaParamsNeo {
+export interface VistaViewProps extends VistaOpt {
   id?: string;
   class?: string;
   selector?: string;
@@ -33,19 +34,14 @@ export interface VistaViewProps extends VistaParamsNeo {
 export function createVistaView(node: HTMLElement, params: VistaViewProps) {
   let instance: VistaInterface | null = null;
   const { selector = '> a', ref, ...options } = params;
-  const galleryId =
-    params.id || node.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
-
-  if (!node.id) {
-    node.id = galleryId;
-  }
+  const galleryId = params.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
+  node.id = galleryId;
 
   function init() {
     instance = vistaView({
       ...options,
-      elements: options.elements || `#${galleryId} ${selector}`,
+      elements: `#${galleryId} ${selector}`,
     });
-
     if (ref && instance) {
       Object.assign(ref, instance);
     }

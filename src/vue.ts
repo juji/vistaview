@@ -1,6 +1,6 @@
 import { defineComponent, onMounted, onUnmounted, ref, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
-import type { VistaParamsNeo, VistaInterface } from './vistaview';
+import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
 
 export function useVistaView(options: VistaParamsNeo): VistaInterface {
   let instance: VistaInterface | null = null;
@@ -28,7 +28,7 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewProps extends VistaParamsNeo {
+export interface VistaViewProps extends VistaOpt {
   id?: string;
   class?: string;
   selector?: string;
