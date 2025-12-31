@@ -45,13 +45,20 @@ export default defineConfig({
     allowedHosts: ['.trycloudflare.com'],
   },
   plugins: [
-    svelte(),
-    solid(),
+    svelte({
+      include: ['**/*.svelte'],
+    }),
+    solid({
+      include: ['src/solid.tsx'],
+    }),
     dts({
       insertTypesEntry: true,
     }),
   ],
   esbuild: {
+    // Configure JSX for React
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment',
     // Don't drop console/debugger via esbuild, let our plugin handle it
     ...(isProd && { pure: ['console.log'] }),
   },

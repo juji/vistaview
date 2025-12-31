@@ -5,10 +5,12 @@ import 'vistaview/style.css';
 import './styles.css';
 
 export default function ReactVistaViewElm() {
-  const vistaRef = useRef<VistaInterface>(null);
+  // const vistaRef = useRef<VistaInterface>(null);
   return (
     <div className="hero-content-box">
-      <VistaView ref={vistaRef} selector="> a" className="image-grid vista-view">
+      <VistaView 
+      // ref={vistaRef} 
+      selector="> a" className="image-grid vista-view">
         <a href="https://picsum.photos/seed/2222/1200/600" data-title="Image 1" className="img-1" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/2222/400/200" alt="Image 1" />
         </a>
