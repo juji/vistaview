@@ -695,6 +695,11 @@ export class VistaView {
       console.warn('This VistaView instance is not opened.');
       return;
     }
+
+    if (this.tempDeactivatedUi.includes('zoomIn')) {
+      return;
+    }
+
     this.throttle.fio(
       () => {
         const image = this.state.children.images.find((img) => img.pos === 0);
@@ -710,6 +715,11 @@ export class VistaView {
       console.warn('This VistaView instance is not opened.');
       return;
     }
+
+    if (this.tempDeactivatedUi.includes('zoomOut')) {
+      return;
+    }
+
     this.throttle.fio(
       () => {
         const image = this.state.children.images.find((img) => img.pos === 0);
