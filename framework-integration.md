@@ -168,6 +168,38 @@ const vista = useVistaView({
 </div>
 ```
 
+### Direct Usage
+
+For more control or to avoid the hook wrapper, you can use the core `vistaView` function directly:
+
+```svelte
+<script>
+import { onMount } from 'svelte';
+import { vistaView } from 'vistaview';
+import 'vistaview/style.css';
+
+let instance;
+
+onMount(() => {
+  instance = vistaView({
+    elements: '#my-gallery a',
+  });
+});
+
+function openGallery() {
+  instance?.open(0);
+}
+</script>
+
+<div id="my-gallery">
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</div>
+
+<button on:click={openGallery}>Open Gallery</button>
+```
+
 ## Solid
 
 ### Component (Recommended)
