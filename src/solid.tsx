@@ -1,3 +1,5 @@
+/** @jsxImportSource solid-js */
+
 import { onCleanup, onMount, createSignal } from 'solid-js';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
@@ -31,7 +33,7 @@ export interface VistaViewProps {
 
 export function VistaView(props: VistaViewProps & { children: any; id?: string; [key: string]: any }) {
   const [instance, setInstance] = createSignal<VistaInterface | null>(null);
-  let containerRef: HTMLDivElement;
+  let containerRef: HTMLDivElement | undefined;
 
   const { selector = '> a', options, ref, id, children, ...rest } = props;
   const galleryId = id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
@@ -44,8 +46,10 @@ export function VistaView(props: VistaViewProps & { children: any; id?: string; 
       elements: `#${galleryId} ${selector}`,
     });
 
-    setInstance(inst);
-    ref?.(inst);
+    if (inst) {
+      setInstance(inst);
+      ref?.(inst);
+    }
   });
 
   onCleanup(() => {
@@ -53,7 +57,7 @@ export function VistaView(props: VistaViewProps & { children: any; id?: string; 
   });
 
   return (
-    <div ref={containerRef!} {...rest} id={galleryId}>
+    <div ref={el => containerRef = el} {...rest} id={galleryId}>
       {children}
     </div>
   );

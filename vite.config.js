@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import solid from 'vite-plugin-solid';
 import { readdirSync } from 'fs';
 
 // Check if building UMD specifically
@@ -45,6 +46,7 @@ export default defineConfig({
   },
   plugins: [
     svelte(),
+    solid(),
     dts({
       insertTypesEntry: true,
     }),
@@ -92,7 +94,7 @@ export default defineConfig({
             react: resolve(__dirname, 'src/react.tsx'),
             vue: resolve(__dirname, 'src/vue.ts'),
             svelte: resolve(__dirname, 'src/svelte.ts'),
-            solid: resolve(__dirname, 'src/solid.ts'),
+            solid: resolve(__dirname, 'src/solid.tsx'),
             style: resolve(__dirname, 'src/style.css'),
             ...styleFiles,
             ...styleExtFiles,
