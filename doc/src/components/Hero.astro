@@ -67,16 +67,31 @@ if (image) {
 		</div>
 		{
 			actions.length > 0 && (
-				<div class="sl-flex actions">
-					{actions.map(
-						({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-							<LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
-								{text}
-								{icon?.html && <Fragment set:html={icon.html} />}
-							</LinkButton>
-						)
-					)}
-				</div>
+				<>
+					<p class="framework-text">Pick your framework:</p>
+					<div class="framework-buttons">
+						{actions.slice(0, 5).map(
+							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+								<div class="framework-button">
+									<LinkButton {href} {variant} icon={typeof icon === 'string' ? undefined : icon?.name} class:list={[className]} {...attrs}>
+										{ (typeof icon === 'string' ? icon : icon?.html) && <Fragment set:html={typeof icon === 'string' ? icon : icon?.html} />}
+										{text}
+									</LinkButton>
+								</div>
+							)
+						)}
+					</div>
+					<div class="github-button">
+						{actions.slice(5).map(
+							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+								<LinkButton {href} {variant} icon={typeof icon === 'string' ? undefined : icon?.name} class:list={[className]} {...attrs}>
+									{ (typeof icon === 'string' ? icon : icon?.html) && <Fragment set:html={typeof icon === 'string' ? icon : icon?.html} />}
+									{text}
+								</LinkButton>
+							)
+						)}
+					</div>
+				</>
 			)
 		}
 	</div>
@@ -89,6 +104,10 @@ if (image) {
 			align-items: center;
 			gap: 1rem;
 			padding-bottom: 1rem;
+
+			@media screen and (min-width: 50rem) {
+				grid-template-columns: 4fr 4fr !important;
+			}
 		}
 
 		.hero > img,
@@ -125,12 +144,55 @@ if (image) {
 		.tagline {
 			font-size: clamp(var(--sl-text-base), calc(0.0625rem + 2vw), var(--sl-text-xl));
 			color: var(--sl-color-gray-2);
+			max-width: 512px;
 		}
 
-		.actions {
-			gap: 1rem 2rem;
+		.framework-text {
+			font-size: var(--sl-text-lg);
+			font-weight: 600;
+			color: var(--sl-color-white);
+			margin: 0;
+			text-align: center;
+		}
+
+		.framework-buttons {
+			display: flex;
 			flex-wrap: wrap;
+			gap: 2rem;
 			justify-content: center;
+			max-width: 200px;
+			margin: 0 auto;
+
+			@media screen and (min-width: 400px) {
+				max-width: 100%;	
+			}
+
+			@media screen and (min-width: 800px) {
+				margin: 0;
+				justify-content: flex-start;
+			}
+		}
+
+		.github-button {
+			display: flex;
+			justify-content: center;
+			margin-top: 1rem;
+		}
+
+		.github-button .sl-link-button {
+			gap: 1rem !important;
+		}
+
+		.framework-button {
+			display: flex;
+			gap: 1rem;
+		}
+
+		.framework-button .sl-link-button {
+			display: flex !important;
+			flex-direction: column !important;
+			align-items: center;
+			gap: 0.25rem;
 		}
 
 		@media (min-width: 50rem) {
@@ -154,7 +216,11 @@ if (image) {
 				align-items: flex-start;
 			}
 
-			.actions {
+			.framework-text {
+				text-align: start;
+			}
+
+			.github-button {
 				justify-content: flex-start;
 			}
 
