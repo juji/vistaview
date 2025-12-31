@@ -186,7 +186,7 @@ const openGallery = () => {
 <button on:click={openGallery}>Open Gallery</button>
 ```
 
-You can also forward DOM attributes to the root container using the `divProps` prop (useful for `class`, `style`, `data-*`, `aria-*`, etc.):
+You can also pass HTML attributes directly to the root container (useful for `class`, `style`, `data-*`, `aria-*`, etc.):
 
 ```svelte
 <script>
@@ -200,7 +200,8 @@ let vista;
   selector="> a"
   ref={vista}
   id="my-gallery"
-  divProps={{ class: 'gallery grid', 'data-group': 'photos' }}
+  class="gallery grid"
+  data-group="photos"
 >
   <a href="/images/full.jpg">
     <img src="/images/thumb.jpg" alt="Photo" />
@@ -235,21 +236,21 @@ const vista = useVistaView({
 
 ## Solid
 
-### Directive (Recommended)
+### Component (Recommended)
 
-VistaView provides a `createVistaView` directive function:
+VistaView provides a declarative `VistaView` component:
 
 ```tsx
-import { createVistaView } from 'vistaview/solid';
+import { VistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
 
 function Gallery() {
   return (
-    <div use:createVistaView={{ selector: '> a' }}>
+    <VistaView selector="> a">
       <a href="/images/full.jpg">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
-    </div>
+    </VistaView>
   );
 }
 ```
@@ -257,7 +258,7 @@ function Gallery() {
 With ref for imperative control:
 
 ```tsx
-import { createVistaView } from 'vistaview/solid';
+import { VistaView } from 'vistaview/solid';
 import type { VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
 
@@ -266,11 +267,11 @@ function Gallery() {
 
   return (
     <>
-      <div use:createVistaView={{ selector: '> a', ref: (v) => (vista = v) }}>
+      <VistaView selector="> a" ref={(v) => (vista = v)}>
         <a href="/images/full.jpg">
           <img src="/images/thumb.jpg" alt="Photo" />
         </a>
-      </div>
+      </VistaView>
       <button onClick={() => vista?.open(0)}>Open Gallery</button>
     </>
   );
