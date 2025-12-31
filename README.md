@@ -337,8 +337,8 @@ VistaView provides official bindings for popular frameworks:
 
 - **React** — `useVistaView` hook and `<VistaView>` component
 - **Vue 3** — `useVistaView` composable and `<VistaView>` component
-- **Svelte** — `useVistaView` hook
-- **Solid** — `useVistaView` hook and `<VistaView>` component
+- **Svelte** — `useVistaView` hook and `createVistaView` action
+- **Solid** — `useVistaView` hook and `createVistaView` directive
 - **Angular** — Manual setup example
 - **Vanilla JS** — Works out of the box
 

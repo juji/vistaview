@@ -30,7 +30,6 @@ export interface VistaViewOptions extends VistaParamsNeo {
 }
 
 export function createVistaView(element: HTMLElement, options: VistaViewOptions) {
-  let instance: VistaInterface | null = null;
   const { selector = '> a', ref, ...vistaOptions } = options;
   const galleryId =
     options.id || element.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
@@ -40,7 +39,7 @@ export function createVistaView(element: HTMLElement, options: VistaViewOptions)
   }
 
   onMount(() => {
-    instance = vistaView({
+    const instance = vistaView({
       ...vistaOptions,
       elements: vistaOptions.elements || `#${galleryId} ${selector}`,
     });
@@ -48,10 +47,9 @@ export function createVistaView(element: HTMLElement, options: VistaViewOptions)
     if (ref && instance) {
       ref(instance);
     }
-  });
 
-  onCleanup(() => {
-    instance?.destroy();
-    instance = null;
+    onCleanup(() => {
+      instance?.destroy();
+    });
   });
 }
