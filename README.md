@@ -373,15 +373,21 @@ function Gallery() {
 
 ```svelte
 <script>
-import { VistaView } from 'vistaview/svelte';
+import { useVistaView } from 'vistaview/svelte';
 import 'vistaview/style.css';
+
+const id = 'gallery-' + Math.random().toString(36).slice(2);
+const vista = useVistaView({
+  elements: `#${id} a`,
+});
 </script>
 
-<VistaView selector="> a">
-  <a href="/full.jpg">
-    <img src="/thumb.jpg" alt="Photo" />
+<div id={id}>
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
   </a>
-</VistaView>
+  <button on:click={() => vista.open(0)}>Open Gallery</button>
+</div>
 ```
 
 ## Accessibility

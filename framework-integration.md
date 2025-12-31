@@ -147,73 +147,7 @@ const vista = useVistaView({
 
 ## Svelte
 
-### Component
-
-VistaView provides a declarative `VistaView` component:
-
-```svelte
-<script>
-import { VistaView } from 'vistaview/svelte';
-import 'vistaview/style.css';
-</script>
-
-<VistaView selector="> a">
-  <a href="/images/full.jpg">
-    <img src="/images/thumb.jpg" alt="Photo" />
-  </a>
-</VistaView>
-```
-
-With ref for imperative control:
-
-```svelte
-<script>
-import { VistaView } from 'vistaview/svelte';
-import 'vistaview/style.css';
-
-let vista;
-
-const openGallery = () => {
-  vista?.open(0);
-};
-</script>
-
-<VistaView selector="> a" ref={vista}>
-  <a href="/images/full.jpg">
-    <img src="/images/thumb.jpg" alt="Photo" />
-  </a>
-</VistaView>
-<button on:click={openGallery}>Open Gallery</button>
-```
-
-You can also pass HTML attributes directly to the root container (useful for `class`, `style`, `data-*`, `aria-*`, etc.):
-
-```svelte
-<script>
-import { VistaView } from 'vistaview/svelte';
-import 'vistaview/style.css';
-
-let vista;
-</script>
-
-<VistaView
-  selector="> a"
-  ref={vista}
-  id="my-gallery"
-  class="gallery grid"
-  data-group="photos"
->
-  <a href="/images/full.jpg">
-    <img src="/images/thumb.jpg" alt="Photo" />
-  </a>
-</VistaView>
-
-<button on:click={() => vista?.open(0)}>Open Gallery</button>
-```
-
-### Hook
-
-Alternatively, use the `useVistaView` hook for more control:
+VistaView provides a `useVistaView` hook for Svelte applications:
 
 ```svelte
 <script>
