@@ -2,3 +2,8 @@
 .content-panel {
   padding-inline: var(--sl-nav-pad-x) !important;
 }
+
+header > div {
+  max-width: var(--sl-content-width);
+  margin: 0 auto;
+}
