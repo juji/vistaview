@@ -1,7 +1,6 @@
 import { onDestroy } from 'svelte';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
-import type { VistaOpt } from './vistaview';
 
 export function useVistaView(options: VistaParamsNeo): VistaInterface {
   let instance: VistaInterface | null = null;
@@ -34,10 +33,3 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
     },
   };
 }
-
-export interface VistaViewProps extends VistaOpt {
-  selector?: string;
-  ref?: VistaInterface;
-}
-
-export { default as VistaView } from './VistaView.svelte';
