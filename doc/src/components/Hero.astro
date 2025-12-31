@@ -15,7 +15,6 @@ import ReactVistaViewElm from './react/ReactVistaViewElm';
 import ReactVistaViewHook from './react/ReactVistaViewHook';
 
 import SolidHeroContentBox from './solid/SolidHeroContentBox';
-import SolidVistaViewElm from './solid/SolidVistaViewElm';
 import SolidVistaViewHook from './solid/SolidVistaViewHook';
 const PAGE_TITLE_ID = '_top';
 
@@ -56,10 +55,10 @@ if (image) {
 	}
 	{rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
 	
-	<!-- <HeroContentBox client:load /> -->
+	<HeroContentBox client:load />
 
 	<!-- <SvelteHeroContentBox client:load /> -->
-	<SvelteVistaViewHook client:only="svelte" />
+	<!-- <SvelteVistaViewHook client:only="svelte" /> -->
 	
 	<!-- <VueHeroContentBox client:load /> -->
 	<!-- <VueVistaViewElm client:only="vue" /> -->
@@ -71,7 +70,6 @@ if (image) {
 	<!-- <ReactVistaViewHook client:only="react" /> -->
 
 	<!-- <SolidHeroContentBox client:load /> -->
-	<!-- <SolidVistaViewElm client:only="solid" /> -->
 	<!-- <SolidVistaViewHook client:only="solid" /> -->
 	
 	<div class="sl-flex stack">
