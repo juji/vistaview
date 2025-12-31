@@ -49,8 +49,9 @@ export class VistaView {
 
   private onClickElements: (e: PointerEvent) => void = (e) => {
     e.preventDefault();
-    const h = e.currentTarget as HTMLElement;
-    h.dataset.vvwIdx && this.open(parseInt(h.dataset.vvwIdx));
+    const list = this.qsOrigin(this.elements as string);
+    const index = Array.prototype.indexOf.call(list, e.currentTarget);
+    this.open(index);
   };
 
   private defaultOnClickHandler: (e: PointerEvent) => void = (e) => e.preventDefault();
@@ -103,9 +104,8 @@ export class VistaView {
     if (typeof this.elements === 'string') {
       const list = this.qsOrigin(this.elements as string);
       this.state.elmLength = list.length;
-      list.forEach((el, index) => {
+      list.forEach((el) => {
         const e = el as HTMLElement;
-        e.dataset.vvwIdx = index.toString();
         e.removeEventListener('click', this.defaultOnClickHandler);
         e.removeEventListener('pointerup', this.onClickElements);
         e.addEventListener('click', this.defaultOnClickHandler);
