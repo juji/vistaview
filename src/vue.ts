@@ -28,39 +28,32 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewProps extends VistaOpt {
-  id?: string;
-  class?: string;
+export interface VistaViewProps {
   selector?: string;
+  options?: VistaOpt;
 }
 
 export const VistaView = defineComponent({
   name: 'VistaView',
+  inheritAttrs: false,
   props: {
-    id: String,
-    class: String,
     selector: {
       type: String,
       default: '> a',
     },
-    elements: String,
-    extensions: Array as PropType<VistaParamsNeo['extensions']>,
-    closeOnScroll: Boolean,
-    history: Boolean,
+    options: Object as PropType<VistaOpt>,
   },
-  setup(props, { slots, expose }) {
+  setup(props, { slots, expose, attrs }) {
     const containerRef = ref<HTMLElement | null>(null);
     const instanceRef = ref<VistaInterface | null>(null);
-    const galleryId = props.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
+    const galleryId = attrs.id || `vvw-gallery-${Math.random().toString(36).substr(2, 9)}`;
 
     onMounted(() => {
       if (!containerRef.value) return;
 
-      const { id, class: className, selector, ...options } = props;
-
       instanceRef.value = vistaView({
-        ...options,
-        elements: options.elements || `#${galleryId} ${selector}`,
+        ...props.options,
+        elements: `#${galleryId} ${props.selector}`,
       });
     });
 
@@ -80,8 +73,8 @@ export const VistaView = defineComponent({
         'div',
         {
           ref: containerRef,
+          ...attrs,
           id: galleryId,
-          class: props.class,
         },
         slots.default?.()
       );
