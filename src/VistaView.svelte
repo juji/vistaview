@@ -1,8 +1,8 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { useVistaView } from './svelte';
-import type { VistaViewProps } from './svelte';
-import type { HTMLAttributes } from 'svelte/elements';
+// import type { VistaViewProps } from './svelte';
+// import type { HTMLAttributes } from 'svelte/elements';
 import type { VistaOpt } from './vistaview';
 
 export let id: string | undefined = undefined;
