@@ -28,15 +28,14 @@ export function useVistaView(options: VistaParamsNeo): VistaInterface {
   };
 }
 
-export interface VistaViewProps extends VistaOpt {
+export interface VistaViewProps {
   children: ReactNode;
-  className?: string;
-  id?: string;
   selector?: string;
+  options?: VistaOpt;
 }
 
-export const VistaView = forwardRef<VistaInterface, VistaViewProps>(
-  ({ children, className, id, selector = '> a', ...options }, ref) => {
+export const VistaView = forwardRef<VistaInterface, VistaViewProps & React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, selector = '> a', options, id, ...rest }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const instanceRef = useRef<VistaInterface | null>(null);
     const generatedId = useId();
@@ -59,7 +58,7 @@ export const VistaView = forwardRef<VistaInterface, VistaViewProps>(
     }, [galleryId, selector]);
 
     return (
-      <div ref={containerRef} id={galleryId} className={className}>
+      <div ref={containerRef} {...rest} id={galleryId}>
         {children}
       </div>
     );
