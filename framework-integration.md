@@ -202,51 +202,7 @@ function openGallery() {
 
 ## Solid
 
-### Component (Recommended)
-
-VistaView provides a declarative `VistaView` component:
-
-```tsx
-import { VistaView } from 'vistaview/solid';
-import 'vistaview/style.css';
-
-function Gallery() {
-  return (
-    <VistaView selector="> a">
-      <a href="/images/full.jpg">
-        <img src="/images/thumb.jpg" alt="Photo" />
-      </a>
-    </VistaView>
-  );
-}
-```
-
-With ref for imperative control:
-
-```tsx
-import { VistaView } from 'vistaview/solid';
-import type { VistaInterface } from 'vistaview';
-import 'vistaview/style.css';
-
-function Gallery() {
-  let vista: VistaInterface | undefined;
-
-  return (
-    <>
-      <VistaView selector="> a" ref={(v) => (vista = v)}>
-        <a href="/images/full.jpg">
-          <img src="/images/thumb.jpg" alt="Photo" />
-        </a>
-      </VistaView>
-      <button onClick={() => vista?.open(0)}>Open Gallery</button>
-    </>
-  );
-}
-```
-
-### Hook
-
-Alternatively, use the `useVistaView` hook for more control:
+VistaView provides a `useVistaView` hook:
 
 ```tsx
 import { useVistaView } from 'vistaview/solid';

@@ -344,8 +344,8 @@ VistaView provides official bindings for popular frameworks:
 
 - **React** — `useVistaView` hook and `<VistaView>` component
 - **Vue 3** — `useVistaView` composable and `<VistaView>` component
-- **Svelte** — `useVistaView` hook and `<VistaView>` component
-- **Solid** — `useVistaView` hook and `createVistaView` directive
+- **Svelte** — `useVistaView` hook
+- **Solid** — `useVistaView` hook
 - **Angular** — Manual setup example
 - **Vanilla JS** — Works out of the box
 
@@ -428,11 +428,11 @@ dist/styles/retro-arcade.css             2.03 kB │ gzip:  0.49 kB
 dist/styles/extensions/image-story.css   2.52 kB │ gzip:  0.72 kB
 dist/style.css                           7.06 kB │ gzip:  1.72 kB
 dist/extensions/logger.js                0.61 kB │ gzip:  0.23 kB
-dist/solid.js                            1.16 kB │ gzip:  0.51 kB
-dist/svelte.js                           1.23 kB │ gzip:  0.54 kB
+dist/solid.js                            0.77 kB │ gzip:  0.31 kB
+dist/svelte.js                           1.22 kB │ gzip:  0.37 kB
 dist/extensions/download.js              1.65 kB │ gzip:  0.76 kB
-dist/vue.js                              1.84 kB │ gzip:  0.74 kB
-dist/react.js                            2.12 kB │ gzip:  0.70 kB
+dist/vue.js                              1.68 kB │ gzip:  0.70 kB
+dist/react.js                            2.05 kB │ gzip:  0.68 kB
 dist/extensions/vimeo-video.js           2.91 kB │ gzip:  1.34 kB
 dist/extensions/streamable-video.js      2.95 kB │ gzip:  1.34 kB
 dist/extensions/vidyard-video.js         2.99 kB │ gzip:  1.35 kB
@@ -444,117 +444,117 @@ dist/extensions/openstreetmap.js         5.28 kB │ gzip:  2.06 kB
 dist/extensions/mapbox.js                5.48 kB │ gzip:  2.08 kB
 dist/vista-box-CQvGrjln.js              15.00 kB │ gzip:  3.93 kB
 dist/extensions/image-story.js          33.60 kB │ gzip: 10.84 kB
-dist/vistaview.js                       41.90 kB │ gzip: 10.30 kB
-[vite:dts] Declaration files built in 820ms.
+dist/vistaview.js                       41.90 kB │ gzip: 10.31 kB
+[vite:dts] Declaration files built in 936ms.
 
-✓ built in 1.06s
+✓ built in 1.23s
 
-> vistaview@0.10.7 build:umd
+> vistaview@0.10.20 build:umd
 
 vite v6.4.1 building for production...
 ✓ 21 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/vistaview.umd.js  42.59 kB │ gzip: 11.58 kB
-[vite:dts] Declaration files built in 773ms.
+dist/vistaview.umd.js  42.59 kB │ gzip: 11.60 kB
+[vite:dts] Declaration files built in 1073ms.
 
-✓ built in 886ms
+✓ built in 1.19s
 vite v6.4.1 building for production...
 ✓ 1 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/download.umd.js  1.58 kB │ gzip: 0.84 kB
-[vite:dts] Declaration files built in 778ms.
+[vite:dts] Declaration files built in 806ms.
 
-✓ built in 807ms
+✓ built in 841ms
 vite v6.4.1 building for production...
 ✓ 1 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/logger.umd.js  0.76 kB │ gzip: 0.37 kB
-[vite:dts] Declaration files built in 796ms.
+[vite:dts] Declaration files built in 797ms.
 
-✓ built in 821ms
+✓ built in 824ms
 vite v6.4.1 building for production...
 ✓ 5 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/image-story.umd.js  25.28 kB │ gzip: 9.81 kB
-[vite:dts] Declaration files built in 764ms.
+[vite:dts] Declaration files built in 794ms.
 
-✓ built in 858ms
+✓ built in 896ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/youtube-video.umd.js  14.28 kB │ gzip: 4.46 kB
-[vite:dts] Declaration files built in 766ms.
+[vite:dts] Declaration files built in 801ms.
 
-✓ built in 828ms
+✓ built in 864ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/vimeo-video.umd.js  13.90 kB │ gzip: 4.29 kB
-[vite:dts] Declaration files built in 767ms.
+[vite:dts] Declaration files built in 796ms.
 
-✓ built in 831ms
+✓ built in 862ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/dailymotion-video.umd.js  14.03 kB │ gzip: 4.31 kB
-[vite:dts] Declaration files built in 769ms.
-
-✓ built in 831ms
-vite v6.4.1 building for production...
-✓ 4 modules transformed.
-
-[vite:dts] Start generate declaration files...
-dist/extensions/wistia-video.umd.js  14.13 kB │ gzip: 4.38 kB
-[vite:dts] Declaration files built in 768ms.
+[vite:dts] Declaration files built in 767ms.
 
 ✓ built in 832ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
-dist/extensions/vidyard-video.umd.js  13.97 kB │ gzip: 4.29 kB
-[vite:dts] Declaration files built in 778ms.
+dist/extensions/wistia-video.umd.js  14.13 kB │ gzip: 4.38 kB
+[vite:dts] Declaration files built in 771ms.
 
-✓ built in 839ms
+✓ built in 835ms
+vite v6.4.1 building for production...
+✓ 4 modules transformed.
+
+[vite:dts] Start generate declaration files...
+dist/extensions/vidyard-video.umd.js  13.97 kB │ gzip: 4.29 kB
+[vite:dts] Declaration files built in 787ms.
+
+✓ built in 851ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/streamable-video.umd.js  13.94 kB │ gzip: 4.29 kB
-[vite:dts] Declaration files built in 751ms.
+[vite:dts] Declaration files built in 772ms.
 
-✓ built in 813ms
+✓ built in 835ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/google-maps.umd.js  14.78 kB │ gzip: 4.66 kB
-[vite:dts] Declaration files built in 771ms.
+[vite:dts] Declaration files built in 792ms.
 
-✓ built in 833ms
+✓ built in 861ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/mapbox.umd.js  16.07 kB │ gzip: 4.96 kB
-[vite:dts] Declaration files built in 799ms.
+[vite:dts] Declaration files built in 812ms.
 
-✓ built in 866ms
+✓ built in 879ms
 vite v6.4.1 building for production...
 ✓ 4 modules transformed.
 
 [vite:dts] Start generate declaration files...
 dist/extensions/openstreetmap.umd.js  15.87 kB │ gzip: 4.93 kB
-[vite:dts] Declaration files built in 782ms.
+[vite:dts] Declaration files built in 814ms.
 
-✓ built in 849ms
+✓ built in 879ms
 ```
 
 ## License
