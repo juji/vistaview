@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useId, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useRef, useCallback, useId, useImperativeHandle } from 'react';
 import type { ReactNode } from 'react';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
@@ -32,36 +32,35 @@ export interface VistaViewProps {
   children: ReactNode;
   selector?: string;
   options?: VistaOpt;
+  ref?: React.Ref<VistaInterface>;
 }
 
-export const VistaView = forwardRef<VistaInterface, VistaViewProps & React.HTMLAttributes<HTMLDivElement>>(
-  ({ children, selector = '> a', options, id, ...rest }, ref) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const instanceRef = useRef<VistaInterface | null>(null);
-    const generatedId = useId();
-    const galleryId = id || `vvw-gallery-${generatedId.replace(/:/g, '')}`;
+export function VistaView({ children, selector = '> a', options, id, ref, ...rest }: VistaViewProps & React.HTMLAttributes<HTMLDivElement>) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const instanceRef = useRef<VistaInterface | null>(null);
+  const generatedId = useId();
+  const galleryId = id || `vvw-gallery-${generatedId.replace(/:/g, '')}`;
 
-    useImperativeHandle(ref, () => instanceRef.current!, []);
+  useImperativeHandle(ref, () => instanceRef.current!, []);
 
-    useEffect(() => {
-      if (!containerRef.current) return;
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-      instanceRef.current = vistaView({
-        ...options,
-        elements: `#${galleryId} ${selector}`,
-      });
+    instanceRef.current = vistaView({
+      ...options,
+      elements: `#${galleryId} ${selector}`,
+    });
 
-      return () => {
-        instanceRef.current?.destroy();
-        instanceRef.current = null;
-      };
-    }, [galleryId, selector]);
+    return () => {
+      instanceRef.current?.destroy();
+      instanceRef.current = null;
+    };
+  }, [galleryId, selector]);
 
-    return (
-      <div ref={containerRef} {...rest} id={galleryId}>
-        {children}
-      </div>
-    );
-  }
-);
+  return (
+    <div ref={containerRef} {...rest} id={galleryId}>
+      {children}
+    </div>
+  );
+}
 
