@@ -3,19 +3,7 @@ import { Image } from 'astro:assets';
 import LinkButton from '../../node_modules/@astrojs/starlight/user-components/LinkButton.astro';
 import HeroContentBox from './HeroContentBox.astro';
 
-import VueHeroContentBox from './VueHeroContentBox.vue';
-import VueVistaViewElm from './VueVistaViewElm.vue';
-import VueVistaViewHook from './VueVistaViewHook.vue';
 
-import SvelteHeroContentBox from './SvelteHeroContentBox.svelte';
-import SvelteVistaViewHook from './SvelteVistaViewHook.svelte';
-
-import ReactHeroContentBox from './react/ReactHeroContentBox';
-import ReactVistaViewElm from './react/ReactVistaViewElm';
-import ReactVistaViewHook from './react/ReactVistaViewHook';
-
-import SolidHeroContentBox from './solid/SolidHeroContentBox';
-import SolidVistaViewHook from './solid/SolidVistaViewHook';
 const PAGE_TITLE_ID = '_top';
 
 const { data } = Astro.locals.starlightRoute.entry;
