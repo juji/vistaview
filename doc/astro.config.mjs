@@ -10,6 +10,9 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/juji/vistaview' }],
 			sidebar: [],
 			customCss: ['./src/styles/custom.css'],
+			components: {
+				Hero: './src/components/Hero.astro',
+			},
 		}),
 	],
 });
