@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { readdirSync } from 'fs';
 
 // Check if building UMD specifically
@@ -43,6 +44,7 @@ export default defineConfig({
     allowedHosts: ['.trycloudflare.com'],
   },
   plugins: [
+    svelte(),
     dts({
       insertTypesEntry: true,
     }),

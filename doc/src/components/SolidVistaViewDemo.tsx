@@ -1,29 +1,24 @@
-import { createVistaView } from 'vistaview/solid';
-import type { VistaInterface } from 'vistaview';
+import { VistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
-import { createSignal } from 'solid-js';
 
 export default function SolidVistaViewDemo() {
-  let vista: VistaInterface | undefined;
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <div use:createVistaView={{ selector: '> a', ref: (v) => (vista = v) }}>
-        <a href="https://picsum.photos/seed/2222/1200/600">
+    <div className="hero-content-box">
+      <VistaView selector="> a" className="image-grid vista-view">
+        <a href="https://picsum.photos/seed/2222/1200/600" data-title="Image 1" className="img-1" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/2222/400/200" alt="Image 1" />
         </a>
-        <a href="https://picsum.photos/seed/4444/800/800">
+        <a href="https://picsum.photos/seed/4444/800/800" data-title="Image 2" className="img-2" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/4444/200/200" alt="Image 2" />
         </a>
-        <a href="https://picsum.photos/seed/6666/800/800">
+        <a href="https://picsum.photos/seed/6666/800/800" data-title="Image 3" className="img-3" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/6666/200/200" alt="Image 3" />
         </a>
-        <a href="https://picsum.photos/seed/8888/1200/600">
+        <a href="https://picsum.photos/seed/8888/1200/600" data-title="Image 4" className="img-4" target="_blank" rel="noopener">
           <img src="https://picsum.photos/seed/8888/400/200" alt="Image 4" />
         </a>
-      </div>
-      <button style={{ marginTop: '16px' }} onClick={() => vista?.open(0)}>
-        Open Gallery
-      </button>
+      </VistaView>
     </div>
   );
 }
+// Add styles for .hero-content-box, .image-grid, etc. (same as VueHeroContentBox)

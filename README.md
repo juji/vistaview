@@ -344,7 +344,7 @@ VistaView provides official bindings for popular frameworks:
 
 - **React** — `useVistaView` hook and `<VistaView>` component
 - **Vue 3** — `useVistaView` composable and `<VistaView>` component
-- **Svelte** — `useVistaView` hook and `createVistaView` action
+- **Svelte** — `useVistaView` hook and `<VistaView>` component
 - **Solid** — `useVistaView` hook and `createVistaView` directive
 - **Angular** — Manual setup example
 - **Vanilla JS** — Works out of the box
@@ -367,6 +367,21 @@ function Gallery() {
     </div>
   );
 }
+```
+
+### Quick Example (Svelte)
+
+```svelte
+<script>
+import { VistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
+</script>
+
+<VistaView selector="> a">
+  <a href="/full.jpg">
+    <img src="/thumb.jpg" alt="Photo" />
+  </a>
+</VistaView>
 ```
 
 ## Accessibility

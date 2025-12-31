@@ -1,26 +1,37 @@
-import { onDestroy, onMount } from 'svelte';
+import { onDestroy } from 'svelte';
 import { vistaView } from './vistaview';
 import type { VistaParamsNeo, VistaInterface } from './vistaview';
 import type { VistaOpt } from './vistaview';
 
 export function useVistaView(options: VistaParamsNeo): VistaInterface {
-  const instance = vistaView(options);
+  let instance: VistaInterface | null = null;
+
+  const getInstance = () => {
+    if (!instance) {
+      instance = vistaView(options);
+    }
+    return instance;
+  };
 
   onDestroy(() => {
     instance?.destroy();
+    instance = null;
   });
 
   return {
-    open: (i = 0) => instance?.open(i),
-    close: () => instance?.close() ?? Promise.resolve(),
-    reset: () => instance?.reset(),
-    next: () => instance?.next(),
-    prev: () => instance?.prev(),
-    zoomIn: () => instance?.zoomIn(),
-    zoomOut: () => instance?.zoomOut(),
-    getCurrentIndex: () => instance?.getCurrentIndex() ?? -1,
-    view: (i: number) => instance?.view(i),
-    destroy: () => instance?.destroy(),
+    open: (i = 0) => getInstance()?.open(i),
+    close: () => getInstance()?.close() ?? Promise.resolve(),
+    reset: () => getInstance()?.reset(),
+    next: () => getInstance()?.next(),
+    prev: () => getInstance()?.prev(),
+    zoomIn: () => getInstance()?.zoomIn(),
+    zoomOut: () => getInstance()?.zoomOut(),
+    getCurrentIndex: () => getInstance()?.getCurrentIndex() ?? -1,
+    view: (i: number) => getInstance()?.view(i),
+    destroy: () => {
+      instance?.destroy();
+      instance = null;
+    },
   };
 }
 
@@ -31,30 +42,4 @@ export interface VistaViewProps extends VistaOpt {
   ref?: VistaInterface;
 }
 
-export function createVistaView(node: HTMLElement, params: VistaViewProps) {
-  let instance: VistaInterface | null = null;
-  const { selector = '> a', ref, ...options } = params;
-  const galleryId = params.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
-  node.id = galleryId;
-
-  function init() {
-    instance = vistaView({
-      ...options,
-      elements: `#${galleryId} ${selector}`,
-    });
-    if (ref && instance) {
-      Object.assign(ref, instance);
-    }
-  }
-
-  onMount(() => {
-    init();
-  });
-
-  return {
-    destroy() {
-      instance?.destroy();
-      instance = null;
-    },
-  };
-}
+export { default as VistaView } from './VistaView.svelte';

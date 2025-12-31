@@ -147,28 +147,28 @@ const vista = useVistaView({
 
 ## Svelte
 
-### Action (Recommended)
+### Component
 
-VistaView provides a `createVistaView` action for use with the `use:` directive:
+VistaView provides a declarative `VistaView` component:
 
 ```svelte
 <script>
-import { createVistaView } from 'vistaview/svelte';
+import { VistaView } from 'vistaview/svelte';
 import 'vistaview/style.css';
 </script>
 
-<div use:createVistaView={{ selector: '> a' }}>
+<VistaView selector="> a">
   <a href="/images/full.jpg">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
-</div>
+</VistaView>
 ```
 
 With ref for imperative control:
 
 ```svelte
 <script>
-import { createVistaView } from 'vistaview/svelte';
+import { VistaView } from 'vistaview/svelte';
 import 'vistaview/style.css';
 
 let vista;
@@ -178,12 +178,36 @@ const openGallery = () => {
 };
 </script>
 
-<div use:createVistaView={{ selector: '> a', ref: vista }}>
+<VistaView selector="> a" ref={vista}>
   <a href="/images/full.jpg">
     <img src="/images/thumb.jpg" alt="Photo" />
   </a>
-</div>
+</VistaView>
 <button on:click={openGallery}>Open Gallery</button>
+```
+
+You can also forward DOM attributes to the root container using the `divProps` prop (useful for `class`, `style`, `data-*`, `aria-*`, etc.):
+
+```svelte
+<script>
+import { VistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
+
+let vista;
+</script>
+
+<VistaView
+  selector="> a"
+  ref={vista}
+  id="my-gallery"
+  divProps={{ class: 'gallery grid', 'data-group': 'photos' }}
+>
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</VistaView>
+
+<button on:click={() => vista?.open(0)}>Open Gallery</button>
 ```
 
 ### Hook
