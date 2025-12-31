@@ -122,8 +122,9 @@ export function download(): VistaExtension {
 vistaView({
   elements: '#gallery a',
   controls: {
-    topRight: ['zoomIn', 'zoomOut', download(), 'close'],
+    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
+  extensions: [download()],
 });
 ```
 
@@ -422,15 +423,16 @@ export function imageStory({
 vistaView({
   elements: '#gallery a',
   controls: {
-    bottomCenter: [
-      imageStory({
-        getStory: async (index) => ({
-          content: '<p>Story for image ' + index + '</p>',
-        }),
-        maxStoryCache: 5,
-      }),
-    ],
+    bottomCenter: ['imageStory'],
   },
+  extensions: [
+    imageStory({
+      getStory: async (index) => ({
+        content: '<p>Story for image ' + index + '</p>',
+      }),
+      maxStoryCache: 5,
+    }),
+  ],
 });
 ```
 
@@ -669,8 +671,9 @@ vistaView({
 vistaView({
   elements: '#gallery a',
   controls: {
-    topRight: [myExtension()],
+    topRight: ['myExtension'],
   },
+  extensions: [myExtension()],
 });
 
 // Test cleanup on close
@@ -703,8 +706,28 @@ When publishing your extension:
 
 Check the official extensions for more examples:
 
-- **download** - Simple UI button with click handler
-- **logger** - Behavior-only extension for debugging
-- **image-story** - Complex extension with async data loading and caching
+**UI Extensions:**
+
+- **download** - Simple UI button with click handler for downloading images
+- **image-story** - Complex extension with async data loading, caching, and HTML content display
+
+**Video Platform Extensions:**
+
+- **youtube-video** - Custom VistaBox implementation for embedding YouTube videos
+- **vimeo-video** - Custom VistaBox implementation for embedding Vimeo videos
+- **dailymotion-video** - Custom VistaBox implementation for embedding Dailymotion videos
+- **wistia-video** - Custom VistaBox implementation for embedding Wistia videos
+- **vidyard-video** - Custom VistaBox implementation for embedding Vidyard videos
+- **streamable-video** - Custom VistaBox implementation for embedding Streamable videos
+
+**Map Extensions:**
+
+- **google-maps** - Custom VistaBox implementation for embedding Google Maps (requires API key)
+- **mapbox** - Custom VistaBox implementation for embedding Mapbox GL JS maps (requires access token)
+- **openstreetmap** - Custom VistaBox implementation for embedding OpenStreetMap with Leaflet.js (free, no API key)
+
+**Development Extensions:**
+
+- **logger** - Behavior-only extension for debugging lifecycle events
 
 All source code is available in the `src/lib/extensions/` directory of the VistaView repository.

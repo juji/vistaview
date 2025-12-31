@@ -36,8 +36,9 @@ import { download } from 'vistaview/extensions/download';
 vistaView({
   elements: '#gallery a',
   controls: {
-    topRight: ['zoomIn', 'zoomOut', download(), 'close'],
+    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
+  extensions: [download()],
 });
 ```
 
@@ -50,8 +51,9 @@ vistaView({
   VistaView.vistaView({
     elements: '#gallery a',
     controls: {
-      topRight: ['zoomIn', 'zoomOut', VistaView.download(), 'close'],
+      topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
     },
+    extensions: [VistaView.download()],
   });
 </script>
 ```
@@ -103,17 +105,18 @@ import 'vistaview/styles/extensions/image-story.css';
 vistaView({
   elements: '#gallery a',
   controls: {
-    bottomCenter: [
-      imageStory({
-        getStory: async (index) => ({
-          content: '<p>Story for image ' + index + '</p>',
-          onLoad: () => console.log('Story loaded'),
-          onUnload: () => console.log('Story unloaded'),
-        }),
-        maxStoryCache: 5, // Cache up to 5 stories
-      }),
-    ],
+    bottomCenter: ['imageStory'],
   },
+  extensions: [
+    imageStory({
+      getStory: async (index) => ({
+        content: '<p>Story for image ' + index + '</p>',
+        onLoad: () => console.log('Story loaded'),
+        onUnload: () => console.log('Story unloaded'),
+      }),
+      maxStoryCache: 5, // Cache up to 5 stories
+    }),
+  ],
 });
 ```
 
@@ -127,12 +130,13 @@ vistaView({
   VistaView.vistaView({
     elements: '#gallery a',
     controls: {
-      bottomCenter: [
-        VistaView.imageStory({
-          getStory: async (index) => ({ content: '<p>Story ' + index + '</p>' }),
-        }),
-      ],
+      bottomCenter: ['imageStory'],
     },
+    extensions: [
+      VistaView.imageStory({
+        getStory: async (index) => ({ content: '<p>Story ' + index + '</p>' }),
+      }),
+    ],
   });
 </script>
 ```
