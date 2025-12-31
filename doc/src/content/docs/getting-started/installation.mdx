@@ -1,0 +1,75 @@
+---
+title: Installation
+description: How to install VistaView in your project
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Package Manager
+
+Install VistaView using your preferred package manager:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install vistaview
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add vistaview
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add vistaview
+    ```
+  </TabItem>
+  <TabItem label="bun">
+    ```bash
+    bun add vistaview
+    ```
+  </TabItem>
+</Tabs>
+
+## CDN
+
+For quick prototyping or projects without a build tool, use the UMD build via CDN:
+
+<Tabs>
+  <TabItem label="unpkg">
+    ```html
+    <link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
+    <script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+    ```
+  </TabItem>
+  <TabItem label="jsDelivr">
+    ```html
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
+    ```
+  </TabItem>
+</Tabs>
+
+When using the UMD build, VistaView is available globally:
+
+```html
+<script>
+  // Access via the global VistaView object
+  VistaView.vistaView({
+    elements: '#gallery a',
+  });
+</script>
+```
+
+## Requirements
+
+- **Modern browsers** - Chrome, Firefox, Safari, Edge (latest versions)
+- **Node.js 16+** - For development with npm packages
+- **TypeScript 4.5+** - Optional, but recommended for type safety
+
+## Next Steps
+
+- [Quick Start Guide](/getting-started/quick-start) - Get up and running in minutes
+- [Framework Guides](/frameworks/vanilla) - Choose your framework
+- [Configuration](/concepts/configuration) - Learn about options

@@ -1,0 +1,313 @@
+---
+title: Vue
+description: Using VistaView with Vue 3
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+VistaView provides Vue 3 composables and components for seamless integration.
+
+## Installation
+
+```bash
+npm install vistaview
+```
+
+## API
+
+### `useVistaView` Composable
+
+For imperative control without rendering a container:
+
+```ts
+import { useVistaView } from 'vistaview/vue';
+import type { VistaInterface } from 'vistaview';
+```
+
+### `<VistaView>` Component
+
+A declarative component that manages gallery markup:
+
+```ts
+import { VistaView } from 'vistaview/vue';
+```
+
+## Basic Usage
+
+### Using the Composable
+
+```vue
+<script setup lang="ts">
+import { useVistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+
+const { open, close, next, prev } = useVistaView({
+  elements: '#gallery a',
+});
+</script>
+
+<template>
+  <div id="gallery">
+    <a href="/images/photo1-full.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+    <a href="/images/photo2-full.jpg">
+      <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+    </a>
+    <button @click="open(0)">Open Gallery</button>
+  </div>
+</template>
+```
+
+### Using the Component
+
+```vue
+<script setup lang="ts">
+import { VistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+</script>
+
+<template>
+  <VistaView selector="> a">
+    <a href="/images/photo1-full.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+    <a href="/images/photo2-full.jpg">
+      <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+    </a>
+  </VistaView>
+</template>
+```
+
+## Advanced Examples
+
+### With Template Ref for Imperative Control
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VistaView } from 'vistaview/vue';
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+const vistaRef = ref<{ instance: VistaInterface } | null>(null);
+
+const openGallery = () => {
+  vistaRef.value?.instance.open(0);
+};
+
+const nextImage = () => {
+  vistaRef.value?.instance.next();
+};
+</script>
+
+<template>
+  <div>
+    <VistaView ref="vistaRef" selector="> a">
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </VistaView>
+    <button @click="openGallery">Open Gallery</button>
+    <button @click="nextImage">Next Image</button>
+  </div>
+</template>
+```
+
+### With Extensions
+
+```vue
+<script setup lang="ts">
+import { VistaView } from 'vistaview/vue';
+import { download } from 'vistaview/extensions/download';
+import { youtubeVideo } from 'vistaview/extensions/youtube-video';
+import 'vistaview/style.css';
+
+const extensions = [download(), youtubeVideo()];
+const controls = {
+  topLeft: ['indexDisplay'],
+  topRight: ['download', 'zoomIn', 'zoomOut', 'close'],
+  bottomLeft: ['description'],
+};
+</script>
+
+<template>
+  <VistaView 
+    selector="> a"
+    :extensions="extensions"
+    :controls="controls"
+  >
+    <a href="/images/photo1-full.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-vistaview-alt="Rick Astley">
+      <img src="/images/video-thumb.jpg" alt="Video" />
+    </a>
+  </VistaView>
+</template>
+```
+
+### Dynamic Content with v-for
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+
+interface Photo {
+  id: number;
+  full: string;
+  thumb: string;
+  alt: string;
+}
+
+const photos = ref<Photo[]>([
+  { id: 1, full: '/photo1-full.jpg', thumb: '/photo1-thumb.jpg', alt: 'Photo 1' },
+  { id: 2, full: '/photo2-full.jpg', thumb: '/photo2-thumb.jpg', alt: 'Photo 2' },
+]);
+
+const addPhoto = () => {
+  const newId = photos.value.length + 1;
+  photos.value.push({
+    id: newId,
+    full: `/photo${newId}-full.jpg`,
+    thumb: `/photo${newId}-thumb.jpg`,
+    alt: `Photo ${newId}`,
+  });
+};
+</script>
+
+<template>
+  <div>
+    <VistaView selector="> a">
+      <a v-for="photo in photos" :key="photo.id" :href="photo.full">
+        <img :src="photo.thumb" :alt="photo.alt" />
+      </a>
+    </VistaView>
+    <button @click="addPhoto">Add Photo</button>
+  </div>
+</template>
+```
+
+### With Event Handlers
+
+```vue
+<script setup lang="ts">
+import { VistaView } from 'vistaview/vue';
+import type { VistaData, VistaView as VistaViewType } from 'vistaview';
+import 'vistaview/style.css';
+
+const handleOpen = (vistaView: VistaViewType) => {
+  console.log('Gallery opened');
+};
+
+const handleClose = (vistaView: VistaViewType) => {
+  console.log('Gallery closed');
+};
+
+const handleImageView = (data: VistaData, vistaView: VistaViewType) => {
+  console.log(`Viewing image ${data.index.to + 1}`);
+};
+</script>
+
+<template>
+  <VistaView 
+    selector="> a"
+    @open="handleOpen"
+    @close="handleClose"
+    @image-view="handleImageView"
+  >
+    <a href="/images/photo1-full.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+    <a href="/images/photo2-full.jpg">
+      <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+    </a>
+  </VistaView>
+</template>
+```
+
+### Using Options API
+
+```vue
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { VistaView } from 'vistaview/vue';
+import 'vistaview/style.css';
+
+export default defineComponent({
+  components: { VistaView },
+  data() {
+    return {
+      photos: [
+        { id: 1, full: '/photo1-full.jpg', thumb: '/photo1-thumb.jpg', alt: 'Photo 1' },
+        { id: 2, full: '/photo2-full.jpg', thumb: '/photo2-thumb.jpg', alt: 'Photo 2' },
+      ],
+    };
+  },
+  methods: {
+    addPhoto() {
+      const newId = this.photos.length + 1;
+      this.photos.push({
+        id: newId,
+        full: `/photo${newId}-full.jpg`,
+        thumb: `/photo${newId}-thumb.jpg`,
+        alt: `Photo ${newId}`,
+      });
+    },
+  },
+});
+</script>
+
+<template>
+  <div>
+    <VistaView selector="> a">
+      <a v-for="photo in photos" :key="photo.id" :href="photo.full">
+        <img :src="photo.thumb" :alt="photo.alt" />
+      </a>
+    </VistaView>
+    <button @click="addPhoto">Add Photo</button>
+  </div>
+</template>
+```
+
+## TypeScript Support
+
+VistaView is written in TypeScript and provides full type definitions:
+
+```vue
+<script setup lang="ts">
+import type { VistaInterface, VistaOpt } from 'vistaview';
+import { VistaView } from 'vistaview/vue';
+
+interface Photo {
+  full: string;
+  thumb: string;
+  alt: string;
+}
+
+interface Props extends VistaOpt {
+  photos: Photo[];
+}
+
+const props = defineProps<Props>();
+</script>
+
+<template>
+  <VistaView selector="> a" v-bind="$props">
+    <a v-for="(photo, i) in photos" :key="i" :href="photo.full">
+      <img :src="photo.thumb" :alt="photo.alt" />
+    </a>
+  </VistaView>
+</template>
+```
+
+## Next Steps
+
+- Learn about [configuration options](/concepts/configuration)
+- Explore [extensions](/concepts/extensions)
+- Customize with [themes and styling](/concepts/styling)

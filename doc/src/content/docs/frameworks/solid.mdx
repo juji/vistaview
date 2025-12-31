@@ -1,0 +1,398 @@
+---
+title: Solid
+description: Using VistaView with Solid
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+VistaView provides Solid hooks and directives for seamless integration.
+
+## Installation
+
+```bash
+npm install vistaview
+```
+
+## API
+
+### `useVistaView` Hook
+
+For imperative control without rendering a container:
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import type { VistaInterface } from 'vistaview';
+```
+
+### `createVistaView` Directive
+
+A Solid directive for use with the `use:` directive:
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+```
+
+## Basic Usage
+
+### Using the Hook
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const { open, close, next, prev } = useVistaView({
+    elements: '#gallery a',
+  });
+
+  return (
+    <div id="gallery">
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+      <button onClick={() => open(0)}>Open Gallery</button>
+    </div>
+  );
+}
+```
+
+### Using the Directive (Recommended)
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  return (
+    <div use:createVistaView={{ selector: '> a' }}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
+## Advanced Examples
+
+### With Ref for Imperative Control
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+function Gallery() {
+  let vista: VistaInterface | undefined;
+
+  return (
+    <>
+      <div use:createVistaView={{ selector: '> a', ref: (v) => (vista = v) }}>
+        <a href="/images/photo1-full.jpg">
+          <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+        </a>
+        <a href="/images/photo2-full.jpg">
+          <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+        </a>
+      </div>
+      <button onClick={() => vista?.open(0)}>Open Gallery</button>
+      <button onClick={() => vista?.next()}>Next Image</button>
+    </>
+  );
+}
+```
+
+### With Extensions
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import { download } from 'vistaview/extensions/download';
+import { youtubeVideo } from 'vistaview/extensions/youtube-video';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const options = {
+    selector: '> a',
+    extensions: [download(), youtubeVideo()],
+    controls: {
+      topLeft: ['indexDisplay'],
+      topRight: ['download', 'zoomIn', 'zoomOut', 'close'],
+      bottomLeft: ['description'],
+    },
+  };
+
+  return (
+    <div use:createVistaView={options}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-vistaview-alt="Rick Astley">
+        <img src="/images/video-thumb.jpg" alt="Video" />
+      </a>
+    </div>
+  );
+}
+```
+
+### Dynamic Content with For Component
+
+```tsx
+import { createSignal, For } from 'solid-js';
+import { createVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+interface Photo {
+  id: number;
+  full: string;
+  thumb: string;
+  alt: string;
+}
+
+function DynamicGallery() {
+  const [photos, setPhotos] = createSignal<Photo[]>([
+    { id: 1, full: '/photo1-full.jpg', thumb: '/photo1-thumb.jpg', alt: 'Photo 1' },
+    { id: 2, full: '/photo2-full.jpg', thumb: '/photo2-thumb.jpg', alt: 'Photo 2' },
+  ]);
+
+  const addPhoto = () => {
+    const newId = photos().length + 1;
+    setPhotos([
+      ...photos(),
+      {
+        id: newId,
+        full: `/photo${newId}-full.jpg`,
+        thumb: `/photo${newId}-thumb.jpg`,
+        alt: `Photo ${newId}`,
+      },
+    ]);
+  };
+
+  return (
+    <>
+      <div use:createVistaView={{ selector: '> a' }}>
+        <For each={photos()}>
+          {(photo) => (
+            <a href={photo.full}>
+              <img src={photo.thumb} alt={photo.alt} />
+            </a>
+          )}
+        </For>
+      </div>
+      <button onClick={addPhoto}>Add Photo</button>
+    </>
+  );
+}
+```
+
+### With Event Handlers
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import type { VistaData, VistaView } from 'vistaview';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const handleOpen = (vistaView: VistaView) => {
+    console.log('Gallery opened');
+  };
+
+  const handleClose = (vistaView: VistaView) => {
+    console.log('Gallery closed');
+  };
+
+  const handleImageView = (data: VistaData, vistaView: VistaView) => {
+    console.log(`Viewing image ${data.index.to + 1}`);
+  };
+
+  return (
+    <div
+      use:createVistaView={{
+        selector: '> a',
+        onOpen: handleOpen,
+        onClose: handleClose,
+        onImageView: handleImageView,
+      }}
+    >
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+import styles from './Gallery.module.css';
+
+function Gallery() {
+  return (
+    <div 
+      class={styles.gallery}
+      use:createVistaView={{ selector: '> a' }}
+    >
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
+```css
+/* Gallery.module.css */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+```
+
+### Reactive Configuration
+
+```tsx
+import { createSignal } from 'solid-js';
+import { createVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const [maxZoom, setMaxZoom] = createSignal(2);
+
+  return (
+    <>
+      <div
+        use:createVistaView={{
+          selector: '> a',
+          maxZoomLevel: maxZoom(),
+        }}
+      >
+        <a href="/images/photo1-full.jpg">
+          <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+        </a>
+        <a href="/images/photo2-full.jpg">
+          <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+        </a>
+      </div>
+      <button onClick={() => setMaxZoom(maxZoom() + 0.5)}>
+        Increase Max Zoom
+      </button>
+    </>
+  );
+}
+```
+
+## TypeScript Support
+
+VistaView is written in TypeScript and provides full type definitions:
+
+```tsx
+import type { VistaInterface, VistaViewOptions } from 'vistaview/solid';
+import type { Component } from 'solid-js';
+import { createVistaView } from 'vistaview/solid';
+
+interface Photo {
+  full: string;
+  thumb: string;
+  alt: string;
+}
+
+interface GalleryProps {
+  photos: Photo[];
+  options?: Partial<VistaViewOptions>;
+}
+
+const Gallery: Component<GalleryProps> = (props) => {
+  let vista: VistaInterface | undefined;
+
+  return (
+    <div
+      use:createVistaView={{
+        ...props.options,
+        selector: '> a',
+        ref: (v) => (vista = v),
+      }}
+    >
+      <For each={props.photos}>
+        {(photo) => (
+          <a href={photo.full}>
+            <img src={photo.thumb} alt={photo.alt} />
+          </a>
+        )}
+      </For>
+    </div>
+  );
+};
+
+export default Gallery;
+```
+
+## SolidStart Considerations
+
+When using VistaView with SolidStart, you may need to ensure client-side only execution:
+
+```tsx
+import { createVistaView } from 'vistaview/solid';
+import { isServer } from 'solid-js/web';
+import 'vistaview/style.css';
+
+function Gallery() {
+  if (isServer) {
+    return (
+      <div>
+        <a href="/images/photo1-full.jpg">
+          <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div use:createVistaView={{ selector: '> a' }}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
+Or use the `clientOnly` helper:
+
+```tsx
+import { lazy } from 'solid-js';
+
+const Gallery = lazy(() => import('./Gallery'));
+
+function App() {
+  return (
+    <div>
+      <h1>My Gallery</h1>
+      <Gallery />
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+- Learn about [configuration options](/concepts/configuration)
+- Explore [extensions](/concepts/extensions)
+- Customize with [themes and styling](/concepts/styling)

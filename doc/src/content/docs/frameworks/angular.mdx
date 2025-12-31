@@ -1,0 +1,357 @@
+---
+title: Angular
+description: Using VistaView with Angular
+---
+
+VistaView can be integrated into Angular applications with manual setup.
+
+## Installation
+
+```bash
+npm install vistaview
+```
+
+## Basic Setup
+
+### Component with Gallery
+
+```typescript
+// gallery.component.ts
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { vistaView, type VistaInterface } from 'vistaview';
+
+@Component({
+  selector: 'app-gallery',
+  templateUrl: './gallery.component.html',
+  styleUrls: ['./gallery.component.css']
+})
+export class GalleryComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('container') container!: ElementRef;
+  private vista: VistaInterface | null = null;
+  private id = `gallery-${Math.random().toString(36).slice(2)}`;
+
+  ngAfterViewInit() {
+    this.vista = vistaView({
+      elements: `#${this.id} a`,
+    });
+  }
+
+  ngOnDestroy() {
+    this.vista?.destroy();
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  open(index: number = 0) {
+    this.vista?.open(index);
+  }
+
+  next() {
+    this.vista?.next();
+  }
+
+  prev() {
+    this.vista?.prev();
+  }
+}
+```
+
+```html
+<!-- gallery.component.html -->
+<div #container [id]="getId()">
+  <a href="/images/photo1-full.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+  <a href="/images/photo3-full.jpg">
+    <img src="/images/photo3-thumb.jpg" alt="Photo 3" />
+  </a>
+</div>
+
+<button (click)="open(0)">Open Gallery</button>
+<button (click)="next()">Next</button>
+<button (click)="prev()">Previous</button>
+```
+
+```css
+/* gallery.component.css or add to global styles */
+@import 'vistaview/style.css';
+```
+
+### Global Styles Setup
+
+Add to your `angular.json`:
+
+```json
+{
+  "projects": {
+    "your-app": {
+      "architect": {
+        "build": {
+          "options": {
+            "styles": [
+              "src/styles.css",
+              "node_modules/vistaview/dist/style.css"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Advanced Examples
+
+### With Extensions
+
+```typescript
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { vistaView, type VistaInterface } from 'vistaview';
+import { download } from 'vistaview/extensions/download';
+import { youtubeVideo } from 'vistaview/extensions/youtube-video';
+
+@Component({
+  selector: 'app-gallery',
+  templateUrl: './gallery.component.html',
+})
+export class GalleryComponent implements AfterViewInit, OnDestroy {
+  private vista: VistaInterface | null = null;
+  private id = `gallery-${Math.random().toString(36).slice(2)}`;
+
+  ngAfterViewInit() {
+    this.vista = vistaView({
+      elements: `#${this.id} a`,
+      extensions: [download(), youtubeVideo()],
+      controls: {
+        topLeft: ['indexDisplay'],
+        topRight: ['download', 'zoomIn', 'zoomOut', 'close'],
+        bottomLeft: ['description'],
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    this.vista?.destroy();
+  }
+
+  getId() {
+    return this.id;
+  }
+}
+```
+
+### Dynamic Content with *ngFor
+
+```typescript
+// gallery.component.ts
+import { Component, AfterViewInit, OnDestroy, OnChanges } from '@angular/core';
+import { vistaView, type VistaInterface } from 'vistaview';
+
+interface Photo {
+  id: number;
+  full: string;
+  thumb: string;
+  alt: string;
+}
+
+@Component({
+  selector: 'app-gallery',
+  templateUrl: './gallery.component.html',
+})
+export class GalleryComponent implements AfterViewInit, OnDestroy, OnChanges {
+  private vista: VistaInterface | null = null;
+  private id = `gallery-${Math.random().toString(36).slice(2)}`;
+
+  photos: Photo[] = [
+    { id: 1, full: '/photo1-full.jpg', thumb: '/photo1-thumb.jpg', alt: 'Photo 1' },
+    { id: 2, full: '/photo2-full.jpg', thumb: '/photo2-thumb.jpg', alt: 'Photo 2' },
+  ];
+
+  ngAfterViewInit() {
+    this.initVistaView();
+  }
+
+  ngOnChanges() {
+    // Reinitialize when photos change
+    this.vista?.destroy();
+    setTimeout(() => this.initVistaView(), 0);
+  }
+
+  ngOnDestroy() {
+    this.vista?.destroy();
+  }
+
+  private initVistaView() {
+    this.vista = vistaView({
+      elements: `#${this.id} a`,
+    });
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  addPhoto() {
+    const newId = this.photos.length + 1;
+    this.photos = [
+      ...this.photos,
+      {
+        id: newId,
+        full: `/photo${newId}-full.jpg`,
+        thumb: `/photo${newId}-thumb.jpg`,
+        alt: `Photo ${newId}`,
+      },
+    ];
+  }
+}
+```
+
+```html
+<!-- gallery.component.html -->
+<div [id]="getId()">
+  <a *ngFor="let photo of photos" [href]="photo.full">
+    <img [src]="photo.thumb" [alt]="photo.alt" />
+  </a>
+</div>
+
+<button (click)="addPhoto()">Add Photo</button>
+```
+
+### With Event Handlers
+
+```typescript
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { vistaView, type VistaInterface, type VistaData, type VistaView } from 'vistaview';
+
+@Component({
+  selector: 'app-gallery',
+  templateUrl: './gallery.component.html',
+})
+export class GalleryComponent implements AfterViewInit, OnDestroy {
+  private vista: VistaInterface | null = null;
+  private id = `gallery-${Math.random().toString(36).slice(2)}`;
+
+  ngAfterViewInit() {
+    this.vista = vistaView({
+      elements: `#${this.id} a`,
+      onOpen: (vistaView: VistaView) => {
+        console.log('Gallery opened');
+      },
+      onClose: (vistaView: VistaView) => {
+        console.log('Gallery closed');
+      },
+      onImageView: (data: VistaData, vistaView: VistaView) => {
+        console.log(`Viewing image ${data.index.to + 1}`);
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    this.vista?.destroy();
+  }
+
+  getId() {
+    return this.id;
+  }
+}
+```
+
+### As a Directive
+
+Create a custom directive for easier usage:
+
+```typescript
+// vista-view.directive.ts
+import { 
+  Directive, 
+  ElementRef, 
+  Input, 
+  OnInit, 
+  OnDestroy 
+} from '@angular/core';
+import { vistaView, type VistaInterface, type VistaOpt } from 'vistaview';
+
+@Directive({
+  selector: '[appVistaView]'
+})
+export class VistaViewDirective implements OnInit, OnDestroy {
+  @Input() vistaOptions: VistaOpt = {};
+  @Input() vistaSelector: string = '> a';
+  
+  private vista: VistaInterface | null = null;
+  private id: string;
+
+  constructor(private el: ElementRef<HTMLElement>) {
+    this.id = `vista-${Math.random().toString(36).slice(2)}`;
+  }
+
+  ngOnInit() {
+    const element = this.el.nativeElement;
+    if (!element.id) {
+      element.id = this.id;
+    }
+
+    this.vista = vistaView({
+      ...this.vistaOptions,
+      elements: `#${element.id} ${this.vistaSelector}`,
+    });
+  }
+
+  ngOnDestroy() {
+    this.vista?.destroy();
+  }
+}
+```
+
+```typescript
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { VistaViewDirective } from './vista-view.directive';
+
+@NgModule({
+  declarations: [
+    VistaViewDirective
+  ],
+  imports: [BrowserModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+```html
+<!-- Usage -->
+<div appVistaView [vistaSelector]="'> a'">
+  <a href="/images/photo1-full.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+</div>
+```
+
+## TypeScript Configuration
+
+Ensure your `tsconfig.json` includes:
+
+```json
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
+  }
+}
+```
+
+## Next Steps
+
+- Learn about [configuration options](/concepts/configuration)
+- Explore [extensions](/concepts/extensions)
+- Customize with [themes and styling](/concepts/styling)

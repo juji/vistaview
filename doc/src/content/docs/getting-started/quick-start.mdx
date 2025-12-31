@@ -1,0 +1,171 @@
+---
+title: Quick Start
+description: Get up and running with VistaView in minutes
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Get VistaView up and running in just a few steps.
+
+## Basic Setup
+
+### 1. Install VistaView
+
+```bash
+npm install vistaview
+```
+
+### 2. Set up your HTML
+
+```html
+<div id="gallery">
+  <a href="/images/photo1-full.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+  <a href="/images/photo3-full.jpg">
+    <img src="/images/photo3-thumb.jpg" alt="Photo 3" />
+  </a>
+</div>
+```
+
+### 3. Initialize VistaView
+
+```js
+import { vistaView } from 'vistaview';
+import 'vistaview/style.css';
+
+vistaView({
+  elements: '#gallery a',
+});
+```
+
+That's it! Click any image to open the lightbox.
+
+## Alternative Methods
+
+### Using Images Directly
+
+```html
+<div id="gallery">
+  <img src="/images/thumb1.jpg" data-vistaview-src="/images/full1.jpg" alt="Photo 1" />
+  <img src="/images/thumb2.jpg" data-vistaview-src="/images/full2.jpg" alt="Photo 2" />
+</div>
+```
+
+```js
+vistaView({
+  elements: '#gallery img',
+});
+```
+
+### Using JavaScript Array
+
+```js
+vistaView({
+  elements: [
+    { src: '/images/photo1.jpg', alt: 'Mountain landscape' },
+    { src: '/images/photo2.jpg', alt: 'Ocean sunset' },
+    { 
+      src: '/images/photo3-800.jpg', 
+      alt: 'City skyline',
+      srcSet: '/images/photo3-800.jpg 800w, /images/photo3-1200.jpg 1200w'
+    },
+  ],
+});
+```
+
+:::note
+When using a JavaScript array, thumbnails are not supported. Use DOM elements (anchor tags or img tags) for progressive loading.
+:::
+
+## Framework Integration
+
+Choose your framework for specific integration guides:
+
+<Tabs>
+  <TabItem label="Vanilla JS">
+    [View Vanilla JS Guide →](/frameworks/vanilla)
+  </TabItem>
+  <TabItem label="React">
+    [View React Guide →](/frameworks/react)
+  </TabItem>
+  <TabItem label="Vue">
+    [View Vue Guide →](/frameworks/vue)
+  </TabItem>
+  <TabItem label="Svelte">
+    [View Svelte Guide →](/frameworks/svelte)
+  </TabItem>
+  <TabItem label="Solid">
+    [View Solid Guide →](/frameworks/solid)
+  </TabItem>
+  <TabItem label="Angular">
+    [View Angular Guide →](/frameworks/angular)
+  </TabItem>
+</Tabs>
+
+## Common Options
+
+Customize your lightbox with these popular options:
+
+```js
+vistaView({
+  elements: '#gallery a',
+  
+  // Animation speed (default: 333ms)
+  animationDurationBase: 500,
+  
+  // Maximum zoom level (default: 2)
+  maxZoomLevel: 3,
+  
+  // Number of images to preload (default: 1)
+  preloads: 2,
+  
+  // Show arrows on mobile (default: false)
+  arrowOnSmallScreens: true,
+  
+  // Event handlers
+  onOpen: (vistaView) => {
+    console.log('Gallery opened');
+  },
+  onImageView: (data, vistaView) => {
+    console.log(`Viewing image ${data.index.to + 1}`);
+  },
+});
+```
+
+## Adding Extensions
+
+Enhance VistaView with extensions like download buttons and video support:
+
+```js
+import { vistaView } from 'vistaview';
+import { download } from 'vistaview/extensions/download';
+import { youtubeVideo } from 'vistaview/extensions/youtube-video';
+import 'vistaview/style.css';
+
+vistaView({
+  elements: '#gallery a',
+  extensions: [download(), youtubeVideo()],
+  controls: {
+    topRight: ['download', 'zoomIn', 'zoomOut', 'close'],
+  },
+});
+```
+
+## Keyboard & Touch Controls
+
+VistaView works out of the box with:
+
+- **Keyboard**: Arrow keys to navigate, Esc to close, ↑↓ to zoom
+- **Touch**: Swipe to navigate, pinch to zoom, swipe up/down to close
+- **Mouse**: Click arrows, zoom buttons, drag to pan when zoomed
+
+## Next Steps
+
+- [Learn about configuration options](/concepts/configuration)
+- [Explore extensions](/concepts/extensions)
+- [Customize with themes](/concepts/styling)
+- [Add keyboard & touch interactions](/concepts/interactions)
