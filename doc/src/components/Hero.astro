@@ -44,21 +44,6 @@ if (image) {
 	{rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
 	
 	<HeroContentBox />
-
-	<!-- <SvelteHeroContentBox client:load /> -->
-	<!-- <SvelteVistaViewHook client:only="svelte" /> -->
-	
-	<!-- <VueHeroContentBox client:load /> -->
-	<!-- <VueVistaViewElm client:only="vue" /> -->
-	<!-- <VueVistaViewHook client:only="vue" /> -->
-
-
-	<!-- <ReactHeroContentBox client:load /> -->
-	<!-- <ReactVistaViewElm client:only="react" /> -->
-	<!-- <ReactVistaViewHook client:only="react" /> -->
-
-	<!-- <SolidHeroContentBox client:load /> -->
-	<!-- <SolidVistaViewHook client:only="solid" /> -->
 	
 	<div class="sl-flex stack main-left">
 		<div class="sl-flex copy">
@@ -83,10 +68,10 @@ if (image) {
 							)
 						)}
 					</div>
-					<div class="github-button">
+					<div class="action-buttons">
 						{actions.slice(5).map(
-							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-								<LinkButton {href} {variant} icon={typeof icon === 'string' ? undefined : icon?.name} class:list={[className]} {...attrs}>
+							({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }, index) => (
+								<LinkButton {href} {variant} icon={typeof icon === 'string' ? undefined : icon?.name} class:list={[className, index === 0 ? 'docs-button' : 'github-button']} {...attrs}>
 									{ (typeof icon === 'string' ? icon : icon?.html) && <Fragment set:html={typeof icon === 'string' ? icon : icon?.html} />}
 									{text}
 								</LinkButton>
@@ -180,13 +165,42 @@ if (image) {
 			}
 		}
 
-		.github-button {
+		.action-buttons {
 			display: flex;
+			gap: 1rem;
 			justify-content: center;
+			flex-wrap: wrap;
 		}
 
-		.github-button .sl-link-button {
+		.action-buttons .sl-link-button {
 			gap: 1rem !important;
+			border-radius: 999px;
+			padding: 0.75rem 1.5rem !important;
+			font-weight: 600;
+			transition: all 0.2s ease;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		}
+
+		.action-buttons .sl-link-button:hover {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		}
+
+		.action-buttons .docs-button {
+			background: #0b7954;
+			color: white;
+		}
+
+		.action-buttons .docs-button:hover {
+			background: #059669;
+		}
+
+		.action-buttons .github-button {
+			background: #2d2d2d;
+			color: white;
+		}
+
+		.action-buttons .github-button:hover {
+			background: #3d3d3d;
 		}
 
 		.framework-button {
@@ -225,7 +239,7 @@ if (image) {
 				text-align: start;
 			}
 
-			.github-button {
+			.action-buttons {
 				justify-content: flex-start;
 			}
 
