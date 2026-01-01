@@ -30,10 +30,10 @@
 	<div>
 		<div class="extensions-demo">
 			<div class="extensions-gallery">
-				<a href="https://picsum.photos/seed/demo1/800/600" target="_blank" rel="noopener">
+				<a href="https://picsum.photos/seed/demo1/800/600" target="_blank" rel="noopener" class="image-link">
 					<img src="https://picsum.photos/seed/demo1/400/300" alt="Demo image with extensions" />
 				</a>
-				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener">
+				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener" class="image-link">
 					<img src="https://picsum.photos/seed/demo2/400/300" alt="Another demo image" />
 				</a>
 			</div>
@@ -84,12 +84,13 @@
 
     // Add video thumbnails to gallery
     const gallery = document.querySelector('.extensions-gallery');
-    function addVideoToGallery(url, thumbnail, alt) {
+    function addVideoToGallery(url, thumbnail, alt, className) {
       console.log('Adding video to gallery:', url);
         const link = document.createElement('a');
         link.href = url;
         link.target = '_blank';
         link.rel = 'noopener';
+        link.classList.add(className);
         const img = document.createElement('img');
         img.src = thumbnail;
         img.alt = alt;
@@ -97,12 +98,12 @@
         gallery.appendChild(link);
     }
 
-    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video');
-    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video');
-    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video');
-    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video');
-    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video');
-    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video');
+    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video', 'video-link');
+    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video', 'video-link');
+    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video', 'video-link');
+    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video', 'video-link');
+    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video', 'video-link');
+    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video', 'video-link');
 
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
@@ -197,7 +198,7 @@
 
 	.extensions-gallery img {
 		width: 100%;
-		height: 120px;
+		height: 100%;
 		object-fit: cover;
 		display: block;
 	}
