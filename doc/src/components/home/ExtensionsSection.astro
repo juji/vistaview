@@ -11,7 +11,7 @@
 		<div class="extensions-grid">
 			<div class="extension-card">
 				<h3>Video Support</h3>
-				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, and <strong>Streamable</strong>.</p>
+				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, <strong>Streamable</strong>, and <strong>Twitch</strong>.</p>
 			</div>
 
 			<div class="extension-card">
@@ -51,6 +51,7 @@
 <script src="https://unpkg.com/vistaview/dist/extensions/wistia-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/vidyard-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/streamable-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/twitch-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/mapbox.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
@@ -62,20 +63,23 @@
     const videoUrl = 'https://www.youtube.com/watch?v=GwJrZBe8JX4';
     const thumbnailUrl = window.VistaView.getYouTubeThumbnail(videoUrl, 'hq');
 
-    const dailimotionVideoUrl = 'https://www.dailymotion.com/video/x9wmko2';
+    const dailimotionVideoUrl = 'https://www.dailymotion.com/video/x7xvssw';
     const dailymotionThumbnailUrl = window.VistaView.getDailymotionThumbnail(dailimotionVideoUrl);
 
-    const vimeoVideoUrl = 'https://vimeo.com/299708886';
+    const vimeoVideoUrl = 'https://vimeo.com/30673387';
     const vimeoThumbnailUrl = window.VistaView.getVimeoThumbnail(vimeoVideoUrl);
 
-    const wistiaVideoUrl = 'https://jujiyangasli.wistia.com/medias/jjy2yxvi8p';
+    const wistiaVideoUrl = 'https://jujiyangasli.wistia.com/medias/5tel0p2wua';
     const wistiaThumbnailUrl = await window.VistaView.getWistiaThumbnail(wistiaVideoUrl);
 
-    const vidyardVideoUrl = 'https://share.vidyard.com/watch/zxR1bKcsVcEmTC1HpDWXgu';
+    const vidyardVideoUrl = 'https://share.vidyard.com/watch/GRJFiCEc9uSqJELta26in3';
     const vidyardThumbnailUrl = window.VistaView.getVidyardThumbnail(vidyardVideoUrl);
 
-    const streamableVideoUrl = 'https://streamable.com/wx6lvl';
+    const streamableVideoUrl = 'https://streamable.com/0skbol';
     const streamableThumbnailUrl = window.VistaView.getStreamableThumbnail(streamableVideoUrl);
+
+    const twitchVideoUrl = 'https://www.twitch.tv/videos/123456789';
+    const twitchThumbnailUrl = window.VistaView.getTwitchThumbnail(twitchVideoUrl);
 
     // Maps configuration - loaded from environment variables
     // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
@@ -103,6 +107,7 @@
     addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video');
     addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video');
     addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video');
+    addVideoToGallery(twitchVideoUrl, twitchThumbnailUrl, 'Twitch video');
 
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
@@ -116,8 +121,7 @@
 					window.VistaView.vimeoVideo(),
 					window.VistaView.wistiaVideo(),
 					window.VistaView.vidyardVideo(),
-					window.VistaView.streamableVideo(),
-					// window.VistaView.googleMaps(),
+					window.VistaView.streamableVideo(),					window.VistaView.twitchVideo(),					// window.VistaView.googleMaps(),
 					// window.VistaView.mapbox(),
 					// window.VistaView.openStreetMap()
 				]
