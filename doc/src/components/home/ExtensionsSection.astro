@@ -30,10 +30,10 @@
 	<div>
 		<div class="extensions-demo">
 			<div class="extensions-gallery">
-				<a href="https://picsum.photos/seed/demo1/800/600" target="_blank" rel="noopener" class="image-link">
+				<a href="https://picsum.photos/seed/demo1/800/600" target="_blank" rel="noopener" class="gallery-link">
 					<img src="https://picsum.photos/seed/demo1/400/300" alt="Demo image with extensions" />
 				</a>
-				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener" class="image-link">
+				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener" class="gallery-link">
 					<img src="https://picsum.photos/seed/demo2/400/300" alt="Another demo image" />
 				</a>
 			</div>
@@ -98,12 +98,12 @@
         gallery.appendChild(link);
     }
 
-    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video', 'video-link');
-    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video', 'video-link');
-    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video', 'video-link');
-    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video', 'video-link');
-    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video', 'video-link');
-    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video', 'video-link');
+    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video', 'gallery-link');
+    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video', 'gallery-link');
+    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video', 'gallery-link');
+    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video', 'gallery-link');
+    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video', 'gallery-link');
+    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video', 'gallery-link');
 
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
@@ -126,6 +126,19 @@
 		}
 	});
 </script>
+
+<style is:global>
+  a.gallery-link {
+		display: block;
+		border-radius: 0.25rem;
+		overflow: hidden;
+		transition: transform 0.2s ease;
+	}
+
+  a.gallery-link:hover {
+		transform: scale(1.05);
+	}
+</style>
 
 <style>
 	.extensions-section {
@@ -183,17 +196,6 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 		gap: 1rem;
-	}
-
-	.extensions-gallery a {
-		display: block;
-		border-radius: 0.25rem;
-		overflow: hidden;
-		transition: transform 0.2s ease;
-	}
-
-	.extensions-gallery a:hover {
-		transform: scale(1.05);
 	}
 
 	.extensions-gallery img {
