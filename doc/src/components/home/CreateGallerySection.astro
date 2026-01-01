@@ -9,8 +9,9 @@ import CreateGalleryExample from './CreateGalleryExample.astro';
 		<h2>Build your own gallery</h2>
 		<p>
 			VistaView empowers you to build your own image galleries with complete control over the design and functionality. 
-			It works with rounded corners, <code>object-fit: contain</code> or <code>object-fit: cover</code>.
+			It detects rounded corners, and <code>object-fit: contain</code> or <code>object-fit: cover</code>.
 		</p>
+		<p>It also displays your alt attribute as a caption for each image, with the option to override it using a custom attribute (see the "A Calm lake" example).</p>
 	</div>
 	<div>
 		<CreateGalleryExample />
@@ -33,11 +34,5 @@ import CreateGalleryExample from './CreateGalleryExample.astro';
 	.create-gallery-section h2 {
 		font-size: var(--sl-text-2xl);
 		margin-bottom: 1rem;
-	}
-
-	.create-gallery-section p {
-		max-width: 60ch;
-		margin: 0;
-		color: var(--sl-color-gray-3);
 	}
 </style>
