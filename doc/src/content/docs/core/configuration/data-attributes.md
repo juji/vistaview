@@ -69,7 +69,7 @@ Provide different images based on the displayed image size. VistaView dynamicall
 - Selects the smallest image that meets or exceeds the required display width
 - Dynamically swaps images during opening animation and zoom gestures
 
-**Format:** `"url widthDescriptorw, url widthDescriptorw, ..."` where width descriptors specify the image's actual pixel width.
+**Format:** `"url {width}w, url {width}w, ..."` where width descriptors specify the image's actual pixel width.
 
 :::note[Width descriptors only]
 VistaView only supports the `w` (width) descriptor. Density descriptors like `1x` or `2x` are **not supported**. Use width descriptors with pixel values (e.g., `800w`, `1200w`) to enable responsive image selection.
@@ -78,14 +78,16 @@ VistaView only supports the `w` (width) descriptor. Density descriptors like `1x
 **Example with pixel calculations:**
 
 ```html
-<!-- A portrait photo (3000×4000px) in a 1920×1080 viewport:
-     - Image is constrained by viewport height: 1080px tall
-     - Display width: 1080 × (3000/4000) = 810px wide
-     - On 2× DPI: requires 810 × 2 = 1620px → selects large-2400.jpg
-     - When zoomed 2×: 1620px display × 2 = 3240px → still uses large-2400.jpg -->
+<!-- 
+A portrait photo (3000×4000px) in a 1920×1080 viewport:
+- Image is constrained by viewport height: 1080px tall
+- Display width: 1080 × (3000/4000) = 810px wide
+- On 2× DPI: requires 810 × 2 = 1620px → selects large-2400.jpg
+- When zoomed 2×: 1620px display × 2 = 3240px → still uses large-2400.jpg 
+-->
 <img
   src="/thumb.jpg"
-  data-vistaview-srcset="/small-600.jpg 600w, /medium-1200.jpg 1200w, /large-2400.jpg 2400w"
+  srcset="/small-600.jpg 600w, /medium-1200.jpg 1200w, /large-2400.jpg 2400w"
   alt="Adaptive resolution"
 />
 ```
@@ -95,12 +97,8 @@ VistaView only supports the `w` (width) descriptor. Density descriptors like `1x
 Display different text in the thumbnail vs lightbox:
 
 ```html
-<a href="/photo.jpg">
-  <img
-    src="/photo.jpg"
-    alt="Thumbnail caption"
-    data-vistaview-alt="Detailed description shown in lightbox"
-  />
+<a href="/photo.jpg" data-vistaview-alt="Detailed description shown in lightbox">
+  <img src="/photo.jpg" alt="Thumbnail caption" />
 </a>
 ```
 
@@ -120,33 +118,3 @@ Use multiple attributes together. When both `src` and `srcset` are provided, `sr
 ```
 
 **Priority order:** If `srcset` is available, VistaView uses responsive selection. The `src` attribute (or `data-vistaview-src`) is used only when `srcset` is not provided.
-
-## Common Use Cases
-
-### CDN or Different Domain
-
-Use `data-vistaview-src` when your full-size images are on a different domain:
-
-```html
-<a href="/local-thumb.jpg" data-vistaview-src="https://cdn.example.com/images/full.jpg">
-  <img src="/local-thumb.jpg" alt="Image" />
-</a>
-```
-
-### Progressive Enhancement
-
-Load low-res thumbnails initially, specify high-res for lightbox:
-
-```html
-<img src="/thumb-low.jpg" data-vistaview-src="/full-high.jpg" alt="Progressive image" />
-```
-
-### Dynamic Alt Text
-
-Provide context-specific descriptions:
-
-```html
-<a href="/product.jpg" data-vistaview-alt="Product X - Model 2024, Color: Blue, Size: Large">
-  <img src="/product-thumb.jpg" alt="Product X" />
-</a>
-```
