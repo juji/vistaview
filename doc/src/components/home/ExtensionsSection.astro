@@ -11,7 +11,7 @@
 		<div class="extensions-grid">
 			<div class="extension-card">
 				<h3>Video Support</h3>
-				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, <strong>Streamable</strong>, and <strong>Twitch</strong>.</p>
+				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, and <strong>Streamable</strong>.</p>
 			</div>
 
 			<div class="extension-card">
@@ -51,7 +51,6 @@
 <script src="https://unpkg.com/vistaview/dist/extensions/wistia-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/vidyard-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/streamable-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/twitch-video.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/mapbox.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
@@ -77,9 +76,6 @@
 
     const streamableVideoUrl = 'https://streamable.com/0skbol';
     const streamableThumbnailUrl = window.VistaView.getStreamableThumbnail(streamableVideoUrl);
-
-    const twitchVideoUrl = 'https://www.twitch.tv/videos/123456789';
-    const twitchThumbnailUrl = window.VistaView.getTwitchThumbnail(twitchVideoUrl);
 
     // Maps configuration - loaded from environment variables
     // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
@@ -107,7 +103,6 @@
     addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video');
     addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video');
     addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video');
-    addVideoToGallery(twitchVideoUrl, twitchThumbnailUrl, 'Twitch video');
 
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
@@ -121,7 +116,8 @@
 					window.VistaView.vimeoVideo(),
 					window.VistaView.wistiaVideo(),
 					window.VistaView.vidyardVideo(),
-					window.VistaView.streamableVideo(),					window.VistaView.twitchVideo(),					// window.VistaView.googleMaps(),
+					window.VistaView.streamableVideo(),
+					// window.VistaView.googleMaps(),
 					// window.VistaView.mapbox(),
 					// window.VistaView.openStreetMap()
 				]
