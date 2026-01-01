@@ -30,16 +30,6 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/juji/vistaview' }],
 			sidebar: [
 				{
-					label: 'Getting Started',
-					items: [
-						{ label: 'React', slug: 'getting-started/react' },
-						{ label: 'Vue', slug: 'getting-started/vue' },
-						{ label: 'Svelte', slug: 'getting-started/svelte' },
-						{ label: 'Solid', slug: 'getting-started/solid' },
-						{ label: 'Vanilla JS', slug: 'getting-started/vanilla' },
-					],
-				},
-				{
 					label: 'Core',
 					items: [
 						{ label: 'Installation', slug: 'core/installation' },
@@ -47,6 +37,16 @@ export default defineConfig({
 						{ label: 'API Reference', slug: 'core/api-reference' },
 						{ label: 'Events & Lifecycle', slug: 'core/events' },
 						{ label: 'Keyboard & Gestures', slug: 'core/keyboard-gestures' },
+					],
+				},
+				{
+					label: 'Integrations',
+					items: [
+						{ label: 'React', slug: 'integrations/react' },
+						{ label: 'Vue', slug: 'integrations/vue' },
+						{ label: 'Svelte', slug: 'integrations/svelte' },
+						{ label: 'Solid', slug: 'integrations/solid' },
+						{ label: 'Vanilla JS', slug: 'integrations/vanilla' },
 					],
 				},
 				{
