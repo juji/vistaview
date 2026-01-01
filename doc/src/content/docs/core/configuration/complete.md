@@ -67,6 +67,7 @@ For detailed explanations and examples of each option, refer to the specific con
 - **[Preloading](/core/configuration/preloading)** - Image preloading settings
 - **[Control Configuration](/core/configuration/controls)** - UI controls placement
 - **[Keyboard & UI Options](/core/configuration/keyboard)** - Keyboard and mobile settings
+- **[Z-Index Configuration](/core/configuration/z-index)** - Z-index stacking
 - **[Event Callbacks](/core/configuration/events)** - Lifecycle events
 - **[Data Attributes](/core/configuration/data-attributes)** - HTML data attributes
 - **[Lifecycle Functions](/core/configuration/lifecycle)** - Custom behavior overrides
