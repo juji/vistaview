@@ -50,7 +50,7 @@ Override the lightbox image URL while keeping the thumbnail:
 
 ### Responsive Images
 
-Provide different images based on viewport width. VistaView dynamically selects the most appropriate image as the lightbox size changes:
+Provide different images based on the displayed image size. VistaView dynamically selects the most appropriate image as the image size changes:
 
 ```html
 <a
@@ -63,20 +63,22 @@ Provide different images based on viewport width. VistaView dynamically selects 
 
 **How it works:**
 
-- VistaView monitors the lightbox width and automatically switches to the optimal image from the srcset
+- VistaView monitors the **image's display width** (not viewport width) and automatically switches to the optimal image from the srcset
+- The image display width depends on the viewport and the image's aspect ratio (portrait images are constrained by height, landscape by width)
 - Accounts for device pixel ratio (DPI) for high-resolution displays (e.g., Retina screens)
 - Selects the smallest image that meets or exceeds the required display width
-- For a 1000px wide lightbox on a 2× DPI screen, it requires a 2000px image and would select `/large.jpg`
+- Dynamically swaps images during opening animation and zoom gestures
 
 **Format:** `"url widthDescriptorw, url widthDescriptorw, ..."` where width descriptors specify the image's actual pixel width.
 
 **Example with pixel calculations:**
 
 ```html
-<!-- For a lightbox at 600px width on 2× DPI display (1200px actual):
-     - Below 800px: loads small.jpg (600 × 2 = 1200px, uses small.jpg)
-     - 800px-1199px: loads medium.jpg
-     - 1200px+: loads large.jpg -->
+<!-- A portrait photo (3000×4000px) in a 1920×1080 viewport:
+     - Image is constrained by viewport height: 1080px tall
+     - Display width: 1080 × (3000/4000) = 810px wide
+     - On 2× DPI: requires 810 × 2 = 1620px → selects large-2400.jpg
+     - When zoomed 2×: 1620px display × 2 = 3240px → still uses large-2400.jpg -->
 <img
   src="/thumb.jpg"
   data-vistaview-srcset="/small-600.jpg 600w, /medium-1200.jpg 1200w, /large-2400.jpg 2400w"
