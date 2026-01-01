@@ -1,0 +1,132 @@
+---
+title: Getting Started with React
+description: Learn how to integrate VistaView with React applications
+---
+
+VistaView provides official React bindings that offer both declarative components and hooks for React applications.
+
+## Installation
+
+```bash
+npm install vistaview
+```
+
+## Component Approach (Recommended)
+
+The `VistaView` component provides a declarative way to create image galleries:
+
+```tsx
+import { VistaView } from 'vistaview/react';
+import 'vistaview/style.css';
+
+function Gallery() {
+  return (
+    <VistaView selector="> a">
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </VistaView>
+  );
+}
+```
+
+### With Ref for Imperative Control
+
+```tsx
+import { useRef } from 'react';
+import { VistaView } from 'vistaview/react';
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const vistaRef = useRef<VistaInterface>(null);
+
+  return (
+    <>
+      <VistaView ref={vistaRef} selector="> a">
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </VistaView>
+      <button onClick={() => vistaRef.current?.open(0)}>Open Gallery</button>
+    </>
+  );
+}
+```
+
+## Hook Approach
+
+Use the `useVistaView` hook for more control over the gallery instance:
+
+```tsx
+import { useId } from 'react';
+import { useVistaView } from 'vistaview/react';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const id = useId();
+  const vista = useVistaView({
+    elements: `#${CSS.escape(id)} a`,
+  });
+
+  return (
+    <div id={id}>
+      <a href="/images/full.jpg">
+        <img src="/images/thumb.jpg" alt="Photo" />
+      </a>
+      <button onClick={() => vista.open(0)}>Open Gallery</button>
+      <button onClick={() => vista.next()}>Next</button>
+      <button onClick={() => vista.prev()}>Previous</button>
+    </div>
+  );
+}
+```
+
+## With Extensions
+
+```tsx
+import { useVistaView } from 'vistaview/react';
+import { download } from 'vistaview/extensions/download';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const vista = useVistaView({
+    elements: '#gallery a',
+    controls: {
+      topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    },
+    extensions: [download()],
+  });
+
+  return (
+    <div id="gallery">
+      <a href="/images/photo1.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+    </div>
+  );
+}
+```
+
+## TypeScript Support
+
+VistaView provides full TypeScript support:
+
+```tsx
+import type { VistaInterface, VistaParamsNeo } from 'vistaview';
+
+const config: VistaParamsNeo = {
+  elements: '#gallery a',
+  maxZoomLevel: 3,
+  preloads: 2,
+};
+```
+
+## Next Steps
+
+- Explore [configuration options](/core/configuration)
+- Learn about [extensions](/extensions/overview)
+- Customize the [styling](/styling/themes)

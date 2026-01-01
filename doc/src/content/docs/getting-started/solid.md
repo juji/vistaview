@@ -1,0 +1,161 @@
+---
+title: Getting Started with Solid
+description: Learn how to integrate VistaView with Solid applications
+---
+
+VistaView provides a `useVistaView` hook for SolidJS applications.
+
+## Installation
+
+```bash
+npm install vistaview
+```
+
+## Basic Usage
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const vista = useVistaView({
+    elements: `#${id} a`,
+  });
+
+  return (
+    <div id={id}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
+## With Control Buttons
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const vista = useVistaView({
+    elements: `#${id} a`,
+  });
+
+  return (
+    <>
+      <div id={id}>
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </div>
+      <button onClick={() => vista.open(0)}>Open Gallery</button>
+      <button onClick={() => vista.next()}>Next</button>
+      <button onClick={() => vista.prev()}>Previous</button>
+    </>
+  );
+}
+```
+
+## With Extensions
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import { download } from 'vistaview/extensions/download';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const vista = useVistaView({
+    elements: `#${id} a`,
+    controls: {
+      topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    },
+    extensions: [download()],
+  });
+
+  return (
+    <div id={id}>
+      <a href="/images/photo1.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+    </div>
+  );
+}
+```
+
+## Reactive Updates
+
+VistaView works with Solid's reactive system:
+
+```tsx
+import { createSignal } from 'solid-js';
+import { useVistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+function Gallery() {
+  const [images, setImages] = createSignal([
+    { src: '/images/photo1.jpg', alt: 'Photo 1' },
+    { src: '/images/photo2.jpg', alt: 'Photo 2' },
+  ]);
+
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const vista = useVistaView({
+    elements: `#${id} a`,
+  });
+
+  return (
+    <div id={id}>
+      {images().map((img) => (
+        <a href={img.src}>
+          <img src={img.src} alt={img.alt} />
+        </a>
+      ))}
+    </div>
+  );
+}
+```
+
+## TypeScript Support
+
+VistaView provides full TypeScript support:
+
+```tsx
+import type { VistaInterface, VistaParamsNeo } from 'vistaview';
+
+const config: VistaParamsNeo = {
+  elements: '#gallery a',
+  maxZoomLevel: 3,
+  preloads: 2,
+};
+```
+
+## SolidStart
+
+VistaView works with SolidStart. Make sure to use client-side rendering:
+
+```tsx
+import { lazy } from 'solid-js';
+
+const Gallery = lazy(() => import('./Gallery'));
+
+function Page() {
+  return (
+    <ClientOnly>
+      <Gallery />
+    </ClientOnly>
+  );
+}
+```
+
+## Next Steps
+
+- Explore [configuration options](/core/configuration)
+- Learn about [extensions](/extensions/overview)
+- Customize the [styling](/styling/themes)

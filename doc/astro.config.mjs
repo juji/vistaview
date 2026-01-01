@@ -28,7 +28,40 @@ export default defineConfig({
 		starlight({
 			title: 'VistaView',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/juji/vistaview' }],
-			sidebar: [],
+			sidebar: [
+				{
+					label: 'Getting Started',
+					items: [
+						{ label: 'React', slug: 'getting-started/react' },
+						{ label: 'Vue', slug: 'getting-started/vue' },
+						{ label: 'Svelte', slug: 'getting-started/svelte' },
+						{ label: 'Solid', slug: 'getting-started/solid' },
+						{ label: 'Vanilla JS', slug: 'getting-started/vanilla' },
+					],
+				},
+				{
+					label: 'Core',
+					items: [
+						{ label: 'Installation', slug: 'core/installation' },
+						{ label: 'Configuration', slug: 'core/configuration' },
+						{ label: 'API Reference', slug: 'core/api-reference' },
+						{ label: 'Events & Lifecycle', slug: 'core/events' },
+						{ label: 'Keyboard & Gestures', slug: 'core/keyboard-gestures' },
+					],
+				},
+				{
+					label: 'Styling',
+					items: [
+						{ label: 'CSS Variables', slug: 'styling/css-variables' },
+						{ label: 'Themes', slug: 'styling/themes' },
+						{ label: 'Custom Styling', slug: 'styling/custom' },
+					],
+				},
+				{
+					label: 'Extensions',
+					autogenerate: { directory: 'extensions' },
+				},
+			],
 			customCss: ['./src/styles/custom.css'],
 			components: {
 				Hero: './src/components/Hero.astro',

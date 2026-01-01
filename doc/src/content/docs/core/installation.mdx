@@ -1,0 +1,94 @@
+---
+title: Installation
+description: How to install VistaView in your project
+---
+
+VistaView is a lightweight image lightbox library that can be installed via npm or used directly from a CDN.
+
+## Package Manager Installation
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs syncKey="pkg">
+  <TabItem label="npm">
+
+  ```bash
+  npm install vistaview
+  ```
+
+  </TabItem>
+  <TabItem label="yarn">
+
+  ```bash
+  yarn add vistaview
+  ```
+
+  </TabItem>
+  <TabItem label="pnpm">
+
+  ```bash
+  pnpm add vistaview
+  ```
+
+  </TabItem>
+  <TabItem label="bun">
+
+  ```bash
+  bun add vistaview
+  ```
+
+  </TabItem>
+</Tabs>
+
+## CDN Installation
+
+For quick prototyping or non-bundler environments, use the UMD build via CDN:
+
+### unpkg
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
+<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+```
+
+### jsDelivr
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
+```
+
+## Bundle Sizes
+
+VistaView is lightweight and optimized for production:
+
+- **Core Library:** ~42KB ESM (~10KB gzip)
+- **CSS:** ~7KB (~1.7KB gzip)
+- **Total:** ~49KB (~11.7KB gzip)
+
+## Browser Support
+
+VistaView works in all modern browsers:
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Framework Integrations
+
+VistaView provides official bindings for popular frameworks:
+
+- **React** - Component and hook
+- **Vue 3** - Component and composable
+- **Svelte** - Hook
+- **Solid** - Hook
+- **Vanilla JS** - Direct API
+
+See the [Getting Started](/getting-started/react) guides for framework-specific instructions.
+
+## Next Steps
+
+- Follow a [Getting Started guide](/getting-started/react) for your framework
+- Explore [configuration options](/core/configuration)
+- Learn about [extensions](/extensions/overview)

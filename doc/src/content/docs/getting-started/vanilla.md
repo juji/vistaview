@@ -1,0 +1,241 @@
+---
+title: Getting Started with Vanilla JavaScript
+description: Learn how to use VistaView with vanilla JavaScript
+---
+
+VistaView works perfectly with vanilla JavaScript - no framework needed!
+
+## Installation
+
+### Using npm
+
+```bash
+npm install vistaview
+```
+
+```javascript
+import { vistaView } from 'vistaview';
+import 'vistaview/style.css';
+
+const gallery = vistaView({
+  elements: '#gallery a',
+});
+```
+
+### Using CDN (UMD)
+
+For quick prototyping or non-bundler environments:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
+  </head>
+  <body>
+    <div id="gallery">
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+
+    <script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+    <script>
+      // VistaView is available globally
+      const gallery = VistaView.vistaView({
+        elements: '#gallery a',
+      });
+    </script>
+  </body>
+</html>
+```
+
+### Using jsDelivr CDN
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
+```
+
+## Basic Usage
+
+```html
+<div id="gallery">
+  <a href="/images/photo1-full.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+</div>
+
+<script type="module">
+  import { vistaView } from 'vistaview';
+  import 'vistaview/style.css';
+
+  const gallery = vistaView({
+    elements: '#gallery a',
+  });
+</script>
+```
+
+## With Control Buttons
+
+```html
+<div id="gallery">
+  <a href="/images/full.jpg">
+    <img src="/images/thumb.jpg" alt="Photo" />
+  </a>
+</div>
+
+<button id="open-btn">Open Gallery</button>
+<button id="next-btn">Next</button>
+<button id="prev-btn">Previous</button>
+
+<script type="module">
+  import { vistaView } from 'vistaview';
+  import 'vistaview/style.css';
+
+  const gallery = vistaView({
+    elements: '#gallery a',
+  });
+
+  document.getElementById('open-btn').addEventListener('click', () => {
+    gallery.open(0);
+  });
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    gallery.next();
+  });
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    gallery.prev();
+  });
+</script>
+```
+
+## Using Data Attributes
+
+You can use `data-vistaview-src` to specify high-resolution images:
+
+```html
+<div id="gallery">
+  <img src="/images/thumb1.jpg" data-vistaview-src="/images/full1.jpg" alt="Photo 1" />
+  <img src="/images/thumb2.jpg" data-vistaview-src="/images/full2.jpg" alt="Photo 2" />
+</div>
+
+<script type="module">
+  import { vistaView } from 'vistaview';
+  import 'vistaview/style.css';
+
+  vistaView({
+    elements: '#gallery img',
+  });
+</script>
+```
+
+## With Extensions (ESM)
+
+```html
+<script type="module">
+  import { vistaView } from 'vistaview';
+  import { download } from 'vistaview/extensions/download';
+  import 'vistaview/style.css';
+
+  vistaView({
+    elements: '#gallery a',
+    controls: {
+      topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    },
+    extensions: [download()],
+  });
+</script>
+```
+
+## With Extensions (UMD)
+
+```html
+<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
+<script>
+  VistaView.vistaView({
+    elements: '#gallery a',
+    controls: {
+      topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+    },
+    extensions: [VistaView.download()],
+  });
+</script>
+```
+
+## Using with Images Array
+
+Instead of DOM elements, you can pass an array of image objects:
+
+```javascript
+vistaView({
+  elements: [
+    { src: '/images/photo1.jpg', alt: 'Photo 1' },
+    {
+      src: '/images/photo2-800.jpg',
+      alt: 'Photo 2',
+      srcSet: '/images/photo2-800.jpg 800w, /images/photo2-1200.jpg 1200w',
+    },
+  ],
+});
+```
+
+**Note:** When using an array, thumbnails are not supported. Use DOM elements if you need progressive loading.
+
+## Available Methods
+
+```javascript
+const gallery = vistaView({ elements: '#gallery a' });
+
+// Open lightbox at specific index (0-based)
+gallery.open(0);
+
+// Close lightbox
+gallery.close();
+
+// Navigate to next image
+gallery.next();
+
+// Navigate to previous image
+gallery.prev();
+
+// Go to specific image
+gallery.view(2);
+
+// Get current image index
+const currentIndex = gallery.getCurrentIndex();
+
+// Destroy instance and cleanup
+gallery.destroy();
+```
+
+## Event Callbacks
+
+```javascript
+vistaView({
+  elements: '#gallery a',
+  onOpen: (vistaView) => {
+    console.log('Gallery opened');
+  },
+  onClose: (vistaView) => {
+    console.log('Gallery closed');
+  },
+  onImageView: (data) => {
+    console.log('Viewing image:', data.index.to);
+  },
+});
+```
+
+## Next Steps
+
+- Explore [configuration options](/core/configuration)
+- Learn about [extensions](/extensions/overview)
+- Customize the [styling](/styling/themes)
