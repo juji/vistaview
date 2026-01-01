@@ -13,6 +13,7 @@ BUILD_ENV=prod BUILD_UMD=true vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=download vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=logger vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=image-story vite build
+BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=select-box vite build
 
 # Video Platform Extensions
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=youtube-video vite build

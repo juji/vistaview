@@ -52,6 +52,7 @@
     import { logger } from '../../src/lib/extensions/logger.ts';
     import { download } from '../../src/lib/extensions/download.ts';
     import { imageStory } from '../../src/lib/extensions/image-story.ts';
+    import { selectBox } from '../../src/lib/extensions/select-box.ts';
     import { youtubeVideo, getYouTubeThumbnail } from '../../src/lib/extensions/youtube-video.ts';
     import { dailymotionVideo, getDailymotionThumbnail } from '../../src/lib/extensions/dailymotion-video.ts';
     import { vimeoVideo, getVimeoThumbnail } from '../../src/lib/extensions/vimeo-video.ts';
@@ -169,11 +170,23 @@
       elements: '#image-grid-many a',
       controls: {
         topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
+        // bottomCenter: ['selectBox'],
         bottomCenter: ['imageStory'],
       },
       extensions: [
         // logger(), 
         download(),
+        selectBox({
+          selection: Array.from({ length: 20 }, (_, i) => ({
+            value: i.toString(),
+            text: `Image #${i + 1}`
+          })),
+          onSelect: async (value) => {
+            const index = parseInt(value, 10);
+            console.log(`Selected image index: ${index}`);
+            // Additional logic can be added here if needed
+          }
+        }),
         imageStory({
           getStory: async (index) => ({
             content: `
