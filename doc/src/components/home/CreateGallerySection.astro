@@ -1,17 +1,33 @@
 ---
+import CreateGalleryExample from './CreateGalleryExample.astro';
 ---
 
+
 <section class="create-gallery-section">
-	<h2>Build your own gallery</h2>
-	<p>
-		VistaView empowers you to build stunning image galleries with complete control over the design and functionality. With zero dependencies and a simple API, you can create custom lightboxes that match your website's style perfectly.
-	</p>
+	<div>
+
+		<h2>Build your own gallery</h2>
+		<p>
+			VistaView empowers you to build your own image galleries with complete control over the design and functionality. 
+			It works with rounded corners, <code>object-fit: contain</code> or <code>object-fit: cover</code>.
+		</p>
+	</div>
+	<div>
+		<CreateGalleryExample />
+	</div>
 </section>
 
 <style>
 	.create-gallery-section {
 		padding: 2rem 0;
 		text-align: start;
+
+		@media screen and (min-width: 50rem) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
+			
+		}
 	}
 
 	.create-gallery-section h2 {
