@@ -108,7 +108,7 @@ vista.view(2); // Jump to image at index 2
 vista.zoomIn(); // Zoom in
 vista.zoomOut(); // Zoom out
 vista.getCurrentIndex(); // Get current image index
-vista.reset(); // Reset to initial state
+vista.reset(); // Recalculate elements and re-attach listeners (useful after DOM changes)
 vista.destroy(); // Clean up and remove lightbox
 ```
 
@@ -118,7 +118,7 @@ vista.destroy(); // Clean up and remove lightbox
 interface VistaInterface {
   open: (startIndex?: number) => void; // Open at specific index
   close: () => Promise<void>; // Close lightbox
-  reset: () => void; // Reset to initial state
+  reset: () => void; // Recalculate elements & re-attach listeners
   next: () => void; // Go to next image
   prev: () => void; // Go to previous image
   zoomIn: () => void; // Zoom in current image
