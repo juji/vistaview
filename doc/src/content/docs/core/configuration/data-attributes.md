@@ -71,6 +71,10 @@ Provide different images based on the displayed image size. VistaView dynamicall
 
 **Format:** `"url widthDescriptorw, url widthDescriptorw, ..."` where width descriptors specify the image's actual pixel width.
 
+:::note[Width descriptors only]
+VistaView only supports the `w` (width) descriptor. Density descriptors like `1x` or `2x` are **not supported**. Use width descriptors with pixel values (e.g., `800w`, `1200w`) to enable responsive image selection.
+:::
+
 **Example with pixel calculations:**
 
 ```html
