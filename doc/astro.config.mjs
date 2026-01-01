@@ -38,6 +38,7 @@ export default defineConfig({
 							collapsed: false,
 							items: [
 								{ label: 'Basic', slug: 'core/configuration/basic' },
+								{ label: 'Data Attributes', slug: 'core/configuration/data-attributes' },
 								{ label: 'Complete Options', slug: 'core/configuration/complete' },
 
 								{ label: 'Animation', slug: 'core/configuration/animation' },
@@ -46,7 +47,6 @@ export default defineConfig({
 								{ label: 'Controls', slug: 'core/configuration/controls' },
 								{ label: 'Keyboard & UI', slug: 'core/configuration/keyboard' },
 								{ label: 'Events', slug: 'core/configuration/events' },
-								{ label: 'Data Attributes', slug: 'core/configuration/data-attributes' },
 								{ label: 'Advanced', slug: 'core/configuration/advanced' },
 								{ label: 'TypeScript', slug: 'core/configuration/typescript' },
 							],
