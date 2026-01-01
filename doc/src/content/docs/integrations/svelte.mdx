@@ -166,24 +166,20 @@ const config: VistaParamsNeo = {
 
 ## SvelteKit
 
-VistaView works seamlessly with SvelteKit. Make sure to import it only on the client side:
+VistaView works seamlessly with SvelteKit. Initialize it inside `onMount` to ensure it only runs client-side:
 
 ```svelte
 <script>
-import { browser } from '$app/environment';
+import { useVistaView } from 'vistaview/svelte';
 import { onMount } from 'svelte';
+import 'vistaview/style.css';
 
 let vista;
 
-onMount(async () => {
-  if (browser) {
-    const { useVistaView } = await import('vistaview/svelte');
-    await import('vistaview/style.css');
-
-    vista = useVistaView({
-      elements: '#gallery a',
-    });
-  }
+onMount(() => {
+  vista = useVistaView({
+    elements: '#gallery a',
+  });
 });
 </script>
 ```
