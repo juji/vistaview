@@ -5,13 +5,30 @@ description: Configure zoom behavior in VistaView
 
 ## maxZoomLevel
 
-Maximum zoom level allowed:
+Defines the maximum zoom level as a multiplier of the image's natural dimensions.
+
+**How it works:**
+
+- VistaView maintains three zoom levels:
+  - **Minimum (0.5×)**: 50% of fitted size - zooming below this triggers close
+  - **Normal (1×)**: Image fitted to viewport while maintaining aspect ratio
+  - **Maximum**: Natural image dimensions × `maxZoomLevel`
+- Zoom automatically corrects if exceeded:
+  - Over maximum → animates back to max
+  - Under normal (but not closing) → animates back to fitted size
+
+**Default:** `2` (200% of natural size)
 
 ```typescript
 vistaView({
   elements: '#gallery a',
-  maxZoomLevel: 3, // Allow 300% zoom (default: 2 = 200%)
+  maxZoomLevel: 2, // default - allows zoom to 200% of natural size
 });
 ```
 
-**Note:** VistaView respects the actual image resolution. If an image is 1000px wide and the viewport is 500px, the maximum practical zoom is 2x (100% of actual size).
+**Example:**
+If an image is 1600×1200px and displays at 800×600px to fit the viewport:
+
+- Minimum zoom: 400×300px (50% of fitted)
+- Normal zoom: 800×600px (fitted to viewport)
+- Maximum zoom: 3200×2400px (200% of natural 1600×1200px)
