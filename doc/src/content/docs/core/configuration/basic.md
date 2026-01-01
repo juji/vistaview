@@ -131,7 +131,6 @@ interface VistaInterface {
 
 ## Next Steps
 
-- Learn about [Elements Configuration](/core/configuration/elements) for more ways to specify images
 - Explore [Animation Options](/core/configuration/animation) for timing control
 - Discover [Controls](/core/configuration/controls) for UI customization
-- See all available options in the [Configuration Overview](/core/configuration)
+- See all available options in the [Complete Options](/core/configuration/complete)

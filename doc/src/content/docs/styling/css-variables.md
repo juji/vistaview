@@ -367,4 +367,4 @@ Or use browser DevTools to inspect and modify variables in real-time.
 
 - Explore [pre-built themes](/styling/themes)
 - Learn about [custom styling](/styling/custom)
-- See [configuration options](/core/configuration)
+- See [configuration options](/core/configuration/complete)

@@ -319,4 +319,4 @@ imageStory({
 
 - Learn about [creating custom extensions](/extensions/authoring)
 - Explore other [extensions](/extensions/overview)
-- See [configuration options](/core/configuration)
+- See [configuration options](/core/configuration/complete)

@@ -17,7 +17,7 @@ function vistaView(params: VistaParamsNeo): VistaInterface;
 
 **Parameters:**
 
-- `params: VistaParamsNeo` - Configuration object (see [Configuration](/core/configuration))
+- `params: VistaParamsNeo` - Configuration object (see [Configuration](/core/configuration/complete))
 
 **Returns:** `VistaInterface` - The lightbox instance with control methods
 

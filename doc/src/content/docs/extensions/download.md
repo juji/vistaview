@@ -150,4 +150,4 @@ When users click the download button, the image will be saved with the filename 
 
 - Explore other [extensions](/extensions/overview)
 - Learn about [creating custom extensions](/extensions/authoring)
-- See the [configuration options](/core/configuration)
+- See the [configuration options](/core/configuration/complete)

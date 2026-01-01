@@ -174,4 +174,4 @@ See the [Custom Styling](/styling/custom) guide to create your own theme based o
 
 - Learn about [CSS variables](/styling/css-variables)
 - Create [custom styling](/styling/custom)
-- Explore [configuration options](/core/configuration)
+- Explore [configuration options](/core/configuration/complete)

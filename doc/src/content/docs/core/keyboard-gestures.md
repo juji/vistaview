@@ -332,5 +332,5 @@ Always provide keyboard alternatives to gestures:
 ## Next Steps
 
 - Learn about [events and lifecycle](/core/events)
-- Explore [configuration options](/core/configuration)
+- Explore [configuration options](/core/configuration/complete)
 - See the [API Reference](/core/api-reference)

@@ -38,8 +38,8 @@ export default defineConfig({
 							collapsed: false,
 							items: [
 								{ label: 'Basic', slug: 'core/configuration/basic' },
-								{ label: 'Overview', slug: 'core/configuration' },
-								{ label: 'Elements', slug: 'core/configuration/elements' },
+								{ label: 'Complete Options', slug: 'core/configuration/complete' },
+
 								{ label: 'Animation', slug: 'core/configuration/animation' },
 								{ label: 'Zoom', slug: 'core/configuration/zoom' },
 								{ label: 'Preloading', slug: 'core/configuration/preloading' },
