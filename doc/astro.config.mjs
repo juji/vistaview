@@ -47,11 +47,9 @@ export default defineConfig({
 								{ label: 'Controls', slug: 'core/configuration/controls' },
 								{ label: 'Keyboard & UI', slug: 'core/configuration/keyboard' },
 								{ label: 'Events', slug: 'core/configuration/events' },
-								{ label: 'Advanced', slug: 'core/configuration/advanced' },
-								{ label: 'TypeScript', slug: 'core/configuration/typescript' },
+							{ label: 'Lifecycle', slug: 'core/configuration/lifecycle' },
 							],
 						},
-						{ label: 'Events & Lifecycle', slug: 'core/events' },
 					],
 				},
 				{

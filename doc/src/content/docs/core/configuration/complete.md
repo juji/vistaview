@@ -48,11 +48,12 @@ vistaView({
   onImageView: (data, vistaView) => {}, // Called when viewing an image
   onContentChange: (content, vistaView) => {}, // Called when image content changes
 
-  // Advanced: Custom Behavior Functions
+  // Lifecycle: Custom Behavior Functions
   initFunction: (vistaView) => {}, // Custom initialization
+  openFunction: (vistaView) => {}, // Custom open behavior
   imageSetupFunction: (data, vistaView) => {}, // Custom setup when navigating
   transitionFunction: (data, abortSignal, vistaView) => {}, // Custom transition animation
-  closeFunction: (vistaView) => {}, // Custom cleanup on close
+  closeFunction: (vistaView) => {}, // Custom close behavior
 });
 ```
 
@@ -68,5 +69,4 @@ For detailed explanations and examples of each option, refer to the specific con
 - **[Keyboard & UI Options](/core/configuration/keyboard)** - Keyboard and mobile settings
 - **[Event Callbacks](/core/configuration/events)** - Lifecycle events
 - **[Data Attributes](/core/configuration/data-attributes)** - HTML data attributes
-- **[Advanced Functions](/core/configuration/advanced)** - Custom behavior overrides
-- **[TypeScript Support](/core/configuration/typescript)** - Type definitions
+- **[Lifecycle Functions](/core/configuration/lifecycle)** - Custom behavior overrides

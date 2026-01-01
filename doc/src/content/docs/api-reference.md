@@ -234,6 +234,28 @@ vistaView({
 });
 ```
 
+### VistaOpenFn
+
+Type for custom open function.
+
+```typescript
+type VistaOpenFn = (vistaView: VistaView) => void;
+```
+
+**Example:**
+
+```typescript
+import { open } from 'vistaview';
+
+vistaView({
+  elements: '#gallery a',
+  openFunction: (vistaView) => {
+    console.log('Custom open');
+    open(vistaView); // Call default open
+  },
+});
+```
+
 ### VistaImageSetupFn
 
 Type for custom setup function when navigating.
