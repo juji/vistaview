@@ -1,0 +1,129 @@
+---
+---
+
+<section class="extensions-section">
+	<div>
+		<h2>Extensions</h2>
+		<p>
+			Extend VistaView's functionality with powerful extensions. From video support to interactive controls, extensions let you customize your image galleries to fit your specific needs.
+		</p>
+
+		<div class="extensions-grid">
+			<div class="extension-card">
+				<h3>Video Support</h3>
+				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, and <strong>Streamable</strong>.</p>
+			</div>
+
+			<div class="extension-card">
+				<h3>Interactive Controls & Advanced Features</h3>
+				<p>Add custom controls and user interactions to your galleries. Includes <strong>Download</strong> for saving images, <strong>Logger</strong> for debug information, and <strong>Image Story</strong> for extended information about your image.</p>
+			</div>
+
+			<div class="extension-card">
+				<h3>Maps Integration</h3>
+				<p>Display interactive maps in your image galleries. Integrates with <strong>Google Maps</strong>, <strong>Mapbox</strong>, and <strong>OpenStreetMap</strong>.</p>
+			</div>
+		</div>
+
+		</div>
+	</div>
+	<div>
+		<div class="extensions-demo">
+			<div class="extensions-gallery">
+				<a href="https://picsum.photos/seed/demo1/800/600" target="_blank" rel="noopener">
+					<img src="https://picsum.photos/seed/demo1/400/300" alt="Demo image with extensions" />
+				</a>
+				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener">
+					<img src="https://picsum.photos/seed/demo2/400/300" alt="Another demo image" />
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script is:inline>
+	window.addEventListener('DOMContentLoaded', function() {
+		if (window.VistaView && window.VistaView.vistaView) {
+			window.VistaView.vistaView({ 
+				elements: '.extensions-gallery a',
+			});
+		}
+	});
+</script>
+
+<style>
+	.extensions-section {
+		padding: 2rem 0;
+		text-align: start;
+
+		@media screen and (min-width: 50rem) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
+		}
+	}
+
+	.extensions-section h2 {
+		font-size: var(--sl-text-2xl);
+		margin-bottom: 1rem;
+	}
+
+	.extensions-section p {
+		max-width: 60ch;
+		margin: 0 0 2rem 0;
+		color: var(--sl-color-gray-2);
+	}
+
+	.extensions-grid {
+		margin-bottom: 3rem;
+	}
+
+	.extension-card {
+		margin-bottom: 2rem;
+	}
+
+	.extension-card h3 {
+		font-size: var(--sl-text-lg);
+		margin: 0 0 0.5rem 0;
+		color: var(--sl-color-text);
+	}
+
+	.extension-card strong {
+		color: #22c55e;
+		font-weight: 600;
+	}
+
+	.extension-card p {
+		margin: 0 0 1rem 0;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+
+	.extensions-demo {
+		padding: 0;
+	}
+
+	.extensions-gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+	}
+
+	.extensions-gallery a {
+		display: block;
+		border-radius: 0.25rem;
+		overflow: hidden;
+		transition: transform 0.2s ease;
+	}
+
+	.extensions-gallery a:hover {
+		transform: scale(1.05);
+	}
+
+	.extensions-gallery img {
+		width: 100%;
+		height: 120px;
+		object-fit: cover;
+		display: block;
+	}
+</style>
