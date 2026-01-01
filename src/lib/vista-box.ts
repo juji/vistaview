@@ -301,7 +301,7 @@ export abstract class VistaBox {
     const thumb = this.thumb;
 
     if (!initDimension) {
-      this.originRect = (this.origin?.anchor || this.thumbImage)?.getBoundingClientRect() || {
+      this.originRect = (this.origin?.anchor || this.replacement)?.getBoundingClientRect() || {
         width: this.defaultWH,
         height: this.defaultWH,
         top: 0,
