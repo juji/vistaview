@@ -50,7 +50,7 @@ Override the lightbox image URL while keeping the thumbnail:
 
 ### Responsive Images
 
-Provide different images for different screen sizes:
+Provide different images based on viewport width. VistaView dynamically selects the most appropriate image as the lightbox size changes:
 
 ```html
 <a
@@ -59,6 +59,29 @@ Provide different images for different screen sizes:
 >
   <img src="/thumbnail.jpg" alt="Responsive image" />
 </a>
+```
+
+**How it works:**
+
+- VistaView monitors the lightbox width and automatically switches to the optimal image from the srcset
+- Accounts for device pixel ratio (DPI) for high-resolution displays (e.g., Retina screens)
+- Selects the smallest image that meets or exceeds the required display width
+- For a 1000px wide lightbox on a 2× DPI screen, it requires a 2000px image and would select `/large.jpg`
+
+**Format:** `"url widthDescriptorw, url widthDescriptorw, ..."` where width descriptors specify the image's actual pixel width.
+
+**Example with pixel calculations:**
+
+```html
+<!-- For a lightbox at 600px width on 2× DPI display (1200px actual):
+     - Below 800px: loads small.jpg (600 × 2 = 1200px, uses small.jpg)
+     - 800px-1199px: loads medium.jpg
+     - 1200px+: loads large.jpg -->
+<img
+  src="/thumb.jpg"
+  data-vistaview-srcset="/small-600.jpg 600w, /medium-1200.jpg 1200w, /large-2400.jpg 2400w"
+  alt="Adaptive resolution"
+/>
 ```
 
 ### Custom Alt Text
@@ -77,7 +100,7 @@ Display different text in the thumbnail vs lightbox:
 
 ### Combining Attributes
 
-Use multiple attributes together:
+Use multiple attributes together. When both `src` and `srcset` are provided, `srcset` takes precedence and `src` serves as fallback:
 
 ```html
 <a
@@ -89,6 +112,8 @@ Use multiple attributes together:
   <img src="/images/thumb.jpg" alt="Click to view" />
 </a>
 ```
+
+**Priority order:** If `srcset` is available, VistaView uses responsive selection. The `src` attribute (or `data-vistaview-src`) is used only when `srcset` is not provided.
 
 ## Common Use Cases
 
