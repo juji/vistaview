@@ -27,7 +27,7 @@ vistaView({
 
 ## initialZIndex
 
-Set the z-index for the lightbox when closed or closing. When active, the lightbox automatically uses the maximum z-index (`2147483647`) to appear above all content.
+Set the z-index for the lightbox when opening or closing. When active, the lightbox automatically uses the maximum z-index (`2147483647`) to appear above all content.
 
 **Default:** `1`
 
@@ -42,11 +42,11 @@ vistaView({
 
 **Why leave it at 1?**
 
-VistaView renders its container at the bottom of the page (end of DOM). With the default `initialZIndex: 1`:
+VistaView renders its container at the bottom of the page (end of DOM). With the default `initialZIndex: 1`.
+It then brings the image to the center, and raise the z-index to the maximum z-index.
+In effect, this requires z-index ordering:
 
-- Your **sticky header** should use `z-index: 2` or higher to appear above the closed lightbox
-- The **active lightbox** automatically uses max z-index, appearing above everything
-- During **closing**, the animation stays at `z-index: 1`
+- Your **sticky header** should use `z-index: 2` or higher to appear above the opening/closing lightbox
 
 **Example with sticky header:**
 
@@ -61,7 +61,7 @@ VistaView renders its container at the bottom of the page (end of DOM). With the
 **How it works:**
 
 - **Closed state:** Uses `initialZIndex` value (default: 1)
-- **Active state:** Automatically switches to `2147483647` (max z-index) - always above everything
+- **Active state:** Switches to `2147483647` (max z-index) in the middle of animation - always above everything
 - **Closing state:** Transitions back to `initialZIndex` during animation
 
 :::tip
