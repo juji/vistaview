@@ -32,7 +32,7 @@ vistaView({
 
 ## Adding Extension Controls
 
-Extensions can add custom controls:
+Extensions can add custom controls. See the [Extensions documentation](/extensions/overview) for available extensions.
 
 ```typescript
 import { download } from 'vistaview/extensions/download';
