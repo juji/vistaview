@@ -41,11 +41,86 @@
 	</div>
 </section>
 
+
+<script src="https://unpkg.com/vistaview/dist/extensions/logger.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/image-story.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/youtube-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/dailymotion-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/vimeo-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/wistia-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/vidyard-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/streamable-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/mapbox.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
 <script is:inline>
-	window.addEventListener('DOMContentLoaded', function() {
+	window.addEventListener('DOMContentLoaded', async function() {
+
+    console.log('Loading video thumbnails for extensions demo...');
+
+    const videoUrl = 'https://www.youtube.com/watch?v=GwJrZBe8JX4';
+    const thumbnailUrl = window.VistaView.getYouTubeThumbnail(videoUrl, 'hq');
+
+    const dailimotionVideoUrl = 'https://www.dailymotion.com/video/x9wmko2';
+    const dailymotionThumbnailUrl = window.VistaView.getDailymotionThumbnail(dailimotionVideoUrl);
+
+    const vimeoVideoUrl = 'https://vimeo.com/299708886';
+    const vimeoThumbnailUrl = window.VistaView.getVimeoThumbnail(vimeoVideoUrl);
+
+    const wistiaVideoUrl = 'https://jujiyangasli.wistia.com/medias/jjy2yxvi8p';
+    const wistiaThumbnailUrl = await window.VistaView.getWistiaThumbnail(wistiaVideoUrl);
+
+    const vidyardVideoUrl = 'https://share.vidyard.com/watch/zxR1bKcsVcEmTC1HpDWXgu';
+    const vidyardThumbnailUrl = window.VistaView.getVidyardThumbnail(vidyardVideoUrl);
+
+    const streamableVideoUrl = 'https://streamable.com/wx6lvl';
+    const streamableThumbnailUrl = window.VistaView.getStreamableThumbnail(streamableVideoUrl);
+
+    // Maps configuration - loaded from environment variables
+    // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
+    // const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    // const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+
+    // Add video thumbnails to gallery
+    const gallery = document.querySelector('.extensions-gallery');
+    function addVideoToGallery(url, thumbnail, alt) {
+      console.log('Adding video to gallery:', url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        const img = document.createElement('img');
+        img.src = thumbnail;
+        img.alt = alt;
+        link.appendChild(img);
+        gallery.appendChild(link);
+    }
+
+    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video');
+    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video');
+    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video');
+    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video');
+    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video');
+    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video');
+
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
 				elements: '.extensions-gallery a',
+				extensions: [
+					window.VistaView.logger(),
+					window.VistaView.download(),
+					// window.VistaView.imageStory(),
+					window.VistaView.youtubeVideo(),
+					window.VistaView.dailymotionVideo(),
+					window.VistaView.vimeoVideo(),
+					window.VistaView.wistiaVideo(),
+					window.VistaView.vidyardVideo(),
+					window.VistaView.streamableVideo(),
+					// window.VistaView.googleMaps(),
+					// window.VistaView.mapbox(),
+					// window.VistaView.openStreetMap()
+				]
 			});
 		}
 	});
