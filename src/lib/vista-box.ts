@@ -46,6 +46,12 @@ export abstract class VistaBox {
   protected originalNextSibling: ChildNode | null = null;
   protected originalStyle = '';
   protected thumbImage: HTMLImageElement | null = null;
+  protected originRect: { width: number; height: number; top: number; left: number } = {
+    width: this.defaultWH,
+    height: this.defaultWH,
+    top: 0,
+    left: 0,
+  };
   protected fittedSize: { width: number; height: number } | null = null;
 
   protected maxZoomLevel: number;
@@ -89,6 +95,12 @@ export abstract class VistaBox {
     const thumb = this.pos === 0 ? this.origin?.image : null;
     this.originalParent = thumb?.parentElement || null;
     this.originalNextSibling = thumb?.nextSibling || null;
+    this.originRect = (this.origin?.anchor || thumb)?.getBoundingClientRect() || {
+      width: this.defaultWH,
+      height: this.defaultWH,
+      top: 0,
+      left: 0,
+    };
 
     // setup thumb styling
     if (thumb && this.originalParent) {
@@ -288,11 +300,18 @@ export abstract class VistaBox {
 
     const thumb = this.thumb;
 
-    let dim = { width: this.defaultWH, height: this.defaultWH, top: 0, left: 0 };
+    if (!initDimension) {
+      this.originRect = (this.origin?.anchor || this.thumbImage)?.getBoundingClientRect() || {
+        width: this.defaultWH,
+        height: this.defaultWH,
+        top: 0,
+        left: 0,
+      };
+    }
+
+    let dim = this.originRect;
 
     if (thumb) {
-      dim = (this.origin?.anchor || this.replacement)!.getBoundingClientRect();
-
       const ts = thumb!.style;
       ts.width = dim.width + 'px';
       ts.height = dim.height + 'px';

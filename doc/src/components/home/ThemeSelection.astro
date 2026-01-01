@@ -1,0 +1,78 @@
+---
+---
+
+<section class="theme-selection-section">
+	<h2>Theme Selection</h2>
+	<p>
+		Choose from a variety of beautiful themes to customize the look and feel of your VistaView galleries. Each theme is designed to enhance your images and fit seamlessly with your website's aesthetic.
+	</p>
+	<div id="theme-gallery" class="theme-gallery vista-view">
+		<a href="/theme/autumn-amber.png" data-title="Autumn Amber Theme" target="_blank" rel="noopener">
+			<img src="/theme/autumn-amber.png" alt="Autumn Amber Theme" />
+		</a>
+		<a href="/theme/basic.png" data-title="Basic Theme" target="_blank" rel="noopener">
+			<img src="/theme/basic.png" alt="Basic Theme" />
+		</a>
+		<a href="/theme/dark-rounded.png" data-title="Dark Rounded Theme" target="_blank" rel="noopener">
+			<img src="/theme/dark-rounded.png" alt="Dark Rounded Theme" />
+		</a>
+		<a href="/theme/forest-moss.png" data-title="Forest Moss Theme" target="_blank" rel="noopener">
+			<img src="/theme/forest-moss.png" alt="Forest Moss Theme" />
+		</a>
+		<a href="/theme/midnight-ocean.png" data-title="Midnight Ocean Theme" target="_blank" rel="noopener">
+			<img src="/theme/midnight-ocean.png" alt="Midnight Ocean Theme" />
+		</a>
+		<a href="/theme/strawberry.png" data-title="Strawberry Theme" target="_blank" rel="noopener">
+			<img src="/theme/strawberry.png" alt="Strawberry Theme" />
+		</a>
+	</div>
+
+<script is:inline>
+	window.addEventListener('DOMContentLoaded', function() {
+		if (window.VistaView && window.VistaView.vistaView) {
+			window.VistaView.vistaView({ elements: '#theme-gallery a' });
+		}
+	});
+</script>
+</section>
+
+<style>
+	.theme-selection-section {
+		padding: 2rem 0;
+		text-align: start;
+	}
+
+	.theme-selection-section h2 {
+		font-size: var(--sl-text-2xl);
+		margin-bottom: 1rem;
+	}
+
+	.theme-selection-section p {
+		max-width: 60ch;
+		margin: 0 0 2rem 0;
+		color: var(--sl-color-gray-2);
+	}
+
+	.theme-gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+	}
+
+	.theme-gallery a {
+		display: block;
+		cursor: pointer;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		border-radius: 0.5rem;
+		border: 1px solid var(--sl-color-gray-5);
+	}
+
+	.theme-gallery img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+</style>
