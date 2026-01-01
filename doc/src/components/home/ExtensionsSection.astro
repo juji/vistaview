@@ -1,4 +1,6 @@
 ---
+const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 ---
 
 <section class="extensions-section">
@@ -36,12 +38,16 @@
 				<a href="https://picsum.photos/seed/demo2/800/600" target="_blank" rel="noopener" class="gallery-link">
 					<img src="https://picsum.photos/seed/demo2/400/300" alt="Another demo image" />
 				</a>
+        <a href="https://picsum.photos/seed/demo3/800/600" target="_blank" rel="noopener" class="gallery-link">
+					<img src="https://picsum.photos/seed/demo3/400/300" alt="Another demo image" />
+				</a>
 			</div>
 		</div>
 	</div>
 </section>
 
 
+<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/styles/extensions/image-story.css" />
 <script src="https://unpkg.com/vistaview/dist/extensions/logger.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/image-story.umd.js"></script>
@@ -54,7 +60,7 @@
 <script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/mapbox.umd.js"></script>
 <script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
-<script is:inline>
+<script type="module" is:inline define:vars={{ googleMapsApiKey, mapboxAccessToken }}>
 	window.addEventListener('DOMContentLoaded', async function() {
 
     console.log('Loading video thumbnails for extensions demo...');
@@ -77,50 +83,87 @@
     const streamableVideoUrl = 'https://streamable.com/0skbol';
     const streamableThumbnailUrl = window.VistaView.getStreamableThumbnail(streamableVideoUrl);
 
-    // Maps configuration - loaded from environment variables
-    // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
-    // const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    // const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+    // Example map locations
+    const googleMapsUrl = 'https://www.google.com/maps/@40.7128,-74.0060,15z'; // New York City
+    const googleMapsLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
+    const googleMapsThumbnail = googleMapsApiKey 
+      ? window.VistaView.getGoogleMapsStaticImage(googleMapsLocation, { apiKey: googleMapsApiKey, zoom: 15 })
+      : 'https://via.placeholder.com/400x300?text=Google+Maps+%28API+Key+Required%29';
+
+    const mapboxUrl = 'mapbox://-74.0060,40.7128,15'; // New York City
+    const mapboxLocation = { lng: -74.0060, lat: 40.7128, zoom: 15 };
+    const mapboxThumbnail = mapboxAccessToken
+      ? window.VistaView.getMapboxStaticImage(mapboxLocation, { accessToken: mapboxAccessToken, zoom: 15 })
+      : 'https://via.placeholder.com/400x300?text=Mapbox+%28Access+Token+Required%29';
+
+    const osmUrl = 'https://www.openstreetmap.org/#map=15/40.7128/-74.0060'; // New York City
+    const osmLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
+    const osmThumbnail = window.VistaView.getOpenStreetMapStaticImage(osmLocation, { zoom: 15 });
 
     // Add video thumbnails to gallery
     const gallery = document.querySelector('.extensions-gallery');
-    function addVideoToGallery(url, thumbnail, alt, className) {
-      console.log('Adding video to gallery:', url);
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        link.classList.add(className);
-        const img = document.createElement('img');
-        img.src = thumbnail;
-        img.alt = alt;
-        link.appendChild(img);
-        gallery.appendChild(link);
+    function addThumbToGallery(url, thumbnail, alt, className) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.classList.add(className);
+      const img = document.createElement('img');
+      img.src = thumbnail;
+      img.alt = alt;
+      link.appendChild(img);
+      gallery.appendChild(link);
     }
 
-    addVideoToGallery(videoUrl, thumbnailUrl, 'YouTube video', 'gallery-link');
-    addVideoToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video', 'gallery-link');
-    addVideoToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video', 'gallery-link');
-    addVideoToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video', 'gallery-link');
-    addVideoToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video', 'gallery-link');
-    addVideoToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video', 'gallery-link');
+    addThumbToGallery(videoUrl, thumbnailUrl, 'YouTube video', 'gallery-link');
+    addThumbToGallery(dailimotionVideoUrl, dailymotionThumbnailUrl, 'Dailymotion video', 'gallery-link');
+    addThumbToGallery(vimeoVideoUrl, vimeoThumbnailUrl, 'Vimeo video', 'gallery-link');
+    addThumbToGallery(wistiaVideoUrl, wistiaThumbnailUrl, 'Wistia video', 'gallery-link');
+    addThumbToGallery(vidyardVideoUrl, vidyardThumbnailUrl, 'Vidyard video', 'gallery-link');
+    addThumbToGallery(streamableVideoUrl, streamableThumbnailUrl, 'Streamable video', 'gallery-link');
+    addThumbToGallery(googleMapsUrl, googleMapsThumbnail, 'Google Maps location', 'gallery-link');
+    addThumbToGallery(mapboxUrl, mapboxThumbnail, 'Mapbox location', 'gallery-link');
+    addThumbToGallery(osmUrl, osmThumbnail, 'OpenStreetMap location', 'gallery-link');
 
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
 				elements: '.extensions-gallery a',
+        controls: {
+          topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
+          bottomCenter: ['imageStory'],
+        },
 				extensions: [
 					window.VistaView.logger(),
 					window.VistaView.download(),
-					// window.VistaView.imageStory(),
+					window.VistaView.imageStory({
+          getStory: async (index) => ({
+              content: `
+              <p style="margin-top: 0">This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              <p>This is some additional random text for the image story. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>More random content: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+              <p style="margin-bottom: 0">end of story.</p>
+              `,
+              onLoad: () => {
+                console.log(`Story for image #${index + 1} loaded.`);
+              },
+              onUnload: () => {
+                console.log(`Story for image #${index + 1} unloaded.`);
+              },
+            })
+          }),
 					window.VistaView.youtubeVideo(),
 					window.VistaView.dailymotionVideo(),
 					window.VistaView.vimeoVideo(),
 					window.VistaView.wistiaVideo(),
 					window.VistaView.vidyardVideo(),
 					window.VistaView.streamableVideo(),
-					// window.VistaView.googleMaps(),
-					// window.VistaView.mapbox(),
-					// window.VistaView.openStreetMap()
+					window.VistaView.googleMaps({
+            apiKey: googleMapsApiKey,
+          }),
+					window.VistaView.mapbox({
+            accessToken: mapboxAccessToken,
+          }),
+					window.VistaView.openStreetMap()
 				]
 			});
 		}
@@ -133,10 +176,24 @@
 		border-radius: 0.25rem;
 		overflow: hidden;
 		transition: transform 0.2s ease;
+    height: 120px;
 	}
 
   a.gallery-link:hover {
 		transform: scale(1.05);
+	}
+
+  .extensions-gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+	}
+
+	.extensions-gallery img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
 	}
 </style>
 
@@ -190,18 +247,5 @@
 
 	.extensions-demo {
 		padding: 0;
-	}
-
-	.extensions-gallery {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-		gap: 1rem;
-	}
-
-	.extensions-gallery img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		display: block;
 	}
 </style>
