@@ -240,10 +240,9 @@ export class VistaView {
       images: { from: c.images, to: images },
       index: { from: beforeIndex, to: this.state.currentIndex },
       via: via || { next: false, prev: false },
-      vistaView: this,
     };
 
-    this.imageSetupFunction(vistaData);
+    this.imageSetupFunction(vistaData, this);
 
     // RESET ZOOM STATE
     this.state.zoomedIn = false;
@@ -270,7 +269,7 @@ export class VistaView {
     } else {
       // NORMAL SWAP: Run transition animation
       const abortControllerSignal = this.state.abortController!.signal;
-      const res = this.transitionFunction(vistaData, abortControllerSignal);
+      const res = this.transitionFunction(vistaData, abortControllerSignal, this);
       if (res) {
         this.transitionCleanup = res.cleanup;
         await res.transitionEnded;
@@ -472,10 +471,9 @@ export class VistaView {
       images: { from: null, to: images },
       index: { from: null, to: this.state.currentIndex },
       via: { next: false, prev: false },
-      vistaView: this,
     };
 
-    this.imageSetupFunction(vistaData);
+    this.imageSetupFunction(vistaData, this);
 
     this.state.children = { htmls, images };
     htmls.forEach((vistaImg) => {

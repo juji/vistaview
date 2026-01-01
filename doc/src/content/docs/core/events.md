@@ -75,15 +75,22 @@ vistaView({
 
 ```typescript
 interface VistaData {
-  index: {
-    from: number | null; // Previous image index (null on open)
-    to: number | null; // Current image index
+  htmlElements: {
+    from: HTMLElement[] | null; // Previous HTML elements
+    to: HTMLElement[] | null; // Current HTML elements
   };
   images: {
     from: VistaBox[] | null; // Previous images
     to: VistaBox[] | null; // Current images
   };
-  direction: 'next' | 'prev' | null; // Navigation direction
+  index: {
+    from: number | null; // Previous image index (null on open)
+    to: number | null; // Current image index
+  };
+  via: {
+    next: boolean; // True if navigated via next
+    prev: boolean; // True if navigated via prev
+  };
 }
 ```
 
@@ -313,15 +320,15 @@ import { transition } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
-  transitionFunction: async (data, abortSignal) => {
-    if (data.direction === 'next') {
+  transitionFunction: async (data, abortSignal, vistaView) => {
+    if (data.via.next) {
       console.log('Sliding to next image');
-    } else if (data.direction === 'prev') {
+    } else if (data.via.prev) {
       console.log('Sliding to previous image');
     }
 
     // Use default transition
-    return transition(data, abortSignal);
+    return transition(data, abortSignal, vistaView);
   },
 });
 ```

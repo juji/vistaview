@@ -1,9 +1,11 @@
 import type { VistaData } from '../types';
+import type { VistaView } from '../vista-view';
 
 // run on every image transition
 export function transition(
-  { vistaView, htmlElements: { to: HtmlTo }, index: { from: fromIndex, to: toIndex } }: VistaData,
-  signal: AbortSignal
+  { htmlElements: { to: HtmlTo }, index: { from: fromIndex, to: toIndex } }: VistaData,
+  signal: AbortSignal,
+  vistaView: VistaView
 ) {
   const { imageContainer: imgc, options } = vistaView;
   const { isReducedMotion } = vistaView.state;

@@ -58,15 +58,15 @@ export type VistaData = {
   images: { from: VistaBox[] | null; to: VistaBox[] | null };
   index: { from: number | null; to: number | null };
   via: { next: boolean; prev: boolean };
-  vistaView: VistaView;
 };
 
 export type VistaTransitionFn = (
   params: VistaData,
-  abortSignal: AbortSignal
+  abortSignal: AbortSignal,
+  vistaView: VistaView
 ) => { cleanup: () => void; transitionEnded: Promise<void> } | void;
 
-export type VistaImageSetupFn = (params: VistaData) => void;
+export type VistaImageSetupFn = (params: VistaData, vistaView: VistaView) => void;
 export type VistaInitFn = (vistaView: VistaView) => void;
 export type VistaOpenFn = (vistaView: VistaView) => void;
 export type VistaCloseFn = (vistaView: VistaView) => void;

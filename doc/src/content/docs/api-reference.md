@@ -127,9 +127,10 @@ interface VistaOpt {
   extensions?: VistaExtension[];
   onOpen?: (vistaView: VistaView) => void;
   onClose?: (vistaView: VistaView) => void;
-  onImageView?: (data: VistaData) => void;
+  onImageView?: (data: VistaData, vistaView: VistaView) => void;
+  onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
   initFunction?: VistaInitFn;
-  setupFunction?: VistaImageSetupFn;
+  imageSetupFunction?: VistaImageSetupFn;
   transitionFunction?: VistaTransitionFn;
   closeFunction?: VistaCloseFn;
 }
@@ -155,15 +156,22 @@ Data passed to event callbacks and transition functions.
 
 ```typescript
 interface VistaData {
-  index: {
-    from: number | null;
-    to: number | null;
+  htmlElements: {
+    from: HTMLElement[] | null;
+    to: HTMLElement[] | null;
   };
   images: {
     from: VistaBox[] | null;
     to: VistaBox[] | null;
   };
-  direction: 'next' | 'prev' | null;
+  index: {
+    from: number | null;
+    to: number | null;
+  };
+  via: {
+    next: boolean;
+    prev: boolean;
+  };
 }
 ```
 
@@ -172,9 +180,9 @@ interface VistaData {
 ```typescript
 vistaView({
   elements: '#gallery a',
-  onImageView: (data) => {
+  onImageView: (data, vistaView) => {
     console.log('From:', data.index.from, 'To:', data.index.to);
-    console.log('Direction:', data.direction);
+    console.log('Via next:', data.via.next, 'Via prev:', data.via.prev);
   },
 });
 ```
@@ -231,7 +239,7 @@ vistaView({
 Type for custom setup function when navigating.
 
 ```typescript
-type VistaImageSetupFn = (data: VistaData) => void;
+type VistaImageSetupFn = (data: VistaData, vistaView: VistaView) => void;
 ```
 
 **Example:**
@@ -239,8 +247,9 @@ type VistaImageSetupFn = (data: VistaData) => void;
 ```typescript
 vistaView({
   elements: '#gallery a',
-  setupFunction: (data) => {
+  imageSetupFunction: (data, vistaView) => {
     console.log('Setting up image:', data.index.to);
+    console.log('Total images:', vistaView.state.elmLength);
   },
 });
 ```
@@ -252,8 +261,9 @@ Type for custom transition animation function.
 ```typescript
 type VistaTransitionFn = (
   data: VistaData,
-  abortSignal: AbortSignal
-) => { cleanup: () => void; promise: Promise<void> };
+  abortSignal: AbortSignal,
+  vistaView: VistaView
+) => { cleanup: () => void; transitionEnded: Promise<void> } | void;
 ```
 
 **Example:**
@@ -263,9 +273,9 @@ import { transition } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
-  transitionFunction: async (data, abortSignal) => {
+  transitionFunction: (data, abortSignal, vistaView) => {
     // Use default transition
-    return transition(data, abortSignal);
+    return transition(data, abortSignal, vistaView);
   },
 });
 ```

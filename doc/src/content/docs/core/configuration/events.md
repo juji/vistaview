@@ -79,7 +79,6 @@ type VistaData = {
     next: boolean; // True if navigated via next
     prev: boolean; // True if navigated via prev
   };
-  vistaView: VistaView; // The VistaView instance
 };
 ```
 

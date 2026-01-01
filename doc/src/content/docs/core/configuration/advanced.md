@@ -17,14 +17,14 @@ vistaView({
   },
 
   // Custom setup when navigating
-  setupFunction: (data) => {
+  imageSetupFunction: (data, vistaView) => {
     console.log('Setting up image:', data.index.to);
   },
 
   // Custom transition animation
-  transitionFunction: async (data, abortSignal) => {
+  transitionFunction: async (data, abortSignal, vistaView) => {
     // Use default transition
-    return transition(data, abortSignal);
+    return transition(data, abortSignal, vistaView);
   },
 
   // Custom cleanup on close

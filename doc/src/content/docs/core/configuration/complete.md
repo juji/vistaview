@@ -45,12 +45,13 @@ vistaView({
   // Event Callbacks
   onOpen: (vistaView) => {}, // Called when lightbox opens
   onClose: (vistaView) => {}, // Called when lightbox closes
-  onImageView: (data) => {}, // Called when viewing an image
+  onImageView: (data, vistaView) => {}, // Called when viewing an image
+  onContentChange: (content, vistaView) => {}, // Called when image content changes
 
   // Advanced: Custom Behavior Functions
   initFunction: (vistaView) => {}, // Custom initialization
-  setupFunction: (data) => {}, // Custom setup when navigating
-  transitionFunction: (data, abortSignal) => {}, // Custom transition animation
+  imageSetupFunction: (data, vistaView) => {}, // Custom setup when navigating
+  transitionFunction: (data, abortSignal, vistaView) => {}, // Custom transition animation
   closeFunction: (vistaView) => {}, // Custom cleanup on close
 });
 ```
