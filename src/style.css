@@ -222,15 +222,11 @@
   &.vvw-index {
     font-size: 16px;
     padding: 8px 13px;
-    background-color: var(--vvw-ui-bg-color);
-    color: var(--vvw-ui-text-color);
   }
 
   &.vvw-desc {
     font-size: 14px;
     padding: 8px 15px;
-    background-color: var(--vvw-ui-bg-color);
-    color: var(--vvw-ui-text-color);
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -253,8 +249,6 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    background-color: var(--vvw-ui-bg-color);
-    color: var(--vvw-ui-text-color);
 
     &:disabled {
       color: rgb(from var(--vvw-ui-text-color) r g b / 0.5);
