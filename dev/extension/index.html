@@ -62,6 +62,7 @@
     import { googleMaps, getGoogleMapsStaticImage } from '../../src/lib/extensions/google-maps.ts';
     import { mapbox, getMapboxStaticImage } from '../../src/lib/extensions/mapbox.ts';
     import { openStreetMap, getOpenStreetMapStaticImage } from '../../src/lib/extensions/openstreetmap.ts';
+    import { twitchVideo, getTwitchThumbnail } from '../../src/lib/extensions/twitch-video.ts';
     
     // Theme switcher
     const themeLink = document.querySelector('link[href*="styles/"]');
@@ -91,6 +92,9 @@
 
     const streamableVideoUrl = 'https://streamable.com/wx6lvl';
     const streamableThumbnailUrl = getStreamableThumbnail(streamableVideoUrl);
+
+    const twitchVideoUrl = 'https://www.twitch.tv/streammelody/video/2651710276';
+    const twitchThumbnailUrl = getTwitchThumbnail(twitchVideoUrl);
 
     // Maps configuration - loaded from environment variables
     // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
@@ -152,6 +156,10 @@
         target="_blank">
         <img src="${streamableThumbnailUrl}" alt="Streamable Video Thumbnail">
       </a>`,
+      `<a href="${twitchVideoUrl}"
+        target="_blank">
+        <img src="${twitchThumbnailUrl}" alt="Twitch Video Thumbnail">
+      </a>`,
       `<a href="${googleMapsUrl}"
         target="_blank">
         <img src="${googleMapsThumbnail}" alt="Google Maps - New York City">
@@ -209,6 +217,7 @@
         wistiaVideo(),
         vidyardVideo(),
         streamableVideo(),
+        twitchVideo(),
         // Map extensions - only enabled if API keys are provided
         ...(googleMapsApiKey 
           ? [googleMaps({ apiKey: googleMapsApiKey, zoom: 15 })]

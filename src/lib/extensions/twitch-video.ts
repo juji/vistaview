@@ -5,13 +5,22 @@ import type { VistaView } from '../vista-view';
 /**
  * Parse Twitch URL and extract video ID or channel
  * Supports:
+ * - https://www.twitch.tv/CHANNEL/video/VIDEO_ID
  * - https://www.twitch.tv/videos/VIDEO_ID
  * - https://www.twitch.tv/CHANNEL
  * @param url - Twitch video or channel URL
- * @returns Object with type ('video' or 'channel') and id
+ * @returns Object with type ('video' or 'channel'), id, and optional channel
  */
-export function parseTwitchUrl(url: string): { type: 'video' | 'channel'; id: string } | null {
+export function parseTwitchUrl(
+  url: string
+): { type: 'video' | 'channel'; id: string; channel?: string } | null {
   if (!url) return null;
+
+  // Video URL with channel: https://www.twitch.tv/CHANNEL/video/VIDEO_ID
+  const channelVideoMatch = url.match(/twitch\.tv\/([^\/]+)\/video\/(\d+)/);
+  if (channelVideoMatch) {
+    return { type: 'video', id: channelVideoMatch[2], channel: channelVideoMatch[1] };
+  }
 
   // Video URL: https://www.twitch.tv/videos/VIDEO_ID
   const videoMatch = url.match(/twitch\.tv\/videos\/(\d+)/);
@@ -43,8 +52,13 @@ export function getTwitchThumbnail(url: string): string {
     // Live stream thumbnail
     return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${parsed.id}-320x180.jpg`;
   } else {
-    // VOD thumbnail (approximate)
-    return `https://static-cdn.jtvnw.net/cf_vods/${parsed.id}/thumb/thumb0-320x180.jpg`;
+    // VOD thumbnail
+    if (parsed.channel) {
+      return `https://static-cdn.jtvnw.net/cf_vods/${parsed.channel}/${parsed.id}/thumb/thumb0-320x180.jpg`;
+    } else {
+      // Fallback for videos without channel - might not work
+      return `https://static-cdn.jtvnw.net/cf_vods/twitch/${parsed.id}/thumb/thumb0-320x180.jpg`;
+    }
   }
 }
 
@@ -101,7 +115,7 @@ export class VistaTwitchVideo extends VistaBox {
       if (parsed?.type === 'channel') {
         iframe.src = `https://player.twitch.tv/?channel=${parsed.id}&parent=${window.location.hostname}&autoplay=false`;
       } else if (parsed?.type === 'video') {
-        iframe.src = `https://player.twitch.tv/?video=${parsed.id}&parent=${window.location.hostname}&autoplay=false`;
+        iframe.src = `https://player.twitch.tv/?video=${parsed.id}&parent=${window.location.hostname}&autoplay=true`;
       }
 
       div.appendChild(iframe);
