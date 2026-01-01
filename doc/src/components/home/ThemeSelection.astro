@@ -16,8 +16,8 @@
 		<a href="https://picsum.photos/seed/srv8h/800/800" data-title="Image 3" class="img-3" target="_blank" rel="noopener">
 			<img src="https://picsum.photos/seed/srv8h/200/200" alt="Image 3" />
 		</a>
-		<a href="https://picsum.photos/seed/seorluihg/800/800" data-title="Image 3" class="img-3" target="_blank" rel="noopener">
-			<img src="https://picsum.photos/seed/seorluihg/200/200" alt="Image 3" />
+		<a href="https://picsum.photos/seed/seosrluihg/800/800" data-title="Image 3" class="img-3" target="_blank" rel="noopener">
+			<img src="https://picsum.photos/seed/seosrluihg/200/200" alt="Image 3" />
 		</a>
 		<a href="https://picsum.photos/seed/seroij/800/800" data-title="Image 3" class="img-3" target="_blank" rel="noopener">
 			<img src="https://picsum.photos/seed/seroij/200/200" alt="Image 3" />
@@ -27,23 +27,84 @@
 		</a>
 	</div>
 
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/dist/extensions/select-box.umd.js"></script>
 <script is:inline>
 	window.addEventListener('DOMContentLoaded', function() {
+		let currentThemeLink = null;
+		
+		function loadTheme(themeName) {
+			// Remove existing theme
+			if (currentThemeLink) {
+				currentThemeLink.remove();
+			}
+			
+			// Load new theme
+			if (themeName && themeName !== 'default') {
+				currentThemeLink = document.createElement('link');
+				currentThemeLink.rel = 'stylesheet';
+				currentThemeLink.href = `https://unpkg.com/vistaview/dist/styles/${themeName}.css`;
+				document.head.appendChild(currentThemeLink);
+			}
+		}
+
 		if (window.VistaView && window.VistaView.vistaView) {
 			window.VistaView.vistaView({ 
 				elements: '#theme-gallery a',
 				controls: {
-
-				}
+					bottomLeft: [],
+					bottomCenter: ['selectBox'],
+				},
+				onClose(){
+					loadTheme(null);
+				},
+				extensions: [
+					window.VistaView.selectBox({
+						onSelect: (value) => {
+							loadTheme(value);
+						},
+						placeholder: 'Select Theme',
+						selection: [
+							{ value: 'autumn-amber', text: 'Autumn Amber' },
+							{ value: 'cotton-candy', text: 'Cotton Candy' },
+							{ value: 'dark-rounded', text: 'Dark Rounded' },
+							{ value: 'ember-glow', text: 'Ember Glow' },
+							{ value: 'forest-moss', text: 'Forest Moss' },
+							{ value: 'green-lake', text: 'Green Lake' },
+							{ value: 'ice-crystal', text: 'Ice Crystal' },
+							{ value: 'lavender-fields', text: 'Lavender Fields' },
+							{ value: 'midnight-gold', text: 'Midnight Gold' },
+							{ value: 'midnight-ocean', text: 'Midnight Ocean' },
+							{ value: 'mint-chocolate', text: 'Mint Chocolate' },
+							{ value: 'neon-nights', text: 'Neon Nights' },
+							{ value: 'paper-light', text: 'Paper Light' },
+							{ value: 'retro-arcade', text: 'Retro Arcade' },
+							{ value: 'soft-neutral', text: 'Soft Neutral' },
+							{ value: 'stark-minimal', text: 'Stark Minimal' },
+							{ value: 'strawberry', text: 'Strawberry' },
+						],
+					}),
+				],
 			});
 		}
 	});
+		
 </script>
 </section>
 
+<style is:global>
+	.vvw-select-box{
+		padding: 1rem;
+		background-color: black;
+		border: none;
+		outline: none;
+	}
+	.vvw-select-box-select {
+		padding: 0.25rem 0.5rem;
+	}
+</style>
+
 <style>
+	/* Component-scoped styles */
 	.theme-selection-section {
 		padding: 2rem 0;
 		text-align: start;
