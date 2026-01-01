@@ -39,14 +39,17 @@ export default defineConfig({
 							items: [
 								{ label: 'Basic', slug: 'core/configuration/basic' },
 								{ label: 'Data Attributes', slug: 'core/configuration/data-attributes' },
-								{ label: 'Complete Options', slug: 'core/configuration/complete' },
 
-								{ label: 'Animation', slug: 'core/configuration/animation' },
-								{ label: 'Zoom', slug: 'core/configuration/zoom' },
-								{ label: 'Preloading', slug: 'core/configuration/preloading' },
-								{ label: 'Controls', slug: 'core/configuration/controls' },
-								{ label: 'Keyboard & UI', slug: 'core/configuration/keyboard' },							{ label: 'Z-Index', slug: 'core/configuration/z-index' },								{ label: 'Events', slug: 'core/configuration/events' },
+							{ label: 'Animation', slug: 'core/configuration/animation' },
+							{ label: 'Zoom', slug: 'core/configuration/zoom' },
+							{ label: 'Preloading', slug: 'core/configuration/preloading' },
+							{ label: 'Controls', slug: 'core/configuration/controls' },
+							{ label: 'Keyboard & UI', slug: 'core/configuration/keyboard' },
+							{ label: 'Z-Index', slug: 'core/configuration/z-index' },
+							{ label: 'Events', slug: 'core/configuration/events' },
 							{ label: 'Lifecycle', slug: 'core/configuration/lifecycle' },
+							
+							{ label: 'Complete Options', slug: 'core/configuration/complete' },
 							],
 						},
 					],
