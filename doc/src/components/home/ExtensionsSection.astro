@@ -13,17 +13,17 @@ const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 		<div class="extensions-grid">
 			<div class="extension-card">
 				<h3>Video Support</h3>
-				<p>Embed videos from popular platforms directly in your galleries. Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Dailymotion</strong>, <strong>Wistia</strong>, <strong>Vidyard</strong>, and <strong>Streamable</strong>.</p>
+				<p>Embed videos from popular platforms directly in your galleries. Supports <a href="/extensions/youtube-video"><strong>YouTube</strong></a>, <a href="/extensions/vimeo-video"><strong>Vimeo</strong></a>, <a href="/extensions/dailymotion-video"><strong>Dailymotion</strong></a>, <a href="/extensions/wistia-video"><strong>Wistia</strong></a>, <a href="/extensions/vidyard-video"><strong>Vidyard</strong></a>, and <a href="/extensions/streamable-video"><strong>Streamable</strong></a>.</p>
 			</div>
 
 			<div class="extension-card">
 				<h3>Interactive Controls & Advanced Features</h3>
-				<p>Add custom controls and user interactions to your galleries. Includes <strong>Download</strong> for saving images, <strong>Logger</strong> for debug information, and <strong>Image Story</strong> for extended information about your image.</p>
+				<p>Add custom controls and user interactions to your galleries. Includes <a href="/extensions/download"><strong>Download</strong></a> for saving images, <a href="/extensions/logger"><strong>Logger</strong></a> for debug information, and <a href="/extensions/image-story"><strong>Image Story</strong></a> for extended information about your image.</p>
 			</div>
 
 			<div class="extension-card">
 				<h3>Maps Integration</h3>
-				<p>Display interactive maps in your image galleries. Integrates with <strong>Google Maps</strong>, <strong>Mapbox</strong>, and <strong>OpenStreetMap</strong>.</p>
+				<p>Display interactive maps in your image galleries. Integrates with <a href="/extensions/google-maps"><strong>Google Maps</strong></a>, <a href="/extensions/mapbox"><strong>Mapbox</strong></a>, and <a href="/extensions/openstreetmap"><strong>OpenStreetMap</strong></a>.</p>
 			</div>
 		</div>
 
@@ -237,6 +237,15 @@ const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 	.extension-card strong {
 		color: #22c55e;
 		font-weight: 600;
+	}
+
+	.extension-card a {
+		text-decoration: none;
+		transition: opacity 0.2s ease;
+	}
+
+	.extension-card a:hover {
+		opacity: 0.8;
 	}
 
 	.extension-card p {
