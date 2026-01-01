@@ -473,5 +473,5 @@ When publishing:
 ## Next Steps
 
 - See [built-in extensions](/extensions/overview) for examples
-- Review the [API Reference](/core/api-reference)
+- Review the [API Reference](/api-reference)
 - Check the [source code](https://github.com/juji/vistaview/tree/main/src/lib/extensions)

@@ -379,6 +379,5 @@ vistaView({
 
 ## Next Steps
 
-- Explore [keyboard shortcuts and gestures](/core/keyboard-gestures)
 - Learn about [creating extensions](/extensions/authoring)
-- See the [API Reference](/core/api-reference)
+- See the [API Reference](/api-reference)

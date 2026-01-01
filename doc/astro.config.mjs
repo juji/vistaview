@@ -51,9 +51,7 @@ export default defineConfig({
 								{ label: 'TypeScript', slug: 'core/configuration/typescript' },
 							],
 						},
-						{ label: 'API Reference', slug: 'core/api-reference' },
 						{ label: 'Events & Lifecycle', slug: 'core/events' },
-						{ label: 'Keyboard & Gestures', slug: 'core/keyboard-gestures' },
 					],
 				},
 				{
@@ -112,6 +110,7 @@ export default defineConfig({
 						},
 					],
 				},
+				{ label: 'API Reference', slug: 'api-reference' },
 			],
 			customCss: ['./src/styles/custom.css'],
 			components: {

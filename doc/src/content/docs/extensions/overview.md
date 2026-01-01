@@ -110,4 +110,4 @@ Extensions can:
 
 - Browse individual [extension documentation](/extensions/download)
 - Learn to [create your own extensions](/extensions/authoring)
-- See the [API Reference](/core/api-reference)
+- See the [API Reference](/api-reference)

@@ -35,4 +35,4 @@ vistaView({
 });
 ```
 
-See the [API Reference](/core/api-reference) for more details on these functions.
+See the [API Reference](/api-reference) for more details on these functions.
