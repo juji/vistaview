@@ -48,16 +48,67 @@ Create links pointing to Wistia video URLs:
     <img src="/thumbnails/video2.jpg" alt="Video 2" />
   </a>
 </div>
+```
+
+## Automatic Thumbnail Generation
+
+The extension provides helper functions to work with Wistia video URLs:
+
+```javascript
+import { getWistiaThumbnail, parseWistiaVideoId } from 'vistaview/extensions/wistia-video';
+
+// Extract video ID
+const videoId = parseWistiaVideoId('https://fast.wistia.net/embed/iframe/abc123def');
+// Returns: "abc123def"
+
+// Get thumbnail URL (async - fetches from Wistia's oEmbed API)
+const thumbnailUrl = await getWistiaThumbnail('https://fast.wistia.net/embed/iframe/abc123def');
+// Returns: URL to the video thumbnail
+```
+
+:::tip[Wistia Thumbnail Note]
+The `getWistiaThumbnail()` function is **async** because it fetches thumbnail information from Wistia's oEmbed API. Make sure to use `await` or handle the Promise appropriately.
+:::
+
+## Complete Example
+
+```html
+<div id="gallery"></div>
 
 <script type="module">
   import { vistaView } from 'vistaview';
-  import { wistiaVideo } from 'vistaview/extensions/wistia-video';
+  import { wistiaVideo, getWistiaThumbnail } from 'vistaview/extensions/wistia-video';
   import 'vistaview/style.css';
 
-  vistaView({
-    elements: '#gallery a',
-    extensions: [wistiaVideo()],
-  });
+  // Array of Wistia video URLs
+  const videos = [
+    'https://fast.wistia.net/embed/iframe/abc123def',
+    'https://myaccount.wistia.com/medias/xyz789ghi',
+  ];
+
+  // Generate gallery dynamically with thumbnails (async)
+  const gallery = document.getElementById('gallery');
+
+  (async () => {
+    for (const videoUrl of videos) {
+      const link = document.createElement('a');
+      link.href = videoUrl;
+
+      const img = document.createElement('img');
+      // getWistiaThumbnail is async - fetches from Wistia's API
+      img.src = await getWistiaThumbnail(videoUrl);
+      img.alt = 'Video thumbnail';
+      img.style.width = '200px';
+
+      link.appendChild(img);
+      gallery.appendChild(link);
+    }
+
+    vistaView({
+      elements: '#gallery a',
+      extensions: [wistiaVideo()],
+    });
+  })();
 </script>
 ```
 
@@ -86,17 +137,6 @@ The extension creates videos with a maximum width of 800px (or window width, whi
 - **No zoom controls** - Videos cannot be zoomed like images
 - **Requires internet connection** - Videos stream from Wistia
 - **Wistia account required** - Videos must be hosted on Wistia
-
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { wistiaVideo } from 'vistaview/extensions/wistia-video';
-
-const extension: VistaExtension = wistiaVideo();
-```
 
 ## Next Steps
 

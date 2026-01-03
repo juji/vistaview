@@ -121,7 +121,13 @@ export class VistaYoutubeVideo extends VistaBox {
     // for initial iframe loading
     const image = document.createElement('img');
     div.appendChild(image);
-    image.src = this.origin?.image.src || getYouTubeThumbnail(url);
+
+    // Get thumbnail source from:
+    // 1. Origin image (if lightbox opened from thumbnail click)
+    // 2. data-thumbnail attribute
+    // 3. Generated YouTube thumbnail URL
+    image.src = this.origin?.image.src || par.elm.elm.dataset.thumbnail || getYouTubeThumbnail(url);
+
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';
@@ -170,6 +176,7 @@ export class VistaYoutubeVideo extends VistaBox {
       };
     }
 
+    // set as loaded
     this.isLoadedResolved!(true);
   }
 

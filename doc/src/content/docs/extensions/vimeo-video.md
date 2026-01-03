@@ -49,11 +49,59 @@ Create links pointing to Vimeo video URLs:
     <img src="/thumbnails/video2.jpg" alt="Video 2" />
   </a>
 </div>
+```
+
+## Automatic Thumbnail Generation
+
+The extension provides helper functions to generate Vimeo thumbnail URLs from video URLs:
+
+```javascript
+import { getVimeoThumbnail, parseVimeoVideoId } from 'vistaview/extensions/vimeo-video';
+
+// Generate thumbnail URL from video URL
+const thumbnailUrl = getVimeoThumbnail('https://vimeo.com/123456789');
+// Returns: "https://vumbnail.com/123456789.jpg"
+
+// Or extract just the video ID
+const videoId = parseVimeoVideoId('https://vimeo.com/123456789');
+// Returns: "123456789"
+```
+
+:::tip[Vimeo Thumbnail Note]
+Vimeo doesn't provide direct thumbnail URLs without API authentication. The `getVimeoThumbnail()` function uses vumbnail.com as a workaround. For production use, consider using [Vimeo's oEmbed API](https://developer.vimeo.com/api/oembed) for more reliable thumbnails.
+:::
+
+## Complete Example
+
+```html
+<div id="gallery"></div>
 
 <script type="module">
   import { vistaView } from 'vistaview';
-  import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
+  import { vimeoVideo, getVimeoThumbnail } from 'vistaview/extensions/vimeo-video';
   import 'vistaview/style.css';
+
+  // Array of Vimeo video URLs
+  const videos = [
+    'https://vimeo.com/123456789',
+    'https://player.vimeo.com/video/987654321',
+    'https://vimeo.com/555666777',
+  ];
+
+  // Generate gallery dynamically with thumbnails
+  const gallery = document.getElementById('gallery');
+  videos.forEach((videoUrl) => {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+
+    const img = document.createElement('img');
+    img.src = getVimeoThumbnail(videoUrl);
+    img.alt = 'Video thumbnail';
+    img.style.width = '200px';
+
+    link.appendChild(img);
+    gallery.appendChild(link);
+  });
 
   vistaView({
     elements: '#gallery a',
@@ -132,31 +180,6 @@ vistaView({
   extensions: [youtubeVideo(), vimeoVideo()],
 });
 ```
-
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
-
-const extension: VistaExtension = vimeoVideo();
-```
-
-## Troubleshooting
-
-### Video not loading
-
-1. Check the video URL is valid and public
-2. Verify the video ID is correct
-3. Check browser console for errors
-4. Ensure the video allows embedding
-5. Check if the video is region-restricted
-
-### Private videos not playing
-
-Private Vimeo videos require authentication. This extension supports public videos only.
 
 ## Next Steps
 

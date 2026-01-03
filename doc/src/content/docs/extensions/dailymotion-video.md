@@ -49,11 +49,61 @@ Create links pointing to Dailymotion video URLs:
     <img src="/thumbnails/video2.jpg" alt="Video 2" />
   </a>
 </div>
+```
+
+## Automatic Thumbnail Generation
+
+The extension provides helper functions to generate Dailymotion thumbnail URLs from video URLs:
+
+```javascript
+import {
+  getDailymotionThumbnail,
+  parseDailymotionVideoId,
+} from 'vistaview/extensions/dailymotion-video';
+
+// Generate thumbnail URL from video URL
+const thumbnailUrl = getDailymotionThumbnail('https://www.dailymotion.com/video/x8abcde');
+// Returns: "https://www.dailymotion.com/thumbnail/video/x8abcde"
+
+// Or extract just the video ID
+const videoId = parseDailymotionVideoId('https://dai.ly/x8abcde');
+// Returns: "x8abcde"
+```
+
+## Complete Example
+
+```html
+<div id="gallery"></div>
 
 <script type="module">
   import { vistaView } from 'vistaview';
-  import { dailymotionVideo } from 'vistaview/extensions/dailymotion-video';
+  import {
+    dailymotionVideo,
+    getDailymotionThumbnail,
+  } from 'vistaview/extensions/dailymotion-video';
   import 'vistaview/style.css';
+
+  // Array of Dailymotion video URLs
+  const videos = [
+    'https://www.dailymotion.com/video/x8abcde',
+    'https://dai.ly/x8fghij',
+    'https://www.dailymotion.com/video/x8klmno',
+  ];
+
+  // Generate gallery dynamically with thumbnails
+  const gallery = document.getElementById('gallery');
+  videos.forEach((videoUrl) => {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+
+    const img = document.createElement('img');
+    img.src = getDailymotionThumbnail(videoUrl);
+    img.alt = 'Video thumbnail';
+    img.style.width = '200px';
+
+    link.appendChild(img);
+    gallery.appendChild(link);
+  });
 
   vistaView({
     elements: '#gallery a',
@@ -129,27 +179,6 @@ vistaView({
   extensions: [youtubeVideo(), vimeoVideo(), dailymotionVideo()],
 });
 ```
-
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { dailymotionVideo } from 'vistaview/extensions/dailymotion-video';
-
-const extension: VistaExtension = dailymotionVideo();
-```
-
-## Troubleshooting
-
-### Video not loading
-
-1. Check the video URL is valid and public
-2. Verify the video ID is correct
-3. Check browser console for errors
-4. Ensure the video allows embedding
-5. Check if the video is region-restricted
 
 ## Next Steps
 

@@ -160,36 +160,6 @@ Check [Mapbox pricing](https://www.mapbox.com/pricing) for current limits.
 - **Internet connection required** - Maps load from Mapbox servers
 - **Large library** - Mapbox GL JS is loaded from CDN (~500KB)
 
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { mapbox } from 'vistaview/extensions/mapbox';
-
-const extension: VistaExtension = mapbox({
-  accessToken: 'YOUR_TOKEN',
-});
-```
-
-## Troubleshooting
-
-### Map not loading
-
-1. Verify your access token is valid
-2. Check browser console for errors
-3. Ensure Mapbox GL JS loads successfully
-4. Verify the URL format is correct
-
-### Token errors
-
-If you see "Unauthorized" errors:
-
-1. Check if your token is active in Mapbox account
-2. Verify the token has the correct scopes
-3. Check if your domain is allowed (if URL restrictions are set)
-
 ## Security
 
 **Best practices:**

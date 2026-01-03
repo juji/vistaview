@@ -3,7 +3,7 @@ import { VistaBox } from '../vista-box';
 import type { VistaView } from '../vista-view';
 
 export interface GoogleMapsConfig {
-  apiKey: string;
+  apiKey?: string;
   zoom?: number; // Default zoom level (1-20)
   width?: number; // Map width in pixels
   height?: number; // Map height in pixels
@@ -83,6 +83,10 @@ export function getGoogleMapsStaticImage(
   location: GoogleMapsLocation,
   config: GoogleMapsConfig
 ): string {
+  if (!config.apiKey) {
+    throw new Error('Google Maps API key is required');
+  }
+
   const zoom = location.zoom || config.zoom || 15;
   const width = config.width || 800;
   const height = config.height || 600;
@@ -180,10 +184,6 @@ export class VistaGoogleMaps extends VistaBox {
 }
 
 export function googleMaps(config: GoogleMapsConfig): VistaExtension {
-  if (!config.apiKey) {
-    console.error('Google Maps API key is required');
-  }
-
   return {
     name: 'googleMaps',
     onInitializeImage: (params: VistaImageParams) => {

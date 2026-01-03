@@ -89,17 +89,6 @@ The extension creates videos with a maximum width of 800px (or window width, whi
 - **Requires internet connection** - Videos stream from Streamable
 - **Public videos only** - Extension works with publicly accessible videos
 
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { streamableVideo } from 'vistaview/extensions/streamable-video';
-
-const extension: VistaExtension = streamableVideo();
-```
-
 ## Next Steps
 
 - Try other video extensions: [YouTube](/extensions/youtube-video), [Vimeo](/extensions/vimeo-video)

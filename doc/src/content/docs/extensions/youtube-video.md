@@ -53,11 +53,72 @@ Create links pointing to YouTube video URLs:
     <img src="/thumbnails/video3.jpg" alt="Video 3" />
   </a>
 </div>
+```
+
+## Automatic Thumbnail Generation
+
+The extension provides a helper function to generate YouTube thumbnail URLs from video URLs:
+
+```javascript
+import { getYouTubeThumbnail } from 'vistaview/extensions/youtube-video';
+
+// Generate thumbnail URL from video URL
+const thumbnailUrl = getYouTubeThumbnail('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+// Returns: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+
+// Use in your gallery dynamically
+const videoUrl = 'https://youtu.be/dQw4w9WgXcQ';
+const link = document.createElement('a');
+link.href = videoUrl;
+
+const img = document.createElement('img');
+img.src = getYouTubeThumbnail(videoUrl);
+img.alt = 'Video thumbnail';
+link.appendChild(img);
+
+document.getElementById('gallery').appendChild(link);
+```
+
+You can also extract just the video ID:
+
+```javascript
+import { parseYouTubeVideoId } from 'vistaview/extensions/youtube-video';
+
+const videoId = parseYouTubeVideoId('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+// Returns: "dQw4w9WgXcQ"
+```
+
+## Complete Example
+
+```html
+<div id="gallery"></div>
 
 <script type="module">
   import { vistaView } from 'vistaview';
-  import { youtubeVideo } from 'vistaview/extensions/youtube-video';
+  import { youtubeVideo, getYouTubeThumbnail } from 'vistaview/extensions/youtube-video';
   import 'vistaview/style.css';
+
+  // Array of YouTube video URLs
+  const videos = [
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://youtu.be/jNQXAC9IVRw',
+    'https://www.youtube.com/watch?v=9bZkp7q19f0',
+  ];
+
+  // Generate gallery dynamically with thumbnails
+  const gallery = document.getElementById('gallery');
+  videos.forEach((videoUrl) => {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+
+    const img = document.createElement('img');
+    img.src = getYouTubeThumbnail(videoUrl);
+    img.alt = 'Video thumbnail';
+    img.style.width = '200px';
+
+    link.appendChild(img);
+    gallery.appendChild(link);
+  });
 
   vistaView({
     elements: '#gallery a',
@@ -165,30 +226,6 @@ vistaView({
   ],
 });
 ```
-
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { youtubeVideo } from 'vistaview/extensions/youtube-video';
-
-const extension: VistaExtension = youtubeVideo();
-```
-
-## Troubleshooting
-
-### Video not loading
-
-1. Check the video URL is valid and public
-2. Verify the video ID is correct
-3. Check browser console for errors
-4. Ensure the video is not region-restricted
-
-### Video not autoplaying
-
-Some browsers block autoplay with sound. This is expected behavior due to browser policies.
 
 ## Next Steps
 

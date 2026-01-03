@@ -264,55 +264,14 @@ When the cache exceeds `maxStoryCache`, the oldest entries are evicted (FIFO).
 
 Note: Includes DOMPurify for HTML sanitization.
 
-## TypeScript
+## Next Steps
 
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { imageStory } from 'vistaview/extensions/image-story';
-
-type StoryResult = {
-  content: string;
-  onLoad?: () => void;
-  onUnload?: () => void;
-};
-
-const stories = imageStory({
-  getStory: async (index: number): Promise<StoryResult> => {
-    // Fully typed
-    return { content: '<p>Story</p>' };
-  },
-  maxStoryCache: 5,
+getStory: async (index) => {
+/_ ... _/
+},
+maxStoryCache: 3, // Lower cache limit
 });
-```
 
-## Troubleshooting
-
-### Story not appearing
-
-1. Check browser console for errors
-2. Verify `getStory` returns valid HTML
-3. Ensure CSS is imported
-4. Check that content is not empty
-
-### Styling issues
-
-1. Import the extension CSS file
-2. Check for CSS conflicts with your styles
-3. Use browser DevTools to inspect elements
-
-### Memory issues
-
-Reduce `maxStoryCache` value:
-
-```javascript
-imageStory({
-  getStory: async (index) => {
-    /* ... */
-  },
-  maxStoryCache: 3, // Lower cache limit
-});
 ```
 
 ## Next Steps
@@ -320,3 +279,4 @@ imageStory({
 - Learn about [creating custom extensions](/extensions/authoring)
 - Explore other [extensions](/extensions/overview)
 - See [configuration options](/core/configuration/complete)
+```

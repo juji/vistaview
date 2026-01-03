@@ -141,38 +141,6 @@ Google Maps API usage is subject to Google's pricing. Make sure to:
 - **Usage limits** - Subject to Google Maps API quotas and billing
 - **Internet connection required** - Maps load from Google servers
 
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { googleMaps } from 'vistaview/extensions/google-maps';
-
-const extension: VistaExtension = googleMaps({
-  apiKey: 'YOUR_API_KEY',
-});
-```
-
-## Troubleshooting
-
-### Map not loading
-
-1. Verify your API key is valid
-2. Check if the API is enabled in Google Cloud Console
-3. Ensure billing is set up (required for Google Maps)
-4. Check browser console for errors
-5. Verify your domain is allowed in API key restrictions
-
-### API key errors
-
-If you see "This page can't load Google Maps correctly":
-
-1. Check if Maps JavaScript API is enabled
-2. Verify billing is active
-3. Check API key restrictions
-4. Look for usage quota exceeded
-
 ## Security
 
 **Important:** Restrict your API key to your domains to prevent unauthorized usage:

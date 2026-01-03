@@ -22,7 +22,6 @@ BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=dailymotion-video vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=wistia-video vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=vidyard-video vite build
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=streamable-video vite build
-BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=twitch-video vite build
 
 # Map Extensions
 BUILD_ENV=prod BUILD_UMD=true BUILD_EXT=google-maps vite build

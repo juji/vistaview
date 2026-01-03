@@ -158,17 +158,6 @@ For production sites with high traffic, consider:
 - Self-hosted tile server
 - Commercial OpenStreetMap providers
 
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { openstreetmap } from 'vistaview/extensions/openstreetmap';
-
-const extension: VistaExtension = openstreetmap();
-```
-
 ## Customization
 
 The extension uses standard OpenStreetMap tiles. To use custom tile servers or styles, you'll need to create a custom version based on the extension source code.
@@ -200,21 +189,6 @@ The extension automatically includes proper attribution to OpenStreetMap contrib
   </a>
 </div>
 ```
-
-## Troubleshooting
-
-### Map not loading
-
-1. Check the URL format is correct (osm://lat,lng,zoom)
-2. Verify internet connection
-3. Check browser console for errors
-4. Ensure Leaflet.js loads successfully
-
-### Tiles not appearing
-
-1. Check if tile servers are accessible
-2. Verify browser doesn't block mixed content (HTTP vs HTTPS)
-3. Check if browser has network connectivity
 
 ## Next Steps
 

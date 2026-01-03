@@ -87,17 +87,6 @@ The extension creates videos with a maximum width of 800px (or window width, whi
 - **Requires internet connection** - Videos stream from Vidyard
 - **Vidyard account required** - Videos must be hosted on Vidyard
 
-## TypeScript
-
-Full TypeScript support:
-
-```typescript
-import type { VistaExtension } from 'vistaview';
-import { vidyardVideo } from 'vistaview/extensions/vidyard-video';
-
-const extension: VistaExtension = vidyardVideo();
-```
-
 ## Next Steps
 
 - Try other video extensions: [YouTube](/extensions/youtube-video), [Vimeo](/extensions/vimeo-video)

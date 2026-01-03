@@ -97,7 +97,6 @@ export default defineConfig({
 								{ label: 'Wistia', slug: 'extensions/wistia-video' },
 								{ label: 'Vidyard', slug: 'extensions/vidyard-video' },
 								{ label: 'Streamable', slug: 'extensions/streamable-video' },
-								{ label: 'Twitch', slug: 'extensions/twitch-video' },
 							],
 						},
 						{
