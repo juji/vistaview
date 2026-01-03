@@ -72,7 +72,7 @@ The current state manager containing:
 - `children`: Current DOM elements and VistaBox instances
 - `abortController`: For canceling transitions
 
-See [VistaState](/api-reference/types#vistastate) for complete type definition.
+See [VistaState](/api-reference/vistastate) for complete documentation.
 
 ### imageContainer
 
@@ -412,26 +412,6 @@ Temporarily disables UI controls.
 ```typescript
 // Disable zoom during a custom animation
 viewer.deactivateUi(['zoomIn', 'zoomOut']);
-```
-
-## Global State
-
-### GlobalVistaState
-
-```typescript
-export const GlobalVistaState: { somethingOpened: VistaView | null };
-```
-
-Singleton object tracking the currently open VistaView instance. Ensures only one lightbox is active at a time.
-
-**Example:**
-
-```typescript
-import { GlobalVistaState } from 'vistaview';
-
-if (GlobalVistaState.somethingOpened) {
-  console.log('A lightbox is currently open');
-}
 ```
 
 ## Related

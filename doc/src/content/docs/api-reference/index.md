@@ -17,6 +17,14 @@ The core [VistaView](/api-reference/vistaview) controller class that manages the
 - Instance management
 - Navigation and controls
 
+### [VistaState Class](/api-reference/vistastate)
+
+Internal [VistaState](/api-reference/vistastate) state management class.
+
+- Current index and status
+- Zoom and transition state
+- Extension registry
+
 ### [Main Function](/api-reference/main-function)
 
 The `vistaView()` function, configuration types, and instance methods.
