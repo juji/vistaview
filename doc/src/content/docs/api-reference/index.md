@@ -9,23 +9,23 @@ Complete reference for all VistaView types, interfaces, and functions.
 
 The VistaView API is organized into the following sections:
 
-### [VistaView Class](/api-reference/vistaview)
+### [VistaView Class](/api-reference/classes/vistaview)
 
-The core [VistaView](/api-reference/vistaview) controller class that manages the lightbox lifecycle.
+The core [VistaView](/api-reference/classes/vistaview) controller class that manages the lightbox lifecycle.
 
 - Public properties and methods
 - Instance management
 - Navigation and controls
 
-### [VistaState Class](/api-reference/vistastate)
+### [VistaState Class](/api-reference/classes/vistastate)
 
-Internal [VistaState](/api-reference/vistastate) state management class.
+Internal [VistaState](/api-reference/classes/vistastate) state management class.
 
 - Current index and status
 - Zoom and transition state
 - Extension registry
 
-### [VistaBox Class](/api-reference/vistabox)
+### [VistaBox Class](/api-reference/classes/vistabox)
 
 Abstract base class for content containers.
 
@@ -33,7 +33,7 @@ Abstract base class for content containers.
 - Lifecycle hooks
 - Extensibility for custom content
 
-### [VistaImage Class](/api-reference/vistaimage)
+### [VistaImage Class](/api-reference/classes/vistaimage)
 
 Image implementation extending VistaBox.
 
@@ -41,7 +41,7 @@ Image implementation extending VistaBox.
 - Responsive images support
 - Zoom and pan controls
 
-### [VistaPointers Class](/api-reference/vistapointers)
+### [VistaPointers Class](/api-reference/classes/vistapointers)
 
 Multi-pointer tracking system.
 
@@ -49,7 +49,7 @@ Multi-pointer tracking system.
 - Multi-touch gestures
 - Pointer distance and centroid calculations
 
-### [VistaImageEvent Class](/api-reference/vistaimageevent)
+### [VistaImageEvent Class](/api-reference/classes/vistaimageevent)
 
 Event handling for pointer interactions.
 
@@ -57,7 +57,7 @@ Event handling for pointer interactions.
 - Zoom and pan coordination
 - External listener registration
 
-### [VistaHiresTransition Class](/api-reference/vistaHiresTransition)
+### [VistaHiresTransition Class](/api-reference/classes/vistahirestransition)
 
 High-resolution image transition manager.
 

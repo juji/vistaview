@@ -14,7 +14,7 @@ The `VistaHiresTransition` class manages smooth animated transitions when images
 - Frame-by-frame state interpolation
 - Animation cancellation
 
-**Use Case:** Used internally by [VistaImage](/api-reference/vistaimage) to animate dimension and transform changes. Typically not used directly by applications.
+**Use Case:** Used internally by [VistaImage](/api-reference/classes/vistaimage) to animate dimension and transform changes. Typically not used directly by applications.
 
 ## Public Properties
 
@@ -42,7 +42,7 @@ Starts an animated transition for a VistaBox instance.
 
 **Parameters:**
 
-- `vistaImage` - The [VistaBox](/api-reference/vistabox) instance to animate
+- `vistaImage` - The [VistaBox](/api-reference/classes/vistabox) instance to animate
 - `onComplete` - Callback when animation completes
 - `shouldWait` - Function returning `true` to pause animation
 - `target` - Target dimensions and transformations to animate to
@@ -74,7 +74,7 @@ Stops an active animation for a VistaBox instance.
 
 **Parameters:**
 
-- `vistaImage` - The [VistaBox](/api-reference/vistabox) instance
+- `vistaImage` - The [VistaBox](/api-reference/classes/vistabox) instance
 
 **Returns:** The animation state at the time of stopping, or `undefined` if no animation was running
 
@@ -96,6 +96,6 @@ if (state) {
 
 ## Related
 
-- [VistaBox](/api-reference/vistabox) - Container class that uses transitions
-- [VistaImage](/api-reference/vistaimage) - Image class that triggers transitions
-- [VistaView](/api-reference/vistaview) - Main controller
+- [VistaBox](/api-reference/classes/vistabox) - Container class that uses transitions
+- [VistaImage](/api-reference/classes/vistaimage) - Image class that triggers transitions
+- [VistaView](/api-reference/classes/vistaview) - Main controller

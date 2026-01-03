@@ -14,7 +14,7 @@ The `VistaPointers` class provides a unified interface for tracking mouse and to
 - Pointer movement calculations
 - Event normalization across input types
 
-**Use Case:** Primarily used internally by [VistaView](/api-reference/vistaview) for handling interactions. Extensions can access pointer data through event listeners.
+**Use Case:** Primarily used internally by [VistaView](/api-reference/classes/vistaview) for handling interactions. Extensions can access pointer data through event listeners.
 
 ## Public Properties
 

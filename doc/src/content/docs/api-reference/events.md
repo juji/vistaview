@@ -17,7 +17,7 @@ onOpen?: (vistaView: VistaView) => void;
 
 **Parameters:**
 
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **Example:**
 
@@ -41,7 +41,7 @@ onClose?: (vistaView: VistaView) => void;
 
 **Parameters:**
 
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **Example:**
 
@@ -66,7 +66,7 @@ onImageView?: (data: VistaData, vistaView: VistaView) => void;
 **Parameters:**
 
 - `data:` [VistaData](/api-reference/types#vistadata) - Navigation data with from/to information
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **Example:**
 
@@ -92,7 +92,7 @@ onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
 **Parameters:**
 
 - `content:` [VistaImageClone](/api-reference/types#vistaimageclone) - The changed content
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **Example:**
 

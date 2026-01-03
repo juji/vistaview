@@ -15,7 +15,7 @@ The `VistaImageEvent` class manages pointer events and translates them into imag
 - Momentum scrolling
 - External pointer event listeners
 
-**Use Case:** Created internally by [VistaView](/api-reference/vistaview). Extensions can register listeners through [`registerPointerListener()`](/api-reference/vistaview#registerpointerlistener).
+**Use Case:** Created internally by [VistaView](/api-reference/classes/vistaview). Extensions can register listeners through [`registerPointerListener()`](/api-reference/classes/vistaview#registerpointerlistener).
 
 ## Public Properties
 
@@ -29,7 +29,7 @@ None - all properties are private.
 constructor(vvw: VistaView)
 ```
 
-Creates a new event handling system for a [VistaView](/api-reference/vistaview) instance.
+Creates a new event handling system for a [VistaView](/api-reference/classes/vistaview) instance.
 
 ### registerPointerListener()
 
@@ -37,7 +37,7 @@ Creates a new event handling system for a [VistaView](/api-reference/vistaview) 
 registerPointerListener(listener: (e: VistaExternalPointerListenerArgs) => void): void
 ```
 
-Registers an external pointer event listener. Same as calling [`viewer.registerPointerListener()`](/api-reference/vistaview#registerpointerlistener).
+Registers an external pointer event listener. Same as calling [`viewer.registerPointerListener()`](/api-reference/classes/vistaview#registerpointerlistener).
 
 **Parameters:**
 
@@ -61,7 +61,7 @@ eventSystem.registerPointerListener((e) => {
 start(imageContainer: HTMLElement): void
 ```
 
-Starts listening to pointer events on the specified container. Called automatically by [VistaView](/api-reference/vistaview) when opening.
+Starts listening to pointer events on the specified container. Called automatically by [VistaView](/api-reference/classes/vistaview) when opening.
 
 **Parameters:**
 
@@ -73,10 +73,10 @@ Starts listening to pointer events on the specified container. Called automatica
 stop(): void
 ```
 
-Removes all event listeners and cleans up resources. Called automatically by [VistaView](/api-reference/vistaview) when closing.
+Removes all event listeners and cleans up resources. Called automatically by [VistaView](/api-reference/classes/vistaview) when closing.
 
 ## Related
 
-- [VistaView](/api-reference/vistaview) - Main controller that uses VistaImageEvent
-- [VistaPointers](/api-reference/vistapointers) - Underlying pointer tracking system
+- [VistaView](/api-reference/classes/vistaview) - Main controller that uses VistaImageEvent
+- [VistaPointers](/api-reference/classes/vistapointers) - Underlying pointer tracking system
 - [VistaExternalPointerListenerArgs](/api-reference/types#vistaexternalpointerlistenerargs) - Event data type

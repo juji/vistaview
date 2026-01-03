@@ -16,7 +16,7 @@ The `VistaImage` class extends [VistaBox](#vistabox) and implements image-specif
 
 ## Usage
 
-Typically, you don't instantiate `VistaImage` directly - [VistaView](/api-reference/vistaview) creates instances automatically. However, you can reference it when creating custom extensions.
+Typically, you don't instantiate `VistaImage` directly - [VistaView](/api-reference/classes/vistaview) creates instances automatically. However, you can reference it when creating custom extensions.
 
 ```typescript
 import { VistaImage } from 'vistaview';
@@ -64,5 +64,5 @@ All public methods from [VistaBox](#vistabox) are available:
 ## Related
 
 - [VistaBox](#vistabox) - Base class
-- [VistaView](/api-reference/vistaview) - Main controller
+- [VistaView](/api-reference/classes/vistaview) - Main controller
 - [Extensions](/api-reference/extensions) - Creating custom content types

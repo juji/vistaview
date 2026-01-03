@@ -90,7 +90,7 @@ Thumbnail element used during transitions.
 constructor(par: VistaImageParams)
 ```
 
-Creates a new VistaBox instance. Called by [VistaView](/api-reference/vistaview) during initialization.
+Creates a new VistaBox instance. Called by [VistaView](/api-reference/classes/vistaview) during initialization.
 
 ### init()
 

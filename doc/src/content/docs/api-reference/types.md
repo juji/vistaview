@@ -59,10 +59,10 @@ interface VistaOpt {
   extensions?: VistaExtension[];
 
   // Event Callbacks
-  onOpen?: (vistaView:` [VistaView](/api-reference/vistaview)) => void;
-  onClose?: (vistaView:` [VistaView](/api-reference/vistaview)) => void;
-  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/vistaview)) => void;
-  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/vistaview)) => void;
+  onOpen?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
+  onClose?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
+  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
 
   // Lifecycle Functions
   initFunction?: VistaInitFn;
@@ -274,7 +274,7 @@ type VistaInitFn = (vistaView: VistaView) => void;
 
 **Parameters:**
 
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 ### VistaImageSetupFn
 
@@ -287,7 +287,7 @@ type VistaImageSetupFn = (data: VistaData, vistaView: VistaView) => void;
 **Parameters:**
 
 - `data:` [VistaData](#vistadata) - Navigation data
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 ### VistaTransitionFn
 
@@ -305,7 +305,7 @@ type VistaTransitionFn = (
 
 - `data:` [VistaData](#vistadata) - Navigation data
 - `abortSignal: AbortSignal` - Signal to abort the transition
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **Returns:** Object with cleanup function and promise, or void
 
@@ -319,7 +319,7 @@ type VistaOpenFn = (vistaView: VistaView) => void;
 
 **Parameters:**
 
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 ### VistaCloseFn
 
@@ -331,7 +331,7 @@ type VistaCloseFn = (vistaView: VistaView) => void;
 
 **Parameters:**
 
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 ## Extension Types
 
@@ -345,12 +345,12 @@ interface VistaExtension {
   description?: string;
   control?: () => HTMLElement | null;
   onInitializeImage?: (parsed: VistaImageParams) => VistaBox | void | null | undefined;
-  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/vistaview)) => void;
-  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/vistaview)) => void;
-  onDeactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/vistaview)) => void;
-  onReactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/vistaview)) => void;
-  onOpen?: (vistaView:` [VistaView](/api-reference/vistaview)) => void;
-  onClose?: (vistaView:` [VistaView](/api-reference/vistaview)) => void;
+  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onDeactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onReactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onOpen?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
+  onClose?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
 }
 ```
 
@@ -409,7 +409,7 @@ interface VistaImageParams {
 - `index` - Image index
 - `maxZoomLevel` - Maximum zoom level
 - `onScale` - Callback for scale changes
-- `vistaView` - [VistaView](/api-reference/vistaview) instance
+- `vistaView` - [VistaView](/api-reference/classes/vistaview) instance
 - `transitionState` - Optional transition state
 - `transitionShouldWait` - Optional transition wait function
 
@@ -439,7 +439,7 @@ type VistaPointer = {
 
 ### VistaExternalPointerListenerArgs
 
-Arguments passed to external pointer listeners registered via [`registerPointerListener()`](/api-reference/vistaview#registerpointerlistener).
+Arguments passed to external pointer listeners registered via [`registerPointerListener()`](/api-reference/classes/vistaview#registerpointerlistener).
 
 ```typescript
 type VistaExternalPointerListenerArgs = {
@@ -459,7 +459,7 @@ type VistaExternalPointerListenerArgs = {
 - `pointer` - Current [VistaPointer](#vistapointer) data
 - `pointers` - Array of all active [VistaPointer](#vistapointer) instances
 - `lastPointerLen` - Previous number of pointers (for detecting changes)
-- `state` - [VistaState](/api-reference/vistastate) instance
+- `state` - [VistaState](/api-reference/classes/vistastate) instance
 - `hasInternalExecution` - Whether VistaView handled this event internally
 - `abortController` - Controller for canceling operations
 

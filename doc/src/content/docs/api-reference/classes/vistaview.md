@@ -72,7 +72,7 @@ The current state manager containing:
 - `children`: Current DOM elements and VistaBox instances
 - `abortController`: For canceling transitions
 
-See [VistaState](/api-reference/vistastate) for complete documentation.
+See [VistaState](/api-reference/classes/vistastate) for complete documentation.
 
 ### imageContainer
 
@@ -416,7 +416,7 @@ viewer.deactivateUi(['zoomIn', 'zoomOut']);
 
 ## Related
 
-- [Main Function](/api-reference/main-function) - The `vistaView()` function that creates [VistaView](/api-reference/vistaview) instances
+- [Main Function](/api-reference/main-function) - The `vistaView()` function that creates [VistaView](/api-reference/classes/vistaview) instances
 - [VistaOpt](/api-reference/types#vistaopt) - Configuration options type
 - [Event Callbacks](/api-reference/events) - Events fired during lifecycle
 - [Lifecycle Functions](/api-reference/lifecycle) - Customizable lifecycle hooks

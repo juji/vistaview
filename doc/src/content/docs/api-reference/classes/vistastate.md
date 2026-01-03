@@ -3,11 +3,11 @@ title: VistaState Class
 description: Internal state management class for VistaView
 ---
 
-The `VistaState` class manages the internal state of a [VistaView](/api-reference/vistaview) instance. It tracks the current state of the lightbox, including open/close status, current image, zoom level, and registered extensions.
+The `VistaState` class manages the internal state of a [VistaView](/api-reference/classes/vistaview) instance. It tracks the current state of the lightbox, including open/close status, current image, zoom level, and registered extensions.
 
 ## Overview
 
-`VistaState` is automatically instantiated by [VistaView](/api-reference/vistaview) and accessible via the [`state`](/api-reference/vistaview#state) property. It provides a centralized location for all runtime state information.
+`VistaState` is automatically instantiated by [VistaView](/api-reference/classes/vistaview) and accessible via the [`state`](/api-reference/classes/vistaview#state) property. It provides a centralized location for all runtime state information.
 
 **Access:**
 
@@ -170,6 +170,6 @@ console.log(viewer.state.extensions.size); // 1
 
 ## Related
 
-- [VistaView Class](/api-reference/vistaview) - Main controller class that uses VistaState
+- [VistaView Class](/api-reference/classes/vistaview) - Main controller class that uses VistaState
 - [VistaExtension](/api-reference/types#vistaextension) - Extension interface type
 - [Extensions](/api-reference/extensions) - Extension system documentation

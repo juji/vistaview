@@ -57,7 +57,7 @@ vistaView({
 **Parameters:**
 
 - `data: VistaData` - Navigation data
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **VistaData type:**
 
@@ -108,7 +108,7 @@ vistaView({
 **Parameters:**
 
 - `content: VistaImageClone` - Current image state (dimensions, transform, config)
-- `vistaView:` [VistaView](/api-reference/vistaview) - The VistaView instance
+- `vistaView:` [VistaView](/api-reference/classes/vistaview) - The VistaView instance
 
 **VistaImageClone type:**
 

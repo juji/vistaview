@@ -119,13 +119,13 @@ export class CustomContentBox extends VistaBox {
 
 ### Other Classes
 
-- [**VistaView**](/api-reference/vistaview) - Main view controller class (available in all callbacks)
-- [**VistaState**](/api-reference/vistastate) - State management (accessible via `vistaView.state`)
-- [**VistaBox**](/api-reference/vistabox) - Base class for content containers
-- [**VistaImage**](/api-reference/vistaimage) - Individual image instance (extends VistaBox)
-- [**VistaPointers**](/api-reference/vistapointers) - Multi-pointer tracking system (see [VistaPointer](/api-reference/types#vistapointer))
-- [**VistaImageEvent**](/api-reference/vistaimageevent) - Event handling system
-- [**VistaHiresTransition**](/api-reference/vistaHiresTransition) - High-resolution image transition manager
+- [**VistaView**](/api-reference/classes/vistaview) - Main view controller class (available in all callbacks)
+- [**VistaState**](/api-reference/classes/vistastate) - State management (accessible via `vistaView.state`)
+- [**VistaBox**](/api-reference/classes/vistabox) - Base class for content containers
+- [**VistaImage**](/api-reference/classes/vistaimage) - Individual image instance (extends VistaBox)
+- [**VistaPointers**](/api-reference/classes/vistapointers) - Multi-pointer tracking system (see [VistaPointer](/api-reference/types#vistapointer))
+- [**VistaImageEvent**](/api-reference/classes/vistaimageevent) - Event handling system
+- [**VistaHiresTransition**](/api-reference/classes/vistahirestransition) - High-resolution image transition manager
 
 ## Utility Functions
 
