@@ -25,6 +25,46 @@ Internal [VistaState](/api-reference/vistastate) state management class.
 - Zoom and transition state
 - Extension registry
 
+### [VistaBox Class](/api-reference/vistabox)
+
+Abstract base class for content containers.
+
+- Sizing and transformations
+- Lifecycle hooks
+- Extensibility for custom content
+
+### [VistaImage Class](/api-reference/vistaimage)
+
+Image implementation extending VistaBox.
+
+- Progressive image loading
+- Responsive images support
+- Zoom and pan controls
+
+### [VistaPointers Class](/api-reference/vistapointers)
+
+Multi-pointer tracking system.
+
+- Mouse, touch, and pen input
+- Multi-touch gestures
+- Pointer distance and centroid calculations
+
+### [VistaImageEvent Class](/api-reference/vistaimageevent)
+
+Event handling for pointer interactions.
+
+- Gesture recognition
+- Zoom and pan coordination
+- External listener registration
+
+### [VistaHiresTransition Class](/api-reference/vistaHiresTransition)
+
+High-resolution image transition manager.
+
+- Smooth animation easing
+- State interpolation
+- Concurrent animation handling
+
 ### [Main Function](/api-reference/main-function)
 
 The `vistaView()` function, configuration types, and instance methods.

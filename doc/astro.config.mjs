@@ -124,6 +124,11 @@ export default defineConfig({
 					items: [
 						{ label: 'VistaView Class', slug: 'api-reference/vistaview' },
 						{ label: 'VistaState Class', slug: 'api-reference/vistastate' },
+						{ label: 'VistaBox Class', slug: 'api-reference/vistabox' },
+						{ label: 'VistaImage Class', slug: 'api-reference/vistaimage' },
+						{ label: 'VistaPointers Class', slug: 'api-reference/vistapointers' },
+						{ label: 'VistaImageEvent Class', slug: 'api-reference/vistaimageevent' },
+					{ label: 'VistaHiresTransition Class', slug: 'api-reference/vistahirestransition' },
 						{ label: 'Main Function', slug: 'api-reference/main-function' },
 						{ label: 'Event Callbacks', slug: 'api-reference/events' },
 						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
