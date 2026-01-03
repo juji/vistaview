@@ -14,6 +14,10 @@ Content extensions allow VistaView to display custom content types beyond images
 3. Define dimensions (`fullW`, `fullH`, `minW`, `maxW`)
 4. Override methods as needed
 
+:::tip[VistaBox Source Code]
+For a complete understanding of `VistaBox` properties and methods, check the [source code on GitHub](https://github.com/juji/vistaview/blob/main/src/lib/vista-box.ts).
+:::
+
 ## Basic Content Extension
 
 ```typescript
@@ -75,7 +79,7 @@ import type { VistaData, VistaExtension, VistaImageParams } from 'vistaview';
 import { VistaBox } from 'vistaview';
 import type { VistaView } from 'vistaview';
 
-function parseYouTubeVideoId(url: string): string | null {
+export function parseYouTubeVideoId(url: string): string | null {
   if (!url) return null;
 
   const patterns = [
@@ -93,7 +97,7 @@ function parseYouTubeVideoId(url: string): string | null {
   return null;
 }
 
-function getYouTubeThumbnail(videoUrl: string): string {
+export function getYouTubeThumbnail(videoUrl: string): string {
   const videoId = parseYouTubeVideoId(videoUrl);
   if (!videoId) throw new Error('Invalid YouTube video URL');
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -313,8 +317,8 @@ export function myPdfContent(): VistaExtension {
       const url = par.elm.config.src;
       const type = par.elm.elm.getAttribute('data-type');
 
-      // Check by URL pattern
-      if (url.includes('yourpdfsite.com')) {
+      // Check by URL pattern (includes yourpdfsite.com and ends with .pdf)
+      if (/yourpdfsite\.com.*\.pdf$/i.test(url)) {
         return new MyVistaPDF(par);
       }
     },
