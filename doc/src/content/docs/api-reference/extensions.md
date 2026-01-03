@@ -5,116 +5,24 @@ description: Extension system types and interfaces
 
 Extensions allow you to add custom functionality, content types, and UI controls to VistaView.
 
-## VistaExtension
+**Extension Types:** See [Types](/api-reference/types) for:
 
-Interface for creating extensions.
+- [VistaExtension](/api-reference/types#vistaextension) - Extension interface
+- [VistaDefaultCtrl](/api-reference/types#vistadefaultctrl) - Built-in control names
+- [VistaImageParams](/api-reference/types#vistaimageparams) - Parameters for `onInitializeImage`
 
-```typescript
-interface VistaExtension {
-  name: string;
-  description?: string;
-  control?: () => HTMLElement | null;
-  onInitializeImage?: (parsed: VistaParsedElm) => VistaBox | void | null | undefined;
-  onImageView?: (data: VistaData, vistaView: VistaView) => void;
-  onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
-  onDeactivateUi?: (names: string[], vistaView: VistaView) => void;
-  onReactivateUi?: (names: string[], vistaView: VistaView) => void;
-  onOpen?: (vistaView: VistaView) => void;
-  onClose?: (vistaView: VistaView) => void;
-}
-```
+## Creating Extensions
 
-### Properties
+Extensions implement the [VistaExtension](/api-reference/types#vistaextension) interface with optional hooks:
 
-#### name (required)
-
-Unique identifier for the extension.
-
-```typescript
-name: string;
-```
-
-#### description (optional)
-
-Human-readable description.
-
-```typescript
-description?: string;
-```
-
-#### control (optional)
-
-Returns a custom UI control element.
-
-```typescript
-control?: () => HTMLElement | null;
-```
-
-#### onInitializeImage (optional)
-
-Hook to replace default image creation with custom content.
-
-```typescript
-onInitializeImage?: (parsed: VistaParsedElm) => VistaBox | void | null | undefined;
-```
-
-**Example:**
-
-```typescript
-onInitializeImage: (parsed) => {
-  if (parsed.config.src.includes('youtube.com')) {
-    return new CustomVideoBox(parsed);
-  }
-};
-```
-
-#### onImageView (optional)
-
-Triggered when navigating between images.
-
-```typescript
-onImageView?: (data: VistaData, vistaView: VistaView) => void;
-```
-
-#### onContentChange (optional)
-
-Triggered when content changes (including zoom).
-
-```typescript
-onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
-```
-
-#### onDeactivateUi (optional)
-
-Triggered when UI controls are deactivated.
-
-```typescript
-onDeactivateUi?: (names: string[], vistaView: VistaView) => void;
-```
-
-#### onReactivateUi (optional)
-
-Triggered when UI controls are reactivated.
-
-```typescript
-onReactivateUi?: (names: string[], vistaView: VistaView) => void;
-```
-
-#### onOpen (optional)
-
-Triggered when lightbox opens.
-
-```typescript
-onOpen?: (vistaView: VistaView) => void;
-```
-
-#### onClose (optional)
-
-Triggered when lightbox closes.
-
-```typescript
-onClose?: (vistaView: VistaView) => void;
-```
+- `name` (required) - Unique identifier
+- `description` (optional) - Human-readable description
+- `control()` (optional) - Returns custom UI control element
+- `onInitializeImage()` (optional) - Replace default image creation
+- `onImageView()` (optional) - Triggered on navigation
+- `onContentChange()` (optional) - Triggered on content/zoom changes
+- `onDeactivateUi()` / `onReactivateUi()` (optional) - UI control state
+- `onOpen()` / `onClose()` (optional) - Lightbox lifecycle
 
 ## Extension Example
 
@@ -154,23 +62,7 @@ vistaView({
 });
 ```
 
-## Control Types
-
-### VistaDefaultCtrl
-
-Built-in control names.
-
-```typescript
-type VistaDefaultCtrl = 'indexDisplay' | 'zoomIn' | 'zoomOut' | 'close' | 'description';
-```
-
-### ControlPosition
-
-Control placement positions.
-
-```typescript
-type ControlPosition = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'bottomCenter';
-```
+## Control Configuration
 
 **Example:**
 
@@ -185,33 +77,7 @@ vistaView({
 });
 ```
 
-## Advanced Types
-
-### VistaParsedElm
-
-Parsed element information passed to `onInitializeImage`.
-
-```typescript
-interface VistaParsedElm {
-  config: VistaImgConfig;
-  origin: VistaImgOrigin | null;
-  index: number;
-}
-```
-
-### VistaImgOrigin
-
-Origin element properties for animations.
-
-```typescript
-interface VistaImgOrigin {
-  elm: HTMLElement;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-```
+See [VistaDefaultCtrl](/api-reference/types#vistadefaultctrl) for built-in control names.
 
 ## Advanced Classes
 
@@ -251,68 +117,20 @@ export class CustomContentBox extends VistaBox {
 }
 ```
 
-### VistaView
+### Other Classes
 
-Main view controller class. Available in all callbacks.
-
-### VistaState
-
-State management class accessible via `vistaView.state`.
-
-### VistaImage
-
-Individual image instance class (extends VistaBox).
-
-### VistaPointers
-
-Multi-pointer tracking system.
-
-### VistaImageEvent
-
-Event handling system.
-
-### VistaHiresTransition
-
-High-resolution image transition manager.
-
-## Pointer Types
-
-### VistaPointerArgs
-
-Arguments for the pointer tracking system.
-
-```typescript
-interface VistaPointerArgs {
-  elm: HTMLElement;
-  onUpdate?: (pointers: VistaPointer[]) => void;
-  onEnd?: (pointers: VistaPointer[]) => void;
-}
-```
-
-### VistaPointer
-
-Individual pointer state.
-
-```typescript
-interface VistaPointer {
-  id: number;
-  x: number;
-  y: number;
-  startX: number;
-  startY: number;
-  deltaX: number;
-  deltaY: number;
-  type: 'mouse' | 'touch' | 'pen';
-  button: number;
-  timestamp: number;
-}
-```
+- **VistaView** - Main view controller class (available in all callbacks)
+- **VistaState** - State management (accessible via `vistaView.state`)
+- **VistaImage** - Individual image instance (extends VistaBox)
+- **VistaPointers** - Multi-pointer tracking system
+- **VistaImageEvent** - Event handling system
+- **VistaHiresTransition** - High-resolution image transition manager
 
 ## Utility Functions
 
 ### parseElement
 
-Parses a DOM element or image config into a `VistaParsedElm`.
+Parses a DOM element or image config into parsed element data.
 
 ```typescript
 import { parseElement } from 'vistaview/lib/utils';
@@ -388,5 +206,6 @@ vistaView({
 
 - [Main Function](/api-reference/main-function)
 - [Event Callbacks](/api-reference/events)
+- [Types](/api-reference/types)
 - [Extensions Authoring Guide](/extensions/authoring)
 - [Built-in Extensions](/extensions/overview)

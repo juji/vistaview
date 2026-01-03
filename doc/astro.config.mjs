@@ -126,6 +126,7 @@ export default defineConfig({
 						{ label: 'Event Callbacks', slug: 'api-reference/events' },
 						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
 						{ label: 'Extensions', slug: 'api-reference/extensions' },
+						{ label: 'Types', slug: 'api-reference/types' },
 					],
 				},
 			],

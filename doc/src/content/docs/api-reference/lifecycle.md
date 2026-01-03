@@ -5,24 +5,20 @@ description: Custom lifecycle functions for overriding default behavior
 
 Lifecycle functions allow you to override VistaView's default behavior at key stages.
 
-## Lifecycle Function Types
+**Lifecycle Function Types:** See [Types](/api-reference/types) for:
 
-### VistaInitFn
+- [VistaInitFn](/api-reference/types#vistainitfn) - Custom initialization function
+- [VistaImageSetupFn](/api-reference/types#vistaimagesetupfn) - Custom setup function
+- [VistaTransitionFn](/api-reference/types#vistatransitionfn) - Custom transition function
+- [VistaOpenFn](/api-reference/types#vistaopenfn) - Custom open function
+- [VistaCloseFn](/api-reference/types#vistaclosefn) - Custom close function
 
-Type for custom initialization function. Runs once when `vistaView()` is called.
+## Usage Examples
 
-```typescript
-type VistaInitFn = (vistaView: VistaView) => void;
-```
-
-**Parameters:**
-
-- `vistaView: VistaView` - The VistaView instance
-
-**Example:**
+### Custom Initialization
 
 ```typescript
-import { init } from 'vistaview';
+import { vistaView, init } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
@@ -37,23 +33,10 @@ vistaView({
 });
 ```
 
-### VistaImageSetupFn
-
-Type for custom setup function when navigating between images.
+### Custom Image Setup
 
 ```typescript
-type VistaImageSetupFn = (data: VistaData, vistaView: VistaView) => void;
-```
-
-**Parameters:**
-
-- `data: VistaData` - Navigation data
-- `vistaView: VistaView` - The VistaView instance
-
-**Example:**
-
-```typescript
-import { imageSetup } from 'vistaview';
+import { vistaView, imageSetup } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
@@ -67,30 +50,10 @@ vistaView({
 });
 ```
 
-### VistaTransitionFn
-
-Type for custom transition animation function.
+### Custom Transition
 
 ```typescript
-type VistaTransitionFn = (
-  data: VistaData,
-  abortSignal: AbortSignal,
-  vistaView: VistaView
-) => { cleanup: () => void; transitionEnded: Promise<void> } | void;
-```
-
-**Parameters:**
-
-- `data: VistaData` - Navigation data
-- `abortSignal: AbortSignal` - Signal to abort the transition
-- `vistaView: VistaView` - The VistaView instance
-
-**Returns:** Object with cleanup function and promise, or void
-
-**Example:**
-
-```typescript
-import { transition } from 'vistaview';
+import { vistaView, transition } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
@@ -101,7 +64,7 @@ vistaView({
 });
 ```
 
-**Custom transition example:**
+**Custom fade transition:**
 
 ```typescript
 vistaView({
@@ -109,7 +72,6 @@ vistaView({
   transitionFunction: (data, abortSignal, vistaView) => {
     const elements = data.htmlElements;
 
-    // Custom fade transition
     if (elements.from && elements.to) {
       const fromElms = elements.from;
       const toElms = elements.to;
@@ -132,9 +94,7 @@ vistaView({
       });
 
       return {
-        cleanup: () => {
-          // Cleanup if needed
-        },
+        cleanup: () => {},
         transitionEnded,
       };
     }
@@ -142,22 +102,10 @@ vistaView({
 });
 ```
 
-### VistaCloseFn
-
-Type for custom close function.
+### Custom Close
 
 ```typescript
-type VistaCloseFn = (vistaView: VistaView) => void;
-```
-
-**Parameters:**
-
-- `vistaView: VistaView` - The VistaView instance
-
-**Example:**
-
-```typescript
-import { close } from 'vistaview';
+import { vistaView, close } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
@@ -250,135 +198,29 @@ vistaView({
 
 ### DefaultOptions
 
-Default configuration options object.
+Default configuration options object. See [VistaOpt](/api-reference/types#vistaopt) for all configuration options.
 
 ```typescript
 import { DefaultOptions } from 'vistaview';
 
-console.log('Default zoom level:', DefaultOptions.maxZoomLevel);
-console.log('Default preloads:', DefaultOptions.preloads);
-```
-
-## Complete Example
-
-```typescript
-import { vistaView, init, imageSetup, transition, close } from 'vistaview';
-import type { VistaData } from 'vistaview';
-import 'vistaview/style.css';
-
-vistaView({
-  elements: '#gallery a',
-
-  initFunction: (vistaView) => {
-    // Custom initialization
-    console.log('Initializing gallery with', vistaView.state.elmLength, 'images');
-
-    // Call default init
-    init(vistaView);
-
-    // Additional setup
-    document.body.classList.add('gallery-initialized');
+const DefaultOptions: VistaOpt = {
+  animationDurationBase: 333,
+  maxZoomLevel: 2,
+  preloads: 1,
+  keyboardListeners: true,
+  arrowOnSmallScreens: false,
+  rapidLimit: 222,
+  controls: {
+    topLeft: ['indexDisplay'],
+    topRight: ['zoomIn', 'zoomOut', 'close'],
+    bottomLeft: ['description'],
   },
-
-  imageSetupFunction: (data, vistaView) => {
-    // Pre-setup logic
-    console.log('Setting up image:', data.index.to);
-
-    // Call default setup
-    imageSetup(data, vistaView);
-
-    // Post-setup logic
-    const currentImage = data.images.to![Math.floor(data.images.to!.length / 2)];
-    console.log('Image size:', currentImage.fullW, 'x', currentImage.fullH);
-  },
-
-  transitionFunction: (data, abortSignal, vistaView) => {
-    // Use default transition
-    const result = transition(data, abortSignal, vistaView);
-
-    // Log transition
-    console.log('Transitioning from', data.index.from, 'to', data.index.to);
-
-    return result;
-  },
-
-  closeFunction: (vistaView) => {
-    // Pre-close logic
-    console.log('Closing at index:', vistaView.state.index);
-
-    // Call default close
-    close(vistaView);
-
-    // Post-close cleanup
-    document.body.classList.remove('gallery-initialized');
-  },
-});
-```
-
-## Custom Transition Example
-
-Create a slide transition:
-
-```typescript
-vistaView({
-  elements: '#gallery a',
-  transitionFunction: (data, abortSignal, vistaView) => {
-    const { from: fromElms, to: toElms } = data.htmlElements;
-
-    if (!fromElms || !toElms) {
-      return;
-    }
-
-    const direction = data.via.next ? 1 : -1;
-    const distance = window.innerWidth;
-
-    // Set initial positions
-    toElms.forEach((elm) => {
-      elm.style.transform = `translateX(${direction * distance}px)`;
-      elm.style.transition = 'transform 400ms ease-out';
-    });
-
-    fromElms.forEach((elm) => {
-      elm.style.transition = 'transform 400ms ease-out';
-    });
-
-    // Trigger animation
-    requestAnimationFrame(() => {
-      toElms.forEach((elm) => {
-        elm.style.transform = 'translateX(0)';
-      });
-
-      fromElms.forEach((elm) => {
-        elm.style.transform = `translateX(${-direction * distance}px)`;
-      });
-    });
-
-    // Handle abort
-    let aborted = false;
-    abortSignal.addEventListener('abort', () => {
-      aborted = true;
-    });
-
-    const transitionEnded = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        if (!aborted) {
-          resolve();
-        }
-      }, 450);
-    });
-
-    return {
-      cleanup: () => {
-        // Cleanup resources
-      },
-      transitionEnded,
-    };
-  },
-});
+};
 ```
 
 ## Related
 
 - [Main Function](/api-reference/main-function)
 - [Event Callbacks](/api-reference/events)
+- [Types](/api-reference/types)
 - [Lifecycle Configuration Guide](/core/configuration/lifecycle)

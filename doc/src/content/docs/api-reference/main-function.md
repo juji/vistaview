@@ -13,9 +13,9 @@ function vistaView(params: VistaParamsNeo): VistaInterface;
 
 **Parameters:**
 
-- `params: VistaParamsNeo` - Configuration object
+- `params:` [VistaParamsNeo](/api-reference/types#vistaparamsneo) - Configuration object
 
-**Returns:** `VistaInterface` - The lightbox instance with control methods
+**Returns:** [VistaInterface](/api-reference/types#vistainterface) - The lightbox instance with control methods
 
 **Example:**
 
@@ -30,137 +30,15 @@ const gallery = vistaView({
 });
 ```
 
-## Configuration Types
+**Configuration:** See [Types](/api-reference/types) for:
 
-### VistaParamsNeo
-
-Main configuration interface including the `elements` property.
-
-```typescript
-interface VistaParamsNeo extends VistaOpt {
-  elements: string | VistaImgConfig[];
-}
-```
-
-**Properties:**
-
-- `elements` (required): CSS selector string or array of image configurations
-
-**Example with selector:**
-
-```typescript
-vistaView({
-  elements: '#gallery a',
-});
-```
-
-**Example with array:**
-
-```typescript
-vistaView({
-  elements: [
-    { src: '/images/photo1.jpg', alt: 'Photo 1' },
-    { src: '/images/photo2.jpg', alt: 'Photo 2' },
-  ],
-});
-```
-
-### VistaOpt
-
-Base configuration options (without `elements`). See [Complete Configuration](/core/configuration/complete) for all options.
-
-```typescript
-interface VistaOpt {
-  // Animation
-  animationDurationBase?: number;
-
-  // Zoom
-  maxZoomLevel?: number;
-
-  // Preloading
-  preloads?: number;
-
-  // Interaction
-  keyboardListeners?: boolean;
-  arrowOnSmallScreens?: boolean;
-  rapidLimit?: number;
-
-  // Styling
-  initialZIndex?: number;
-
-  // Controls
-  controls?: Partial<Record<ControlPosition, (VistaDefaultCtrl | string)[]>>;
-
-  // Extensions
-  extensions?: VistaExtension[];
-
-  // Event Callbacks
-  onOpen?: (vistaView: VistaView) => void;
-  onClose?: (vistaView: VistaView) => void;
-  onImageView?: (data: VistaData, vistaView: VistaView) => void;
-  onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
-
-  // Lifecycle Functions
-  initFunction?: VistaInitFn;
-  imageSetupFunction?: VistaImageSetupFn;
-  transitionFunction?: VistaTransitionFn;
-  closeFunction?: VistaCloseFn;
-}
-```
-
-### VistaImgConfig
-
-Image configuration object for array-based initialization.
-
-```typescript
-interface VistaImgConfig {
-  src: string;
-  alt?: string;
-  srcSet?: string;
-}
-```
-
-**Properties:**
-
-- `src` (required): Image URL
-- `alt` (optional): Alt text for accessibility
-- `srcSet` (optional): Responsive image sources
-
-**Example:**
-
-```typescript
-const images: VistaImgConfig[] = [
-  {
-    src: '/images/photo1.jpg',
-    alt: 'Beach sunset',
-    srcSet: '/images/photo1-1x.jpg 1x, /images/photo1-2x.jpg 2x',
-  },
-  {
-    src: '/images/photo2.jpg',
-    alt: 'Mountain view',
-  },
-];
-
-vistaView({ elements: images });
-```
-
-## VistaInterface
-
-The return type of `vistaView()` - provides methods to control the lightbox.
-
-```typescript
-interface VistaInterface {
-  open(index?: number): void;
-  close(): void;
-  view(index: number): void;
-  next(): void;
-  prev(): void;
-  getCurrentIndex(): number;
-  destroy(): void;
-}
-```
+- [VistaParamsNeo](/api-reference/types#vistaparamsneo) - Main configuration interface
+- [VistaOpt](/api-reference/types#vistaopt) - All configuration options
+- [VistaImgConfig](/api-reference/types#vistaimgconfig) - Image configuration object
 
 ## Instance Methods
+
+The `vistaView()` function returns a [VistaInterface](/api-reference/types#vistainterface) object with the following methods:
 
 ### open(index?)
 
@@ -189,13 +67,16 @@ gallery.open(2); // Open at third image
 Closes the lightbox.
 
 ```typescript
-close(): void;
+close(): Promise<void>;
 ```
+
+**Returns:** Promise that resolves when close animation completes
 
 **Example:**
 
 ```typescript
-gallery.close();
+await gallery.close();
+console.log('Gallery closed');
 ```
 
 ### view(index)
@@ -244,6 +125,56 @@ prev(): void;
 gallery.prev();
 ```
 
+### reset()
+
+Recalculates elements and re-attaches event listeners. Useful after DOM changes.
+
+```typescript
+reset(): void;
+```
+
+**Example:**
+
+```typescript
+// After adding new images to the DOM
+document.querySelector('#gallery')!.innerHTML += `
+  <a href="/images/new-photo.jpg">
+    <img src="/thumbnails/new-photo.jpg" alt="New Photo" />
+  </a>
+`;
+
+// Refresh the gallery
+gallery.reset();
+```
+
+### zoomIn()
+
+Zooms in on the current image.
+
+```typescript
+zoomIn(): void;
+```
+
+**Example:**
+
+```typescript
+gallery.zoomIn();
+```
+
+### zoomOut()
+
+Zooms out on the current image.
+
+```typescript
+zoomOut(): void;
+```
+
+**Example:**
+
+```typescript
+gallery.zoomOut();
+```
+
 ### getCurrentIndex()
 
 Returns the current image index (0-based).
@@ -273,46 +204,6 @@ destroy(): void;
 
 ```typescript
 gallery.destroy();
-```
-
-## Complete Example
-
-```typescript
-import { vistaView } from 'vistaview';
-import type { VistaInterface } from 'vistaview';
-import 'vistaview/style.css';
-
-const gallery: VistaInterface = vistaView({
-  elements: '#gallery a',
-  maxZoomLevel: 3,
-  preloads: 2,
-  keyboardListeners: true,
-  onOpen: () => console.log('Gallery opened'),
-  onClose: () => console.log('Gallery closed'),
-});
-
-// Control programmatically
-document.querySelector('#open-btn')?.addEventListener('click', () => {
-  gallery.open(0);
-});
-
-document.querySelector('#next-btn')?.addEventListener('click', () => {
-  gallery.next();
-});
-
-document.querySelector('#prev-btn')?.addEventListener('click', () => {
-  gallery.prev();
-});
-
-document.querySelector('#close-btn')?.addEventListener('click', () => {
-  gallery.close();
-});
-
-// Get current position
-console.log('Current index:', gallery.getCurrentIndex());
-
-// Cleanup when done
-// gallery.destroy();
 ```
 
 ## Related
