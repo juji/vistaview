@@ -87,6 +87,40 @@ const vista = useVistaView({
 <button on:click={() => vista.prev()}>Previous</button>
 ```
 
+## With Options
+
+```svelte
+<script>
+import { useVistaView } from 'vistaview/svelte';
+import type { VistaOpt } from 'vistaview';
+import 'vistaview/style.css';
+
+// Define options outside to prevent recreation on every render
+const options: VistaOpt = {
+  maxZoomLevel: 3,
+  preloads: 2,
+  animationDurationBase: 400,
+  onOpen: (vistaView) => console.log('Gallery opened'),
+  onClose: (vistaView) => console.log('Gallery closed'),
+};
+
+const id = 'gallery-' + Math.random().toString(36).slice(2);
+const vista = useVistaView({
+  elements: `#${id} a`,
+  ...options,
+});
+</script>
+
+<div id={id}>
+  <a href="/images/photo1-full.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
+  <a href="/images/photo2-full.jpg">
+    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+  </a>
+</div>
+```
+
 ## With Extensions
 
 ```svelte
@@ -146,22 +180,6 @@ function openGallery() {
 </div>
 
 <button on:click={openGallery}>Open Gallery</button>
-```
-
-## TypeScript Support
-
-VistaView provides full TypeScript support:
-
-```svelte
-<script lang="ts">
-import type { VistaInterface, VistaParamsNeo } from 'vistaview';
-
-const config: VistaParamsNeo = {
-  elements: '#gallery a',
-  maxZoomLevel: 3,
-  preloads: 2,
-};
-</script>
 ```
 
 ## SvelteKit

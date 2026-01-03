@@ -45,6 +45,8 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 The `VistaView` component provides a declarative way to create image galleries:
 
 ```tsx
+'use client'; // Required for Next.js and other React Server Components frameworks
+
 import { VistaView } from 'vistaview/react';
 import 'vistaview/style.css';
 
@@ -65,6 +67,8 @@ function Gallery() {
 ### With Ref for Imperative Control
 
 ```tsx
+'use client'; // Required for Next.js and other React Server Components frameworks
+
 import { useRef } from 'react';
 import { VistaView } from 'vistaview/react';
 import type { VistaInterface } from 'vistaview';
@@ -86,11 +90,46 @@ function Gallery() {
 }
 ```
 
+### With Options
+
+```tsx
+'use client'; // Required for Next.js and other React Server Components frameworks
+
+import { VistaView } from 'vistaview/react';
+import type { VistaOpt } from 'vistaview';
+import 'vistaview/style.css';
+
+// Define options outside component to prevent recreation on every render
+const options: VistaOpt = {
+  maxZoomLevel: 3,
+  preloads: 2,
+  animationDurationBase: 400,
+  onOpen: (vistaView) => console.log('Gallery opened'),
+  onClose: (vistaView) => console.log('Gallery closed'),
+};
+
+function Gallery() {
+  return (
+    // selector defaults to '> a'
+    <VistaView options={options}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </VistaView>
+  );
+}
+```
+
 ## Hook Approach
 
 Use the `useVistaView` hook for more control over the gallery instance:
 
 ```tsx
+'use client'; // Required for Next.js and other React Server Components frameworks
+
 import { useId } from 'react';
 import { useVistaView } from 'vistaview/react';
 import 'vistaview/style.css';
@@ -101,22 +140,24 @@ function Gallery() {
     elements: `#${CSS.escape(id)} a`,
   });
 
-  return (
+  return (<>
     <div id={id}>
       <a href="/images/full.jpg">
         <img src="/images/thumb.jpg" alt="Photo" />
       </a>
-      <button onClick={() => vista.open(0)}>Open Gallery</button>
-      <button onClick={() => vista.next()}>Next</button>
-      <button onClick={() => vista.prev()}>Previous</button>
     </div>
-  );
+    <button onClick={() => vista.open(0)}>Open Gallery</button>
+    <button onClick={() => vista.next()}>Next</button>
+    <button onClick={() => vista.prev()}>Previous</button>
+  </>);
 }
 ```
 
 ## With Extensions
 
 ```tsx
+'use client'; // Required for Next.js and other React Server Components frameworks
+
 import { useVistaView } from 'vistaview/react';
 import { download } from 'vistaview/extensions/download';
 import 'vistaview/style.css';
@@ -138,20 +179,6 @@ function Gallery() {
     </div>
   );
 }
-```
-
-## TypeScript Support
-
-VistaView provides full TypeScript support:
-
-```tsx
-import type { VistaInterface, VistaParamsNeo } from 'vistaview';
-
-const config: VistaParamsNeo = {
-  elements: '#gallery a',
-  maxZoomLevel: 3,
-  preloads: 2,
-};
 ```
 
 ## Next Steps

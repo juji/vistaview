@@ -92,6 +92,42 @@ function Gallery() {
 }
 ```
 
+## With Options
+
+```tsx
+import { useVistaView } from 'vistaview/solid';
+import type { VistaOpt } from 'vistaview';
+import 'vistaview/style.css';
+
+// Define options outside component to prevent recreation on every render
+const options: VistaOpt = {
+  maxZoomLevel: 3,
+  preloads: 2,
+  animationDurationBase: 400,
+  onOpen: (vistaView) => console.log('Gallery opened'),
+  onClose: (vistaView) => console.log('Gallery closed'),
+};
+
+function Gallery() {
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const vista = useVistaView({
+    elements: `#${id} a`,
+    ...options,
+  });
+
+  return (
+    <div id={id}>
+      <a href="/images/photo1-full.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+      </a>
+      <a href="/images/photo2-full.jpg">
+        <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+      </a>
+    </div>
+  );
+}
+```
+
 ## With Extensions
 
 ```tsx
@@ -149,20 +185,6 @@ function Gallery() {
     </div>
   );
 }
-```
-
-## TypeScript Support
-
-VistaView provides full TypeScript support:
-
-```tsx
-import type { VistaInterface, VistaParamsNeo } from 'vistaview';
-
-const config: VistaParamsNeo = {
-  elements: '#gallery a',
-  maxZoomLevel: 3,
-  preloads: 2,
-};
 ```
 
 ## SolidStart

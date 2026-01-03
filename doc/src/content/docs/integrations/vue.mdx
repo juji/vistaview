@@ -87,6 +87,37 @@ const openGallery = () => {
 </template>
 ```
 
+### With Options
+
+```vue
+<script setup>
+import { VistaView } from 'vistaview/vue';
+import type { VistaOpt } from 'vistaview';
+import 'vistaview/style.css';
+
+// Define options outside component to prevent recreation on every render
+const options: VistaOpt = {
+  maxZoomLevel: 3,
+  preloads: 2,
+  animationDurationBase: 400,
+  onOpen: (vistaView) => console.log('Gallery opened'),
+  onClose: (vistaView) => console.log('Gallery closed'),
+};
+</script>
+
+<template>
+  <!-- selector defaults to '> a' -->
+  <VistaView :options="options">
+    <a href="/images/photo1-full.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+    <a href="/images/photo2-full.jpg">
+      <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
+    </a>
+  </VistaView>
+</template>
+```
+
 ## Composable Approach
 
 Use the `useVistaView` composable for more control:
@@ -174,22 +205,6 @@ export default {
     </a>
   </div>
 </template>
-```
-
-## TypeScript Support
-
-VistaView provides full TypeScript support:
-
-```vue
-<script setup lang="ts">
-import type { VistaInterface, VistaParamsNeo } from 'vistaview';
-
-const config: VistaParamsNeo = {
-  elements: '#gallery a',
-  maxZoomLevel: 3,
-  preloads: 2,
-};
-</script>
 ```
 
 ## Next Steps
