@@ -119,7 +119,15 @@ export default defineConfig({
 						},
 					],
 				},
-				{ label: 'API Reference', slug: 'api-reference' },
+				{
+					label: 'API Reference',
+					items: [
+						{ label: 'Main Function', slug: 'api-reference/main-function' },
+						{ label: 'Event Callbacks', slug: 'api-reference/events' },
+						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
+						{ label: 'Extensions', slug: 'api-reference/extensions' },
+					],
+				},
 			],
 			customCss: ['./src/styles/custom.css'],
 			components: {
