@@ -15,7 +15,7 @@
   --vvw-ui-hover-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 20));
   --vvw-ui-active-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 40));
   --vvw-ui-border-radius: 0px;
-  --vvw-ui-border-width: 0px;
+  --vvw-ui-border-width: 1px;
 
   /* calculated */
   /* --vvw-init-w: 0;
@@ -213,7 +213,7 @@
 .vvw-ui {
   opacity: 0;
   transition: opacity calc(var(--vvw-anim-dur) * 1ms) ease calc(var(--vvw-anim-dur) * 2ms) ease;
-  outline: 1px solid var(--vvw-ui-outline-color);
+  outline: var(--vvw-ui-border-width) solid var(--vvw-ui-outline-color);
   background-color: var(--vvw-ui-bg-color);
   color: var(--vvw-ui-text-color);
   pointer-events: auto;

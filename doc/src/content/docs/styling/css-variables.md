@@ -87,7 +87,7 @@ These are derived from the core colors:
   --vvw-ui-hover-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 20));
   --vvw-ui-active-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 40));
   --vvw-ui-border-radius: 0px;
-  --vvw-ui-border-width: 0px;
+  --vvw-ui-border-width: 1px;
 }
 ```
 
