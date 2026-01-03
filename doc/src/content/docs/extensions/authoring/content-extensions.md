@@ -10,7 +10,7 @@ Content extensions allow VistaView to display custom content types beyond images
 `VistaBox` is the base class that handles content display, sizing, and transitions. To support custom content:
 
 1. Extend `VistaBox`
-2. Set `this.element` to your custom HTML element
+2. Set `this.element` to your custom DIV element
 3. Define dimensions (`fullW`, `fullH`, `minW`, `maxW`)
 4. Override methods as needed
 
@@ -35,7 +35,7 @@ class VistaCustomContent extends VistaBox {
     const { width: fullWidth, height: fullHeight } = this.getFullSizeDim();
     this.fullH = fullHeight;
     this.fullW = fullWidth;
-    this.minW = this.fullW * 0.5;
+    this.minW = this.fullW * 0.5; // Required: tells VistaView when to close (size threshold)
     this.maxW = this.fullW;
 
     this.element.style.width = `${fullWidth}px`;
@@ -113,6 +113,8 @@ export class VistaYoutubeVideo extends VistaBox {
     const div = document.createElement('div');
     div.style.position = 'relative';
 
+    // youtube thumbnail view
+    // for initial iframe loading
     const image = document.createElement('img');
     div.appendChild(image);
     image.src = this.origin?.image.src || getYouTubeThumbnail(url);
@@ -121,6 +123,8 @@ export class VistaYoutubeVideo extends VistaBox {
     image.style.objectFit = 'cover';
     image.classList.add('vvw--pulsing');
 
+    // add vvw-img-hi clas to the div
+    // so the animation will run
     this.element = div;
     this.element.classList.add('vvw-img-hi');
 
@@ -128,13 +132,14 @@ export class VistaYoutubeVideo extends VistaBox {
     const { width: fullWidth, height: fullHeight } = this.getFullSizeDim();
     this.fullH = fullHeight;
     this.fullW = fullWidth;
-    this.minW = this.fullW * 0.5;
+    this.minW = this.fullW * 0.5; // Required: tells VistaView when to close (size threshold)
     this.maxW = this.fullW;
 
     this.element.style.width = `${fullWidth}px`;
     this.element.style.height = `${fullHeight}px`;
 
     // Initialize sizes
+    // always do this
     this.setSizes({ stableSize: false, initDimension: true });
 
     // Load iframe when in center position
@@ -164,6 +169,8 @@ export class VistaYoutubeVideo extends VistaBox {
     this.isLoadedResolved!(true);
   }
 
+  // for videos, the full size have a max width
+  // so we extend this function
   protected getFullSizeDim(): { width: number; height: number } {
     const maxWidth = Math.min(window.innerWidth, 800);
     return {
@@ -172,6 +179,8 @@ export class VistaYoutubeVideo extends VistaBox {
     };
   }
 
+  // final transform should not propagate events,
+  // since we don't need it for videos
   setFinalTransform() {
     return super.setFinalTransform({ propagateEvent: false });
   }
@@ -190,6 +199,7 @@ export function youtubeVideo(): VistaExtension {
     onImageView: async (data: VistaData, v: VistaView) => {
       const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
       if (mainData instanceof VistaYoutubeVideo) {
+        // deactivate these on display
         v.deactivateUi(['download', 'zoomIn', 'zoomOut'], mainData);
       }
     },
@@ -296,26 +306,16 @@ constructor(par: VistaImageParams) {
 Check attributes or URL patterns in `onInitializeImage`:
 
 ```typescript
-export function customContent(): VistaExtension {
+export function myPdfContent(): VistaExtension {
   return {
-    name: 'customContent',
+    name: 'myPdfContent',
     onInitializeImage: (par: VistaImageParams) => {
       const url = par.elm.config.src;
       const type = par.elm.elm.getAttribute('data-type');
 
       // Check by URL pattern
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        return new VistaYoutubeVideo(par);
-      }
-
-      // Check by data attribute
-      if (type === 'map') {
-        return new VistaMap(par);
-      }
-
-      // Check by file extension
-      if (url.endsWith('.pdf')) {
-        return new VistaPDF(par);
+      if (url.includes('yourpdfsite.com')) {
+        return new MyVistaPDF(par);
       }
     },
   };

@@ -85,7 +85,6 @@ export default defineConfig({
 								{ label: 'UI Extensions', slug: 'extensions/authoring/ui-extensions' },
 								{ label: 'Behavior Extensions', slug: 'extensions/authoring/behavior-extensions' },
 								{ label: 'Content Extensions', slug: 'extensions/authoring/content-extensions' },
-								{ label: 'Complex Extensions', slug: 'extensions/authoring/complex-extensions' },
 								{ label: 'Best Practices', slug: 'extensions/authoring/best-practices' },
 								{ label: 'Publishing', slug: 'extensions/authoring/publishing' },
 							],
