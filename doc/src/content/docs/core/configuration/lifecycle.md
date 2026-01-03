@@ -15,10 +15,10 @@ import {
   imageSetup,
   transition,
   close,
-
-  // types
-  type VistaData,
 } from 'vistaview';
+
+// types
+import type { VistaData } from 'vistaview';
 
 vistaView({
   elements: '#gallery a',
