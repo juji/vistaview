@@ -48,6 +48,7 @@ export default defineConfig({
 							{ label: 'Z-Index', slug: 'core/configuration/z-index' },
 							{ label: 'Events', slug: 'core/configuration/events' },
 							{ label: 'Lifecycle', slug: 'core/configuration/lifecycle' },
+							{ label: 'Extensions', slug: 'core/configuration/extensions' },
 							
 							{ label: 'Complete Options', slug: 'core/configuration/complete' },
 							],
