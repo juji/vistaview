@@ -162,9 +162,9 @@ import 'vistaview/styles/retro-arcade.css';
 
 All themes are lightweight:
 
-- **Smallest:** stark-minimal (1.45 KB, 0.36 KB gzip)
-- **Largest:** retro-arcade (2.03 KB, 0.49 KB gzip)
-- **Average:** ~1.7 KB (~0.42 KB gzip)
+- **Smallest:** dark-rounded (0.69 KB, 0.26 KB gzip)
+- **Largest:** retro-arcade (1.14 KB, 0.38 KB gzip)
+- **Average:** ~0.83 KB (~0.30 KB gzip)
 
 ## Creating Custom Themes
 
