@@ -122,13 +122,19 @@ export default defineConfig({
 				{
 					label: 'API Reference',
 					items: [
-						{ label: 'VistaView Class', slug: 'api-reference/classes/vistaview' },
-						{ label: 'VistaState Class', slug: 'api-reference/classes/vistastate' },
-						{ label: 'VistaBox Class', slug: 'api-reference/classes/vistabox' },
-						{ label: 'VistaImage Class', slug: 'api-reference/classes/vistaimage' },
-						{ label: 'VistaPointers Class', slug: 'api-reference/classes/vistapointers' },
-						{ label: 'VistaImageEvent Class', slug: 'api-reference/classes/vistaimageevent' },
-					{ label: 'VistaHiresTransition Class', slug: 'api-reference/classes/vistahirestransition' },
+					{
+						label: 'Classes',
+						collapsed: false,
+						items: [
+							{ label: 'VistaView', slug: 'api-reference/classes/vistaview' },
+							{ label: 'VistaState', slug: 'api-reference/classes/vistastate' },
+							{ label: 'VistaBox', slug: 'api-reference/classes/vistabox' },
+							{ label: 'VistaImage', slug: 'api-reference/classes/vistaimage' },
+							{ label: 'VistaPointers', slug: 'api-reference/classes/vistapointers' },
+							{ label: 'VistaImageEvent', slug: 'api-reference/classes/vistaimageevent' },
+							{ label: 'VistaHiresTransition', slug: 'api-reference/classes/vistahirestransition' },
+						],
+					},
 						{ label: 'Main Function', slug: 'api-reference/main-function' },
 						{ label: 'Event Callbacks', slug: 'api-reference/events' },
 						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
