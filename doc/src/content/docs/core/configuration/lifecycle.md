@@ -15,6 +15,9 @@ import {
   imageSetup,
   transition,
   close,
+
+  // types
+  type VistaData,
 } from 'vistaview';
 
 vistaView({
@@ -33,13 +36,13 @@ vistaView({
   },
 
   // Custom setup when navigating between images
-  imageSetupFunction: (data, vistaView) => {
+  imageSetupFunction: (data: VistaData, vistaView) => {
     console.log('Setting up image:', data.index.to);
     imageSetup(data, vistaView); // Call default imageSetup
   },
 
   // Custom transition animation
-  transitionFunction: async (data, abortSignal, vistaView) => {
+  transitionFunction: async (data: VistaData, abortSignal, vistaView) => {
     console.log('Custom transition');
     // Use default transition
     return transition(data, abortSignal, vistaView);
@@ -51,6 +54,31 @@ vistaView({
     close(vistaView); // Call default close
   },
 });
+```
+
+## VistaData Type
+
+The `data` parameter passed to lifecycle functions contains information about the current and previous images:
+
+```typescript
+interface VistaData {
+  htmlElements: {
+    from: HTMLElement[] | null;
+    to: HTMLElement[] | null;
+  };
+  images: {
+    from: VistaBox[] | null;
+    to: VistaBox[] | null;
+  };
+  index: {
+    from: number | null;
+    to: number | null;
+  };
+  via: {
+    next: boolean;
+    prev: boolean;
+  };
+}
 ```
 
 See the [API Reference](/api-reference) for more details on these functions.

@@ -11,7 +11,7 @@ Defines the maximum zoom level as a multiplier of the image's natural dimensions
 
 - VistaView maintains three zoom levels:
   - **Minimum (0.5×)**: 50% of fitted size - zooming below this triggers close
-  - **Normal (1×)**: Image fitted to viewport while maintaining aspect ratio
+  - **Fitted**: Image fitted to viewport while maintaining aspect ratio
   - **Maximum**: Natural image dimensions × `maxZoomLevel`
 - Zoom automatically corrects if exceeded:
   - Over maximum → animates back to max
