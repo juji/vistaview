@@ -146,7 +146,7 @@ export type VistaImageParams = {
   transitionShouldWait?: () => boolean;
 };
 
-export type VistaParamsNeo = {
+export type VistaParams = {
   elements: string | VistaImgConfig[];
 } & VistaOpt;
 

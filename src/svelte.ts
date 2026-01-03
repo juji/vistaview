@@ -1,8 +1,8 @@
 import { onDestroy } from 'svelte';
 import { vistaView } from './vistaview';
-import type { VistaParamsNeo, VistaInterface } from './vistaview';
+import type { VistaParams, VistaInterface } from './vistaview';
 
-export function useVistaView(options: VistaParamsNeo): VistaInterface {
+export function useVistaView(options: VistaParams): VistaInterface {
   let instance: VistaInterface | null = null;
 
   const getInstance = () => {

@@ -1,4 +1,4 @@
-import type { VistaInterface, VistaImgConfig, VistaParamsNeo } from './types';
+import type { VistaInterface, VistaImgConfig, VistaParams } from './types';
 
 import { VistaView } from './vista-view';
 
@@ -46,7 +46,7 @@ function checkCorrectness(elements: string | VistaImgConfig[]): string | VistaIm
   return elements;
 }
 
-export function vistaView({ elements, ...opts }: VistaParamsNeo): VistaInterface | null {
+export function vistaView({ elements, ...opts }: VistaParams): VistaInterface | null {
   if (!elements) {
     console.error(elements);
     console.error('no elements provided');

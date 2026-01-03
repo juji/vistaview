@@ -1,8 +1,8 @@
 import { defineComponent, onMounted, onUnmounted, ref, h, type PropType } from 'vue';
 import { vistaView } from './vistaview';
-import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
+import type { VistaParams, VistaInterface, VistaOpt } from './vistaview';
 
-export function useVistaView(options: VistaParamsNeo): VistaInterface {
+export function useVistaView(options: VistaParams): VistaInterface {
   let instance: VistaInterface | null = null;
 
   onMounted(() => {

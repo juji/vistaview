@@ -7,12 +7,12 @@ Complete TypeScript type definitions for VistaView.
 
 ## Core Types
 
-### VistaParamsNeo
+### VistaParams
 
 Main configuration interface including the `elements` property.
 
 ```typescript
-interface VistaParamsNeo extends VistaOpt {
+interface VistaParams extends VistaOpt {
   elements: string | VistaImgConfig[];
 }
 ```

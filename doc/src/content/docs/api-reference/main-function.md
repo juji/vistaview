@@ -8,12 +8,12 @@ description: vistaView() function, configuration, and instance methods
 Creates and initializes a lightbox instance. This function is the primary entry point that instantiates the [VistaView](/api-reference/classes/vistaview) class.
 
 ```typescript
-function vistaView(params: VistaParamsNeo): VistaInterface;
+function vistaView(params: VistaParams): VistaInterface;
 ```
 
 **Parameters:**
 
-- `params:` [VistaParamsNeo](/api-reference/types#vistaparamsneo) - Configuration object
+- `params:` [VistaParams](/api-reference/types#VistaParams) - Configuration object
 
 **Returns:** [VistaInterface](/api-reference/types#vistainterface) - The lightbox instance with control methods
 
@@ -36,7 +36,7 @@ The `vistaView()` function (lowercase 'v') is the factory function, while [Vista
 
 **Configuration:** See [Types](/api-reference/types) for:
 
-- [VistaParamsNeo](/api-reference/types#vistaparamsneo) - Main configuration interface
+- [VistaParams](/api-reference/types#VistaParams) - Main configuration interface
 - [VistaOpt](/api-reference/types#vistaopt) - All configuration options
 - [VistaImgConfig](/api-reference/types#vistaimgconfig) - Image configuration object
 

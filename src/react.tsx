@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback, useId, useImperativeHandle } from 'react';
 import type { ReactNode } from 'react';
 import { vistaView } from './vistaview';
-import type { VistaParamsNeo, VistaInterface, VistaOpt } from './vistaview';
+import type { VistaParams, VistaInterface, VistaOpt } from './vistaview';
 
-export function useVistaView(options: VistaParamsNeo): VistaInterface {
+export function useVistaView(options: VistaParams): VistaInterface {
   const instance = useRef<VistaInterface | null>(null);
 
   useEffect(() => {

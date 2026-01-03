@@ -202,7 +202,7 @@ import { vistaView } from 'vistaview';
 // All types are exported via `export type *`
 import type {
   // Configuration types
-  VistaParamsNeo, // Full options including `elements`
+  VistaParams, // Full options including `elements`
   VistaOpt, // Base options (without `elements`)
 
   // Image types

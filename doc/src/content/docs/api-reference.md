@@ -11,12 +11,12 @@ redirect: /api-reference/
 Creates and initializes a VistaView lightbox instance.
 
 ```typescript
-function vistaView(params: VistaParamsNeo): VistaInterface;
+function vistaView(params: VistaParams): VistaInterface;
 ```
 
 **Parameters:**
 
-- `params: VistaParamsNeo` - Configuration object (see [Configuration](/core/configuration/complete))
+- `params: VistaParams` - Configuration object (see [Configuration](/core/configuration/complete))
 
 **Returns:** `VistaInterface` - The lightbox instance with control methods
 
@@ -99,12 +99,12 @@ gallery.destroy();
 
 ## Configuration Types
 
-### VistaParamsNeo
+### VistaParams
 
 Main configuration interface including the `elements` property.
 
 ```typescript
-interface VistaParamsNeo extends VistaOpt {
+interface VistaParams extends VistaOpt {
   elements: string | VistaImgConfig[];
 }
 ```
@@ -499,7 +499,7 @@ Always import types separately:
 
 ```typescript
 import { vistaView } from 'vistaview';
-import type { VistaInterface, VistaParamsNeo, VistaData } from 'vistaview';
+import type { VistaInterface, VistaParams, VistaData } from 'vistaview';
 ```
 
 ### Strict Configuration
@@ -507,9 +507,9 @@ import type { VistaInterface, VistaParamsNeo, VistaData } from 'vistaview';
 Use types for strict configuration:
 
 ```typescript
-import type { VistaParamsNeo } from 'vistaview';
+import type { VistaParams } from 'vistaview';
 
-const config: VistaParamsNeo = {
+const config: VistaParams = {
   elements: '#gallery a',
   maxZoomLevel: 3,
   preloads: 2,
