@@ -103,17 +103,19 @@ export class VistaGoogleMaps extends VistaBox {
   private mapsConfig: GoogleMapsConfig;
   private location: GoogleMapsLocation;
 
-  constructor(par: VistaImageParams, config: GoogleMapsConfig, location: GoogleMapsLocation) {
+  constructor(par: VistaImageParams, location: GoogleMapsLocation, config?: GoogleMapsConfig) {
     super(par);
 
-    this.mapsConfig = config;
+    this.mapsConfig = config || {};
     this.location = location;
 
     const div = document.createElement('div');
     div.style.position = 'relative';
     const image = document.createElement('img');
     div.appendChild(image);
-    image.src = this.origin?.image.src || getGoogleMapsStaticImage(location, config);
+    image.src =
+      this.origin?.image.src ||
+      (config && config.apiKey ? getGoogleMapsStaticImage(location, config) : '');
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';
@@ -183,7 +185,7 @@ export class VistaGoogleMaps extends VistaBox {
   }
 }
 
-export function googleMaps(config: GoogleMapsConfig): VistaExtension {
+export function googleMaps(config?: GoogleMapsConfig): VistaExtension {
   return {
     name: 'googleMaps',
     onInitializeImage: (params: VistaImageParams) => {
@@ -191,7 +193,7 @@ export function googleMaps(config: GoogleMapsConfig): VistaExtension {
       const location = parseGoogleMapsLocation(url);
       if (!location) return;
 
-      return new VistaGoogleMaps(params, config, location);
+      return new VistaGoogleMaps(params, location, config);
     },
     onImageView: async (data: VistaData, v: VistaView) => {
       const mainData = data.images.to![Math.floor(data.images.to!.length / 2)];
