@@ -20,16 +20,12 @@
   }
 
   &.vvw-prev {
-    border-radius: var(--vvw-ui-border-radius);
-
     &:hover button {
       padding-left: 8px;
     }
   }
 
   &.vvw-next {
-    border-radius: var(--vvw-ui-border-radius);
-
     &:hover button {
       padding-right: 8px;
 
@@ -37,34 +33,6 @@
         transform: translateX(3px);
       }
     }
-  }
-}
-
-.vvw-bottom-bar {
-  & > div:first-child > div:last-child,
-  & > div:nth-child(2) > div:last-child {
-    border-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-
-  & > div:nth-child(2) > div:first-child,
-  & > div:last-child > div:first-child {
-    border-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-}
-
-.vvw-top-bar {
-  & > div:first-child > div:last-child,
-  & > div:nth-child(2) > div:last-child {
-    border-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-
-  & > div:nth-child(2) > div:first-child,
-  & > div:last-child > div:first-child {
-    border-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
   }
 }
 

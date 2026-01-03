@@ -20,18 +20,12 @@
   }
 
   &.vvw-prev {
-    border-top-right-radius: var(--vvw-ui-border-radius);
-    border-bottom-right-radius: var(--vvw-ui-border-radius);
-
     &:hover button {
       padding-left: 8px;
     }
   }
 
   &.vvw-next {
-    border-top-left-radius: var(--vvw-ui-border-radius);
-    border-bottom-left-radius: var(--vvw-ui-border-radius);
-
     &:hover button {
       padding-right: 8px;
 
@@ -39,34 +33,6 @@
         transform: translateX(3px);
       }
     }
-  }
-}
-
-.vvw-bottom-bar {
-  & > div:first-child > div:last-child,
-  & > div:nth-child(2) > div:last-child {
-    border-top-right-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-
-  & > div:nth-child(2) > div:first-child,
-  & > div:last-child > div:first-child {
-    border-top-left-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-}
-
-.vvw-top-bar {
-  & > div:first-child > div:last-child,
-  & > div:nth-child(2) > div:last-child {
-    border-bottom-right-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
-  }
-
-  & > div:nth-child(2) > div:first-child,
-  & > div:last-child > div:first-child {
-    border-bottom-left-radius: var(--vvw-ui-border-radius);
-    overflow: hidden;
   }
 }
 
