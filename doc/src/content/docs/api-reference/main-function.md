@@ -5,7 +5,7 @@ description: vistaView() function, configuration, and instance methods
 
 ## vistaView()
 
-Creates and initializes a VistaView lightbox instance.
+Creates and initializes a lightbox instance. This function is the primary entry point that instantiates the [VistaView](/api-reference/vistaview) class.
 
 ```typescript
 function vistaView(params: VistaParamsNeo): VistaInterface;
@@ -29,6 +29,10 @@ const gallery = vistaView({
   preloads: 2,
 });
 ```
+
+:::note
+The `vistaView()` function (lowercase 'v') is the factory function, while [VistaView](/api-reference/vistaview) (capital 'V') is the underlying class. For most use cases, use the `vistaView()` function. Direct access to the VistaView class is useful for TypeScript type imports and advanced extensions.
+:::
 
 **Configuration:** See [Types](/api-reference/types) for:
 

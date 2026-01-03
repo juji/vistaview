@@ -9,6 +9,14 @@ Complete reference for all VistaView types, interfaces, and functions.
 
 The VistaView API is organized into the following sections:
 
+### [VistaView Class](/api-reference/vistaview)
+
+The core [VistaView](/api-reference/vistaview) controller class that manages the lightbox lifecycle.
+
+- Public properties and methods
+- Instance management
+- Navigation and controls
+
 ### [Main Function](/api-reference/main-function)
 
 The `vistaView()` function, configuration types, and instance methods.

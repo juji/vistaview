@@ -122,6 +122,7 @@ export default defineConfig({
 				{
 					label: 'API Reference',
 					items: [
+						{ label: 'VistaView Class', slug: 'api-reference/vistaview' },
 						{ label: 'Main Function', slug: 'api-reference/main-function' },
 						{ label: 'Event Callbacks', slug: 'api-reference/events' },
 						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
