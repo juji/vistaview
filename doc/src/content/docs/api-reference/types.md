@@ -413,6 +413,98 @@ interface VistaImageParams {
 - `transitionState` - Optional transition state
 - `transitionShouldWait` - Optional transition wait function
 
+## State Management
+
+### VistaState
+
+State management class used internally by [VistaView](/api-reference/vistaview). Accessible via the [`state`](/api-reference/vistaview#state) property.
+
+```typescript
+class VistaState {
+  open: boolean;
+  settled: boolean;
+  closing: boolean;
+  zoomedIn: boolean;
+
+  children: {
+    htmls: HTMLElement[];
+    images: VistaBox[];
+  };
+
+  currentIndex: number;
+  elmLength: number;
+  abortController: AbortController;
+  isReducedMotion: boolean;
+
+  extensions: Set<VistaExtension>;
+}
+```
+
+**Properties:**
+
+- `open` - Whether the lightbox is currently open
+- `settled` - Whether the open transition has completed
+- `closing` - Whether the lightbox is currently closing
+- `zoomedIn` - Whether the current image is zoomed
+- `children` - Current DOM elements and [VistaBox](#vistabox) instances
+  - `htmls` - Array of HTML container elements
+  - `images` - Array of VistaBox instances
+- `currentIndex` - Current image index (-1 when closed)
+- `elmLength` - Total number of images in the gallery
+- `abortController` - Controller for canceling transitions
+- `isReducedMotion` - Whether reduced motion is preferred (from media query)
+- `extensions` - Set of registered [VistaExtension](#vistaextension) instances
+
+## Pointer Event Types
+
+### VistaPointer
+
+Represents a single pointer (mouse, touch, or pen) position and movement.
+
+```typescript
+type VistaPointer = {
+  x: number;
+  y: number;
+  movementX: number;
+  movementY: number;
+  id: number | string;
+};
+```
+
+**Properties:**
+
+- `x` - Current X coordinate
+- `y` - Current Y coordinate
+- `movementX` - Movement delta on X axis since last event
+- `movementY` - Movement delta on Y axis since last event
+- `id` - Unique identifier for this pointer
+
+### VistaExternalPointerListenerArgs
+
+Arguments passed to external pointer listeners registered via [`registerPointerListener()`](/api-reference/vistaview#registerpointerlistener).
+
+```typescript
+type VistaExternalPointerListenerArgs = {
+  event: 'down' | 'move' | 'up' | 'cancel';
+  pointer: VistaPointer;
+  pointers: VistaPointer[];
+  lastPointerLen: number;
+  state: VistaState;
+  hasInternalExecution: boolean;
+  abortController: AbortController | null;
+};
+```
+
+**Properties:**
+
+- `event` - Type of pointer event
+- `pointer` - Current [VistaPointer](#vistapointer) data
+- `pointers` - Array of all active [VistaPointer](#vistapointer) instances
+- `lastPointerLen` - Previous number of pointers (for detecting changes)
+- `state` - [VistaState](#vistastate) instance
+- `hasInternalExecution` - Whether VistaView handled this event internally
+- `abortController` - Controller for canceling operations
+
 ## Related
 
 - [Main Function](/api-reference/main-function)

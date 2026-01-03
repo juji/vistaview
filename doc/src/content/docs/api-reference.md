@@ -378,7 +378,7 @@ interface VistaPointerArgs {
 
 ### VistaPointer
 
-Individual pointer state.
+Individual pointer state. See [VistaPointer](/api-reference/types#vistapointer) in Types for complete definition.
 
 ```typescript
 interface VistaPointer {

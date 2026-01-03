@@ -26,7 +26,7 @@ Creates a new VistaView instance.
 
 **Parameters:**
 
-- `elements`: Either a CSS selector string or an array of image configurations
+- `elements`: Either a CSS selector string or an array of [image configurations](/api-reference/types#vistaimgconfig)
 - `options`: Optional configuration object (see [VistaOpt](/api-reference/types#vistaopt))
 
 **Example:**
@@ -55,6 +55,8 @@ options: VistaOpt;
 
 The merged configuration options for this instance. Combines user-provided options with [DefaultOptions](/api-reference/lifecycle#defaultoptions).
 
+See [VistaOpt](/api-reference/types#vistaopt) for complete type definition.
+
 ### state
 
 ```typescript
@@ -69,6 +71,8 @@ The current state manager containing:
 - `extensions`: Set of registered extensions
 - `children`: Current DOM elements and VistaBox instances
 - `abortController`: For canceling transitions
+
+See [VistaState](/api-reference/types#vistastate) for complete type definition.
 
 ### imageContainer
 
@@ -85,6 +89,8 @@ externalPointerListener: ((e: VistaExternalPointerListenerArgs) => void)[]
 ```
 
 Array of external pointer event listeners registered via `registerPointerListener()`. Used by extensions to hook into pointer events.
+
+See [VistaExternalPointerListenerArgs](/api-reference/types#vistaexternalpointerlistenerargs) for the event argument type.
 
 ## Public Methods
 
@@ -369,7 +375,7 @@ Registers an external pointer event listener.
 
 **Parameters:**
 
-- `listener`: Function that receives pointer event data
+- `listener`: Function that receives [VistaExternalPointerListenerArgs](/api-reference/types#vistaexternalpointerlistenerargs) pointer event data
 
 **Use Case:** Extensions can use this to respond to pointer events without directly managing event handlers.
 
@@ -377,7 +383,8 @@ Registers an external pointer event listener.
 
 ```typescript
 viewer.registerPointerListener((e) => {
-  console.log('Pointer event:', e.type, e.pointer);
+  console.log('Pointer event:', e.event, e.pointer);
+  console.log('Active pointers:', e.pointers.length);
 });
 ```
 
