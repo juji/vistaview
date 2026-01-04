@@ -31,13 +31,6 @@ The simplest way to customize VistaView is by overriding CSS variables in your o
   /* UI Styling */
   --vvw-ui-border-radius: 12px;
   --vvw-ui-border-width: 1px;
-
-  /* Animation */
-  --vvw-anim-dur: 400;
-
-  /* Z-index */
-  --vvw-init-z: 10;
-  --vvw-dest-z: 9999;
 }
 ```
 
