@@ -266,17 +266,6 @@ Note: Includes DOMPurify for HTML sanitization.
 
 ## Next Steps
 
-getStory: async (index) => {
-/_ ... _/
-},
-maxStoryCache: 3, // Lower cache limit
-});
-
-```
-
-## Next Steps
-
 - Learn about [creating custom extensions](/extensions/authoring)
 - Explore other [extensions](/extensions/overview)
 - See [configuration options](/core/configuration/complete)
-```
