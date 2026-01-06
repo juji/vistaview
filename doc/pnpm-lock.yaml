@@ -48,8 +48,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vistaview:
-        specifier: ^0.10.31
-        version: 0.10.31(react@19.2.3)(solid-js@1.9.10)(svelte@5.46.1)(vue@3.5.26(typescript@5.9.3))
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.3)(solid-js@1.9.10)(svelte@5.46.1)(vue@3.5.26(typescript@5.9.3))
       vue:
         specifier: ^3.5.26
         version: 3.5.26(typescript@5.9.3)
@@ -2756,8 +2756,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vistaview@0.10.31:
-    resolution: {integrity: sha512-/uYnSIbr7F79zdUuSemRWoRQ+9oNGJy8j8AwztgFzAe/XuA3JG956wytP5IyJPuUYhiRyNLLMhX8ZyCYKvUvWg==}
+  vistaview@1.0.0:
+    resolution: {integrity: sha512-NJ3hcnEtza9dc1VJuvZ36g588KonscDWvuIIU1d/3W9PTdGsNbEnHxX8fuB6emA61GMotKkeGUPcZWosbNs/oA==}
     peerDependencies:
       react: '>=17.0.0'
       solid-js: '>=1.0.0'
@@ -6531,7 +6531,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vistaview@0.10.31(react@19.2.3)(solid-js@1.9.10)(svelte@5.46.1)(vue@3.5.26(typescript@5.9.3)):
+  vistaview@1.0.0(react@19.2.3)(solid-js@1.9.10)(svelte@5.46.1)(vue@3.5.26(typescript@5.9.3)):
     dependencies:
       isomorphic-dompurify: 2.35.0
     optionalDependencies:
