@@ -122,23 +122,23 @@ export default defineConfig({
 				{
 					label: 'API Reference',
 					items: [
-					{
-						label: 'Classes',
-						collapsed: false,
-						items: [
-							{ label: 'VistaView', slug: 'api-reference/classes/vistaview' },
-							{ label: 'VistaState', slug: 'api-reference/classes/vistastate' },
-							{ label: 'VistaBox', slug: 'api-reference/classes/vistabox' },
-							{ label: 'VistaImage', slug: 'api-reference/classes/vistaimage' },
-							{ label: 'VistaPointers', slug: 'api-reference/classes/vistapointers' },
-							{ label: 'VistaImageEvent', slug: 'api-reference/classes/vistaimageevent' },
-							{ label: 'VistaHiresTransition', slug: 'api-reference/classes/vistahirestransition' },
-						],
-					},
 						{ label: 'Main Function', slug: 'api-reference/main-function' },
 						{ label: 'Event Callbacks', slug: 'api-reference/events' },
 						{ label: 'Lifecycle Functions', slug: 'api-reference/lifecycle' },
 						{ label: 'Extensions', slug: 'api-reference/extensions' },
+						{
+							label: 'Classes',
+							collapsed: false,
+							items: [
+								{ label: 'VistaView', slug: 'api-reference/classes/vistaview' },
+								{ label: 'VistaState', slug: 'api-reference/classes/vistastate' },
+								{ label: 'VistaBox', slug: 'api-reference/classes/vistabox' },
+								{ label: 'VistaImage', slug: 'api-reference/classes/vistaimage' },
+								{ label: 'VistaPointers', slug: 'api-reference/classes/vistapointers' },
+								{ label: 'VistaImageEvent', slug: 'api-reference/classes/vistaimageevent' },
+								{ label: 'VistaHiresTransition', slug: 'api-reference/classes/vistahirestransition' },
+							],
+						},
 						{ label: 'Types', slug: 'api-reference/types' },
 					],
 				},
