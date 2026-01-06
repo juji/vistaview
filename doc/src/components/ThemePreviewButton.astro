@@ -117,6 +117,13 @@ const { themeName } = Astro.props;
         if (!viewer) {
           viewer = vistaView({
             elements: '#theme-preview-images a',
+            onClose: () => {
+              // Remove theme when viewer closes
+              if (currentThemeLink) {
+                currentThemeLink.remove();
+                currentThemeLink = null;
+              }
+            },
           });
         }
 
