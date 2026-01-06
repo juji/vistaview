@@ -1,0 +1,132 @@
+---
+interface Props {
+  themeName: string;
+}
+
+const { themeName } = Astro.props;
+---
+
+<button class="theme-preview-btn" data-theme={themeName}>
+  Preview {themeName}
+</button>
+
+<style>
+  .theme-preview-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .theme-preview-btn:hover {
+    background: var(--sl-color-accent-high);
+  }
+
+  .theme-preview-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .theme-preview-btn.loading::after {
+    content: '...';
+    display: inline-block;
+    animation: loading 1s infinite;
+  }
+
+  @keyframes loading {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+  }
+</style>
+
+<script>
+  import { vistaView } from 'vistaview';
+  import 'vistaview/style.css';
+
+  // Sample images for preview
+  const sampleImages = [
+    'https://picsum.photos/800/600?random=1',
+    'https://picsum.photos/600/800?random=2',
+    'https://picsum.photos/800/800?random=3',
+  ];
+
+  // Create hidden image elements
+  const imageContainer = document.createElement('div');
+  imageContainer.style.display = 'none';
+  imageContainer.id = 'theme-preview-images';
+  sampleImages.forEach((src, i) => {
+    const a = document.createElement('a');
+    a.href = src;
+    a.dataset.caption = `Sample Image ${i + 1}`;
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = `Sample ${i + 1}`;
+    a.appendChild(img);
+    imageContainer.appendChild(a);
+  });
+  document.body.appendChild(imageContainer);
+
+  // Currently loaded theme
+  let currentThemeLink: HTMLLinkElement | null = null;
+
+  function loadTheme(themeName: string) {
+    return new Promise<void>((resolve) => {
+      // Remove old theme
+      if (currentThemeLink) {
+        currentThemeLink.remove();
+      }
+
+      // Load new theme
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `https://unpkg.com/vistaview/dist/styles/${themeName}.css`;
+      link.onload = () => resolve();
+      link.onerror = () => resolve(); // Resolve even on error
+      document.head.appendChild(link);
+      currentThemeLink = link;
+    });
+  }
+
+  // Initialize vistaview once
+  let viewer: ReturnType<typeof vistaView> | null = null;
+
+  document.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('theme-preview-btn')) {
+      const button = target as HTMLButtonElement;
+      const themeName = button.dataset.theme;
+      if (!themeName) return;
+
+      // Disable button and show loading
+      button.disabled = true;
+      button.classList.add('loading');
+
+      try {
+        // Load theme
+        await loadTheme(themeName);
+
+        // Initialize or reuse viewer
+        if (!viewer) {
+          viewer = vistaView({
+            elements: '#theme-preview-images a',
+          });
+        }
+
+        // Open viewer
+        viewer!.open(0);
+      } finally {
+        // Re-enable button and remove loading
+        button.disabled = false;
+        button.classList.remove('loading');
+      }
+    }
+  });
+</script>
