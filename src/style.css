@@ -166,6 +166,8 @@
     background: linear-gradient(45deg, #1a1a1a, #333, #1a1a1a, #555);
     background-size: 400% 400%;
     animation: vvw-gradient 3s ease-in-out infinite;
+    max-width: none !important;
+    max-height: none !important;
   }
 
   .vvw-img-hi {
@@ -179,6 +181,8 @@
     overflow: hidden;
     object-fit: cover;
     opacity: 0;
+    max-width: none !important;
+    max-height: none !important;
   }
 }
 
