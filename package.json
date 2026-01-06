@@ -1,6 +1,6 @@
 {
   "name": "vistaview",
-  "version": "0.10.31",
+  "version": "1.0.0",
   "description": "A lightweight, zero-dependency image lightbox library with smooth animations and touch support",
   "keywords": [
     "image",
