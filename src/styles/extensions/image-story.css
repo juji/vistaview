@@ -57,7 +57,6 @@
   background-color: var(--vvw-ui-bg-color);
   color: var(--vvw-ui-text-color);
   outline: 1px solid var(--vvw-ui-outline-color);
-  border: var(--vvw-ui-border-width) solid var(--vvw-ui-outline-color);
   transition: height 0.3s ease;
   padding: var(--vvw-padding-y) 15px;
 
