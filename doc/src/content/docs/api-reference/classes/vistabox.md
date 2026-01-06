@@ -193,6 +193,313 @@ momentumThrow(par: { x: number; y: number }): () => void
 
 Override to implement momentum scrolling after a swipe gesture.
 
+## Protected Properties
+
+The following protected properties are available when extending VistaBox:
+
+### initH
+
+```typescript
+protected initH: number = 0
+```
+
+Initial height of the content based on thumbnail dimensions.
+
+### initW
+
+```typescript
+protected initW: number = 0
+```
+
+Initial width of the content based on thumbnail dimensions.
+
+### fullH
+
+```typescript
+protected fullH: number = 0
+```
+
+Full height of the content when displayed in the lightbox.
+
+### fullW
+
+```typescript
+protected fullW: number = 0
+```
+
+Full width of the content when displayed in the lightbox.
+
+### maxW
+
+```typescript
+protected maxW: number = 0
+```
+
+Maximum allowed width for the content.
+
+### minW
+
+```typescript
+protected minW: number = 0
+```
+
+Minimum allowed width for the content.
+
+### defaultWH
+
+```typescript
+protected defaultWH: number = 200
+```
+
+Default width/height fallback value.
+
+### isZoomedIn
+
+```typescript
+protected isZoomedIn: boolean = false
+```
+
+Whether the content is currently zoomed in.
+
+### isCancelled
+
+```typescript
+protected isCancelled: boolean = false
+```
+
+Whether the loading operation has been cancelled.
+
+### isLoadedResolved
+
+```typescript
+protected isLoadedResolved: ((val: boolean | PromiseLike<boolean>) => void) | null = null
+```
+
+Resolver function for the `isLoaded` promise.
+
+### isLoadedRejected
+
+```typescript
+protected isLoadedRejected: ((reason?: any) => void) | null = null
+```
+
+Rejection function for the `isLoaded` promise.
+
+### isLoaded
+
+```typescript
+protected isLoaded: Promise<boolean>
+```
+
+Promise that resolves when the content has finished loading.
+
+### replacement
+
+```typescript
+protected replacement: HTMLImageElement | null = null
+```
+
+Placeholder element that replaces the original thumbnail in the DOM.
+
+### originalParent
+
+```typescript
+protected originalParent: HTMLElement | null = null
+```
+
+Reference to the original parent element of the thumbnail.
+
+### originalNextSibling
+
+```typescript
+protected originalNextSibling: ChildNode | null = null
+```
+
+Reference to the next sibling of the original thumbnail for proper reinsertion.
+
+### originalStyle
+
+```typescript
+protected originalStyle = ''
+```
+
+Original CSS text of the thumbnail element.
+
+### thumbImage
+
+```typescript
+protected thumbImage: HTMLImageElement | null = null
+```
+
+Reference to the original thumbnail image element.
+
+### originRect
+
+```typescript
+protected originRect: { width: number; height: number; top: number; left: number }
+```
+
+Bounding rectangle of the origin element.
+
+### fittedSize
+
+```typescript
+protected fittedSize: { width: number; height: number } | null = null
+```
+
+Calculated fitted size of the thumbnail image.
+
+### maxZoomLevel
+
+```typescript
+protected maxZoomLevel: number
+```
+
+Maximum zoom level allowed for this content.
+
+### vistaView
+
+```typescript
+protected vistaView: VistaView
+```
+
+Reference to the parent VistaView instance.
+
+### transitionState
+
+```typescript
+protected transitionState: VistaHiresTransitionOpt | null = null
+```
+
+State object for high-resolution transitions.
+
+### transitionShouldWait
+
+```typescript
+protected transitionShouldWait: () => boolean = () => false
+```
+
+Function that determines if transition should wait before starting.
+
+### initPointerCenter
+
+```typescript
+protected initPointerCenter = { x: 0, y: 0 }
+```
+
+Initial center point for pointer interactions.
+
+### onScale
+
+```typescript
+protected onScale: (par: {
+  vistaImage: VistaBox;
+  scale: number;
+  isMax: boolean;
+  isMin: boolean;
+}) => void
+```
+
+Callback function invoked when content is scaled.
+
+## Protected Methods
+
+The following protected methods are available when extending VistaBox:
+
+### createState()
+
+```typescript
+protected createState(): VistaImageState
+```
+
+Creates and returns a new state object with getters/setters that trigger DOM updates. Called in the constructor.
+
+### onLessThanMinWidthChange()
+
+```typescript
+protected onLessThanMinWidthChange(value: boolean): void
+```
+
+Called when content width falls below minimum. Sets opacity to 0.5 when true.
+
+### onTranslateChange()
+
+```typescript
+protected onTranslateChange(value: { x: number; y: number }): void
+```
+
+Updates the CSS translate property when state.translate changes.
+
+### onTransformChange()
+
+```typescript
+protected onTransformChange(value: { x: number; y: number; scale: number }): void
+```
+
+Updates the CSS transform property when state.transform changes.
+
+### onWidthChange()
+
+```typescript
+protected onWidthChange(value: number): void
+```
+
+Updates the CSS width property when state.width changes.
+
+### onHeightChange()
+
+```typescript
+protected onHeightChange(value: number): void
+```
+
+Updates the CSS height property when state.height changes.
+
+### getFullSizeDim()
+
+```typescript
+protected getFullSizeDim(): { width: number; height: number }
+```
+
+Calculates the full size dimensions based on thumbnail aspect ratio and viewport size.
+
+**Returns:** Object containing calculated width and height.
+
+### normalize()
+
+```typescript
+protected normalize(): void
+```
+
+Resets content to its default state with no zoom or translation. Sets transform and translate to zero, and dimensions to full size.
+
+### getFromParsedSrcSet()
+
+```typescript
+protected getFromParsedSrcSet(targetWidth: number): string | null
+```
+
+Selects the most appropriate source from the parsed srcSet based on target width and device pixel ratio.
+
+**Parameters:**
+
+- `targetWidth` - The desired width in pixels
+
+**Returns:** The selected source URL, or null if no srcSet is available.
+
+### setFinalTransform()
+
+```typescript
+setFinalTransform(par?: { propagateEvent?: boolean }): { close: boolean; cancel: () => void }
+```
+
+Finalizes the current transform state by converting temporary transforms into permanent translate and size values. Called at the end of pan/zoom operations.
+
+**Parameters:**
+
+- `par.propagateEvent` - Whether to trigger onContentChange events (default: true)
+
+**Returns:** Object with close flag and cancel function.
+
 ## Related
 
 - [VistaImage](#vistaimage-class) - Image implementation extending VistaBox
