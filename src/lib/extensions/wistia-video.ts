@@ -68,6 +68,8 @@ export class VistaWistiaVideo extends VistaBox {
 
     const div = document.createElement('div');
     div.style.position = 'relative';
+    div.style.overflow = 'hidden';
+    div.style.borderRadius = '12px';
     const image = document.createElement('img');
     div.appendChild(image);
     image.style.width = '100%';
