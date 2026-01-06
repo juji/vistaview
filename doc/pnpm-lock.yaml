@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  vistaview: link:..
-
 importers:
 
   .:
@@ -51,7 +48,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vistaview:
-        specifier: 0.10.31
+        specifier: ^0.10.31
         version: 0.10.31(react@19.2.3)(solid-js@1.9.10)(svelte@5.46.1)(vue@3.5.26(typescript@5.9.3))
       vue:
         specifier: ^3.5.26
