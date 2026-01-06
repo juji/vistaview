@@ -78,16 +78,6 @@ export default defineConfig({
 					items: [
 						{ label: 'Overview', slug: 'extensions/overview' },
 						{
-							label: 'Authoring',
-							collapsed: false,
-							items: [
-								{ label: 'Guide', slug: 'extensions/authoring' },
-								{ label: 'UI Extensions', slug: 'extensions/authoring/ui-extensions' },
-								{ label: 'Behavior Extensions', slug: 'extensions/authoring/behavior-extensions' },
-								{ label: 'Content Extensions', slug: 'extensions/authoring/content-extensions' },
-							],
-						},
-						{
 							label: 'Video Extensions',
 							collapsed: false,
 							items: [
@@ -115,6 +105,16 @@ export default defineConfig({
 								{ label: 'Download', slug: 'extensions/download' },
 								{ label: 'Image Story', slug: 'extensions/image-story' },
 								{ label: 'Logger', slug: 'extensions/logger' },
+							],
+						},
+						{
+							label: 'Authoring',
+							collapsed: false,
+							items: [
+								{ label: 'Guide', slug: 'extensions/authoring' },
+								{ label: 'UI Extensions', slug: 'extensions/authoring/ui-extensions' },
+								{ label: 'Behavior Extensions', slug: 'extensions/authoring/behavior-extensions' },
+								{ label: 'Content Extensions', slug: 'extensions/authoring/content-extensions' },
 							],
 						},
 					],
