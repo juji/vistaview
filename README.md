@@ -2,6 +2,8 @@
 
 A lightweight, modern image lightbox library for the web. Zero dependencies, framework-agnostic, and highly customizable.
 
+For full documentation, visit [https://vistaview.jujiplay.com/](https://vistaview.jujiplay.com/)
+
 ## Features
 
 - 🪶 **Lightweight** — ~42KB ESM (~10KB gzip), minimal footprint
