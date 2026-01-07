@@ -3,11 +3,12 @@ import { Image } from 'astro:assets';
 import LinkButton from '../../node_modules/@astrojs/starlight/user-components/LinkButton.astro';
 import HeroContentBox from './home/HeroContentBox.astro';
 
+const VISTAVIEW_VERSION = 'v1.0.0';
 
 const PAGE_TITLE_ID = '_top';
 
 const { data } = Astro.locals.starlightRoute.entry;
-const { title = data.title, tagline, image, actions = [] } = data.hero || {};
+const { title = data.title, tagline, image, actions = [], version } = data.hero || {};
 
 const imageAttrs = {
 	loading: 'eager' as const,
@@ -47,7 +48,9 @@ if (image) {
 	
 	<div class="sl-flex stack main-left">
 		<div class="sl-flex copy">
-			<h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+			<h1 id={PAGE_TITLE_ID} data-page-title>
+				{title} <span style="font-size: 0.3em; font-weight: 300; opacity: 0.6; margin-left: 0.5em;">{VISTAVIEW_VERSION}</span>
+			</h1>
 			<div class="tagline">
 				A lightweight, modern image lightbox library for the web. Zero&nbsp;dependencies, and highly customizable.
 			</div>
