@@ -109,9 +109,8 @@ export class VistaYoutubeVideo extends VistaBox {
       iframe.style.position = 'absolute';
       iframe.style.top = '0';
       iframe.style.left = '0';
-      iframe.style.backgroundColor = 'transparent';
       iframe.style.opacity = '0';
-      iframe.style.transition = 'opacity 1s ease';
+      iframe.style.transition = 'opacity 333ms ease';
       iframe.src = `https://www.youtube.com/embed/${parseYouTubeVideoId(url)}?autoplay=1&rel=0`;
       div.appendChild(iframe);
 
