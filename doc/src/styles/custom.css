@@ -1,3 +1,7 @@
+html {
+  color-scheme: unset !important;
+}
+
 /* Match content-panel horizontal padding with header */
 .content-panel {
   padding-inline: var(--sl-nav-pad-x) !important;
