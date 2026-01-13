@@ -279,11 +279,22 @@ function cleanup() {
   blogGallery.destroy();
 }
 
-// In React
+// In React - basic cleanup
 useEffect(() => {
   const vista = vistaView({ elements: '#gallery a' });
   return () => vista.destroy();
 }, []);
+
+// In React - destroy and recreate when data changes
+const [images, setImages] = useState<VistaImgConfig[]>([]);
+
+useEffect(() => {
+  const vista = vistaView({
+    elements: images, // Works for both: arrays, or '#gallery a' when DOM re-renders
+    maxZoomLevel: 2,
+  });
+  return () => vista.destroy();
+}, [images]);
 
 // In Vue
 onUnmounted(() => {
