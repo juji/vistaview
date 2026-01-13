@@ -142,6 +142,16 @@ export default defineConfig({
 						{ label: 'Types', slug: 'api-reference/types' },
 					],
 				},
+				{
+					label: 'AI Documentation',
+					items: [
+						{ 
+							label: 'LLMs.txt', 
+							link: '/llms.txt',
+							attrs: { target: '_blank', rel: 'noopener' }
+						},
+					],
+				},
 			],
 			customCss: ['./src/styles/custom.css'],
 			components: {
