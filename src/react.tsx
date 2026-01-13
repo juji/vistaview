@@ -12,7 +12,7 @@ export function useVistaView(options: VistaParams): VistaInterface {
       instance.current?.destroy();
       instance.current = null;
     };
-  }, []);
+  }, [options]);
 
   return {
     open: useCallback((i = 0) => instance.current?.open(i), []),
@@ -55,7 +55,7 @@ export function VistaView({ children, selector = '> a', options, id, ref, ...res
       instanceRef.current?.destroy();
       instanceRef.current = null;
     };
-  }, [galleryId, selector]);
+  }, [galleryId, selector, options, children]);
 
   return (
     <div ref={containerRef} {...rest} id={galleryId}>

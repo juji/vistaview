@@ -1,11 +1,16 @@
 
 
-import { onCleanup } from 'solid-js';
+import { createEffect, onCleanup } from 'solid-js';
 import { vistaView } from './vistaview';
 import type { VistaParams, VistaInterface } from './vistaview';
 
 export function useVistaView(options: VistaParams): VistaInterface {
-  const instance = vistaView(options);
+  let instance: VistaInterface | null = null;
+
+  createEffect(() => {
+    instance?.destroy();
+    instance = vistaView(options);
+  });
 
   onCleanup(() => {
     instance?.destroy();
