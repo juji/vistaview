@@ -3,21 +3,21 @@ import { getCollection } from 'astro:content';
 
 export const GET: APIRoute = async () => {
   const docs = await getCollection('docs');
-  const coreDocs = docs
-    .filter((d) => d.id.startsWith('core/') || d.id === 'index')
+  const integrationDocs = docs
+    .filter((d) => d.id.startsWith('integrations/'))
     .sort((a, b) => a.id.localeCompare(b.id));
 
-  let content = `# VistaView - Core Documentation
+  let content = `# VistaView - Framework Integrations
 
 > Generated: ${new Date().toISOString()}
-> Section: Core Installation & Configuration
-> Full index: https://vistaview.jujiplay.com/llm.txt
+> Section: Framework Integrations (React, Vue, Svelte, Solid, Vanilla)
+> Full index: https://vistaview.jujiplay.com/llms.txt
 
-This file contains core VistaView documentation including installation, configuration options, and basic setup.
+This file contains integration guides for using VistaView with various JavaScript frameworks.
 
 `;
 
-  for (const doc of coreDocs) {
+  for (const doc of integrationDocs) {
     const title = doc.data.title || doc.id;
     const description = doc.data.description || '';
 

@@ -3,21 +3,21 @@ import { getCollection } from 'astro:content';
 
 export const GET: APIRoute = async () => {
   const docs = await getCollection('docs');
-  const extensionDocs = docs
-    .filter((d) => d.id.startsWith('extensions/'))
+  const coreDocs = docs
+    .filter((d) => d.id.startsWith('core/') || d.id === 'index')
     .sort((a, b) => a.id.localeCompare(b.id));
 
-  let content = `# VistaView - Extensions
+  let content = `# VistaView - Core Documentation
 
 > Generated: ${new Date().toISOString()}
-> Section: Extensions (Video, Maps, and Custom Extensions)
-> Full index: https://vistaview.jujiplay.com/llm.txt
+> Section: Core Installation & Configuration
+> Full index: https://vistaview.jujiplay.com/llms.txt
 
-This file contains documentation for all VistaView extensions including video players, map integrations, and guides for creating custom extensions.
+This file contains core VistaView documentation including installation, configuration options, and basic setup.
 
 `;
 
-  for (const doc of extensionDocs) {
+  for (const doc of coreDocs) {
     const title = doc.data.title || doc.id;
     const description = doc.data.description || '';
 
