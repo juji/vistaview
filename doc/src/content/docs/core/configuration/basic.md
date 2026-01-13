@@ -193,14 +193,17 @@ const vista = vistaView({
   maxZoomLevel: 2,
 });
 
-// Function to update gallery DOM
-function updateGallery(images: Array<{ src: string; alt: string }>) {
+// Example Async function to fetch and update gallery
+async function updateGallery(category: string) {
+  const response = await fetch(`/api/images?category=${category}`);
+  const images = await response.json();
+
   const gallery = document.querySelector('#dynamic-gallery');
 
   // Update DOM
   gallery.innerHTML = images
     .map(
-      (img) => `
+      (img: { src: string; alt: string }) => `
     <a href="${img.src}">
       <img src="${img.src}" alt="${img.alt}" />
     </a>
@@ -211,17 +214,6 @@ function updateGallery(images: Array<{ src: string; alt: string }>) {
   // Re-query DOM and re-attach click listeners
   vista.reset();
 }
-
-// Usage
-const productImages = [
-  { src: '/products/1.jpg', alt: 'Product 1' },
-  { src: '/products/2.jpg', alt: 'Product 2' },
-];
-
-document.querySelector('#show-products')?.addEventListener('click', () => {
-  updateGallery(productImages);
-  // Click on images to open, or call vista.open(0)
-});
 ```
 
 **How `reset()` works with selectors:**
@@ -244,27 +236,18 @@ const vista = vistaView({
   maxZoomLevel: 2,
 });
 
-// Function to update gallery content
-function updateGallery(newImages: VistaImgConfig[], startIndex = 0) {
+// Example Async function to fetch and update gallery
+async function updateGallery(category: string) {
+  const response = await fetch(`/api/images?category=${category}`);
+  const images = await response.json();
+
   // Mutate the original array (don't reassign!)
   currentImages.length = 0;
-  currentImages.push(...newImages);
+  currentImages.push(...images);
 
   // Update element count
   vista.reset();
 }
-
-// Usage
-const portfolioImages = [
-  { src: '/portfolio/1.jpg', alt: 'Portfolio 1' },
-  { src: '/portfolio/2.jpg', alt: 'Portfolio 2' },
-];
-
-document.querySelector('#show-portfolio')?.addEventListener('click', () => {
-  updateGallery(portfolioImages);
-  // Must call open() programmatically (no click listeners)
-  vista.open(startIndex);
-});
 ```
 
 **How `reset()` works with arrays:**
