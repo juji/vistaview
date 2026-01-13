@@ -76,4 +76,6 @@ For full documentation, visit [https://vistaview.jujiplay.com/](https://vistavie
 
 MIT
 
-<iframe src="https://github.com/sponsors/juji/card" title="Sponsor juji" height="225" width="100%" style="border: 0;"></iframe>
+---
+
+[![Sponsor juji](https://img.shields.io/badge/sponsor-juji-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/juji)
