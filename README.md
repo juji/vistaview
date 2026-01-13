@@ -75,3 +75,7 @@ For full documentation, visit [https://vistaview.jujiplay.com/](https://vistavie
 ## License
 
 MIT
+
+---
+
+[![Sponsor juji](https://img.shields.io/badge/sponsor-juji-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/juji)
