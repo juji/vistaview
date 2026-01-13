@@ -252,9 +252,6 @@ function updateGallery(newImages: VistaImgConfig[], startIndex = 0) {
 
   // Update element count
   vista.reset();
-
-  // Must call open() programmatically (no click listeners)
-  vista.open(startIndex);
 }
 
 // Usage
@@ -265,6 +262,8 @@ const portfolioImages = [
 
 document.querySelector('#show-portfolio')?.addEventListener('click', () => {
   updateGallery(portfolioImages);
+  // Must call open() programmatically (no click listeners)
+  vista.open(startIndex);
 });
 ```
 
