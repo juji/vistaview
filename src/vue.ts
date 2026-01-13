@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted, ref, h, type PropType } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, h, watch, type PropType } from 'vue';
 import { vistaView } from './vistaview';
 import type { VistaParams, VistaInterface, VistaOpt } from './vistaview';
 
@@ -8,6 +8,15 @@ export function useVistaView(options: VistaParams): VistaInterface {
   onMounted(() => {
     instance = vistaView(options);
   });
+
+  watch(
+    () => options,
+    () => {
+      instance?.destroy();
+      instance = vistaView(options);
+    },
+    { deep: true }
+  );
 
   onUnmounted(() => {
     instance?.destroy();
@@ -56,6 +65,18 @@ export const VistaView = defineComponent({
         elements: `#${galleryId} ${props.selector}`,
       });
     });
+
+    watch(
+      () => [props.options, props.selector, slots.default],
+      () => {
+        instanceRef.value?.destroy();
+        instanceRef.value = vistaView({
+          ...props.options,
+          elements: `#${galleryId} ${props.selector}`,
+        });
+      },
+      { deep: true }
+    );
 
     onUnmounted(() => {
       instanceRef.value?.destroy();
