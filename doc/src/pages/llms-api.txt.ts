@@ -11,7 +11,7 @@ export const GET: APIRoute = async () => {
 
 > Generated: ${new Date().toISOString()}
 > Section: Complete API Reference, Classes, Types, Events
-> Full index: https://vistaview.jujiplay.com/llm.txt
+> Full index: https://vistaview.jujiplay.com/llms.txt
 
 This file contains the complete API reference for VistaView including all classes, types, events, and lifecycle functions.
 

@@ -11,7 +11,7 @@ export const GET: APIRoute = async () => {
 
 > Generated: ${new Date().toISOString()}
 > Section: CSS Variables, Themes, and Custom Styling
-> Full index: https://vistaview.jujiplay.com/llm.txt
+> Full index: https://vistaview.jujiplay.com/llms.txt
 
 This file contains documentation for styling VistaView including CSS variables, pre-built themes, and custom styling guides.
 
