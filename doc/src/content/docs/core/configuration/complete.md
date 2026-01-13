@@ -48,12 +48,12 @@ vistaView({
   onImageView: (data, vistaView) => {}, // Called when viewing an image
   onContentChange: (content, vistaView) => {}, // Called when image content changes
 
-  // Lifecycle: Custom Behavior Functions
-  initFunction: (vistaView) => {}, // Custom initialization
-  openFunction: (vistaView) => {}, // Custom open behavior
-  imageSetupFunction: (data, vistaView) => {}, // Custom setup when navigating
-  transitionFunction: (data, abortSignal, vistaView) => {}, // Custom transition animation
-  closeFunction: (vistaView) => {}, // Custom close behavior
+  // Lifecycle: Custom Behavior Functions (override defaults)
+  initFunction: undefined, // Custom initialization (default: sets up swipe gestures)
+  openFunction: undefined, // Custom open behavior (default: positions image container)
+  imageSetupFunction: undefined, // Custom setup when navigating (default: none)
+  transitionFunction: undefined, // Custom transition animation (default: slide animation)
+  closeFunction: undefined, // Custom close behavior (default: none)
 });
 ```
 
