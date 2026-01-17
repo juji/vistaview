@@ -22,7 +22,7 @@
 
 ## Committing
 
-- Ensure you are in the `~/play/vistaview` directory before running any git commands.
+- Ensure you are in the project's root directory before running any git commands.
 - Be detailed in commit messages, specifying what changes were made instead of just mentioning general changes to files.
 - Commit messages should reflect the actual changes to the files, not the actions taken.
 - Before committing, always check the git diff to understand what has changed.
