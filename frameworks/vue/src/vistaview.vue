@@ -59,8 +59,14 @@ export default defineComponent({
       if (props.vistaRef) props.vistaRef.value = null;
     });
 
-    // also expose API on the component instance for users who use `ref` on the component
-    expose(api);
+    // also expose API and DOM on the component instance for users who use `ref` on the component
+    // expose: { vista, container } where `container` is a live getter to the DOM element
+    expose({
+      vista: api,
+      get container() {
+        return containerRef.value;
+      },
+    });
 
     return { containerRef, galleryId };
   },

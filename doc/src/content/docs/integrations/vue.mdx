@@ -91,7 +91,7 @@ const openGallery = () => {
 </template>
 ```
 
-> Note: using `ref` on the component still returns the component instance (which includes the exposed API), but to get the root DOM element use `containerRef`.
+> Note: using `ref` on the component returns an object with `vista` (the API) and `container` (the root DOM element). Example: `compRef.value.vista.open(0)` and `compRef.value.container`.
 
 ### With Options
 
