@@ -24,7 +24,15 @@
   "author": "jujiyangasli@gmail.com",
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
-  "dependencies": {
-    "juji": "link:../.."
-  }
+  "exports": {
+    ".": {
+      "import": "./main/dist/vistaview.js",
+      "types": "./main/dist/vistaview.d.ts"
+    },
+    "./style.css": "./main/dist/style.css",
+    "./styles/*": "./main/dist/styles/*"
+  },
+  "files": [
+    "main/dist"
+  ]
 }
