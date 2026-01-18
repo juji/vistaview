@@ -19,7 +19,13 @@
     "responsive"
   ],
   "scripts": {
-    "test": "echo \"no test specified\""
+    "test": "echo \"no test specified\"",
+    "build": "pnpm build:main && pnpm build:libs",
+    "build:main": "pnpm --filter main build",
+    "build:libs": "pnpm --parallel --filter './extensions/*' --filter './frameworks/*' build",
+    "build:local": "pnpm build:main && pnpm build:libs && pnpm build:rest",
+    "dev": "pnpm --parallel dev",
+    "prepare": "husky || true"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -137,5 +143,8 @@
     "main/dist",
     "frameworks/*/dist",
     "extensions/*/dist"
-  ]
+  ],
+  "dependencies": {
+    "husky": "^9.1.7"
+  }
 }
