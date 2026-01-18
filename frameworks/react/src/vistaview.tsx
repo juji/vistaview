@@ -24,7 +24,7 @@ export const VistaView = (function VistaView(
   useImperativeHandle(ref as React.Ref<VistaComponentRef>, () => ({
     vistaView: instanceRef.current,
     container: containerRefInner.current,
-  }), [instanceRef.current, containerRefInner.current]);
+  }), []);
 
   useEffect(() => {
     if (!containerRefInner.current) return;
