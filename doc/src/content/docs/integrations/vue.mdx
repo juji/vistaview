@@ -76,7 +76,7 @@ import 'vistaview/style.css';
 const compRef = ref<{ vista: VistaInterface; container: HTMLElement | null } | null>(null);
 
 const openGallery = () => {
-  compRef.value?.vista.open(0);
+  compRef.value?.vistaView.open(0);
   console.log(compRef.value?.container);
 };
 </script>
@@ -91,7 +91,7 @@ const openGallery = () => {
 </template>
 ```
 
-> Note: `compRef.value.vista` gives the API and `compRef.value.container` gives the root DOM element.
+> Note: `compRef.value.vistaView` gives the API and `compRef.value.container` gives the root DOM element.
 
 ### With Options
 
