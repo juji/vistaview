@@ -27,6 +27,7 @@
   "exports": {
     ".": {
       "import": "./main/dist/vistaview.js",
+      "require": "./main/dist/vistaview.umd.js",
       "types": "./main/dist/vistaview.d.ts"
     },
     "./style.css": "./main/dist/style.css",

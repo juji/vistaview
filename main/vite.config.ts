@@ -21,30 +21,64 @@ let entry = {
   ...styleFiles
 };
 
+
+const isUMD = process.env.UMD === '1';
+
 export default defineConfig({
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    lib: {
-      entry,
-      formats: ['es'],
-    },
-    rollupOptions: {
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: 'src',
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name].js',
-        exports: 'named',
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.names[0] && assetInfo.names[0].endsWith('.css')) {
-            return assetInfo.names[0] === 'style.css' ?  '[name][extname]' : 'styles/[name][extname]';
-          }
-          return '[name][extname]';
+  build: isUMD
+    ? {
+        outDir: 'dist',
+        emptyOutDir: true,
+        lib: {
+          entry: resolve(__dirname, 'src/vistaview.ts'),
+          name: 'VistaView',
+          formats: ['umd'],
+          fileName: () => 'vistaview.umd.js',
         },
+        cssCodeSplit: false,
+        rollupOptions: {
+          output: {
+            extend: true,
+          },
+          // Exclude all CSS from UMD build
+          plugins: [
+            {
+              name: 'remove-css',
+              generateBundle(options, bundle) {
+                for (const file of Object.keys(bundle)) {
+                  if (file.endsWith('.css')) {
+                    delete bundle[file];
+                  }
+                }
+              },
+            },
+          ],
+        },
+        minify: true,
+      }
+    : {
+        outDir: 'dist',
+        emptyOutDir: false,
+        lib: {
+          entry,
+          formats: ['es'],
+        },
+        rollupOptions: {
+          output: {
+            preserveModules: true,
+            preserveModulesRoot: 'src',
+            entryFileNames: '[name].js',
+            chunkFileNames: '[name].js',
+            exports: 'named',
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.names[0] && assetInfo.names[0].endsWith('.css')) {
+                return assetInfo.names[0] === 'style.css' ?  '[name][extname]' : 'styles/[name][extname]';
+              }
+              return '[name][extname]';
+            },
+          },
+        },
+        cssCodeSplit: true,
+        minify: true,
       },
-    },
-    minify: 'esbuild',
-    cssCodeSplit: true,
-  },
 });
