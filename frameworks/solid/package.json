@@ -1,45 +1,9 @@
 {
-  "name": "{{name_of_lib}}",
+  "name": "solid-vistaview",
   "version": "0.0.0",
-  "description": "{{desc_of_lib}}",
-  "license": "MIT",
-  "author": "{{me}}",
-  "contributors": [],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/{{me}}/{{name_of_lib}}.git"
-  },
-  "homepage": "https://github.com/{{me}}/{{name_of_lib}}#readme",
-  "bugs": {
-    "url": "https://github.com/{{me}}/{{name_of_lib}}/issues"
-  },
-  "files": [
-    "dist"
-  ],
   "private": false,
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "browser": {},
-  "exports": {
-    "solid": {
-      "development": "./dist/dev.jsx",
-      "import": "./dist/index.jsx"
-    },
-    "development": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/dev.js"
-      }
-    },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "typesVersions": {},
   "scripts": {
     "dev": "vite serve dev",
     "build": "tsup",
@@ -52,6 +16,9 @@
     "lint:code": "eslint --ignore-path .gitignore --max-warnings 0 src/**/*.{js,ts,tsx,jsx}",
     "lint:types": "tsc --noEmit",
     "update-deps": "pnpm up -Li"
+  },
+  "dependencies": {
+    "vistaview": "workspace:*"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"
@@ -83,5 +50,26 @@
   "engines": {
     "node": ">=18",
     "pnpm": ">=9.0.0"
-  }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": {},
+  "exports": {
+    "solid": {
+      "development": "./dist/dev.jsx",
+      "import": "./dist/index.jsx"
+    },
+    "development": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/dev.js"
+      }
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "typesVersions": {}
 }

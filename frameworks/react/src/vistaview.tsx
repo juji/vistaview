@@ -7,16 +7,18 @@ export interface VistaViewProps {
   children: ReactNode;
   selector?: string;
   options?: VistaOpt;
-  ref?: React.Ref<VistaInterface>;
+  vistaRef?: React.Ref<VistaInterface>;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
-export function VistaView({ children, selector = '> a', options, id, ref, ...rest }: VistaViewProps & React.HTMLAttributes<HTMLDivElement>) {
+export function VistaView({ children, selector = '> a', options, id, ref, vistaRef, ...rest }: VistaViewProps & React.HTMLAttributes<HTMLDivElement>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<VistaInterface | null>(null);
   const generatedId = useId();
   const galleryId = id || `vvw-gallery-${generatedId.replace(/:/g, '')}`;
 
-  useImperativeHandle(ref, () => instanceRef.current!, []);
+  useImperativeHandle(vistaRef, () => instanceRef.current!, []);
+  useImperativeHandle(ref, () => containerRef.current!, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
