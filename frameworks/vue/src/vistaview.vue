@@ -64,7 +64,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :id="galleryId" ref="containerRef">
+  <div :id="galleryId" ref="containerRef" v-bind="$attrs">
     <slot />
   </div>
 </template>
