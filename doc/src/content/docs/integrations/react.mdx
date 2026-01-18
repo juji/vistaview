@@ -68,11 +68,45 @@ function Gallery() {
 
 We expose the API and root container on the component ref as `{ vistaView, container }`.
 
-> 💡 **Types:** You can import `VistaComponentRef` and `VistaViewProps` from `vistaview/react`:
->
-> ```ts
-> import type { VistaComponentRef, VistaViewProps } from 'vistaview/react';
-> ```
+💡 **Types:** You can import `VistaComponentRef` and `VistaViewProps` from `vistaview/react`:
+
+```ts
+import type { VistaComponentRef, VistaViewProps } from 'vistaview/react';
+```
+
+### Type Reference 🔧
+
+**`VistaViewProps`**
+
+```ts
+interface VistaViewProps {
+  children: ReactNode;
+  selector?: string; // defaults to "> a"
+  options?: VistaOpt; // passes through to core options
+  ref?: React.Ref<VistaComponentRef>;
+}
+```
+
+- **children**: The gallery markup (usually `<a><img/></a>` items).
+- **selector**: CSS selector used to locate items inside the container.
+- **options**: Configuration passed to the core `VistaView` instance (`VistaOpt`).
+- **ref**: React ref that receives a `VistaComponentRef` for imperative control.
+
+**`VistaComponentRef`**
+
+```ts
+type VistaComponentRef = { vistaView: VistaInterface | null; container: HTMLDivElement | null } | null;
+```
+
+- **vistaView**: The runtime API instance (`VistaInterface`) — use it to call `.open()`, `.next()`, `.prev()`, `.zoomIn()`, `.zoomOut()`, `.close()`, `.destroy()`, etc.
+- **container**: The root DOM element that wraps the gallery — useful for queries or DOM measurements.
+
+**Related types**
+
+- `VistaOpt` — core configuration object (see `/core/configuration/complete` or `main/src/lib/types.ts` for full shape).
+- `VistaInterface` — runtime API methods available on `vistaView`.
+
+For full, authoritative type definitions see the source: `main/src/lib/types.ts`.
 
 ```tsx
 'use client'; // Required for Next.js and other React Server Components frameworks
