@@ -1,0 +1,62 @@
+.vvw-ui {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  & > button {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &.vvw-prev,
+  &.vvw-next {
+    overflow: hidden;
+
+    button {
+      padding: 18px 3px;
+      transition:
+        padding-left 333ms ease,
+        padding-right 333ms ease;
+
+      svg {
+        transition: transform 333ms 111ms ease;
+      }
+    }
+
+    &:hover button svg {
+      transform: translateX(-3px);
+    }
+  }
+
+  &.vvw-prev {
+    &:hover button {
+      padding-left: 8px;
+    }
+  }
+
+  &.vvw-next {
+    &:hover button {
+      padding-right: 8px;
+
+      svg {
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
+:root {
+  --vvw-bg-color: rgba(255, 255, 255, 0.95);
+  --vvw-text-color: #424242;
+  --vvw-ui-outline-color: #e0e0e0;
+  --vvw-ui-bg-color: #ffffff;
+  --vvw-ui-text-color: #424242;
+  --vvw-ui-hover-bg-color: #f5f5f5;
+  --vvw-ui-active-bg-color: #ebebeb;
+  --vvw-ui-border-radius: 8px;
+}

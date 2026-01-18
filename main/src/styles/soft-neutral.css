@@ -1,0 +1,48 @@
+.vvw-ui {
+  &.vvw-prev,
+  &.vvw-next {
+    overflow: hidden;
+
+    button {
+      padding: 18px 3px;
+      transition:
+        padding-left 333ms ease,
+        padding-right 333ms ease;
+
+      svg {
+        transition: transform 333ms 111ms ease;
+      }
+    }
+
+    &:hover button svg {
+      transform: translateX(-3px);
+    }
+  }
+
+  &.vvw-prev {
+    &:hover button {
+      padding-left: 8px;
+    }
+  }
+
+  &.vvw-next {
+    &:hover button {
+      padding-right: 8px;
+
+      svg {
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
+:root {
+  --vvw-bg-color: #fafafa;
+  --vvw-text-color: #5d4037;
+  --vvw-ui-outline-color: #d7ccc8;
+  --vvw-ui-bg-color: #efebe9;
+  --vvw-ui-text-color: #5d4037;
+  --vvw-ui-hover-bg-color: #d7ccc8;
+  --vvw-ui-active-bg-color: #c9b7b0;
+  --vvw-ui-border-radius: 20px;
+}

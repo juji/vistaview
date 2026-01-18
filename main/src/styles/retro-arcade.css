@@ -1,0 +1,78 @@
+.vvw-ui {
+  border: var(--vvw-ui-border-width) solid var(--vvw-ui-outline-color);
+
+  & > button,
+  &.vvw-index,
+  &.vvw-desc {
+    font-weight: bold;
+  }
+
+  & > button {
+    &:hover {
+      color: #ffffff;
+      border-color: #00ff00;
+    }
+
+    &:active {
+      color: #ffffff;
+      border-color: #00ff00;
+    }
+  }
+
+  &.vvw-prev,
+  &.vvw-next {
+    overflow: visible;
+
+    button {
+      padding: 18px 3px;
+      transition:
+        padding-left 200ms linear,
+        padding-right 200ms linear;
+      overflow: hidden;
+
+      svg {
+        transition: transform 200ms linear;
+      }
+    }
+
+    &:hover button svg {
+      transform: translateX(-3px) scale(1.1);
+    }
+  }
+
+  &.vvw-prev {
+    button {
+      border-radius: 0;
+    }
+
+    &:hover button {
+      padding-left: 8px;
+    }
+  }
+
+  &.vvw-next {
+    button {
+      border-radius: 0;
+    }
+
+    &:hover button {
+      padding-right: 8px;
+
+      svg {
+        transform: translateX(3px) scale(1.1);
+      }
+    }
+  }
+}
+
+:root {
+  --vvw-bg-color: #000000;
+  --vvw-text-color: #ffff00;
+  --vvw-ui-outline-color: #ff0000;
+  --vvw-ui-bg-color: #0000ff;
+  --vvw-ui-text-color: #ffff00;
+  --vvw-ui-hover-bg-color: #ff0000;
+  --vvw-ui-active-bg-color: #ff3333;
+  --vvw-ui-border-radius: 4px;
+  --vvw-ui-border-width: 1px;
+}
