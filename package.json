@@ -39,6 +39,11 @@
       "import": "./frameworks/react/dist/main.es.js"
     },
 
+    "./vue": {
+      "types": "./frameworks/vue/dist/main.d.ts",
+      "import": "./frameworks/vue/dist/main.es.js"
+    },
+
     "./extensions/dailymotion-video": {
       "import": "./extensions/dailymotion-video/dist/dailymotion-video.js",
       "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js",
