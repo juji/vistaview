@@ -44,7 +44,7 @@ export default defineConfig({
           plugins: [
             {
               name: 'remove-css',
-              generateBundle(options, bundle) {
+              generateBundle(_options, bundle) {
                 for (const file of Object.keys(bundle)) {
                   if (file.endsWith('.css')) {
                     delete bundle[file];
