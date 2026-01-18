@@ -64,21 +64,25 @@ import 'vistaview/style.css';
 
 ### With Ref for Imperative Control
 
+We provide two separate refs: **`containerRef`** for the DOM element and **`vistaRef`** for the imperative API. Passing refs as props keeps responsibilities clear and types safe.
+
 ```vue
 <script setup>
 import { ref } from 'vue';
 import { VistaView } from 'vistaview/vue';
 import 'vistaview/style.css';
 
-const vistaRef = ref();
+const vistaRef = ref(null);
+const containerRef = ref(null);
 
 const openGallery = () => {
-  vistaRef.value?.instance?.open(0);
+  vistaRef.value?.open(0);
+  // DOM element available at containerRef.value
 };
 </script>
 
 <template>
-  <VistaView ref="vistaRef" selector="> a">
+  <VistaView :vistaRef="vistaRef" :containerRef="containerRef" selector="> a">
     <a href="/images/full.jpg">
       <img src="/images/thumb.jpg" alt="Photo" />
     </a>
@@ -86,6 +90,8 @@ const openGallery = () => {
   <button @click="openGallery">Open Gallery</button>
 </template>
 ```
+
+> Note: using `ref` on the component still returns the component instance (which includes the exposed API), but to get the root DOM element use `containerRef`.
 
 ### With Options
 
