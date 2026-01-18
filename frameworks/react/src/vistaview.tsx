@@ -7,30 +7,17 @@ export interface VistaViewProps {
   children: ReactNode;
   selector?: string;
   options?: VistaOpt;
-  // legacy callback or ref to the API instance
-  vistaRef?: React.Ref<VistaInterface>;
-  // legacy prop to receive the container DOM node
-  containerRef?: React.Ref<HTMLDivElement>;
 }
 
 export type VistaComponentRef = { vistaView: VistaInterface | null; container: HTMLDivElement | null } | null;
 
-export const VistaView = forwardRef<VistaComponentRef, VistaViewProps & React.HTMLAttributes<HTMLDivElement>>(function VistaView({ children, selector = '> a', options, id, containerRef, vistaRef, ...rest }, ref) {
+export const VistaView = forwardRef<VistaComponentRef, VistaViewProps & React.HTMLAttributes<HTMLDivElement>>(function VistaView({ children, selector = '> a', options, id, ...rest }, ref) {
   const containerRefInner = useRef<HTMLDivElement | null>(null);
   const instanceRef = useRef<VistaInterface | null>(null);
   const generatedId = useId();
   const galleryId = id || `vvw-gallery-${generatedId.replace(/:/g, '')}`;
 
-  // maintain legacy API: separate refs/callbacks
-  useImperativeHandle(vistaRef as React.Ref<VistaInterface>, () => instanceRef.current!, []);
 
-  useEffect(() => {
-    if (containerRefInner.current === null) return;
-    if (!containerRef) return;
-    // set containerRef prop to DOM node (supports function and ref object)
-    if (typeof containerRef === 'function') containerRef(containerRefInner.current);
-    else (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = containerRefInner.current;
-  }, [containerRefInner.current]);
 
   // expose { vistaView, container } on the component ref
   useImperativeHandle(ref as React.Ref<VistaComponentRef>, () => ({

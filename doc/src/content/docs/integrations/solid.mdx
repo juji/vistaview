@@ -115,13 +115,6 @@ function Gallery() {
   const id = 'gallery-' + Math.random().toString(36).slice(2);
   return (
     <>
-      <VistaView id={id} ref={el => (container = el)} vistaRef={inst => (vista = inst)}>
-        <a href="/images/full.jpg">
-          <img src="/images/thumb.jpg" alt="Photo" />
-        </a>
-      </VistaView>
-
-      {/* Or using componentRef to get both in one callback */}
       <VistaView id={id} componentRef={obj => { vista = obj?.vistaView ?? null; container = obj?.container; }}>
         <a href="/images/full.jpg">
           <img src="/images/thumb.jpg" alt="Photo" />
