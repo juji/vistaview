@@ -1,5 +1,3 @@
-
-
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
@@ -10,9 +8,9 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     lib: {
-      name: 'dailymotion-video',
+      name: 'openstreetmap',
       entry: {
-        ['dailymotion-video']: resolve(__dirname, 'src/main.ts'),
+        ['openstreetmap']: resolve(__dirname, 'src/main.ts'),
       },
       formats: ['es', 'umd'],
     }
