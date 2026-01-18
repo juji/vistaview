@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue';
 import { vistaView } from 'vistaview';
 import type { VistaInterface, VistaOpt } from 'vistaview';
 
@@ -30,24 +30,52 @@ export default defineComponent({
       destroy: () => instanceRef.value?.destroy(),
     } as unknown as VistaInterface;
 
-    onMounted(() => {
+    // helper to initialize the instance; destroys previous instance if any
+    function initInstance() {
       if (!containerRef.value) return;
-
-      // initialize vista view instance
+      instanceRef.value?.destroy();
       instanceRef.value = vistaView({
         ...(props.options as VistaOpt),
         elements: `#${galleryId.value} ${props.selector}`,
       });
+    }
 
+    let observer: MutationObserver | null = null;
+    let observerTimer: number | null = null;
+
+    onMounted(() => {
+      // initial instantiation
+      initInstance();
+
+      // watch for DOM changes inside the gallery (slot changes) and re-init (debounced)
+      if (containerRef.value) {
+        observer = new MutationObserver(() => {
+          if (observerTimer) window.clearTimeout(observerTimer);
+          observerTimer = window.setTimeout(() => {
+            initInstance();
+          }, 50);
+        });
+        observer.observe(containerRef.value, { childList: true, subtree: true });
+      }
 
     });
 
     onBeforeUnmount(() => {
+      observer?.disconnect();
+      if (observerTimer) window.clearTimeout(observerTimer);
       instanceRef.value?.destroy();
       instanceRef.value = null;
 
-
     });
+
+    // watch props for changes and re-initialize
+    watch(() => props.selector, () => {
+      nextTick(() => initInstance());
+    });
+
+    watch(() => props.options, () => {
+      nextTick(() => initInstance());
+    }, { deep: true });
 
     // also expose API and DOM on the component instance for users who use `ref` on the component
     // expose: { vistaView, container } where `container` is a live getter to the DOM element
