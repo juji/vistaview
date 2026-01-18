@@ -1,6 +1,6 @@
 {
   "name": "vistaview",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "A lightweight, zero-dependency image lightbox library with smooth animations and touch support",
   "keywords": [
     "image",
@@ -18,90 +18,13 @@
     "touch",
     "responsive"
   ],
-  "type": "module",
-  "main": "./dist/vistaview.js",
-  "module": "./dist/vistaview.js",
-  "types": "./dist/vistaview.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/vistaview.d.ts",
-      "import": "./dist/vistaview.js"
-    },
-    "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js"
-    },
-    "./vue": {
-      "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.js"
-    },
-    "./svelte": {
-      "types": "./dist/svelte.d.ts",
-      "import": "./dist/svelte.js"
-    },
-    "./solid": {
-      "types": "./dist/solid.d.ts",
-      "import": "./dist/solid.js"
-    },
-    "./style.css": "./dist/style.css",
-    "./styles/*": "./dist/styles/*",
-    "./extensions/*": "./dist/extensions/*"
-  },
-  "peerDependencies": {
-    "react": ">=17.0.0",
-    "solid-js": ">=1.0.0",
-    "svelte": ">=4.0.0",
-    "vue": ">=3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    },
-    "svelte": {
-      "optional": true
-    },
-    "solid-js": {
-      "optional": true
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && BUILD_ENV=prod vite build && npm run build:umd",
-    "build:umd": "./build-umd.sh",
-    "preview": "vite preview",
-    "prepare": "husky",
-    "test": "echo \"no test specified\"",
-    "tunnel": "cloudflared tunnel --url http://localhost:5173"
+    "test": "echo \"no test specified\""
   },
-  "lint-staged": {
-    "*.{js,ts,css,json,md}": "prettier --write"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@types/react": "^19.2.7",
-    "@types/trusted-types": "^2.0.7",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
-    "sharp": "^0.34.5",
-    "solid-js": "^1.9.10",
-    "svelte": "^5.45.6",
-    "typescript": "~5.9.3",
-    "vite": "^6.4.1",
-    "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-solid": "^2.11.10",
-    "vue": "^3.5.25"
-  },
-  "repository": {
-    "url": "https://github.com/juji/vistaview"
-  },
+  "author": "jujiyangasli@gmail.com",
+  "license": "MIT",
+  "packageManager": "pnpm@10.14.0",
   "dependencies": {
-    "isomorphic-dompurify": "^2.35.0"
+    "juji": "link:../.."
   }
 }
