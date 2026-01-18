@@ -92,6 +92,42 @@ function Gallery() {
 }
 ```
 
+## Using the component (optional)
+
+If you prefer a component-driven approach you can use the `VistaView` component. The component accepts `id`, `selector`, and `options`, and provides two callback props to get the API instance and root DOM element:
+
+- `vistaRef` – called with the `VistaInterface` instance (or `null` on unmount).
+- `ref` – called with the root DOM element.
+
+```tsx
+import { createSignal } from 'solid-js';
+import { VistaView } from 'vistaview/solid';
+import 'vistaview/style.css';
+
+let vista: import('vistaview').VistaInterface | null = null;
+let container: HTMLDivElement | undefined;
+
+function open() {
+  vista?.open(0);
+}
+
+function Gallery() {
+  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  return (
+    <>
+      <VistaView id={id} ref={el => (container = el)} vistaRef={inst => (vista = inst)}>
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </VistaView>
+      <button onClick={open}>Open Gallery</button>
+    </>
+  );
+}
+```
+
+Note: `vistaRef` is called with the `VistaInterface` instance; `ref` receives the root DOM element.
+
 ## With Options
 
 ```tsx
