@@ -1,28 +1,38 @@
-## Usage
+<p>
+  <img width="100%" src="https://assets.solidjs.com/banner?type={{name_of_lib}}&background=tiles&project=%20" alt="{{name_of_lib}}">
+</p>
+
+# {{name_of_lib}}
+
+[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
+
+{{desc_of_lib}}
+
+> **Note** After using this template, you have to search and replace all `{{name_of_lib}}` and similar strings
+> with appropriate texts.
+>
+> `{{name_of_lib}}` should be a **kebab-case** string representing the name of you monorepo.
+>
+> `{{desc_of_lib}}` should be a **Normal case** string with the description of the repository.
+>
+> `{{me}}` should be a **kebab-case** string from your profile URL.
+
+## Quick start
+
+Install it:
 
 ```bash
-$ npm install # or pnpm install or yarn install
+npm i {{name_of_lib}}
+# or
+yarn add {{name_of_lib}}
+# or
+pnpm add {{name_of_lib}}
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Use it:
 
-## Available Scripts
+```tsx
+import {{name_of_lib}} from '{{name_of_lib}}'
+```
 
-In the project directory, you can run:
-
-### `npm run dev`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)

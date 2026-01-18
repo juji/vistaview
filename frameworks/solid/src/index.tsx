@@ -1,8 +1,26 @@
-/* @refresh reload */
-import { render } from 'solid-js/web'
-import './index.css'
-import App from './App.tsx'
+import { Accessor, Component, createComputed, createSignal } from 'solid-js'
 
-const root = document.getElementById('root')
+export function createHello(): [Accessor<string>, (to: string) => void] {
+  const [hello, setHello] = createSignal('Hello World!')
 
-render(() => <App />, root!)
+  return [hello, (to: string) => setHello(`Hello ${to}!`)]
+}
+
+export const Hello: Component<{ to?: string }> = props => {
+  const [hello, setHello] = createHello()
+
+  // Console calls will be removed in production if `dropConsole` is enabled
+
+  // eslint-disable-next-line no-console
+  console.log('Hello World!')
+
+  createComputed(() => {
+    if (typeof props.to === 'string') setHello(props.to)
+  })
+
+  return (
+    <>
+      <div>{hello()}</div>
+    </>
+  )
+}
