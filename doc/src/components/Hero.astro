@@ -3,7 +3,8 @@ import { Image } from 'astro:assets';
 import LinkButton from '../../node_modules/@astrojs/starlight/user-components/LinkButton.astro';
 import HeroContentBox from './home/HeroContentBox.astro';
 
-const VISTAVIEW_VERSION = 'v1.0.1';
+import pkg from '../../../package.json';
+const VISTAVIEW_VERSION = pkg.version;
 
 const PAGE_TITLE_ID = '_top';
 
