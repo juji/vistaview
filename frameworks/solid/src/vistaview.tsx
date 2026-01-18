@@ -18,16 +18,10 @@ export function VistaView(props: VistaViewProps) {
   const [local, rest] = splitProps(props, ['selector', 'options', 'componentRef', 'id', 'children']);
   const galleryId = local.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
 
-  onMount(() => {
-    if (!container) return;
-    instance = vistaView({
-      ...local.options,
-      elements: `#${galleryId} ${local.selector ?? '> a'}`,
-    });
-    local.componentRef?.({ vistaView: instance, container });
-  });
-
   createEffect(() => {
+    // Wait until the container is mounted before instantiating
+    if (!container) return;
+
     // If options, selector, or children change, re-instantiate
     instance?.destroy();
     instance = vistaView({
