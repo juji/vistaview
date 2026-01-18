@@ -41,20 +41,17 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 </Tabs>
 
 
-## Basic Usage
+## Component-first usage (recommended)
 
-There are two ways to integrate VistaView in Svelte applications. The **Component approach is the recommended, primary method** because it handles lifecycle and DOM interactions for you. The **Hook approach** (`useVistaView`) is an advanced, lower-level alternative.
+The recommended, primary way to use VistaView in Svelte is the `VistaView` component. It handles lifecycle, DOM changes, and provides a simple imperative API via `bind:this` and `getApi()`.
 
-### Component Approach (Recommended)
+### Basic example
 
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
-import type { VistaComponentRef, VistaViewProps } from 'vistaview/svelte';
-let comp;
-function openGallery() {
-  comp?.getApi()?.vistaView?.open(0);
-}
+import type { VistaComponentRef } from 'vistaview/svelte';
+let comp: VistaComponentRef = null;
 </script>
 
 <VistaView bind:this={comp}>
@@ -66,58 +63,22 @@ function openGallery() {
   </a>
 </VistaView>
 
-<button on:click={openGallery}>Open Gallery</button>
+<button on:click={() => comp?.getApi()?.vistaView?.open(0)}>Open Gallery</button>
 ```
 
-> **Types:** You can import `VistaViewProps` and `VistaComponentRef` from `vistaview/svelte`.
-
-### Hook Approach (Advanced)
-
-**Use this only when you need the lower-level control.** The `useVistaView` hook creates and manages a `VistaView` instance and can be useful in non-component or specialized cases:
-
-```svelte
-<script>
-import { useVistaView } from 'vistaview/svelte';
-import 'vistaview/style.css';
-
-const id = 'gallery-' + Math.random().toString(36).slice(2);
-const vista = useVistaView({
-  elements: `#${id} a`,
-});
-</script>
-
-<div id={id}>
-  <a href="/images/photo1-full.jpg">
-    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
-  </a>
-  <a href="/images/photo2-full.jpg">
-    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
-  </a>
-</div>
-```
-
-Note: `useVistaView` initializes the instance on mount; if you call methods immediately, either use `onMount` or guard calls with optional chaining (e.g., `vista.open?.(0)`).
-## With Control Buttons (Component)
+### Controls (open / next / prev)
 
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
 let comp;
-function open() {
-  comp?.getApi()?.vistaView?.open(0);
-}
-function next() {
-  comp?.getApi()?.vistaView?.next();
-}
-function prev() {
-  comp?.getApi()?.vistaView?.prev();
-}
+function open() { comp?.getApi()?.vistaView?.open(0); }
+function next() { comp?.getApi()?.vistaView?.next(); }
+function prev() { comp?.getApi()?.vistaView?.prev(); }
 </script>
 
 <VistaView bind:this={comp}>
-  <a href="/images/full.jpg">
-    <img src="/images/thumb.jpg" alt="Photo" />
-  </a>
+  <a href="/images/full.jpg"><img src="/images/thumb.jpg" alt="Photo" /></a>
 </VistaView>
 
 <button on:click={open}>Open Gallery</button>
@@ -125,8 +86,7 @@ function prev() {
 <button on:click={prev}>Previous</button>
 ```
 
-_Advanced: you can also use the `useVistaView` hook and optional chaining e.g. `vista.open?.(0)`._
-## With Options (Component)
+### Options
 
 ```svelte
 <script>
@@ -143,109 +103,84 @@ const options: VistaOpt = {
 </script>
 
 <VistaView options={options}>
-  <a href="/images/photo1-full.jpg">
-    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
-  </a>
-  <a href="/images/photo2-full.jpg">
-    <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
-  </a>
+  <a href="/images/photo1-full.jpg"><img src="/images/photo1-thumb.jpg" alt="Photo 1" /></a>
 </VistaView>
 ```
 
-_Advanced: pass `options` to `useVistaView` when using the hook._
-## With Extensions (Component)
+### Extensions
 
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
 import { download } from 'vistaview/extensions/download';
 
-const options = {
-  controls: { topRight: ['zoomIn', 'zoomOut', 'download', 'close'] },
-  extensions: [download()],
-};
+const options = { controls: { topRight: ['zoomIn','zoomOut','download','close'] }, extensions: [download()] };
 </script>
 
 <VistaView options={options}>
-  <a href="/images/photo1.jpg">
-    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
-  </a>
+  <a href="/images/photo1.jpg"><img src="/images/photo1-thumb.jpg" alt="Photo 1" /></a>
 </VistaView>
 ```
 
-_Advanced: use `extensions` inside the `useVistaView` hook if using the hook._
-## Direct usage (low-level)
+> **Tip:** prefer the component when your gallery content is dynamic, as it observes DOM changes and re-initializes automatically.
 
-For full control or embedding in non-component contexts, you can call the core `vistaView` function directly (advanced use case):
+## Hook approach (advanced)
 
-```svelte
-<script>
-import { onMount } from 'svelte';
-import { vistaView } from 'vistaview';
-import 'vistaview/style.css';
-
-let instance;
-
-onMount(() => {
-  instance = vistaView({
-    elements: '#my-gallery a',
-  });
-
-  return () => {
-    instance?.destroy();
-  };
-});
-
-function openGallery() {
-  instance?.open(0);
-}
-</script>
-
-<div id="my-gallery">
-  <a href="/images/full.jpg">
-    <img src="/images/thumb.jpg" alt="Photo" />
-  </a>
-</div>
-
-<button on:click={openGallery}>Open Gallery</button>
-```
-
-## SvelteKit
-
-Prefer using the `VistaView` component in SvelteKit (it handles lifecycle and DOM interactions for you). If you need to use the hook directly (advanced), initialize it inside `onMount` to ensure it only runs client-side:
-
-```svelte
-<script>
-import { VistaView } from 'vistaview/svelte';
-import 'vistaview/style.css';
-
-let comp;
-</script>
-
-<VistaView bind:this={comp}>
-  <!-- gallery items -->
-</VistaView>
-```
-
-Or, for advanced use with the hook:
+The `useVistaView` hook is a lower-level API. Use it for non-component contexts or when you need manual control. Initialization happens on mount, so wrap calls in `onMount` or use optional chaining.
 
 ```svelte
 <script>
 import { useVistaView } from 'vistaview/svelte';
 import { onMount } from 'svelte';
-import 'vistaview/style.css';
 
 let vista;
 
 onMount(() => {
-  vista = useVistaView({
-    elements: '#gallery a',
-  });
+  vista = useVistaView({ elements: '#my-gallery a' });
+});
+</script>
+
+<div id="my-gallery">
+  <a href="#">...</a>
+</div>
+
+<button on:click={() => vista?.open?.(0)}>Open</button>
+```
+
+## Low-level usage
+
+You can call the core `vistaView` function directly when embedding in non-component contexts:
+
+```svelte
+<script>
+import { onMount } from 'svelte';
+import { vistaView } from 'vistaview';
+
+let instance;
+
+onMount(() => {
+  instance = vistaView({ elements: '#my-gallery a' });
+  return () => instance?.destroy();
 });
 </script>
 ```
 
-Note: `useVistaView` runs initialization on mount; if you need to interact with the instance immediately, use `onMount` or guard calls with optional chaining.
+## SvelteKit
+
+Use the `VistaView` component in SvelteKit apps; it handles lifecycle and DOM updates automatically. If you need the hook, initialize it inside `onMount` to avoid SSR issues.
+
+## Types
+
+```ts
+import type { VistaViewProps, VistaComponentRef } from 'vistaview/svelte';
+```
+
+## Best practices & troubleshooting
+
+- Prefer the component for most cases (dynamic content, SvelteKit, simpler lifecycle).
+- Keep `options` objects stable (define outside render scope) to avoid unnecessary re-initializations.
+- Use optional chaining (e.g., `comp?.getApi()?.vistaView?.open(0)`) when calling methods that may not be ready yet.
+- If using the hook and the DOM changes dynamically, re-initialize or prefer the component.
 
 ## Next Steps
 
