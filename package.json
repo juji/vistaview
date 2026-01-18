@@ -31,7 +31,93 @@
       "types": "./main/dist/vistaview.d.ts"
     },
     "./style.css": "./main/dist/style.css",
-    "./styles/*": "./main/dist/styles/*"
+    "./styles/*": "./main/dist/styles/*",
+    "./styles/extensions/image-story.css": "./extensions/image-story/dist/style.css",
+
+    "./extensions/dailymotion-video": {
+      "import": "./extensions/dailymotion-video/dist/dailymotion-video.js",
+      "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js",
+      "types": "./extensions/dailymotion-video/dist/dailymotion-video.d.ts"
+    },
+
+    "./extensions/download": {
+      "import": "./extensions/download/dist/download.js",
+      "require": "./extensions/download/dist/download.umd.js",
+      "types": "./extensions/download/dist/download.d.ts"
+    },
+
+    "./extensions/google-maps": {
+      "import": "./extensions/google-maps/dist/google-maps.js",
+      "require": "./extensions/google-maps/dist/google-maps.umd.js",
+      "types": "./extensions/google-maps/dist/google-maps.d.ts"
+    },
+
+    "./extensions/image-story/style.css": "./extensions/image-story/dist/style.css",
+    "./extensions/image-story": {
+      "import": "./extensions/image-story/dist/image-story.js",
+      "require": "./extensions/image-story/dist/image-story.umd.js",
+      "types": "./extensions/image-story/dist/image-story.d.ts"
+    },
+
+    "./extensions/logger": {
+      "import": "./extensions/logger/dist/logger.js",
+      "require": "./extensions/logger/dist/logger.umd.js",
+      "types": "./extensions/logger/dist/logger.d.ts"
+    },
+
+    "./extensions/mapbox": {
+      "import": "./extensions/mapbox/dist/mapbox.js",
+      "require": "./extensions/mapbox/dist/mapbox.umd.js",
+      "types": "./extensions/mapbox/dist/mapbox.d.ts"
+    },
+
+    "./extensions/openstreetmap": {
+      "import": "./extensions/openstreetmap/dist/openstreetmap.js",
+      "require": "./extensions/openstreetmap/dist/openstreetmap.umd.js",
+      "types": "./extensions/openstreetmap/dist/openstreetmap.d.ts"
+    },
+
+    "./extensions/select-box": {
+      "import": "./extensions/select-box/dist/select-box.js",
+      "require": "./extensions/select-box/dist/select-box.umd.js",
+      "types": "./extensions/select-box/dist/select-box.d.ts"
+    },
+
+    "./extensions/streamable-video": {
+      "import": "./extensions/streamable-video/dist/streamable-video.js",
+      "require": "./extensions/streamable-video/dist/streamable-video.umd.js",
+      "types": "./extensions/streamable-video/dist/streamable-video.d.ts"
+    },
+
+    "./extensions/twitch-video": {
+      "import": "./extensions/twitch-video/dist/twitch-video.js",
+      "require": "./extensions/twitch-video/dist/twitch-video.umd.js",
+      "types": "./extensions/twitch-video/dist/twitch-video.d.ts"
+    },
+
+    "./extensions/vidyard-video": {
+      "import": "./extensions/vidyard-video/dist/vidyard-video.js",
+      "require": "./extensions/vidyard-video/dist/vidyard-video.umd.js",
+      "types": "./extensions/vidyard-video/dist/vidyard-video.d.ts"
+    },
+
+    "./extensions/vimeo-video": {
+      "import": "./extensions/vimeo-video/dist/vimeo-video.js",
+      "require": "./extensions/vimeo-video/dist/vimeo-video.umd.js",
+      "types": "./extensions/vimeo-video/dist/vimeo-video.d.ts"
+    },
+
+    "./extensions/wistia-video": {
+      "import": "./extensions/wistia-video/dist/wistia-video.js",
+      "require": "./extensions/wistia-video/dist/wistia-video.umd.js",
+      "types": "./extensions/wistia-video/dist/wistia-video.d.ts"
+    },
+
+    "./extensions/youtube-video": {
+      "import": "./extensions/youtube-video/dist/youtube-video.js",
+      "require": "./extensions/youtube-video/dist/youtube-video.umd.js",
+      "types": "./extensions/youtube-video/dist/youtube-video.d.ts"
+    }
   },
   "files": [
     "main/dist"
