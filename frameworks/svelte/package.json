@@ -2,7 +2,7 @@
 	"name": "svelte",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite build --watch",
 		"build": "npm run prepack",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
