@@ -1,40 +1,50 @@
+
+
 import { defineConfig } from 'vite';
-import path from 'path';
-import fs from 'fs';
+import { resolve } from 'path';
+import { readdirSync } from 'fs';
 
-// Collect all CSS files in src/styles
-const stylesDir = path.resolve(__dirname, 'src/styles');
-const styleFiles = fs.readdirSync(stylesDir)
-  .filter(f => f.endsWith('.css'))
-  .map(f => path.join(stylesDir, f));
+// Collect all CSS files from src/styles
+const stylesDir = resolve(__dirname, 'src/styles');
+const styleFiles = readdirSync(stylesDir)
+  .filter((file) => file.endsWith('.css'))
+  .reduce((acc, file) => {
+    const name = file.replace('.css', '');
+    acc[`styles/${name}` as string] = resolve(stylesDir, file);
+    return acc;
+  }, {} as Record<string, string>);
 
+// Add src/style.css as entry
+let entry = {
+  vistaview: resolve(__dirname, 'src/vistaview.ts'),
+  style: resolve(__dirname, 'src/style.css'),
+  ...styleFiles
+};
 
 export default defineConfig({
   build: {
     outDir: 'dist',
-    emptyOutDir: false,
-    sourcemap: false,
-    cssCodeSplit: false,
+    emptyOutDir: true,
+    lib: {
+      entry,
+      formats: ['es'],
+    },
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/vistaview.ts'),
       output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
         entryFileNames: '[name].js',
-        assetFileNames: '[name][extname]'
+        chunkFileNames: '[name].js',
+        exports: 'named',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.names[0] && assetInfo.names[0].endsWith('.css')) {
+            return assetInfo.names[0] === 'style.css' ?  '[name][extname]' : 'styles/[name][extname]';
+          }
+          return '[name][extname]';
+        },
       },
-      external: [],
-    }
+    },
+    minify: 'esbuild',
+    cssCodeSplit: true,
   },
-  plugins: [
-    {
-      name: 'copy-styles',
-      closeBundle() {
-        const destDir = path.resolve(__dirname, 'dist/styles');
-        if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-        for (const file of styleFiles) {
-          const dest = path.join(destDir, path.basename(file));
-          fs.copyFileSync(file, dest);
-        }
-      }
-    }
-  ]
 });
