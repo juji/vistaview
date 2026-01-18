@@ -75,7 +75,6 @@ We expose the API and root container on the component ref as `{ vistaView, conta
 
 import { useRef } from 'react';
 import { VistaView } from 'vistaview/react';
-import type { VistaInterface } from 'vistaview';
 import type { VistaComponentRef } from 'vistaview/react';
 import 'vistaview/style.css';
 
@@ -207,7 +206,10 @@ interface VistaViewProps {
 **`VistaComponentRef`**
 
 ```ts
-type VistaComponentRef = { vistaView: VistaInterface | null; container: HTMLDivElement | null } | null;
+type VistaComponentRef = { 
+  vistaView: VistaInterface | null; 
+  container: HTMLDivElement | null 
+} | null;
 ```
 
 - **vistaView**: The runtime API instance (`VistaInterface`) — use it to call `.open()`, `.next()`, `.prev()`, `.zoomIn()`, `.zoomOut()`, `.close()`, `.destroy()`, etc.
@@ -217,8 +219,6 @@ type VistaComponentRef = { vistaView: VistaInterface | null; container: HTMLDivE
 
 - `VistaOpt` — core configuration object (see `/core/configuration/complete` or `main/src/lib/types.ts` for full shape).
 - `VistaInterface` — runtime API methods available on `vistaView`.
-
-For full, authoritative type definitions see the source: `main/src/lib/types.ts`.
 
 **Import example**
 
