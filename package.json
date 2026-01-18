@@ -34,6 +34,11 @@
     "./styles/*": "./main/dist/styles/*",
     "./styles/extensions/image-story.css": "./extensions/image-story/dist/style.css",
 
+    "./react": {
+      "types": "./frameworks/react/dist/main.d.ts",
+      "import": "./frameworks/react/dist/main.es.js"
+    },
+
     "./extensions/dailymotion-video": {
       "import": "./extensions/dailymotion-video/dist/dailymotion-video.js",
       "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js",
@@ -120,6 +125,8 @@
     }
   },
   "files": [
-    "main/dist"
+    "main/dist",
+    "frameworks/*/dist",
+    "extensions/*/dist"
   ]
 }
