@@ -68,16 +68,23 @@ function Gallery() {
 
 We expose the API and root container on the component ref as `{ vistaView, container }`.
 
+> 💡 **Types:** You can import `VistaComponentRef` and `VistaViewProps` from `vistaview/react`:
+>
+> ```ts
+> import type { VistaComponentRef, VistaViewProps } from 'vistaview/react';
+> ```
+
 ```tsx
 'use client'; // Required for Next.js and other React Server Components frameworks
 
 import { useRef } from 'react';
 import { VistaView } from 'vistaview/react';
 import type { VistaInterface } from 'vistaview';
+import type { VistaComponentRef } from 'vistaview/react';
 import 'vistaview/style.css';
 
 function Gallery() {
-  const compRef = useRef<{ vistaView: VistaInterface | null; container: HTMLDivElement | null } | null>(null);
+  const compRef = useRef<VistaComponentRef>(null);
 
   return (
     <>
