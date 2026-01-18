@@ -66,6 +66,8 @@ function Gallery() {
 
 ### With Ref for Imperative Control
 
+We expose the API and root container on the component ref as `{ vistaView, container }`.
+
 ```tsx
 'use client'; // Required for Next.js and other React Server Components frameworks
 
@@ -75,16 +77,16 @@ import type { VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
 
 function Gallery() {
-  const vistaRef = useRef<VistaInterface>(null);
+  const compRef = useRef<{ vistaView: VistaInterface | null; container: HTMLDivElement | null } | null>(null);
 
   return (
     <>
-      <VistaView vistaRef={vistaRef} selector="> a">
+      <VistaView ref={compRef} selector="> a">
         <a href="/images/full.jpg">
           <img src="/images/thumb.jpg" alt="Photo" />
         </a>
       </VistaView>
-      <button onClick={() => vistaRef.current?.open(0)}>Open Gallery</button>
+      <button onClick={() => compRef.current?.vistaView?.open(0)}>Open Gallery</button>
     </>
   );
 }

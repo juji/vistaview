@@ -6,8 +6,12 @@ import type { JSX } from 'solid-js';
 export interface VistaViewProps extends JSX.HTMLAttributes<HTMLDivElement> {
   selector?: string;
   options?: VistaOpt;
+  // callback to receive the API instance (called on mount/update and with null on unmount)
   vistaRef?: (instance: VistaInterface | null) => void;
+  // callback to receive the root DOM element
   ref?: (el: HTMLDivElement | undefined) => void;
+  // callback to receive both API and container as an object { vistaView, container }
+  componentRef?: (obj: { vistaView: VistaInterface | null; container?: HTMLDivElement | undefined } | null) => void;
   id?: string;
   children?: any;
 }
@@ -15,7 +19,7 @@ export interface VistaViewProps extends JSX.HTMLAttributes<HTMLDivElement> {
 export function VistaView(props: VistaViewProps) {
   let container: HTMLDivElement | undefined;
   let instance: VistaInterface | null = null;
-  const [local, rest] = splitProps(props, ['selector', 'options', 'vistaRef', 'ref', 'id', 'children']);
+  const [local, rest] = splitProps(props, ['selector', 'options', 'vistaRef', 'ref', 'componentRef', 'id', 'children']);
   const galleryId = local.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
 
   onMount(() => {
@@ -26,6 +30,7 @@ export function VistaView(props: VistaViewProps) {
     });
     local.vistaRef?.(instance);
     local.ref?.(container);
+    local.componentRef?.({ vistaView: instance, container });
   });
 
   createEffect(() => {
@@ -36,11 +41,13 @@ export function VistaView(props: VistaViewProps) {
       elements: `#${galleryId} ${local.selector ?? '> a'}`,
     });
     local.vistaRef?.(instance);
+    local.componentRef?.({ vistaView: instance, container });
   });
 
   onCleanup(() => {
     instance?.destroy();
     local.vistaRef?.(null);
+    local.componentRef?.(null);
     instance = null;
   });
 

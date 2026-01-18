@@ -120,6 +120,14 @@ function Gallery() {
           <img src="/images/thumb.jpg" alt="Photo" />
         </a>
       </VistaView>
+
+      {/* Or using componentRef to get both in one callback */}
+      <VistaView id={id} componentRef={obj => { vista = obj?.vistaView ?? null; container = obj?.container; }}>
+        <a href="/images/full.jpg">
+          <img src="/images/thumb.jpg" alt="Photo" />
+        </a>
+      </VistaView>
+
       <button onClick={open}>Open Gallery</button>
     </>
   );
