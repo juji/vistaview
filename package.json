@@ -21,14 +21,20 @@
   "scripts": {
     "test": "echo \"no test specified\""
   },
+
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": {},
+
   "author": "jujiyangasli@gmail.com",
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
   "exports": {
     ".": {
+      "types": "./main/dist/vistaview.d.ts",
       "import": "./main/dist/vistaview.js",
-      "require": "./main/dist/vistaview.umd.js",
-      "types": "./main/dist/vistaview.d.ts"
+      "require": "./main/dist/vistaview.umd.js"
     },
     "./style.css": "./main/dist/style.css",
     "./styles/*": "./main/dist/styles/*",
@@ -44,89 +50,106 @@
       "import": "./frameworks/vue/dist/main.es.js"
     },
 
+    "./solid": {
+      "solid": {
+        "development": "./frameworks/solid/dist/dev.jsx",
+        "import": "./frameworks/solid/dist/index.jsx"
+      },
+      "development": {
+        "import": {
+          "types": "./frameworks/solid/dist/index.d.ts",
+          "default": "./frameworks/solid/dist/dev.js"
+        }
+      },
+      "import": {
+        "types": "./frameworks/solid/dist/index.d.ts",
+        "default": "./frameworks/solid/dist/index.js"
+      }
+    },
+
     "./extensions/dailymotion-video": {
+      "types": "./extensions/dailymotion-video/dist/dailymotion-video.d.ts",
       "import": "./extensions/dailymotion-video/dist/dailymotion-video.js",
-      "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js",
-      "types": "./extensions/dailymotion-video/dist/dailymotion-video.d.ts"
+      "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js"
     },
 
     "./extensions/download": {
+      "types": "./extensions/download/dist/download.d.ts",
       "import": "./extensions/download/dist/download.js",
-      "require": "./extensions/download/dist/download.umd.js",
-      "types": "./extensions/download/dist/download.d.ts"
+      "require": "./extensions/download/dist/download.umd.js"
     },
 
     "./extensions/google-maps": {
+      "types": "./extensions/google-maps/dist/google-maps.d.ts",
       "import": "./extensions/google-maps/dist/google-maps.js",
-      "require": "./extensions/google-maps/dist/google-maps.umd.js",
-      "types": "./extensions/google-maps/dist/google-maps.d.ts"
+      "require": "./extensions/google-maps/dist/google-maps.umd.js"
     },
 
     "./extensions/image-story/style.css": "./extensions/image-story/dist/style.css",
     "./extensions/image-story": {
+      "types": "./extensions/image-story/dist/image-story.d.ts",
       "import": "./extensions/image-story/dist/image-story.js",
-      "require": "./extensions/image-story/dist/image-story.umd.js",
-      "types": "./extensions/image-story/dist/image-story.d.ts"
+      "require": "./extensions/image-story/dist/image-story.umd.js"
     },
 
     "./extensions/logger": {
+      "types": "./extensions/logger/dist/logger.d.ts",
       "import": "./extensions/logger/dist/logger.js",
-      "require": "./extensions/logger/dist/logger.umd.js",
-      "types": "./extensions/logger/dist/logger.d.ts"
+      "require": "./extensions/logger/dist/logger.umd.js"
     },
 
     "./extensions/mapbox": {
+      "types": "./extensions/mapbox/dist/mapbox.d.ts",
       "import": "./extensions/mapbox/dist/mapbox.js",
-      "require": "./extensions/mapbox/dist/mapbox.umd.js",
-      "types": "./extensions/mapbox/dist/mapbox.d.ts"
+      "require": "./extensions/mapbox/dist/mapbox.umd.js"
     },
 
     "./extensions/openstreetmap": {
+      "types": "./extensions/openstreetmap/dist/openstreetmap.d.ts",
       "import": "./extensions/openstreetmap/dist/openstreetmap.js",
-      "require": "./extensions/openstreetmap/dist/openstreetmap.umd.js",
-      "types": "./extensions/openstreetmap/dist/openstreetmap.d.ts"
+      "require": "./extensions/openstreetmap/dist/openstreetmap.umd.js"
     },
 
     "./extensions/select-box": {
+      "types": "./extensions/select-box/dist/select-box.d.ts",
       "import": "./extensions/select-box/dist/select-box.js",
-      "require": "./extensions/select-box/dist/select-box.umd.js",
-      "types": "./extensions/select-box/dist/select-box.d.ts"
+      "require": "./extensions/select-box/dist/select-box.umd.js"
     },
 
     "./extensions/streamable-video": {
+      "types": "./extensions/streamable-video/dist/streamable-video.d.ts",
       "import": "./extensions/streamable-video/dist/streamable-video.js",
-      "require": "./extensions/streamable-video/dist/streamable-video.umd.js",
-      "types": "./extensions/streamable-video/dist/streamable-video.d.ts"
+      "require": "./extensions/streamable-video/dist/streamable-video.umd.js"
     },
 
     "./extensions/twitch-video": {
+      "types": "./extensions/twitch-video/dist/twitch-video.d.ts",
       "import": "./extensions/twitch-video/dist/twitch-video.js",
-      "require": "./extensions/twitch-video/dist/twitch-video.umd.js",
-      "types": "./extensions/twitch-video/dist/twitch-video.d.ts"
+      "require": "./extensions/twitch-video/dist/twitch-video.umd.js"
     },
 
     "./extensions/vidyard-video": {
+      "types": "./extensions/vidyard-video/dist/vidyard-video.d.ts",
       "import": "./extensions/vidyard-video/dist/vidyard-video.js",
-      "require": "./extensions/vidyard-video/dist/vidyard-video.umd.js",
-      "types": "./extensions/vidyard-video/dist/vidyard-video.d.ts"
+      "require": "./extensions/vidyard-video/dist/vidyard-video.umd.js"
     },
 
     "./extensions/vimeo-video": {
+      "types": "./extensions/vimeo-video/dist/vimeo-video.d.ts",
       "import": "./extensions/vimeo-video/dist/vimeo-video.js",
-      "require": "./extensions/vimeo-video/dist/vimeo-video.umd.js",
-      "types": "./extensions/vimeo-video/dist/vimeo-video.d.ts"
+      "require": "./extensions/vimeo-video/dist/vimeo-video.umd.js"
     },
 
     "./extensions/wistia-video": {
+      "types": "./extensions/wistia-video/dist/wistia-video.d.ts",
       "import": "./extensions/wistia-video/dist/wistia-video.js",
-      "require": "./extensions/wistia-video/dist/wistia-video.umd.js",
-      "types": "./extensions/wistia-video/dist/wistia-video.d.ts"
+      "require": "./extensions/wistia-video/dist/wistia-video.umd.js"
     },
 
     "./extensions/youtube-video": {
+      "types": "./extensions/youtube-video/dist/youtube-video.d.ts",
       "import": "./extensions/youtube-video/dist/youtube-video.js",
-      "require": "./extensions/youtube-video/dist/youtube-video.umd.js",
-      "types": "./extensions/youtube-video/dist/youtube-video.d.ts"
+      "require": "./extensions/youtube-video/dist/youtube-video.umd.js"
     }
   },
   "files": [
