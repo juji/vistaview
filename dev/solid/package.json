@@ -2,9 +2,9 @@
   "name": "solid",
   "type": "module",
   "scripts": {
-    "dev": "vinxi dev",
+    "dev": "PORT=5003 vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start",
+    "start": "PORT=5003 vinxi start",
     "version": "vinxi version"
   },
   "dependencies": {
