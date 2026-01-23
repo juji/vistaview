@@ -1,7 +1,3 @@
----
-const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
----
 
 <section class="extensions-section">
 	<div>
@@ -45,64 +41,70 @@ const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 			</div>
 		</div>
 	</div>
+
+
 </section>
 
 
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/styles/extensions/image-story.css" />
-<script src="https://unpkg.com/vistaview/dist/extensions/logger.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/image-story.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/youtube-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/dailymotion-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/vimeo-video.umd.js"></script>
- <!-- <script src="http://localhost:5173/dist/extensions/vimeo-video.umd.js?v=4"></script> -->
-<script src="https://unpkg.com/vistaview/dist/extensions/wistia-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/vidyard-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/streamable-video.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/mapbox.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
-<script type="module" is:inline define:vars={{ googleMapsApiKey, mapboxAccessToken }}>
-	window.addEventListener('DOMContentLoaded', async function() {
+<script>
+  import { vistaView } from 'vistaview';
+  import { logger } from 'vistaview/extensions/logger';
+  import { download } from 'vistaview/extensions/download';
+  import { imageStory } from 'vistaview/extensions/image-story';
+  import { youtubeVideo, getYouTubeThumbnail } from 'vistaview/extensions/youtube-video';
+  import { dailymotionVideo, getDailymotionThumbnail } from 'vistaview/extensions/dailymotion-video';
+  import { vimeoVideo, getVimeoThumbnail } from 'vistaview/extensions/vimeo-video';
+  import { wistiaVideo, getWistiaThumbnail } from 'vistaview/extensions/wistia-video';
+  import { vidyardVideo, getVidyardThumbnail } from 'vistaview/extensions/vidyard-video';
+  import { streamableVideo, getStreamableThumbnail } from 'vistaview/extensions/streamable-video';
+  import { googleMaps } from 'vistaview/extensions/google-maps';
+  import { mapbox } from 'vistaview/extensions/mapbox';
+  import { openStreetMap } from 'vistaview/extensions/openstreetmap';
+  import 'vistaview/style.css';
+  import 'vistaview/styles/extensions/image-story.css';
+	const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || null;
+	const mapboxAccessToken = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN || null;
 
+	console.log('Google Maps API Key:', googleMapsApiKey);
+	console.log('Mapbox Access Token:', mapboxAccessToken);
+
+  (async () => {
     console.log('Loading video thumbnails for extensions demo...');
 
     const videoUrl = 'https://www.youtube.com/watch?v=GwJrZBe8JX4';
-    const thumbnailUrl = window.VistaView.getYouTubeThumbnail(videoUrl, 'hq');
+    const thumbnailUrl = getYouTubeThumbnail(videoUrl, 'hq');
 
     const dailimotionVideoUrl = 'https://www.dailymotion.com/video/x7xvssw';
-    const dailymotionThumbnailUrl = window.VistaView.getDailymotionThumbnail(dailimotionVideoUrl);
+    const dailymotionThumbnailUrl = getDailymotionThumbnail(dailimotionVideoUrl);
 
     const vimeoVideoUrl = 'https://vimeo.com/30673387';
-    const vimeoThumbnailUrl = window.VistaView.getVimeoThumbnail(vimeoVideoUrl);
+    const vimeoThumbnailUrl = getVimeoThumbnail(vimeoVideoUrl);
 
     const wistiaVideoUrl = 'https://jujiyangasli.wistia.com/medias/5tel0p2wua';
-    const wistiaThumbnailUrl = await window.VistaView.getWistiaThumbnail(wistiaVideoUrl);
+    const wistiaThumbnailUrl = await getWistiaThumbnail(wistiaVideoUrl);
 
     const vidyardVideoUrl = 'https://share.vidyard.com/watch/GRJFiCEc9uSqJELta26in3';
-    const vidyardThumbnailUrl = window.VistaView.getVidyardThumbnail(vidyardVideoUrl);
+    const vidyardThumbnailUrl = getVidyardThumbnail(vidyardVideoUrl);
 
     const streamableVideoUrl = 'https://streamable.com/0skbol';
-    const streamableThumbnailUrl = window.VistaView.getStreamableThumbnail(streamableVideoUrl);
+    const streamableThumbnailUrl = getStreamableThumbnail(streamableVideoUrl);
 
-    // Example map locations
-    const googleMapsUrl = 'https://www.google.com/maps/@40.7128,-74.0060,15z'; // New York City
+    const googleMapsUrl = 'https://www.google.com/maps/@40.7128,-74.0060,15z';
     const googleMapsLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
-    const googleMapsThumbnail = googleMapsApiKey 
-      ? window.VistaView.getGoogleMapsStaticImage(googleMapsLocation, { apiKey: googleMapsApiKey, zoom: 15 })
+    const googleMapsThumbnail = googleMapsApiKey
+      ? await (await import('vistaview/extensions/google-maps')).getGoogleMapsStaticImage(googleMapsLocation, { apiKey: googleMapsApiKey, zoom: 15 })
       : 'https://via.placeholder.com/400x300?text=Google+Maps+%28API+Key+Required%29';
 
-    const mapboxUrl = 'mapbox://-74.0060,40.7128,15'; // New York City
+    const mapboxUrl = 'mapbox://-74.0060,40.7128,15';
     const mapboxLocation = { lng: -74.0060, lat: 40.7128, zoom: 15 };
     const mapboxThumbnail = mapboxAccessToken
-      ? window.VistaView.getMapboxStaticImage(mapboxLocation, { accessToken: mapboxAccessToken, zoom: 15 })
+      ? await (await import('vistaview/extensions/mapbox')).getMapboxStaticImage(mapboxLocation, { accessToken: mapboxAccessToken, zoom: 15 })
       : 'https://via.placeholder.com/400x300?text=Mapbox+%28Access+Token+Required%29';
 
-    const osmUrl = 'https://www.openstreetmap.org/#map=15/40.7128/-74.0060'; // New York City
+    const osmUrl = 'https://www.openstreetmap.org/#map=15/40.7128/-74.0060';
     const osmLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
-    const osmThumbnail = window.VistaView.getOpenStreetMapStaticImage(osmLocation, { zoom: 15 });
+    const osmThumbnail = (await import('vistaview/extensions/openstreetmap')).getOpenStreetMapStaticImage(osmLocation, { zoom: 15 });
 
-    // Add video thumbnails to gallery
     const gallery = document.querySelector('.extensions-gallery');
     function addThumbToGallery(url, thumbnail, alt, className) {
       const link = document.createElement('a');
@@ -127,49 +129,44 @@ const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
     addThumbToGallery(mapboxUrl, mapboxThumbnail, 'Mapbox location', 'gallery-link');
     addThumbToGallery(osmUrl, osmThumbnail, 'OpenStreetMap location', 'gallery-link');
 
-		if (window.VistaView && window.VistaView.vistaView) {
-			window.VistaView.vistaView({ 
-				elements: '.extensions-gallery a',
-        controls: {
-          topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
-          bottomCenter: ['imageStory'],
-        },
-				extensions: [
-					window.VistaView.logger(),
-					window.VistaView.download(),
-					window.VistaView.imageStory({
+    vistaView({ 
+      elements: '.extensions-gallery a',
+      controls: {
+        topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
+        bottomCenter: ['imageStory'],
+      },
+      extensions: [
+        logger(),
+        download(),
+        imageStory({
           getStory: async (index) => ({
-              content: `
+            content: `
               <p style="margin-top: 0">This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
               <p>This is some additional random text for the image story. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
               <p>More random content: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
               <p style="margin-bottom: 0">end of story.</p>
               `,
-              onLoad: () => {
-                console.log(`Story for image #${index + 1} loaded.`);
-              },
-              onUnload: () => {
-                console.log(`Story for image #${index + 1} unloaded.`);
-              },
-            })
-          }),
-					window.VistaView.youtubeVideo(),
-					window.VistaView.dailymotionVideo(),
-					window.VistaView.vimeoVideo(),
-					window.VistaView.wistiaVideo(),
-					window.VistaView.vidyardVideo(),
-					window.VistaView.streamableVideo(),
-					window.VistaView.googleMaps({
-            apiKey: googleMapsApiKey,
-          }),
-					window.VistaView.mapbox({
-            accessToken: mapboxAccessToken,
-          }),
-					window.VistaView.openStreetMap()
-				]
-			});
-		}
-	});
+            onLoad: () => {
+              console.log(`Story for image #${index + 1} loaded.`);
+            },
+            onUnload: () => {
+              console.log(`Story for image #${index + 1} unloaded.`);
+            },
+          })
+        }),
+        youtubeVideo(),
+        dailymotionVideo(),
+        vimeoVideo(),
+        wistiaVideo(),
+        vidyardVideo(),
+        streamableVideo(),
+        googleMaps({ apiKey: googleMapsApiKey }),
+        mapbox({ accessToken: mapboxAccessToken }),
+        openStreetMap()
+      ]
+    });
+
+  })();
 </script>
 
 <style is:global>

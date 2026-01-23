@@ -24,6 +24,7 @@
     "build:main": "pnpm --filter main build",
     "build:libs": "pnpm --parallel --filter './extensions/*' --filter './frameworks/*' build",
     "build:local": "pnpm build:main && pnpm build:libs && pnpm build:rest",
+    "predev": "pnpm build:main && pnpm build:libs",
     "dev": "pnpm --parallel dev",
     "prepare": "husky || true"
   },

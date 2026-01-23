@@ -29,12 +29,10 @@
   </div>
 </div>
 
-<script is:inline>
-	window.addEventListener('DOMContentLoaded', function() {
-		if (window.VistaView && window.VistaView.vistaView) {
-			window.VistaView.vistaView({ elements: '#gallery-grid a' });
-		}
-	});
+<script>
+  import 'vistaview/style.css';
+  import { vistaView } from 'vistaview';
+  vistaView({ elements: '#gallery-grid a' });
 </script>
 
 <style>

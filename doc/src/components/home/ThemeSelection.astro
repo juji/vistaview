@@ -16,69 +16,57 @@
 		</a>
 	</div>
 
-<script src="https://unpkg.com/vistaview/dist/extensions/select-box.umd.js"></script>
-<script is:inline>
-	window.addEventListener('DOMContentLoaded', function() {
-		let currentThemeLink = null;
-		
-		function loadTheme(themeName) {
-			// Remove existing theme
-			if (currentThemeLink) {
-				currentThemeLink.remove();
-			}
-			
-			// Load new theme
-			if (themeName && themeName !== 'default') {
-				currentThemeLink = document.createElement('link');
-				currentThemeLink.rel = 'stylesheet';
-				currentThemeLink.href = `https://unpkg.com/vistaview/dist/styles/${themeName}.css`;
-				document.head.appendChild(currentThemeLink);
-			}
-		}
-
-		if (window.VistaView && window.VistaView.vistaView) {
-			window.VistaView.vistaView({ 
-				elements: '#theme-gallery a',
-				controls: {
-					bottomLeft: [],
-					bottomCenter: ['selectBox'],
-				},
-				onClose(){
-					loadTheme(null);
-				},
-				extensions: [
-					window.VistaView.selectBox({
-						onSelect: (value) => {
-							loadTheme(value);
-						},
-						placeholder: 'Select Theme',
-						selection: [
-							{ value: 'autumn-amber', text: 'Autumn Amber' },
-							{ value: 'cotton-candy', text: 'Cotton Candy' },
-							{ value: 'dark-rounded', text: 'Dark Rounded' },
-							{ value: 'ember-glow', text: 'Ember Glow' },
-							{ value: 'forest-moss', text: 'Forest Moss' },
-							{ value: 'green-lake', text: 'Green Lake' },
-							{ value: 'ice-crystal', text: 'Ice Crystal' },
-							{ value: 'lavender-fields', text: 'Lavender Fields' },
-							{ value: 'midnight-gold', text: 'Midnight Gold' },
-							{ value: 'midnight-ocean', text: 'Midnight Ocean' },
-							{ value: 'mint-chocolate', text: 'Mint Chocolate' },
-							{ value: 'neon-nights', text: 'Neon Nights' },
-							{ value: 'paper-light', text: 'Paper Light' },
-							{ value: 'retro-arcade', text: 'Retro Arcade' },
-							{ value: 'soft-neutral', text: 'Soft Neutral' },
-							{ value: 'stark-minimal', text: 'Stark Minimal' },
-							{ value: 'strawberry', text: 'Strawberry' },
-						],
-					}),
-				],
-			});
-		}
-	});
-		
-</script>
 </section>
+
+
+<script>
+	import 'vistaview/style.css';
+  import { vistaView } from 'vistaview';
+  import { selectBox } from 'vistaview/extensions/select-box';
+
+  if (typeof vistaView === 'function') {
+    vistaView({ 
+      elements: '#theme-gallery a',
+      controls: {
+        bottomLeft: [],
+        bottomCenter: ['selectBox'],
+      },
+      extensions: [
+        selectBox({
+          onSelect: (value: string) => {
+            const theme = value;
+            if (theme && theme !== 'default') {
+              const link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = `vistaview/styles/${theme}.css`;
+              document.head.appendChild(link);
+            }
+          },
+          placeholder: 'Select Theme',
+          selection: [
+            { value: 'autumn-amber', text: 'Autumn Amber' },
+            { value: 'cotton-candy', text: 'Cotton Candy' },
+            { value: 'dark-rounded', text: 'Dark Rounded' },
+            { value: 'ember-glow', text: 'Ember Glow' },
+            { value: 'forest-moss', text: 'Forest Moss' },
+            { value: 'green-lake', text: 'Green Lake' },
+            { value: 'ice-crystal', text: 'Ice Crystal' },
+            { value: 'lavender-fields', text: 'Lavender Fields' },
+            { value: 'midnight-gold', text: 'Midnight Gold' },
+            { value: 'midnight-ocean', text: 'Midnight Ocean' },
+            { value: 'mint-chocolate', text: 'Mint Chocolate' },
+            { value: 'neon-nights', text: 'Neon Nights' },
+            { value: 'paper-light', text: 'Paper Light' },
+            { value: 'retro-arcade', text: 'Retro Arcade' },
+            { value: 'soft-neutral', text: 'Soft Neutral' },
+            { value: 'stark-minimal', text: 'Stark Minimal' },
+            { value: 'strawberry', text: 'Strawberry' },
+          ],
+        }),
+      ],
+    });
+  }
+</script>
 
 <style is:global>
 	.vvw-select-box{

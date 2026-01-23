@@ -1,5 +1,4 @@
 
-
 <div class="hero-content-box">
 	<div id="image-grid" class="image-grid vista-view">
 		<a href="https://picsum.photos/seed/2222/1200/600" data-title="Image 1" class="img-1" target="_blank" rel="noopener">
@@ -17,13 +16,10 @@
 	</div>
 </div>
 
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script is:inline>
-	window.addEventListener('DOMContentLoaded', function() {
-		if (window.VistaView && window.VistaView.vistaView) {
-			window.VistaView.vistaView({ elements: '#image-grid a' });
-		}
-	});
+<script>
+	import { vistaView } from 'vistaview';
+	import 'vistaview/style.css';
+	vistaView({ elements: '#image-grid a' });
 </script>
 
 <style>
