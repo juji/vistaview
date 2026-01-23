@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VistaView Dev</title>
+  <link rel="stylesheet" href="./dev.css">
+</head>
+<body>
+
+  <div style="position: sticky; top: 0; z-index: 2; background: #000; border-bottom: 1px solid #333;">
+    <div style="max-width: 800px; margin: 0 auto; padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+      <h1 style="margin: 0;">VistaView Library - ext</h1>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <label for="theme-selector" style="color: #fff; font-size: 14px;">Theme:</label>
+        <select id="theme-selector" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer;">
+          <option value="dark-rounded" selected>Dark Rounded</option>
+          <option value="green-lake">Green Lake</option>
+          <option value="strawberry">Strawberry</option>
+          <option value="midnight-ocean">Midnight Ocean</option>
+          <option value="autumn-amber">Autumn Amber</option>
+          <option value="lavender-fields">Lavender Fields</option>
+          <option value="forest-moss">Forest Moss</option>
+          <option value="neon-nights">Neon Nights</option>
+          <option value="midnight-gold">Midnight Gold</option>
+          <option value="ice-crystal">Ice Crystal</option>
+          <option value="ember-glow">Ember Glow</option>
+          <option value="stark-minimal">Stark Minimal</option>
+          <option value="soft-neutral">Soft Neutral</option>
+          <option value="paper-light">Paper Light</option>
+          <option value="cotton-candy">Cotton Candy</option>
+          <option value="retro-arcade">Retro Arcade</option>
+          <option value="mint-chocolate">Mint Chocolate</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="image-grid" id="image-grid-many">
+      
+    </div>
+
+  </div>
+
+
+  <script type="module">
+    import 'vistaview/style.css';
+    import 'vistaview/styles/dark-rounded.css';
+    import 'vistaview/styles/extensions/image-story.css';
+    import { vistaView } from 'vistaview';
+    import { logger } from 'vistaview/extensions/logger';
+    import { download } from 'vistaview/extensions/download';
+    import { imageStory } from 'vistaview/extensions/image-story';
+    import { selectBox } from 'vistaview/extensions/select-box';
+    import { youtubeVideo, getYouTubeThumbnail } from 'vistaview/extensions/youtube-video';
+    import { dailymotionVideo, getDailymotionThumbnail } from 'vistaview/extensions/dailymotion-video';
+    import { vimeoVideo, getVimeoThumbnail } from 'vistaview/extensions/vimeo-video';
+    import { wistiaVideo, getWistiaThumbnail } from 'vistaview/extensions/wistia-video';
+    import { vidyardVideo, getVidyardThumbnail } from 'vistaview/extensions/vidyard-video';
+    import { streamableVideo, getStreamableThumbnail } from 'vistaview/extensions/streamable-video';
+    import { googleMaps, getGoogleMapsStaticImage } from 'vistaview/extensions/google-maps';
+    import { mapbox, getMapboxStaticImage } from 'vistaview/extensions/mapbox';
+    import { openStreetMap, getOpenStreetMapStaticImage } from 'vistaview/extensions/openstreetmap';
+    import { twitchVideo, getTwitchThumbnail } from 'vistaview/extensions/twitch-video';
+
+    // Theme switcher: dynamically import theme CSS from the installed package
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.addEventListener('change', async (e) => {
+      const theme = e.target.value;
+      await import(`vistaview/styles/${theme}.css`);
+    });
+
+    (async () => {
+
+    const videoUrl = 'https://www.youtube.com/watch?v=GwJrZBe8JX4';
+    const thumbnailUrl = getYouTubeThumbnail(videoUrl, 'hq');
+
+    const dailimotionVideoUrl = 'https://www.dailymotion.com/video/x7xvssw';
+    const dailymotionThumbnailUrl = getDailymotionThumbnail(dailimotionVideoUrl);
+
+    const vimeoVideoUrl = 'https://vimeo.com/30673387';
+    const vimeoThumbnailUrl = getVimeoThumbnail(vimeoVideoUrl);
+
+    const wistiaVideoUrl = 'https://jujiyangasli.wistia.com/medias/5tel0p2wua';
+    const wistiaThumbnailUrl = await getWistiaThumbnail(wistiaVideoUrl);
+
+    const vidyardVideoUrl = 'https://share.vidyard.com/watch/GRJFiCEc9uSqJELta26in3';
+    const vidyardThumbnailUrl = getVidyardThumbnail(vidyardVideoUrl);
+
+    const streamableVideoUrl = 'https://streamable.com/0skbol';
+    const streamableThumbnailUrl = getStreamableThumbnail(streamableVideoUrl);
+
+    const twitchVideoUrl = 'https://www.twitch.tv/streammelody/video/2651710276';
+    const twitchThumbnailUrl = getTwitchThumbnail(twitchVideoUrl);
+
+    // Maps configuration - loaded from environment variables
+    // Set VITE_GOOGLE_MAPS_API_KEY and VITE_MAPBOX_ACCESS_TOKEN in .env file
+    const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const mapboxAccessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+
+    // Example map locations
+    const googleMapsUrl = 'https://www.google.com/maps/@40.7128,-74.0060,15z'; // New York City
+    const googleMapsLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
+    const googleMapsThumbnail = googleMapsApiKey 
+      ? getGoogleMapsStaticImage(googleMapsLocation, { apiKey: googleMapsApiKey, zoom: 15 })
+      : 'https://via.placeholder.com/400x300?text=Google+Maps+%28API+Key+Required%29';
+
+    const mapboxUrl = 'mapbox://-74.0060,40.7128,15'; // New York City
+    const mapboxLocation = { lng: -74.0060, lat: 40.7128, zoom: 15 };
+    const mapboxThumbnail = mapboxAccessToken
+      ? getMapboxStaticImage(mapboxLocation, { accessToken: mapboxAccessToken, zoom: 15 })
+      : 'https://via.placeholder.com/400x300?text=Mapbox+%28Access+Token+Required%29';
+
+    const osmUrl = 'https://www.openstreetmap.org/#map=15/40.7128/-74.0060'; // New York City
+    const osmLocation = { lat: 40.7128, lng: -74.0060, zoom: 15 };
+    const osmThumbnail = getOpenStreetMapStaticImage(osmLocation, { zoom: 15 });
+    
+    document.getElementById('image-grid-many').innerHTML = [
+      // ...Array.from({ length: (9 * 10) - 1 }, (_, i) => `
+      ...Array.from({ length: 2 }, (_, i) => `
+      <a href="https://picsum.photos/seed/${i}/800/1200"
+        data-vistaview-srcset="https://picsum.photos/seed/${i}/800/1200 800w,
+                    https://picsum.photos/seed/${i}/2400/3600 2400w"
+         target="_blank">
+        <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">
+      </a>
+      `),
+      `<a href="/images/thumbnails/thumb_59-800x600.jpg"
+        target="_blank">
+        <img src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+      </a>`,
+      `<a href="${videoUrl}"
+        target="_blank">
+        <img src="${thumbnailUrl}" alt="YouTube Video Thumbnail">
+      </a>`,
+      `<a href="${dailimotionVideoUrl}"
+        target="_blank">
+        <img src="${dailymotionThumbnailUrl}" alt="Dailymotion Video Thumbnail">
+      </a>`,
+      `<a href="${vimeoVideoUrl}"
+        target="_blank">
+        <img src="${vimeoThumbnailUrl}" alt="Vimeo Video Thumbnail">
+      </a>`,
+      `<a href="${wistiaVideoUrl}"
+        target="_blank">
+        <img src="${wistiaThumbnailUrl}" alt="Wistia Video Thumbnail">
+      </a>`,
+      `<a href="${vidyardVideoUrl}"
+        target="_blank">
+        <img src="${vidyardThumbnailUrl}" alt="Vidyard Video Thumbnail">
+      </a>`,
+      `<a href="${streamableVideoUrl}"
+        target="_blank">
+        <img src="${streamableThumbnailUrl}" alt="Streamable Video Thumbnail">
+      </a>`,
+      `<a href="${twitchVideoUrl}"
+        target="_blank">
+        <img src="${twitchThumbnailUrl}" alt="Twitch Video Thumbnail">
+      </a>`,
+      `<a href="${googleMapsUrl}"
+        target="_blank">
+        <img src="${googleMapsThumbnail}" alt="Google Maps - New York City">
+      </a>`,
+      `<a href="${mapboxUrl}"
+        target="_blank">
+        <img src="${mapboxThumbnail}" alt="Mapbox - New York City">
+      </a>`,
+      `<a href="${osmUrl}"
+        target="_blank">
+        <img src="${osmThumbnail}" alt="OpenStreetMap - New York City">
+      </a>`
+    ].join('');
+
+    vistaView({
+      elements: '#image-grid-many a',
+      controls: {
+        topRight: ['zoomIn', 'zoomOut',  'download', 'close'],
+        // bottomCenter: ['selectBox'],
+        bottomCenter: ['imageStory'],
+      },
+      extensions: [
+        // logger(), 
+        download(),
+        selectBox({
+          selection: Array.from({ length: 20 }, (_, i) => ({
+            value: i.toString(),
+            text: `Image #${i + 1}`
+          })),
+          onSelect: async (value) => {
+            const index = parseInt(value, 10);
+            console.log(`Selected image index: ${index}`);
+            // Additional logic can be added here if needed
+          }
+        }),
+        imageStory({
+          getStory: async (index) => ({
+            content: `
+            <p style="margin-top: 0">This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>This is a description for image #${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p style="margin-bottom: 0">end of story.</p>
+            `,
+            onLoad: () => {
+              console.log(`Story for image #${index + 1} loaded.`);
+            },
+            onUnload: () => {
+              console.log(`Story for image #${index + 1} unloaded.`);
+            },
+          })
+        }),
+        youtubeVideo(),
+        dailymotionVideo(),
+        vimeoVideo(),
+        wistiaVideo(),
+        vidyardVideo(),
+        streamableVideo(),
+        twitchVideo(),
+        // Map extensions - only enabled if API keys are provided
+        ...(googleMapsApiKey 
+          ? [googleMaps({ apiKey: googleMapsApiKey, zoom: 15 })]
+          : []
+        ),
+        ...(mapboxAccessToken
+          ? [mapbox({ accessToken: mapboxAccessToken, zoom: 15, style: 'streets-v12' })]
+          : []
+        ),
+        openStreetMap({ zoom: 15 }),
+      ],
+    });
+
+    })();
+
+  </script>
+</body>
+</html>
