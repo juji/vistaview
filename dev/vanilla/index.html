@@ -13,59 +13,59 @@
   <div class="container" style="max-width: 800px; margin: 0 auto;">
 
     <div class="image-grid" id="image-grid-init">
-      <a href="/images/573-1920x1080.jpg"
+      <a href="https://picsum.photos/id/1011/1920/1080"
          target="_blank"
          data-vistaview-width="1920"
          data-vistaview-height="1080">
-        <img src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+        <img src="https://picsum.photos/id/1011/400/225" alt="Image 1">
       </a>
-      <a href="/images/947-1280x720.jpg"
+      <a href="https://picsum.photos/id/1012/1280/720"
          target="_blank"
          data-vistaview-width="1280"
          data-vistaview-height="720">
-        <img src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+        <img src="https://picsum.photos/id/1012/320/180" alt="Image 2">
       </a>
-      <a href="/images/thumbnails/thumb_59-800x600.jpg"
+      <a href="https://picsum.photos/id/1013/800/600"
          target="_blank"
-         data-vistaview-width="300"
-         data-vistaview-height="225">
-        <img src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+         data-vistaview-width="800"
+         data-vistaview-height="600">
+        <img src="https://picsum.photos/id/1013/200/150" alt="Image 3">
       </a>
-      <a href="/images/423-1024x768.jpg"
+      <a href="https://picsum.photos/id/1014/1024/768"
          target="_blank"
          data-vistaview-width="1024"
          data-vistaview-height="768">
-        <img src="/images/thumbnails/thumb_423-1024x768.jpg" alt="Image 4">
+        <img src="https://picsum.photos/id/1014/256/192" alt="Image 4">
       </a>
-      <a href="/images/92-1600x900.jpg"
+      <a href="https://picsum.photos/id/1015/1600/900"
          target="_blank"
          data-vistaview-width="1600"
          data-vistaview-height="900">
-        <img src="/images/thumbnails/thumb_92-1600x900.jpg" style="object-fit: contain;" alt="Image 5">
+        <img src="https://picsum.photos/id/1015/400/225" style="object-fit: contain;" alt="Image 5">
       </a>
-      <a href="/images/1013-1440x900.jpg"
+      <a href="https://picsum.photos/id/1016/1440/900"
          target="_blank"
          data-vistaview-width="1440"
          data-vistaview-height="900">
-        <img src="/images/thumbnails/thumb_1013-1440x900.jpg" style="object-fit: contain;" alt="Image 6">
+        <img src="https://picsum.photos/id/1016/360/225" style="object-fit: contain;" alt="Image 6">
       </a>
-      <a href="/images/743-1680x1050.jpg"
+      <a href="https://picsum.photos/id/1018/1680/1050"
          target="_blank"
          data-vistaview-width="1680"
          data-vistaview-height="1050">
-        <img src="/images/thumbnails/thumb_743-1680x1050.jpg" alt="Image 7">
+        <img src="https://picsum.photos/id/1018/336/210" alt="Image 7">
       </a>
-      <a href="/images/353-1920x1200.jpg"
+      <a href="https://picsum.photos/id/1020/1920/1200"
          target="_blank"
          data-vistaview-width="1920"
          data-vistaview-height="1200">
-        <img src="/images/thumbnails/thumb_353-1920x1200.jpg" alt="Image 8">
+        <img src="https://picsum.photos/id/1020/384/240" alt="Image 8">
       </a>
-      <a href="/images/694-2560x1440.jpg"
+      <a href="https://picsum.photos/id/1021/2560/1440"
          target="_blank"
          data-vistaview-width="2560"
          data-vistaview-height="1440">
-        <img src="/images/thumbnails/thumb_694-2560x1440.jpg" style="border-radius: 64px;" alt="Image 9">
+        <img src="https://picsum.photos/id/1021/512/288" style="border-radius: 64px;" alt="Image 9">
       </a>
     </div>
 
@@ -78,14 +78,14 @@
 
     <div class="image-grid image-only" id="image-grid-image-only">
       <img 
-      data-vistaview-src="/images/573-1920x1080.jpg"
-      src="/images/thumbnails/thumb_573-1920x1080.jpg" alt="Image 1">
+      data-vistaview-src="https://picsum.photos/id/1011/1920/1080"
+      src="https://picsum.photos/id/1011/400/225" alt="Image 1">
       <img 
-      data-vistaview-src="/images/947-1280x720.jpg"
-      src="/images/thumbnails/thumb_947-1280x720.jpg" alt="Image 2">
+      data-vistaview-src="https://picsum.photos/id/1012/1280/720"
+      src="https://picsum.photos/id/1012/320/180" alt="Image 2">
       <img 
-      data-vistaview-src="/images/thumbnails/thumb_59-800x600.jpg"
-      src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
+      data-vistaview-src="https://picsum.photos/id/1013/800/600"
+      src="https://picsum.photos/id/1013/200/150" alt="Image 3">
     </div>
 
   </div>
@@ -121,7 +121,7 @@
     const { open } = vistaView({
       elements: [
         {
-          src: '/images/92-1600x900.jpg',
+          src: 'https://picsum.photos/id/1015/1600/900',
           alt: 'Image 1'
         },
         // {
@@ -139,16 +139,12 @@
     })
     
     document.getElementById('image-grid-many').innerHTML = [
-      ...Array.from({ length: (9 * 10) - 1 }, (_, i) => `
+      ...Array.from({ length: (9 * 10) }, (_, i) => `
       <a href="https://picsum.photos/seed/${i}/1200/1800"
          target="_blank">
         <img src="https://picsum.photos/seed/${i}/200/300" loading="lazy" alt="Image ${i + 1}">
       </a>
-      `),
-      `<a href="/images/thumbnails/thumb_59-800x600.jpg"
-        target="_blank">
-        <img src="/images/thumbnails/thumb_59-800x600.jpg" alt="Image 3">
-      </a>`
+      `)
     ].join('');
 
     vistaView({
