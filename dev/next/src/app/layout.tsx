@@ -28,6 +28,7 @@ export default function RootLayout({
         <nav style={{ margin: '24px 0', textAlign: 'center' }}>
           <a href="/" style={{ margin: '0 16px' }}>Basic</a>
           <a href="/hook" style={{ margin: '0 16px' }}>Hook</a>
+          <a href="/extension" style={{ margin: '0 16px' }}>Extension Demo</a>
         </nav>
         {children}
       </body>

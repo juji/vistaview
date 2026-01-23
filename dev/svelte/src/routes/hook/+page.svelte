@@ -1,5 +1,4 @@
 <script lang="ts">
-import { onMount, onDestroy } from 'svelte';
 import { useVistaView } from 'vistaview/svelte';
 import 'vistaview/style.css';
 
