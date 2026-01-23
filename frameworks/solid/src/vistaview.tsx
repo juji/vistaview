@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, onMount, splitProps } from 'solid-js';
+import { onCleanup, onMount, splitProps } from 'solid-js';
 import { vistaView } from 'vistaview';
 import type { VistaOpt, VistaInterface } from 'vistaview';
 import type { JSX } from 'solid-js';
