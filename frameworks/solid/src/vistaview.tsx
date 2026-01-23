@@ -16,19 +16,26 @@ export function VistaView(props: VistaViewProps) {
   let container: HTMLDivElement | undefined;
   let instance: VistaInterface | null = null;
   const [local, rest] = splitProps(props, ['selector', 'options', 'componentRef', 'id', 'children']);
-  const galleryId = local.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
+  // galleryId will be read from the container's id attribute after mount
+  let galleryId = local.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
 
-  createEffect(() => {
-    // Wait until the container is mounted before instantiating
-    if (!container) return;
-
-    // If options, selector, or children change, re-instantiate
-    instance?.destroy();
-    instance = vistaView({
-      ...local.options,
-      elements: `#${galleryId} ${local.selector ?? '> a'}`,
-    });
-    local.componentRef?.({ vistaView: instance, container });
+  onMount(() => {
+    if (!container) {
+      console.warn('VistaView: container not yet mounted');
+      return;
+    }
+    // Get the id from the actual DOM node
+    const realId = container.id;
+    const selector = `#${realId} ${local.selector ?? '> a'}`;
+    const nodes = document.querySelectorAll(selector);
+    if (nodes.length > 0) {
+      instance?.destroy();
+      instance = vistaView({
+        ...local.options,
+        elements: selector,
+      });
+      local.componentRef?.({ vistaView: instance, container });
+    }
   });
 
   onCleanup(() => {
@@ -38,7 +45,7 @@ export function VistaView(props: VistaViewProps) {
   });
 
   return (
-    <div ref={el => (container = el)} id={galleryId} {...rest}>
+    <div ref={el => (container = el)} {...rest} id={galleryId}>
       {local.children}
     </div>
   );
