@@ -1,7 +1,5 @@
 
 
-"use client";
-
 import { VistaView } from 'vistaview/react';
 import 'vistaview/style.css';
 import styles from './vistaview-demo.module.css';
