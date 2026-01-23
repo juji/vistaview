@@ -17,10 +17,8 @@
     "lint:types": "tsc --noEmit",
     "update-deps": "pnpm up -Li"
   },
-  "dependencies": {
-    "vistaview": "workspace:*"
-  },
   "peerDependencies": {
+    "vistaview": "workspace:*",
     "solid-js": "^1.6.0"
   },
   "devDependencies": {

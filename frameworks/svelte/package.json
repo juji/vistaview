@@ -27,10 +27,8 @@
 			"svelte": "./dist/index.js"
 		}
 	},
-	"dependencies": {
-		"vistaview": "workspace:*"
-	},
 	"peerDependencies": {
+		"vistaview": "workspace:*",
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
