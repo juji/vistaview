@@ -6,7 +6,6 @@ export function useVistaView(options: VistaParams): VistaInterface {
   const instance = ref<VistaInterface | null>(null);
   
   onMounted(() => {
-    // no-op for now
     instance.value = vistaView(options);
   });
 
