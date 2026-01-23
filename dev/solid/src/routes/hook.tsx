@@ -1,4 +1,3 @@
-import { createEffect, onCleanup } from 'solid-js';
 import { useVistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
 
@@ -12,21 +11,17 @@ const images = [
 ];
 
 const galleryId = 'vistaview-hook-demo';
-let container;
-let vista;
 
-createEffect(() => {
-  vista = useVistaView({
-    elements: `#${galleryId} > a`,
-  });
-  onCleanup(() => vista?.destroy());
+// The hook manages its own lifecycle
+const vista = useVistaView({
+  elements: `#${galleryId} > a`,
 });
 
 export default function HookPage() {
   return (
     <main style={{ padding: '32px' }}>
       <h1>VistaView Solid - useVistaView Hook Demo</h1>
-      <div ref={el => (container = el)} id={galleryId} class="vistaview-grid">
+      <div id={galleryId} class="vistaview-grid">
         {images.map((img, i) => (
           <a href={img.full} class="vistaview-anchor">
             <img src={img.thumb} alt={`Sample ${i + 1}`} class="vistaview-thumb" />
