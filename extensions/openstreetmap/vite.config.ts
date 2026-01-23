@@ -8,11 +8,20 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     lib: {
-      name: 'openstreetmap',
+      name: 'main',
       entry: {
-        ['openstreetmap']: resolve(__dirname, 'src/main.ts'),
+        ['main']: resolve(__dirname, 'src/main.ts'),
       },
       formats: ['es', 'umd'],
-    }
+    },
+    rollupOptions: {
+      external: ['vistaview'],
+      output: {
+        globals: {
+          vistaview: 'VistaView',
+        },
+      },
+    },
+    sourcemap: true,
   },
 });

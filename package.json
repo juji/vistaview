@@ -68,76 +68,80 @@
         "default": "./frameworks/solid/dist/index.js"
       }
     },
+    "./svelte": {
+      "types": "./frameworks/svelte/dist/index.d.ts",
+      "svelte": "./frameworks/svelte/dist/index.js"
+    },
     "./extensions/dailymotion-video": {
-      "types": "./extensions/dailymotion-video/dist/dailymotion-video.d.ts",
-      "import": "./extensions/dailymotion-video/dist/dailymotion-video.js",
-      "require": "./extensions/dailymotion-video/dist/dailymotion-video.umd.js"
+      "types": "./extensions/dailymotion-video/dist/main.d.ts",
+      "import": "./extensions/dailymotion-video/dist/main.js",
+      "require": "./extensions/dailymotion-video/dist/main.umd.cjs"
     },
     "./extensions/download": {
-      "types": "./extensions/download/dist/download.d.ts",
-      "import": "./extensions/download/dist/download.js",
-      "require": "./extensions/download/dist/download.umd.js"
+      "types": "./extensions/download/dist/main.d.ts",
+      "import": "./extensions/download/dist/main.js",
+      "require": "./extensions/download/dist/main.umd.cjs"
     },
     "./extensions/google-maps": {
-      "types": "./extensions/google-maps/dist/google-maps.d.ts",
-      "import": "./extensions/google-maps/dist/google-maps.js",
-      "require": "./extensions/google-maps/dist/google-maps.umd.js"
+      "types": "./extensions/google-maps/dist/main.d.ts",
+      "import": "./extensions/google-maps/dist/main.js",
+      "require": "./extensions/google-maps/dist/main.umd.cjs"
     },
     "./extensions/image-story/style.css": "./extensions/image-story/dist/style.css",
     "./extensions/image-story": {
-      "types": "./extensions/image-story/dist/image-story.d.ts",
-      "import": "./extensions/image-story/dist/image-story.js",
-      "require": "./extensions/image-story/dist/image-story.umd.js"
+      "types": "./extensions/image-story/dist/main.d.ts",
+      "import": "./extensions/image-story/dist/main.js",
+      "require": "./extensions/image-story/dist/main.umd.cjs"
     },
     "./extensions/logger": {
-      "types": "./extensions/logger/dist/logger.d.ts",
-      "import": "./extensions/logger/dist/logger.js",
-      "require": "./extensions/logger/dist/logger.umd.js"
+      "types": "./extensions/logger/dist/main.d.ts",
+      "import": "./extensions/logger/dist/main.js",
+      "require": "./extensions/logger/dist/main.umd.cjs"
     },
     "./extensions/mapbox": {
-      "types": "./extensions/mapbox/dist/mapbox.d.ts",
-      "import": "./extensions/mapbox/dist/mapbox.js",
-      "require": "./extensions/mapbox/dist/mapbox.umd.js"
+      "types": "./extensions/mapbox/dist/main.d.ts",
+      "import": "./extensions/mapbox/dist/main.js",
+      "require": "./extensions/mapbox/dist/main.umd.cjs"
     },
     "./extensions/openstreetmap": {
-      "types": "./extensions/openstreetmap/dist/openstreetmap.d.ts",
-      "import": "./extensions/openstreetmap/dist/openstreetmap.js",
-      "require": "./extensions/openstreetmap/dist/openstreetmap.umd.js"
+      "types": "./extensions/openstreetmap/dist/main.d.ts",
+      "import": "./extensions/openstreetmap/dist/main.js",
+      "require": "./extensions/openstreetmap/dist/main.umd.cjs"
     },
     "./extensions/select-box": {
-      "types": "./extensions/select-box/dist/select-box.d.ts",
-      "import": "./extensions/select-box/dist/select-box.js",
-      "require": "./extensions/select-box/dist/select-box.umd.js"
+      "types": "./extensions/select-box/dist/main.d.ts",
+      "import": "./extensions/select-box/dist/main.js",
+      "require": "./extensions/select-box/dist/main.umd.cjs"
     },
     "./extensions/streamable-video": {
-      "types": "./extensions/streamable-video/dist/streamable-video.d.ts",
-      "import": "./extensions/streamable-video/dist/streamable-video.js",
-      "require": "./extensions/streamable-video/dist/streamable-video.umd.js"
+      "types": "./extensions/streamable-video/dist/main.d.ts",
+      "import": "./extensions/streamable-video/dist/main.js",
+      "require": "./extensions/streamable-video/dist/main.umd.cjs"
     },
     "./extensions/twitch-video": {
-      "types": "./extensions/twitch-video/dist/twitch-video.d.ts",
-      "import": "./extensions/twitch-video/dist/twitch-video.js",
-      "require": "./extensions/twitch-video/dist/twitch-video.umd.js"
+      "types": "./extensions/twitch-video/dist/main.d.ts",
+      "import": "./extensions/twitch-video/dist/main.js",
+      "require": "./extensions/twitch-video/dist/main.umd.cjs"
     },
     "./extensions/vidyard-video": {
-      "types": "./extensions/vidyard-video/dist/vidyard-video.d.ts",
-      "import": "./extensions/vidyard-video/dist/vidyard-video.js",
-      "require": "./extensions/vidyard-video/dist/vidyard-video.umd.js"
+      "types": "./extensions/vidyard-video/dist/main.d.ts",
+      "import": "./extensions/vidyard-video/dist/main.js",
+      "require": "./extensions/vidyard-video/dist/main.umd.cjs"
     },
     "./extensions/vimeo-video": {
-      "types": "./extensions/vimeo-video/dist/vimeo-video.d.ts",
-      "import": "./extensions/vimeo-video/dist/vimeo-video.js",
-      "require": "./extensions/vimeo-video/dist/vimeo-video.umd.js"
+      "types": "./extensions/vimeo-video/dist/main.d.ts",
+      "import": "./extensions/vimeo-video/dist/main.js",
+      "require": "./extensions/vimeo-video/dist/main.umd.cjs"
     },
     "./extensions/wistia-video": {
-      "types": "./extensions/wistia-video/dist/wistia-video.d.ts",
-      "import": "./extensions/wistia-video/dist/wistia-video.js",
-      "require": "./extensions/wistia-video/dist/wistia-video.umd.js"
+      "types": "./extensions/wistia-video/dist/main.d.ts",
+      "import": "./extensions/wistia-video/dist/main.js",
+      "require": "./extensions/wistia-video/dist/main.umd.cjs"
     },
     "./extensions/youtube-video": {
-      "types": "./extensions/youtube-video/dist/youtube-video.d.ts",
-      "import": "./extensions/youtube-video/dist/youtube-video.js",
-      "require": "./extensions/youtube-video/dist/youtube-video.umd.js"
+      "types": "./extensions/youtube-video/dist/main.d.ts",
+      "import": "./extensions/youtube-video/dist/main.js",
+      "require": "./extensions/youtube-video/dist/main.umd.cjs"
     }
   },
   "files": [
