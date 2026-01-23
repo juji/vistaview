@@ -46,9 +46,11 @@ function handleToggle() {
   if (added.value) {
     images.value = [...initialImages];
     added.value = false;
+    console.log('resetting');
   } else {
     images.value = [...initialImages, ...addition];
     added.value = true;
+    console.log('resetting');
   }
 }
 </script>

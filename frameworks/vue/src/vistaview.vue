@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed, watch, nextTick, useSlots } from 'vue';
 import { vistaView } from 'vistaview';
 import type { VistaInterface, VistaOpt } from 'vistaview';
 
@@ -15,6 +15,7 @@ export default defineComponent({
     const instanceRef = ref<VistaInterface | null>(null);
     const generatedId = Math.random().toString(36).slice(2, 9);
     const galleryId = computed(() => (props.id || `vvw-gallery-${generatedId}`));
+    const slots = useSlots();
 
     // API object to expose and optionally assign to the passed `vistaRef` prop
     const api = {
@@ -59,6 +60,15 @@ export default defineComponent({
     watch(() => props.options, () => {
       nextTick(() => initInstance());
     }, { deep: true });
+
+    watch(
+      () => slots.default?.(),
+      () => {
+        requestAnimationFrame(() => {
+          api.reset()
+        })
+      }
+    );
 
     // also expose API and DOM on the component instance for users who use `ref` on the component
     // expose: { vistaView, container } where `container` is a live getter to the DOM element

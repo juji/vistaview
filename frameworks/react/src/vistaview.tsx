@@ -39,7 +39,12 @@ export const VistaView = (function VistaView(
       instanceRef.current?.destroy();
       instanceRef.current = null;
     };
-  }, [galleryId, selector, options, children]);
+  }, [galleryId, selector, options]);
+
+  useEffect(() => {
+    // reset when children change
+    instanceRef.current?.reset();
+  }, [children]);
 
   return (
     <div ref={el => { containerRefInner.current = el }} {...rest} id={galleryId}>
