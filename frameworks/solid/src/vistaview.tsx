@@ -1,4 +1,5 @@
 import { onCleanup, onMount, splitProps } from 'solid-js';
+import { children, createEffect } from "solid-js";
 import { vistaView } from 'vistaview';
 import type { VistaOpt, VistaInterface } from 'vistaview';
 import type { JSX } from 'solid-js';
@@ -18,6 +19,14 @@ export function VistaView(props: VistaViewProps) {
   const [local, rest] = splitProps(props, ['selector', 'options', 'componentRef', 'id', 'children']);
   // galleryId will be read from the container's id attribute after mount
   let galleryId = local.id || `vvw-gallery-${Math.random().toString(36).slice(2)}`;
+
+  const resolved = children(() => props.children);
+  createEffect(() => {
+    const nodes = resolved();
+    if(nodes && instance) {
+      instance.reset();
+    }
+  });
 
   onMount(() => {
     if (!container) {

@@ -1,12 +1,12 @@
-
-
 import { Title } from "@solidjs/meta";
-import { For, createSignal, onMount } from "solid-js";
+import { For, createSignal } from "solid-js";
 
 import "vistaview/style.css";
 import { VistaView } from "vistaview/solid";
+import { clientOnly } from "@solidjs/start";
 
-const images = [
+
+const initialImages = [
   { full: "https://picsum.photos/id/1015/600/400", thumb: "https://picsum.photos/id/1015/300/200" },
   { full: "https://picsum.photos/id/1016/600/400", thumb: "https://picsum.photos/id/1016/300/200" },
   { full: "https://picsum.photos/id/1018/600/400", thumb: "https://picsum.photos/id/1018/300/200" },
@@ -14,14 +14,44 @@ const images = [
   { full: "https://picsum.photos/id/1024/600/400", thumb: "https://picsum.photos/id/1024/300/200" },
   { full: "https://picsum.photos/id/1025/600/400", thumb: "https://picsum.photos/id/1025/300/200" },
 ];
+const addition = [
+  { full: "https://picsum.photos/id/0/600/400", thumb: "https://picsum.photos/id/0/300/200" },
+  { full: "https://picsum.photos/id/1031/600/400", thumb: "https://picsum.photos/id/1031/300/200" },
+  { full: "https://picsum.photos/id/1032/600/400", thumb: "https://picsum.photos/id/1032/300/200" },
+  { full: "https://picsum.photos/id/1033/600/400", thumb: "https://picsum.photos/id/1033/300/200" },
+  { full: "https://picsum.photos/id/1/600/400", thumb: "https://picsum.photos/id/1/300/200" },
+  { full: "https://picsum.photos/id/1035/600/400", thumb: "https://picsum.photos/id/1035/300/200" },
+];
 
-export default function Home() {
+const ClientOnlyComp = clientOnly(async () => ({ default: Home }), { lazy: true });
+
+export default function IsomorphicComponent() {
+  return <ClientOnlyComp />;
+}
+
+function Home() {
+  const [images, setImages] = createSignal([...initialImages]);
+  const [added, setAdded] = createSignal(false);
+
+  const handleToggle = () => {
+    if (added()) {
+      setImages([...initialImages]);
+      setAdded(false);
+    } else {
+      setImages([...initialImages, ...addition]);
+      setAdded(true);
+    }
+  };
+
   return (
     <main style={{ padding: "32px" }}>
       <Title>VistaView Solid - Basic Example</Title>
       <h1>VistaView Solid - Basic Example</h1>
+      <button onClick={handleToggle}>
+        {added() ? "remove addition" : "add image"}
+      </button>
       <VistaView class="vistaview-grid">
-        <For each={images}>{(img, i) => (
+        <For each={images()}>{(img, i) => (
           <a href={img.full} class="vistaview-anchor">
             <img src={img.thumb} alt={`Sample ${i() + 1}`} class="vistaview-thumb" />
           </a>
