@@ -41,24 +41,11 @@
     initInstance();
   };
 
-  let observer: MutationObserver | null = null;
-  let observerTimer: number | null = null;
-
   onMount(() => {
     initInstance();
-
-    if (container) {
-      observer = new MutationObserver(() => {
-        if (observerTimer) clearTimeout(observerTimer);
-        observerTimer = window.setTimeout(() => initInstance(), 50) as unknown as number;
-      });
-      observer.observe(container, { childList: true, subtree: true });
-    }
   });
 
   onDestroy(() => {
-    observer?.disconnect();
-    if (observerTimer) clearTimeout(observerTimer);
     destroyInstance();
   });
 </script>
