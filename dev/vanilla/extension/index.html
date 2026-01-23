@@ -46,7 +46,7 @@
 
   <script type="module">
     import 'vistaview/style.css';
-    import 'vistaview/styles/dark-rounded.css';
+    // import 'vistaview/styles/dark-rounded.css';
     import 'vistaview/styles/extensions/image-story.css';
     import { vistaView } from 'vistaview';
     import { logger } from 'vistaview/extensions/logger';
@@ -66,10 +66,58 @@
 
     // Theme switcher: dynamically import theme CSS from the installed package
     const themeSelector = document.getElementById('theme-selector');
+    const themeImports = {
+      'dark-rounded': () => import('vistaview/styles/dark-rounded.css'),
+      'green-lake': () => import('vistaview/styles/green-lake.css'),
+      'strawberry': () => import('vistaview/styles/strawberry.css'),
+      'midnight-ocean': () => import('vistaview/styles/midnight-ocean.css'),
+      'autumn-amber': () => import('vistaview/styles/autumn-amber.css'),
+      'lavender-fields': () => import('vistaview/styles/lavender-fields.css'),
+      'forest-moss': () => import('vistaview/styles/forest-moss.css'),
+      'neon-nights': () => import('vistaview/styles/neon-nights.css'),
+      'midnight-gold': () => import('vistaview/styles/midnight-gold.css'),
+      'ice-crystal': () => import('vistaview/styles/ice-crystal.css'),
+      'ember-glow': () => import('vistaview/styles/ember-glow.css'),
+      'stark-minimal': () => import('vistaview/styles/stark-minimal.css'),
+      'soft-neutral': () => import('vistaview/styles/soft-neutral.css'),
+      'paper-light': () => import('vistaview/styles/paper-light.css'),
+      'cotton-candy': () => import('vistaview/styles/cotton-candy.css'),
+      'retro-arcade': () => import('vistaview/styles/retro-arcade.css'),
+      'mint-chocolate': () => import('vistaview/styles/mint-chocolate.css'),
+    };
+
+    const initTheme = 'dark-rounded';
+
+    function removeExistingThemeStyle() {
+      document.querySelectorAll('style[data-vistaview-theme]').forEach(s => s.remove());
+    }
+
     themeSelector.addEventListener('change', async (e) => {
       const theme = e.target.value;
-      await import(`vistaview/styles/${theme}.css`);
+      removeExistingThemeStyle();
+      if (themeImports[theme]) {
+        const before = new Set(Array.from(document.querySelectorAll('style')));
+        await themeImports[theme]();
+        const after = Array.from(document.querySelectorAll('style'));
+        for (const style of after) {
+          if (!before.has(style)) {
+            style.setAttribute('data-vistaview-theme', theme);
+          }
+        }
+      }
     });
+
+    // load initial css and set attribute on new style tag(s)
+    {
+      const before = new Set(Array.from(document.querySelectorAll('style')));
+      await themeImports[initTheme]();
+      const after = Array.from(document.querySelectorAll('style'));
+      for (const style of after) {
+        if (!before.has(style)) {
+          style.setAttribute('data-vistaview-theme', initTheme);
+        }
+      }
+    }
 
     (async () => {
 
