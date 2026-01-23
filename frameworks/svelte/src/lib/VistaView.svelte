@@ -7,7 +7,7 @@
   export let selector: string = '> a';
   export let options: VistaOpt = {} as VistaOpt;
   export let id: string = '';
-  export let vistaRef: ((obj: { vistaView: VistaInterface | null; container: HTMLElement | null } | null) => void) | undefined;
+  export let vistaRef: ((obj: { vistaView: VistaInterface | null; container: HTMLElement | null } | null) => void) | undefined = undefined;
 
   let container: HTMLDivElement | null = null;
   let instance: VistaInterface | null = null;

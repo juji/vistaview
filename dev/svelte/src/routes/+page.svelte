@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import 'vistaview/style.css';
 	import { VistaView } from 'vistaview/svelte';
 	let images = [
