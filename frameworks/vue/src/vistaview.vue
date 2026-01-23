@@ -33,10 +33,11 @@ export default defineComponent({
     // helper to initialize the instance; destroys previous instance if any
     function initInstance() {
       if (!containerRef.value) return;
+      const id = containerRef.value.id;
       instanceRef.value?.destroy();
       instanceRef.value = vistaView({
         ...(props.options as VistaOpt),
-        elements: `#${galleryId.value} ${props.selector}`,
+        elements: `#${id} ${props.selector}`,
       });
     }
 
