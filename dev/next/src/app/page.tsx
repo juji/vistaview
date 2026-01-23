@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { VistaComponentRef, VistaView } from 'vistaview/react';
 import 'vistaview/style.css';
 import styles from './vistaview-demo.module.css';
