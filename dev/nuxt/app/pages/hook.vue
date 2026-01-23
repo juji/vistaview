@@ -30,17 +30,11 @@ const images = [
 
 const containerRef = ref<HTMLElement | null>(null);
 const galleryId = 'vistaview-hook-demo';
-let vista: ReturnType<typeof useVistaView> | null = null;
 
-onMounted(() => {
-  vista = useVistaView({
-    elements: `#${galleryId} > a`,
-  });
+const vista = useVistaView({
+  elements: `#${galleryId} > a`,
 });
 
-onBeforeUnmount(() => {
-  vista?.destroy();
-});
 </script>
 
 <style scoped>
