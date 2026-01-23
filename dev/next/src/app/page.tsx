@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { VistaView } from 'vistaview/react';
+import { useId, useRef, useState } from 'react';
+import { VistaComponentRef, VistaView } from 'vistaview/react';
 import 'vistaview/style.css';
 import styles from './vistaview-demo.module.css';
 
@@ -25,14 +25,17 @@ const addition = [
 export default function GalleryPage() {
   const [images, setImages] = useState(initialImages);
   const [added, setAdded] = useState(false);
+  const ref = useRef<VistaComponentRef | null>(null);
 
   const handleToggle = () => {
     if (added) {
       setImages(initialImages);
       setAdded(false);
+      ref.current?.vistaView?.reset();
     } else {
       setImages([...initialImages, ...addition]);
       setAdded(true);
+      ref.current?.vistaView?.reset();
     }
   };
 
@@ -42,7 +45,7 @@ export default function GalleryPage() {
       <button onClick={handleToggle} style={{ marginBottom: 24 }}>
         {added ? 'remove addition' : 'add image'}
       </button>
-      <VistaView className={styles.vistaviewGrid}>
+      <VistaView className={styles.vistaviewGrid} ref={ref}>
         {images.map((img, i) => (
           <a href={img.full} className={styles.vistaviewAnchor} key={img.full}>
             <img src={img.thumb} alt={img.alt} className={styles.vistaviewThumb} />
