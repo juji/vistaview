@@ -21,6 +21,9 @@
     "vistaview": "workspace:*",
     "solid-js": "^1.6.0"
   },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
   "devDependencies": {
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.9.0",

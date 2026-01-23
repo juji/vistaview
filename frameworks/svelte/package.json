@@ -31,6 +31,9 @@
 		"vistaview": "workspace:*",
 		"svelte": "^5.0.0"
 	},
+	"dependencies": {
+		"concurrently": "^8.2.2"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.5",
