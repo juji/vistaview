@@ -103,7 +103,6 @@ export class VistaView {
   reset() {
     if (typeof this.elements === 'string') {
       const list = this.qsOrigin(this.elements as string);
-      console.log('list', list)
       this.state.elmLength = list.length;
       list.forEach((el) => {
         const e = el as HTMLElement;
