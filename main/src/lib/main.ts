@@ -10,7 +10,7 @@ function checkCorrectness(elements: string | VistaImgConfig[]): string | VistaIm
     els = document.querySelectorAll<HTMLElement>(elements);
 
     if (els.length === 0) {
-      return new Error('No elements found in node list.').toString();
+      return new Error('No elements found in node list.')
     }
 
     // Validate DOM elements - must be img or a
