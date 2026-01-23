@@ -40,32 +40,14 @@ export default defineComponent({
       });
     }
 
-    let observer: MutationObserver | null = null;
-    let observerTimer: number | null = null;
-
     onMounted(() => {
       // initial instantiation
       initInstance();
-
-      // watch for DOM changes inside the gallery (slot changes) and re-init (debounced)
-      if (containerRef.value) {
-        observer = new MutationObserver(() => {
-          if (observerTimer) window.clearTimeout(observerTimer);
-          observerTimer = window.setTimeout(() => {
-            initInstance();
-          }, 50);
-        });
-        observer.observe(containerRef.value, { childList: true, subtree: true });
-      }
-
     });
 
     onBeforeUnmount(() => {
-      observer?.disconnect();
-      if (observerTimer) window.clearTimeout(observerTimer);
       instanceRef.value?.destroy();
       instanceRef.value = null;
-
     });
 
     // watch props for changes and re-initialize
