@@ -25,6 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <nav style={{ margin: '24px 0', textAlign: 'center' }}>
+          <a href="/" style={{ margin: '0 16px' }}>Basic</a>
+          <a href="/hook" style={{ margin: '0 16px' }}>Hook</a>
+        </nav>
         {children}
       </body>
     </html>
