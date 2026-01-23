@@ -10,8 +10,10 @@ export default function App() {
       root={props => (
         <MetaProvider>
           <Title>SolidStart - Basic</Title>
-          <a href="/">Index</a>
-          <a href="/about">About</a>
+          <nav style={{ margin: '24px 0', textAlign: 'center' }}>
+            <a href="/" style={{ margin: '0 16px' }}>Basic</a>
+            <a href="/hook" style={{ margin: '0 16px' }}>Hook</a>
+          </nav>
           <Suspense>{props.children}</Suspense>
         </MetaProvider>
       )}
