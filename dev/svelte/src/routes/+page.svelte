@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import 'vistaview/style.css';
 	import { VistaView } from 'vistaview/svelte';
-	const images = [
+	let images = [
 		{ full: "https://picsum.photos/id/1015/600/400", thumb: "https://picsum.photos/id/1015/300/200" },
 		{ full: "https://picsum.photos/id/1016/600/400", thumb: "https://picsum.photos/id/1016/300/200" },
 		{ full: "https://picsum.photos/id/1018/600/400", thumb: "https://picsum.photos/id/1018/300/200" },
@@ -9,6 +10,25 @@
 		{ full: "https://picsum.photos/id/1024/600/400", thumb: "https://picsum.photos/id/1024/300/200" },
 		{ full: "https://picsum.photos/id/1025/600/400", thumb: "https://picsum.photos/id/1025/300/200" },
 	];
+	const initialImages = [...images];
+	const addition = [
+		{ full: "https://picsum.photos/id/0/600/400", thumb: "https://picsum.photos/id/0/300/200" },
+		{ full: "https://picsum.photos/id/1031/600/400", thumb: "https://picsum.photos/id/1031/300/200" },
+		{ full: "https://picsum.photos/id/1032/600/400", thumb: "https://picsum.photos/id/1032/300/200" },
+		{ full: "https://picsum.photos/id/1033/600/400", thumb: "https://picsum.photos/id/1033/300/200" },
+		{ full: "https://picsum.photos/id/1/600/400", thumb: "https://picsum.photos/id/1/300/200" },
+		{ full: "https://picsum.photos/id/1035/600/400", thumb: "https://picsum.photos/id/1035/300/200" },
+	];
+	let added = false;
+	function handleToggle() {
+		if (added) {
+			images = [...initialImages];
+			added = false;
+		} else {
+			images = [...initialImages, ...addition];
+			added = true;
+		}
+	}
 </script>
 
 <h1>VistaView Svelte - Basic Example</h1>
@@ -19,6 +39,10 @@
 		</a>
 	{/each}
 </VistaView>
+
+<button on:click={handleToggle} style="margin-bottom: 24px;">
+	{added ? 'remove addition' : 'add image'}
+</button>
 
 <style>
  :global(.vistaview-grid) {

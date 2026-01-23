@@ -41,11 +41,21 @@
     initInstance();
   };
 
+  let observer: MutationObserver | null = null;
   onMount(() => {
     initInstance();
+    observer = new MutationObserver(() => {
+      instance?.reset();
+    });
+
+    observer.observe(container!, {
+      childList: true,
+      subtree: false,
+    });
   });
 
   onDestroy(() => {
+    observer?.disconnect();
     destroyInstance();
   });
 </script>
