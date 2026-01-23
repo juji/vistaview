@@ -12,12 +12,11 @@ const images = [
 
 const galleryId = 'vistaview-hook-demo';
 
-// The hook manages its own lifecycle
-const vista = useVistaView({
-  elements: `#${galleryId} > a`,
-});
-
 export default function HookPage() {
+  // The hook manages its own lifecycle
+  const vista = useVistaView({
+    elements: `#${galleryId} > a`,
+  });
   return (
     <main style={{ padding: '32px' }}>
       <h1>VistaView Solid - useVistaView Hook Demo</h1>
