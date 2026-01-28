@@ -1,7 +1,10 @@
+
 ---
 title: Installation
 description: How to install VistaView in your project
 ---
+
+![npm version](https://img.shields.io/npm/v/vistaview?label=VistaView)
 
 VistaView is a lightweight image lightbox library that can be installed via npm or used directly from a CDN.
 
@@ -42,25 +45,25 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## CDN Installation
 
-For quick prototyping or non-bundler environments, use the UMD build via CDN:
+
+
+For quick prototyping or non-bundler environments, use the UMD build via CDN. Use these URLs for the latest published version:
 
 ### unpkg
-
 ```html
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/style.css" />
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
 ```
 
 ### jsDelivr
-
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
-<script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/main/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/vistaview/main/dist/vistaview.umd.js"></script>
 ```
 
 ## Bundle Sizes
 
-VistaView is lightweight and optimized for production:
+VistaView is lightweight and optimized for production. Bundle sizes are for v2:
 
 - **Core Library:** ~42KB ESM (~10KB gzip)
 - **CSS:** ~7KB (~1.7KB gzip)
@@ -79,13 +82,13 @@ VistaView works in all modern browsers:
 
 VistaView provides official bindings for popular frameworks:
 
-- **React** - Component and hook
-- **Vue 3** - Component and composable
-- **Svelte** - Hook
-- **Solid** - Hook
-- **Vanilla JS** - Direct API
+- **React** – Component and hook
+- **Vue 3** – Component and composable
+- **Svelte** – Component and hook
+- **Solid** – Component and hook
+- **Vanilla JS** – Direct API
 
-See the [Integration](/integrations/react) guides for framework-specific instructions.
+See the [Integration guides](/integrations/overview) for framework-specific instructions. Each integration is maintained in the monorepo and may have its own documentation and stability guarantees.
 
 ## Next Steps
 
