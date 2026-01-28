@@ -306,12 +306,6 @@ onUnmounted(() => {
 });
 ```
 
-### Recommendation
-
-- **Use multiple instances** when galleries need different configurations (zoom, extensions, controls)
-- **Use single instance with array** for programmatic galleries in SPAs where all galleries share configuration
-- **Use selector updates** for simple galleries where only the image set changes
-
 ## Next Steps
 
 - Explore [Animation Options](/core/configuration/animation) for timing control
