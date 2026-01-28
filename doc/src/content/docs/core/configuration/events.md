@@ -7,7 +7,6 @@ description: Handle VistaView lifecycle events
 
 Called when the lightbox opens:
 
-vistaView({
 ```typescript
 import type { VistaView } from 'vistaview';
 vistaView({
@@ -23,7 +22,6 @@ vistaView({
 
 Called when the lightbox closes:
 
-vistaView({
 ```typescript
 import type { VistaView } from 'vistaview';
 vistaView({
@@ -39,7 +37,6 @@ vistaView({
 
 Called when viewing an image (including on open):
 
-vistaView({
 ```typescript
 import type { VistaView, VistaData, VistaBox } from 'vistaview';
 vistaView({
@@ -91,7 +88,6 @@ type VistaData = {
 
 Called when the current image's content state changes (after zoom, pan, or when image finishes loading):
 
-vistaView({
 ```typescript
 import type { VistaView, VistaImageClone } from 'vistaview';
 vistaView({
