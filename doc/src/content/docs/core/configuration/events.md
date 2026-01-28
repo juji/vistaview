@@ -9,6 +9,7 @@ Called when the lightbox opens:
 
 ```typescript
 import type { VistaView } from 'vistaview';
+
 vistaView({
   elements: '#gallery a',
   onOpen: (vistaView: VistaView) => {
@@ -24,6 +25,7 @@ Called when the lightbox closes:
 
 ```typescript
 import type { VistaView } from 'vistaview';
+
 vistaView({
   elements: '#gallery a',
   onClose: (vistaView: VistaView) => {
@@ -39,6 +41,7 @@ Called when viewing an image (including on open):
 
 ```typescript
 import type { VistaView, VistaData, VistaBox } from 'vistaview';
+
 vistaView({
   elements: '#gallery a',
   onImageView: (data: VistaData, vistaView: VistaView) => {
@@ -90,6 +93,7 @@ Called when the current image's content state changes (after zoom, pan, or when 
 
 ```typescript
 import type { VistaView, VistaImageClone } from 'vistaview';
+
 vistaView({
   elements: '#gallery a',
   onContentChange: (content: VistaImageClone, vistaView: VistaView) => {
