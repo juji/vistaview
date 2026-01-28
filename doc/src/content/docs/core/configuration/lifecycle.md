@@ -21,36 +21,46 @@ import type { VistaView, VistaData } from 'vistaview';
   elements: '#gallery a',
 
   // Custom initialization (runs once on instance creation)
+
   initFunction: (vistaView: VistaView) => {
     console.log('Custom init');
+    // default init, just here to show the actual init
     init(vistaView);
   },
 
   // Custom open behavior (runs when lightbox opens)
+
   openFunction: (vistaView: VistaView) => {
     console.log('Custom open');
+    // default open, just here to show the actual open
     open(vistaView);
   },
 
   // Custom setup when navigating between images
+
   imageSetupFunction: (data: VistaData, vistaView: VistaView) => {
     console.log('Setting up image:', data.index.to);
+    // default imageSetup, just here to show the actual imageSetup
     imageSetup(data, vistaView);
   },
 
   // Custom transition animation
+
   transitionFunction: async (
     data: VistaData, 
     abortSignal: AbortSignal, 
     vistaView: VistaView
   ) => {
     console.log('Custom transition');
+    // default transition, just here to show the actual transition
     return transition(data, abortSignal, vistaView);
   },
 
   // Custom close behavior (runs when lightbox closes)
+
   closeFunction: (vistaView: VistaView) => {
     console.log('Custom close');
+    // default close, just here to show the actual close
     close(vistaView);
   },
 });
