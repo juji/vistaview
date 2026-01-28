@@ -50,7 +50,7 @@ import type { VistaView, VistaData } from 'vistaview';
     data: VistaData, 
     abortSignal: AbortSignal, 
     vistaView: VistaView
-  ) => {
+  ): Promise<{ cleanup: () => void; transitionEnded: Promise<void> } | undefined> => {
     console.log('Custom transition');
     // default transition, just here to show the actual transition
     return transition(data, abortSignal, vistaView);
