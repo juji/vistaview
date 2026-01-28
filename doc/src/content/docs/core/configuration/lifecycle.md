@@ -5,10 +5,10 @@ description: Override default lifecycle behavior with custom functions
 
 You can override default lifecycle functions to customize behavior at different stages:
 
+vistaView({
 ```typescript
 import {
   vistaView,
-
   // lifecycle functions
   init,
   open,
@@ -17,63 +17,42 @@ import {
   close,
 } from 'vistaview';
 
-// types
-import type { VistaData } from 'vistaview';
+import type { VistaView, VistaData } from 'vistaview';
 
-vistaView({
+
   elements: '#gallery a',
 
   // Custom initialization (runs once on instance creation)
-  // Default init sets up swipe gesture controls:
-  // - Vertical swipe down (>144px) closes the lightbox
-  // - Horizontal swipe left/right (>64px) navigates between images
-  // - Smart axis locking prevents diagonal movement
-  initFunction: (vistaView) => {
+  initFunction: (vistaView: VistaView) => {
     console.log('Custom init');
-    init(vistaView); // Call default init
+    init(vistaView);
   },
 
   // Custom open behavior (runs when lightbox opens)
-  // Default open sets up the image container:
-  // - Sets container width based on preload count (preloads * 2 + 1) * 100vw
-  // - Positions container to show current image with preloaded images on sides
-  // - Sets display to flex for horizontal layout
-  openFunction: (vistaView) => {
+  openFunction: (vistaView: VistaView) => {
     console.log('Custom open');
-    open(vistaView); // Call default open
+    open(vistaView);
   },
 
   // Custom setup when navigating between images
-  // Default imageSetup is empty - it's a hook point for custom logic
-  // Common use cases: logging, analytics, custom image processing
-  imageSetupFunction: (data: VistaData, vistaView) => {
+  imageSetupFunction: (data: VistaData, vistaView: VistaView) => {
     console.log('Setting up image:', data.index.to);
-    imageSetup(data, vistaView); // Call default imageSetup
+    imageSetup(data, vistaView);
   },
 
   // Custom transition animation
-  // Default transition creates a horizontal slide animation:
-  // - Only animates between adjacent images (next/previous)
-  // - Respects prefers-reduced-motion setting (no animation if enabled)
-  // - Slides left when going to next image, right when going to previous
-  // - Uses animationDurationBase option for timing (default 333ms)
-  // - Returns cleanup function and transitionEnded promise
-  transitionFunction: async (data: VistaData, abortSignal, vistaView) => {
+  transitionFunction: async (data: VistaData, abortSignal: AbortSignal, vistaView: VistaView) => {
     console.log('Custom transition');
-    // Use default transition
     return transition(data, abortSignal, vistaView);
   },
 
   // Custom close behavior (runs when lightbox closes)
-  // Default close is empty - it's a hook point for custom cleanup
-  // Common use cases: analytics, state cleanup, custom animations
-  closeFunction: (vistaView) => {
+  closeFunction: (vistaView: VistaView) => {
     console.log('Custom close');
-    close(vistaView); // Call default close
+    close(vistaView);
   },
 });
 ```
-
 ## VistaData Type
 
 The `data` parameter passed to lifecycle functions contains information about the current and previous images:
