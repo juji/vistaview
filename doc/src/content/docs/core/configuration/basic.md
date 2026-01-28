@@ -279,6 +279,10 @@ function cleanup() {
   blogGallery.destroy();
 }
 
+// the following example in react and Vue 
+// is only needed if you are using 
+// hooks, composable, or creating and managing you own instance.
+
 // In React - basic cleanup
 useEffect(() => {
   const vista = vistaView({ elements: '#gallery a' });
