@@ -4,8 +4,6 @@ description: Override default lifecycle behavior with custom functions
 ---
 
 You can override default lifecycle functions to customize behavior at different stages:
-
-vistaView({
 ```typescript
 import {
   vistaView,
@@ -41,7 +39,11 @@ import type { VistaView, VistaData } from 'vistaview';
   },
 
   // Custom transition animation
-  transitionFunction: async (data: VistaData, abortSignal: AbortSignal, vistaView: VistaView) => {
+  transitionFunction: async (
+    data: VistaData, 
+    abortSignal: AbortSignal, 
+    vistaView: VistaView
+  ) => {
     console.log('Custom transition');
     return transition(data, abortSignal, vistaView);
   },
