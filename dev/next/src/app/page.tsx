@@ -22,6 +22,15 @@ const addition = [
   { full: "https://picsum.photos/id/1035/600/400", thumb: "https://picsum.photos/id/1035/300/200", alt: "Addition 6" },
 ];
 
+const options: VistaOpt = {
+  onOpen: (vistaView: VistaView): void => {
+    console.log('Gallery opened');
+  },
+  onClose: (vistaView: VistaView): void => {
+    console.log('Gallery closed');
+  },
+};
+
 export default function GalleryPage() {
   const [images, setImages] = useState(initialImages);
   const [added, setAdded] = useState(false);
@@ -45,7 +54,7 @@ export default function GalleryPage() {
       <button onClick={handleToggle} style={{ marginBottom: 24 }}>
         {added ? 'remove addition' : 'add image'}
       </button>
-      <VistaView className={styles.vistaviewGrid} ref={ref}>
+      <VistaView className={styles.vistaviewGrid} ref={ref} options={options}>
         {images.map((img, i) => (
           <a href={img.full} className={styles.vistaviewAnchor} key={img.full}>
             <img src={img.thumb} alt={img.alt} className={styles.vistaviewThumb} />
