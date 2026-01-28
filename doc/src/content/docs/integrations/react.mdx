@@ -100,7 +100,7 @@ function Gallery() {
 'use client'; // Required for Next.js and other React Server Components frameworks
 
 import { VistaView } from 'vistaview/react';
-import type { VistaOpt } from 'vistaview';
+import type { VistaOpt, VistaView } from 'vistaview';
 import 'vistaview/style.css';
 
 // Define options outside component to prevent recreation on every render
@@ -108,8 +108,12 @@ const options: VistaOpt = {
   maxZoomLevel: 3,
   preloads: 2,
   animationDurationBase: 400,
-  onOpen: (vistaView) => console.log('Gallery opened'),
-  onClose: (vistaView) => console.log('Gallery closed'),
+  onOpen: (vistaView: VistaView): void => {
+    console.log('Gallery opened');
+  },
+  onClose: (vistaView: VistaView): void => {
+    console.log('Gallery closed');
+  },
 };
 
 function Gallery() {
@@ -127,37 +131,40 @@ function Gallery() {
 }
 ```
 
-## Hook Approach
-
-Use the `useVistaView` hook for more control over the gallery instance:
+## With Extensions
 
 ```tsx
 'use client'; // Required for Next.js and other React Server Components frameworks
 
-import { useId } from 'react';
-import { useVistaView } from 'vistaview/react';
+import { VistaView } from 'vistaview/react';
+import { download } from 'vistaview/extensions/download';
 import 'vistaview/style.css';
 
-function Gallery() {
-  const id = useId();
-  const vista = useVistaView({
-    elements: `#${CSS.escape(id)} a`,
-  });
+// Define options outside component to prevent recreation on every render
+const extensionOptions = {
+  controls: {
+    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+  },
+  extensions: [download()],
+};
 
-  return (<>
-    <div id={id}>
-      <a href="/images/full.jpg">
-        <img src="/images/thumb.jpg" alt="Photo" />
+function Gallery() {
+  return (
+    <VistaView
+      selector="> a"
+      options={extensionOptions}
+    >
+      <a href="/images/photo1.jpg">
+        <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
       </a>
-    </div>
-    <button onClick={() => vista.open(0)}>Open Gallery</button>
-    <button onClick={() => vista.next()}>Next</button>
-    <button onClick={() => vista.prev()}>Previous</button>
-  </>);
+    </VistaView>
+  );
 }
 ```
 
-## With Extensions
+## Hook Approach
+
+Use the `useVistaView` hook for more control over the gallery instance:
 
 ```tsx
 'use client'; // Required for Next.js and other React Server Components frameworks
