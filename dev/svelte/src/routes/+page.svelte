@@ -1,6 +1,11 @@
 <script lang="ts">
 	import 'vistaview/style.css';
 	import { VistaView } from 'vistaview/svelte';
+	import type { VistaInterface } from 'vistaview';
+	
+	let vista: VistaInterface | null = null;
+	let container: HTMLElement | null = null;
+	
 	let images = [
 		{ full: "https://picsum.photos/id/1015/600/400", thumb: "https://picsum.photos/id/1015/300/200" },
 		{ full: "https://picsum.photos/id/1016/600/400", thumb: "https://picsum.photos/id/1016/300/200" },
@@ -31,7 +36,13 @@
 </script>
 
 <h1>VistaView Svelte - Basic Example</h1>
-<VistaView class="vistaview-grid">
+<VistaView 
+	class="vistaview-grid"
+	vistaRef={(api) => {
+		vista = api?.vistaView ?? null;
+		container = api?.container ?? null;
+	}}
+>
 	{#each images as img, i}
 		<a href={img.full} class="vistaview-anchor">
 			<img src={img.thumb} alt={`Sample ${i + 1}`} class="vistaview-thumb" />
@@ -42,6 +53,10 @@
 <button on:click={handleToggle} style="margin-bottom: 24px;">
 	{added ? 'remove addition' : 'add image'}
 </button>
+<button on:click={() => vista?.open(0)}>Open Gallery</button>
+<button on:click={() => vista?.next()}>Next</button>
+<button on:click={() => vista?.prev()}>Previous</button>
+<button on:click={() => console.log('Container:', container)}>Log Container</button>
 
 <style>
  :global(.vistaview-grid) {
