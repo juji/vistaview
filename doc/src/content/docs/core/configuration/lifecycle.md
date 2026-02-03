@@ -90,4 +90,4 @@ interface VistaData {
 }
 ```
 
-See the [API Reference](/api-reference) for more details on these functions.
+See the [API Reference](/api-reference/main-function) for more details on these functions.
