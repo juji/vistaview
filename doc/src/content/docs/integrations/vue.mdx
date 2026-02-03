@@ -51,7 +51,7 @@ import 'vistaview/style.css';
 </script>
 
 <template>
-  <VistaView selector="> a">
+  <VistaView>
     <a href="/images/photo1-full.jpg">
       <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
     </a>
@@ -62,9 +62,11 @@ import 'vistaview/style.css';
 </template>
 ```
 
+> **Note:** The `selector` prop defaults to `"> a"`, so you can omit it when your gallery contains direct `<a>` children.
+
 ### With Ref for Imperative Control
 
-We expose both the imperative API and the root DOM element on the component ref. Use a typed component ref to access `vista` (API) and `container` (DOM):
+We expose both the imperative API and the root DOM element on the component ref. Use a typed component ref to access `vistaView` (API) and `container` (DOM):
 
 ```vue
 <script setup lang="ts">
@@ -73,7 +75,7 @@ import type { VistaInterface } from 'vistaview';
 import { VistaView } from 'vistaview/vue';
 import 'vistaview/style.css';
 
-const compRef = ref<{ vista: VistaInterface; container: HTMLElement | null } | null>(null);
+const compRef = ref<{ vistaView: VistaInterface; container: HTMLElement | null } | null>(null);
 
 const openGallery = () => {
   compRef.value?.vistaView.open(0);
@@ -82,7 +84,7 @@ const openGallery = () => {
 </script>
 
 <template>
-  <VistaView ref="compRef" selector="> a">
+  <VistaView ref="compRef">
     <a href="/images/full.jpg">
       <img src="/images/thumb.jpg" alt="Photo" />
     </a>
@@ -130,18 +132,16 @@ Use the `useVistaView` composable for more control:
 
 ```vue
 <script setup>
-import { useId } from 'vue';
 import { useVistaView } from 'vistaview/vue';
 import 'vistaview/style.css';
 
-const id = useId();
 const vista = useVistaView({
-  elements: `#${CSS.escape(id)} a`,
+  elements: '#gallery > a',
 });
 </script>
 
 <template>
-  <div :id="id">
+  <div id="gallery">
     <a href="/images/full.jpg">
       <img src="/images/thumb.jpg" alt="Photo" />
     </a>
@@ -154,6 +154,35 @@ const vista = useVistaView({
 
 ## With Extensions
 
+Extensions can be used with both the component and composable approaches.
+
+### Component with Extensions
+
+```vue
+<script setup>
+import { VistaView } from 'vistaview/vue';
+import { download } from 'vistaview/extensions/download';
+import 'vistaview/style.css';
+
+const options = {
+  controls: {
+    topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
+  },
+  extensions: [download()],
+};
+</script>
+
+<template>
+  <VistaView :options="options">
+    <a href="/images/photo1.jpg">
+      <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+    </a>
+  </VistaView>
+</template>
+```
+
+### Composable with Extensions
+
 ```vue
 <script setup>
 import { useVistaView } from 'vistaview/vue';
@@ -161,7 +190,7 @@ import { download } from 'vistaview/extensions/download';
 import 'vistaview/style.css';
 
 const vista = useVistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
@@ -195,7 +224,7 @@ export default {
   },
   mounted() {
     this.vista = vistaView({
-      elements: '#gallery a',
+      elements: '#gallery > a',
     });
   },
   beforeUnmount() {

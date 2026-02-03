@@ -50,8 +50,7 @@ The recommended, primary way to use VistaView in Svelte is the `VistaView` compo
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
-import type { VistaComponentRef } from 'vistaview/svelte';
-let comp: VistaComponentRef = null;
+let comp;
 </script>
 
 <VistaView bind:this={comp}>
