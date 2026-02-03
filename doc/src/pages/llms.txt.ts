@@ -83,7 +83,7 @@ import { vistaView } from 'vistaview';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
 });
 \`\`\`
 
