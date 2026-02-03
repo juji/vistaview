@@ -68,7 +68,7 @@ Current DOM elements and image instances in the view.
 **Properties:**
 
 - `htmls` - Array of HTML container elements (`.vvw-item` divs)
-- `images` - Array of [VistaBox](#vistabox) instances (images or custom content)
+- `images` - Array of [VistaBox](/api-reference/classes/vistabox) instances (images or custom content)
 
 The arrays include the current image plus preloaded images based on the `preloads` configuration option.
 

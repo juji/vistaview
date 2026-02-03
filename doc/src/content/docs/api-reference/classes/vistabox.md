@@ -502,6 +502,6 @@ Finalizes the current transform state by converting temporary transforms into pe
 
 ## Related
 
-- [VistaImage](#vistaimage-class) - Image implementation extending VistaBox
+- [VistaImage](/api-reference/classes/vistaimage) - Image implementation extending VistaBox
 - [Extensions](/api-reference/extensions) - Creating custom content types
 - [VistaImageParams](/api-reference/types#vistaimageparams) - Constructor parameters

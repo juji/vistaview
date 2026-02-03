@@ -3,7 +3,7 @@ title: VistaImage Class
 description: Image implementation extending VistaBox
 ---
 
-The `VistaImage` class extends [VistaBox](#vistabox) and implements image-specific functionality including responsive images, hi-res loading, and zoom/pan controls.
+The `VistaImage` class extends [VistaBox](/api-reference/classes/vistabox) and implements image-specific functionality including responsive images, hi-res loading, and zoom/pan controls.
 
 ## Overview
 
@@ -27,7 +27,7 @@ const image = new VistaImage(params);
 
 ## Public Properties
 
-Inherits all properties from [VistaBox](#vistabox):
+Inherits all properties from [VistaBox](/api-reference/classes/vistabox):
 
 - `element` - HTMLImageElement containing the image
 - `state` - Current dimensions and transformations
@@ -50,7 +50,7 @@ Creates a new VistaImage instance with automatic image loading.
 
 ### Inherited Methods
 
-All public methods from [VistaBox](#vistabox) are available:
+All public methods from [VistaBox](/api-reference/classes/vistabox) are available:
 
 - `init()` - Initialize the image
 - `setSizes()` - Calculate dimensions
@@ -63,6 +63,6 @@ All public methods from [VistaBox](#vistabox) are available:
 
 ## Related
 
-- [VistaBox](#vistabox) - Base class
+- [VistaBox](/api-reference/classes/vistabox) - Base class
 - [VistaView](/api-reference/classes/vistaview) - Main controller
 - [Extensions](/api-reference/extensions) - Creating custom content types
