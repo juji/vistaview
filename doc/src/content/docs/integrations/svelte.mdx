@@ -50,6 +50,8 @@ The recommended, primary way to use VistaView in Svelte is the `VistaView` compo
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
+import 'vistaview/style.css';
+
 let comp;
 </script>
 
@@ -65,24 +67,31 @@ let comp;
 <button on:click={() => comp?.getApi()?.vistaView?.open(0)}>Open Gallery</button>
 ```
 
-### Controls (open / next / prev)
+### Imperative Control
+
+If you need programmatic access to the gallery API, use the `vistaRef` callback prop:
 
 ```svelte
 <script>
 import { VistaView } from 'vistaview/svelte';
-let comp;
-function open() { comp?.getApi()?.vistaView?.open(0); }
-function next() { comp?.getApi()?.vistaView?.next(); }
-function prev() { comp?.getApi()?.vistaView?.prev(); }
+import type { VistaInterface } from 'vistaview';
+import 'vistaview/style.css';
+
+let vista: VistaInterface | null = null;
+let container: HTMLElement | null = null;
 </script>
 
-<VistaView bind:this={comp}>
+<VistaView vistaRef={(api) => {
+  vista = api?.vistaView ?? null;
+  container = api?.container ?? null;
+}}>
   <a href="/images/full.jpg"><img src="/images/thumb.jpg" alt="Photo" /></a>
 </VistaView>
 
-<button on:click={open}>Open Gallery</button>
-<button on:click={next}>Next</button>
-<button on:click={prev}>Previous</button>
+<button on:click={() => vista?.open(0)}>Open Gallery</button>
+<button on:click={() => vista?.next()}>Next</button>
+<button on:click={() => vista?.prev()}>Previous</button>
+<button on:click={() => console.log(container)}>Log Container</button>
 ```
 
 ### Options
@@ -91,6 +100,7 @@ function prev() { comp?.getApi()?.vistaView?.prev(); }
 <script>
 import { VistaView } from 'vistaview/svelte';
 import type { VistaOpt } from 'vistaview';
+import 'vistaview/style.css';
 
 const options: VistaOpt = {
   maxZoomLevel: 3,
@@ -112,6 +122,7 @@ const options: VistaOpt = {
 <script>
 import { VistaView } from 'vistaview/svelte';
 import { download } from 'vistaview/extensions/download';
+import 'vistaview/style.css';
 
 const options = { controls: { topRight: ['zoomIn','zoomOut','download','close'] }, extensions: [download()] };
 </script>
@@ -125,22 +136,20 @@ const options = { controls: { topRight: ['zoomIn','zoomOut','download','close'] 
 
 ## Hook approach (advanced)
 
-The `useVistaView` hook is a lower-level API. Use it for non-component contexts or when you need manual control. Initialization happens on mount, so wrap calls in `onMount` or use optional chaining.
+The `useVistaView` hook is a lower-level API. Use it for non-component contexts or when you need manual control. The hook handles lifecycle internally (`onMount`/`onDestroy`), so you can call it at the top level.
 
 ```svelte
 <script>
 import { useVistaView } from 'vistaview/svelte';
-import { onMount } from 'svelte';
+import 'vistaview/style.css';
 
-let vista;
-
-onMount(() => {
-  vista = useVistaView({ elements: '#my-gallery a' });
-});
+const vista = useVistaView({ elements: '#my-gallery > a' });
 </script>
 
 <div id="my-gallery">
-  <a href="#">...</a>
+  <a href="/images/photo1.jpg">
+    <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
+  </a>
 </div>
 
 <button on:click={() => vista?.open?.(0)}>Open</button>
@@ -154,11 +163,12 @@ You can call the core `vistaView` function directly when embedding in non-compon
 <script>
 import { onMount } from 'svelte';
 import { vistaView } from 'vistaview';
+import 'vistaview/style.css';
 
 let instance;
 
 onMount(() => {
-  instance = vistaView({ elements: '#my-gallery a' });
+  instance = vistaView({ elements: '#my-gallery > a' });
   return () => instance?.destroy();
 });
 </script>
