@@ -18,12 +18,12 @@ Add interactive controls to the lightbox:
 
 Embed videos from popular platforms:
 
-- **[YouTube](/extensions/youtube)** - Embed YouTube videos
-- **[Vimeo](/extensions/vimeo)** - Embed Vimeo videos
-- **[Dailymotion](/extensions/dailymotion)** - Embed Dailymotion videos
-- **[Wistia](/extensions/wistia)** - Embed Wistia videos
-- **[Vidyard](/extensions/vidyard)** - Embed Vidyard videos
-- **[Streamable](/extensions/streamable)** - Embed Streamable videos
+- **[YouTube](/extensions/youtube-video)** - Embed YouTube videos
+- **[Vimeo](/extensions/vimeo-video)** - Embed Vimeo videos
+- **[Dailymotion](/extensions/dailymotion-video)** - Embed Dailymotion videos
+- **[Wistia](/extensions/wistia-video)** - Embed Wistia videos
+- **[Vidyard](/extensions/vidyard-video)** - Embed Vidyard videos
+- **[Streamable](/extensions/streamable-video)** - Embed Streamable videos
 
 ### Map Extensions
 
@@ -47,7 +47,7 @@ import { download } from 'vistaview/extensions/download';
 import { youtubeVideo } from 'vistaview/extensions/youtube-video';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
@@ -58,13 +58,13 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/youtube-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/download.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/youtube-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     controls: {
       topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
     },

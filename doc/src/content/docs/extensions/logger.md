@@ -15,7 +15,7 @@ import { logger } from 'vistaview/extensions/logger';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [logger()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/logger.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/logger.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.logger()],
   });
 </script>
@@ -94,7 +94,7 @@ import { logger } from 'vistaview/extensions/logger';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [logger()],
   onOpen: () => {
     console.log('App: Gallery opened');
@@ -140,7 +140,7 @@ import { logger } from 'vistaview/extensions/logger';
 import { myCustomExtension } from './my-extension';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [
     logger(), // Log all events
     myCustomExtension(), // Your extension
@@ -154,7 +154,7 @@ Use the logger to understand the order of lifecycle events:
 
 ```javascript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [logger()],
 });
 ```
@@ -182,7 +182,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions,
 });
 ```

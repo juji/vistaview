@@ -15,7 +15,7 @@ import { openstreetmap } from 'vistaview/extensions/openstreetmap';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [openstreetmap()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/openstreetmap.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/openstreetmap.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.openstreetmap()],
   });
 </script>
@@ -60,7 +60,7 @@ Create links with OpenStreetMap-compatible coordinate URLs:
   import 'vistaview/style.css';
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [openstreetmap()],
   });
 </script>

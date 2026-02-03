@@ -15,7 +15,7 @@ import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [vimeoVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/vimeo-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/vimeo-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.vimeoVideo()],
   });
 </script>
@@ -104,7 +104,7 @@ Vimeo doesn't provide direct thumbnail URLs without API authentication. The `get
   });
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [vimeoVideo()],
   });
 </script>
@@ -176,7 +176,7 @@ import { youtubeVideo } from 'vistaview/extensions/youtube-video';
 import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [youtubeVideo(), vimeoVideo()],
 });
 ```

@@ -15,7 +15,7 @@ import { streamableVideo } from 'vistaview/extensions/streamable-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [streamableVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/streamable-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/streamable-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.streamableVideo()],
   });
 </script>
@@ -55,7 +55,7 @@ Create links pointing to Streamable video URLs:
   import 'vistaview/style.css';
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [streamableVideo()],
   });
 </script>

@@ -16,7 +16,7 @@ import 'vistaview/style.css';
 import 'vistaview/styles/extensions/image-story.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [
     imageStory({
       getStory: async (index) => {
@@ -32,14 +32,14 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
-<link rel="stylesheet" href="https://unpkg.com/vistaview/dist/styles/extensions/image-story.css" />
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/image-story.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/style.css" />
+<link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/styles/extensions/image-story.css" />
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/image-story.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [
       VistaView.imageStory({
         getStory: async (index) => {
@@ -103,7 +103,7 @@ imageStory({
 import { imageStory } from 'vistaview/extensions/image-story';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [
     imageStory({
       getStory: async (index) => ({

@@ -107,7 +107,7 @@ Usage:
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [
     analytics({
       trackEvent: (event, data) => {

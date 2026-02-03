@@ -15,7 +15,7 @@ import { wistiaVideo } from 'vistaview/extensions/wistia-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [wistiaVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/wistia-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/wistia-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.wistiaVideo()],
   });
 </script>
@@ -105,7 +105,7 @@ The `getWistiaThumbnail()` function is **async** because it fetches thumbnail in
     }
 
     vistaView({
-      elements: '#gallery a',
+      elements: '#gallery > a',
       extensions: [wistiaVideo()],
     });
   })();

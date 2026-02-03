@@ -15,7 +15,7 @@ import { vidyardVideo } from 'vistaview/extensions/vidyard-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [vidyardVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/vidyard-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/vidyard-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.vidyardVideo()],
   });
 </script>
@@ -55,7 +55,7 @@ Create links pointing to Vidyard video URLs:
   import 'vistaview/style.css';
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [vidyardVideo()],
   });
 </script>

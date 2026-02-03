@@ -15,7 +15,7 @@ import { dailymotionVideo } from 'vistaview/extensions/dailymotion-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [dailymotionVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/dailymotion-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/dailymotion-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.dailymotionVideo()],
   });
 </script>
@@ -106,7 +106,7 @@ const videoId = parseDailymotionVideoId('https://dai.ly/x8abcde');
   });
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [dailymotionVideo()],
   });
 </script>
@@ -175,7 +175,7 @@ import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
 import { dailymotionVideo } from 'vistaview/extensions/dailymotion-video';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [youtubeVideo(), vimeoVideo(), dailymotionVideo()],
 });
 ```

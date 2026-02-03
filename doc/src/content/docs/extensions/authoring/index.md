@@ -104,7 +104,7 @@ import { vistaView } from 'vistaview';
 import { myExtension } from './my-extension';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [myExtension()],
 });
 ```

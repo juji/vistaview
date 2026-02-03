@@ -15,7 +15,7 @@ import { googleMaps } from 'vistaview/extensions/google-maps';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [googleMaps()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/google-maps.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/google-maps.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.googleMaps()],
   });
 </script>
@@ -97,7 +97,7 @@ Provide your own thumbnail images - no API key needed:
   import 'vistaview/style.css';
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [googleMaps()], // No configuration needed
   });
 </script>
@@ -154,7 +154,7 @@ Then use the generated URL in your HTML:
   import 'vistaview/style.css';
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [googleMaps()],
   });
 </script>

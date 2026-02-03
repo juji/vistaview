@@ -15,7 +15,7 @@ import { youtubeVideo } from 'vistaview/extensions/youtube-video';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [youtubeVideo()],
 });
 ```
@@ -23,12 +23,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/youtube-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/youtube-video.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [VistaView.youtubeVideo()],
   });
 </script>
@@ -121,7 +121,7 @@ const videoId = parseYouTubeVideoId('https://www.youtube.com/watch?v=dQw4w9WgXcQ
   });
 
   vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     extensions: [youtubeVideo()],
   });
 </script>
@@ -218,7 +218,7 @@ import { vimeoVideo } from 'vistaview/extensions/vimeo-video';
 import { download } from 'vistaview/extensions/download';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [
     youtubeVideo(),
     vimeoVideo(),

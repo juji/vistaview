@@ -228,7 +228,7 @@ Usage:
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [youtubeVideo()],
 });
 ```

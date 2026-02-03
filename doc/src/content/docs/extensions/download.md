@@ -15,7 +15,7 @@ import { download } from 'vistaview/extensions/download';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
@@ -26,12 +26,12 @@ vistaView({
 ### UMD (CDN)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/download.umd.js"></script>
 
 <script>
   VistaView.vistaView({
-    elements: '#gallery a',
+    elements: '#gallery > a',
     controls: {
       topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
     },
@@ -62,7 +62,7 @@ The download button appears in the control area you specify. When clicked, it:
 
 ```javascript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['download', 'close'], // Position at top right
     // Or:
@@ -125,7 +125,7 @@ import { download } from 'vistaview/extensions/download';
 import 'vistaview/style.css';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },

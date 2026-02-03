@@ -130,7 +130,7 @@ Specify where your control appears using the `controls` config:
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
   },
