@@ -40,46 +40,45 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
   </TabItem>
 </Tabs>
 
-## Basic Usage
+## Component Approach (Recommended)
+
+The `VistaView` component is the recommended way to use VistaView in Solid applications:
 
 ```tsx
-import { useVistaView } from 'vistaview/solid';
+import { VistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
 
 function Gallery() {
-  const id = 'gallery-' + Math.random().toString(36).slice(2);
-  const vista = useVistaView({
-    elements: `#${id} a`,
-  });
-
   return (
-    <div id={id}>
+    <VistaView>
       <a href="/images/photo1-full.jpg">
         <img src="/images/photo1-thumb.jpg" alt="Photo 1" />
       </a>
       <a href="/images/photo2-full.jpg">
         <img src="/images/photo2-thumb.jpg" alt="Photo 2" />
       </a>
-    </div>
+    </VistaView>
   );
 }
 ```
 
-## With Control Buttons
+## Hook Approach
+
+Use the `useVistaView` hook when you need more control:
 
 ```tsx
 import { useVistaView } from 'vistaview/solid';
 import 'vistaview/style.css';
 
 function Gallery() {
-  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  const galleryId = 'vistaview-demo';
   const vista = useVistaView({
-    elements: `#${id} a`,
+    elements: `#${galleryId} > a`,
   });
 
   return (
     <>
-      <div id={id}>
+      <div id={galleryId}>
         <a href="/images/full.jpg">
           <img src="/images/thumb.jpg" alt="Photo" />
         </a>
@@ -92,42 +91,38 @@ function Gallery() {
 }
 ```
 
-## Using the component (optional)
+## Imperative Control with Component
 
-If you prefer a component-driven approach you can use the `VistaView` component. The component accepts `id`, `selector`, and `options`, and provides two callback props to get the API instance and root DOM element:
-
-- `vistaRef` – called with the `VistaInterface` instance (or `null` on unmount).
-- `ref` – called with the root DOM element.
+Access the API through the `componentRef` callback prop:
 
 ```tsx
-import { createSignal } from 'solid-js';
 import { VistaView } from 'vistaview/solid';
+import type { VistaInterface } from 'vistaview';
 import 'vistaview/style.css';
 
-let vista: import('vistaview').VistaInterface | null = null;
-let container: HTMLDivElement | undefined;
-
-function open() {
-  vista?.open(0);
-}
-
 function Gallery() {
-  const id = 'gallery-' + Math.random().toString(36).slice(2);
+  let vista: VistaInterface | null = null;
+  let container: HTMLDivElement | undefined;
+
   return (
     <>
-      <VistaView id={id} componentRef={({ vistaView, container: el } = {}) => { vista = vistaView ?? null; container = el; }}>
+      <VistaView 
+        componentRef={(api) => { 
+          vista = api?.vistaView ?? null; 
+          container = api?.container;
+        }}
+      >
         <a href="/images/full.jpg">
           <img src="/images/thumb.jpg" alt="Photo" />
         </a>
       </VistaView>
 
-      <button onClick={open}>Open Gallery</button>
+      <button onClick={() => vista?.open(0)}>Open Gallery</button>
+      <button onClick={() => vista?.next()}>Next</button>
+      <button onClick={() => vista?.prev()}>Previous</button>
     </>
   );
 }
-```
-
-Note: `vistaRef` is called with the `VistaInterface` instance; `ref` receives the root DOM element.
 
 ## With Options
 
@@ -148,7 +143,7 @@ const options: VistaOpt = {
 function Gallery() {
   const id = 'gallery-' + Math.random().toString(36).slice(2);
   const vista = useVistaView({
-    elements: `#${id} a`,
+    elements: `#${id} > a`,
     ...options,
   });
 
@@ -175,7 +170,7 @@ import 'vistaview/style.css';
 function Gallery() {
   const id = 'gallery-' + Math.random().toString(36).slice(2);
   const vista = useVistaView({
-    elements: `#${id} a`,
+    elements: `#${id} > a`,
     controls: {
       topRight: ['zoomIn', 'zoomOut', 'download', 'close'],
     },
@@ -209,7 +204,7 @@ function Gallery() {
 
   const id = 'gallery-' + Math.random().toString(36).slice(2);
   const vista = useVistaView({
-    elements: `#${id} a`,
+    elements: `#${id} > a`,
   });
 
   return (
