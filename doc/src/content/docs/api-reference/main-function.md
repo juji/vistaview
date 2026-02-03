@@ -13,7 +13,7 @@ function vistaView(params: VistaParams): VistaInterface;
 
 **Parameters:**
 
-- `params:` [VistaParams](/api-reference/types#VistaParams) - Configuration object
+- `params:` [VistaParams](/api-reference/types#vistaparams) - Configuration object
 
 **Returns:** [VistaInterface](/api-reference/types#vistainterface) - The lightbox instance with control methods
 
@@ -24,7 +24,7 @@ import { vistaView } from 'vistaview';
 import 'vistaview/style.css';
 
 const gallery = vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   maxZoomLevel: 3,
   preloads: 2,
 });
@@ -36,7 +36,7 @@ The `vistaView()` function (lowercase 'v') is the factory function, while [Vista
 
 **Configuration:** See [Types](/api-reference/types) for:
 
-- [VistaParams](/api-reference/types#VistaParams) - Main configuration interface
+- [VistaParams](/api-reference/types#vistaparams) - Main configuration interface
 - [VistaOpt](/api-reference/types#vistaopt) - All configuration options
 - [VistaImgConfig](/api-reference/types#vistaimgconfig) - Image configuration object
 
@@ -59,7 +59,7 @@ open(index?: number): void;
 **Example:**
 
 ```typescript
-const gallery = vistaView({ elements: '#gallery a' });
+const gallery = vistaView({ elements: '#gallery > a' });
 
 gallery.open(); // Open at first image
 gallery.open(0); // Open at first image

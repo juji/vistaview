@@ -23,7 +23,7 @@ onOpen?: (vistaView: VistaView) => void;
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   onOpen: (vistaView) => {
     console.log('Lightbox opened');
     console.log('Total images:', vistaView.state.elmLength);
@@ -47,7 +47,7 @@ onClose?: (vistaView: VistaView) => void;
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   onClose: (vistaView) => {
     console.log('Lightbox closed');
     console.log('Last viewed index:', vistaView.state.index);
@@ -72,7 +72,7 @@ onImageView?: (data: VistaData, vistaView: VistaView) => void;
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   onImageView: (data, vistaView) => {
     console.log(`Viewing image ${data.index.to! + 1} of ${vistaView.state.elmLength}`);
     if (data.via.next) console.log('→ Next');
@@ -98,7 +98,7 @@ onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   onContentChange: (content, vistaView) => {
     console.log('Zoom level:', content.scale.toFixed(2) + 'x');
   },

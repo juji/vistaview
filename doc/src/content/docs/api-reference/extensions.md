@@ -57,7 +57,7 @@ export function logger(): VistaExtension {
 
 // Usage
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [logger()],
 });
 ```
@@ -68,7 +68,7 @@ vistaView({
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   controls: {
     topRight: ['close'],
     bottomCenter: ['indexDisplay'],
@@ -195,7 +195,7 @@ export function downloadButton(): VistaExtension {
 
 // Usage
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   extensions: [downloadButton()],
   controls: {
     bottomRight: ['downloadButton'],

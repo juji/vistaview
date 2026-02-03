@@ -21,7 +21,7 @@ Lifecycle functions allow you to override VistaView's default behavior at key st
 import { vistaView, init } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   initFunction: (vistaView) => {
     // Call default initialization
     init(vistaView);
@@ -39,7 +39,7 @@ vistaView({
 import { vistaView, imageSetup } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   imageSetupFunction: (data, vistaView) => {
     // Call default setup
     imageSetup(data, vistaView);
@@ -56,7 +56,7 @@ vistaView({
 import { vistaView, transition } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   transitionFunction: (data, abortSignal, vistaView) => {
     // Use default transition
     return transition(data, abortSignal, vistaView);
@@ -68,7 +68,7 @@ vistaView({
 
 ```typescript
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   transitionFunction: (data, abortSignal, vistaView) => {
     const elements = data.htmlElements;
 
@@ -108,7 +108,7 @@ vistaView({
 import { vistaView, close } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   closeFunction: (vistaView) => {
     console.log('Custom close logic');
 
@@ -130,7 +130,7 @@ Default initialization function.
 import { init } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   initFunction: (vistaView) => {
     init(vistaView);
     // Add custom logic after default init
@@ -154,7 +154,7 @@ Default close function.
 import { close } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   closeFunction: (vistaView) => {
     // Custom logic before close
     console.log('Closing lightbox');
@@ -173,7 +173,7 @@ Default transition animation function.
 import { transition } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   transitionFunction: (data, abortSignal, vistaView) => {
     return transition(data, abortSignal, vistaView);
   },
@@ -188,7 +188,7 @@ Default image setup function.
 import { imageSetup } from 'vistaview';
 
 vistaView({
-  elements: '#gallery a',
+  elements: '#gallery > a',
   imageSetupFunction: (data, vistaView) => {
     imageSetup(data, vistaView);
     // Add custom setup logic
