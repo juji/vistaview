@@ -100,7 +100,7 @@ onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
 vistaView({
   elements: '#gallery > a',
   onContentChange: (content, vistaView) => {
-    console.log('Zoom level:', content.scale.toFixed(2) + 'x');
+    console.log('Zoom level:', content.state.transform.scale.toFixed(2) + 'x');
   },
 });
 ```
