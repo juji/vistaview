@@ -191,4 +191,4 @@ vistaView({
 
 - Learn about [creating custom extensions](/extensions/authoring)
 - Explore other [extensions](/extensions/overview)
-- See [events and lifecycle](/core/events)
+- See [events and lifecycle](/core/configuration/events)
