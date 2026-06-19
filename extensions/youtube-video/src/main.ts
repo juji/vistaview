@@ -141,7 +141,7 @@ export class VistaYoutubeVideo extends VistaBox {
 
 export function youtubeVideo(): VistaExtension {
   return {
-    name: 'ytVideo',
+    name: 'youtubeVideo',
     onInitializeImage: (params: VistaImageParams) => {
       const url = params.elm.config.src;
       const videoId = parseYouTubeVideoId(url);
