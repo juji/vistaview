@@ -33,7 +33,7 @@ Creates a new pointer tracking system.
 **Parameters:**
 
 - `args.elm` - Element to attach listeners to (defaults to `document`)
-- `args.listeners` - Array of [pointer listeners](/api-reference/types#vistaexternalpointerlistenerargs)
+- `args.listeners` - Array of [pointer listeners](/api-reference/types#vistapointerlistener)
 
 **Example:**
 
@@ -116,10 +116,12 @@ Calculates the distance between two pointers. Useful for pinch-to-zoom gestures.
 **Example:**
 
 ```typescript
-if (pointers.length >= 2) {
-  const distance = pointers.getPointerDistance(pointers[0], pointers[1]);
-  console.log('Pinch distance:', distance);
-}
+pointers.addEventListener((e) => {
+  if (e.pointers.length >= 2) {
+    const distance = pointers.getPointerDistance(e.pointers[0], e.pointers[1]);
+    console.log('Pinch distance:', distance);
+  }
+});
 ```
 
 ### getCentroid()

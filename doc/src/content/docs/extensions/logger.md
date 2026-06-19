@@ -44,18 +44,15 @@ vistaView({
 
 ## What Gets Logged
 
-The logger extension logs the following events:
+The logger uses `console.debug()` for all output. Each hook logs a label string followed by the raw data object on a second line.
 
 ### onInitializeImage
 
-Logged when each image is initialized during setup:
+Logged once per image during setup:
 
 ```
-Logger: Image initialized: {
-  config: { src: "...", alt: "..." },
-  origin: { ... },
-  index: 0
-}
+Logger: VistaView initialized with params:
+VistaImageParams { elm: {...}, pos: 0, index: 0, ... }
 ```
 
 ### onOpen
@@ -63,7 +60,8 @@ Logger: Image initialized: {
 Logged when the lightbox opens:
 
 ```
-Logger: Opened VistaView { ... }
+Logger: VistaView opened
+VistaView { state: {...}, options: {...}, ... }
 ```
 
 ### onImageView
@@ -71,11 +69,17 @@ Logger: Opened VistaView { ... }
 Logged when navigating to an image:
 
 ```
-Logger: Image viewed {
-  index: { from: 0, to: 1 },
-  images: { ... },
-  direction: "next"
-}
+Logger: Image viewed
+VistaData { index: { from: 0, to: 1 }, via: { next: true, prev: false }, ... }
+```
+
+### onContentChange
+
+Logged when image content changes (pan, zoom, etc.):
+
+```
+Logger: Content changed
+VistaImageClone { config: {...}, state: { transform: {...} }, ... }
 ```
 
 ### onClose
@@ -83,7 +87,8 @@ Logger: Image viewed {
 Logged when the lightbox closes:
 
 ```
-Logger: Closed VistaView { ... }
+Logger: VistaView closed
+VistaView { state: {...}, options: {...}, ... }
 ```
 
 ## Usage Example
@@ -162,11 +167,11 @@ vistaView({
 Then interact with the lightbox and observe the console:
 
 ```
-Logger: Opened ...
-Logger: Image initialized ...
-Logger: Image viewed ...
-Logger: Image viewed ...
-Logger: Closed ...
+Logger: VistaView opened
+Logger: VistaView initialized with params:
+Logger: Image viewed
+Logger: Image viewed
+Logger: VistaView closed
 ```
 
 ### Development vs Production

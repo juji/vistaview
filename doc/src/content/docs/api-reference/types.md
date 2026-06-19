@@ -437,6 +437,38 @@ type VistaPointer = {
 - `movementY` - Movement delta on Y axis since last event
 - `id` - Unique identifier for this pointer
 
+### VistaPointerListenerArgs
+
+Arguments passed to internal pointer listeners used by `VistaPointers`.
+
+```typescript
+type VistaPointerListenerArgs = {
+  event: 'down' | 'move' | 'up' | 'cancel';
+  pointer: VistaPointer;
+  pointers: VistaPointer[];
+  lastPointerLen: number;
+};
+```
+
+**Properties:**
+
+- `event` - Type of pointer event
+- `pointer` - Current [VistaPointer](#vistapointer) data
+- `pointers` - Array of all active [VistaPointer](#vistapointer) instances
+- `lastPointerLen` - Previous number of active pointers (for detecting pointer count changes)
+
+### VistaPointerListener
+
+A listener function passed to `VistaPointers` via `VistaPointerArgs.listeners` or `addEventListener()`.
+
+```typescript
+type VistaPointerListener = (args: VistaPointerListenerArgs) => void;
+```
+
+**Parameters:**
+
+- `args` - [VistaPointerListenerArgs](#vistapointerlistenerargs) event data
+
 ### VistaExternalPointerListenerArgs
 
 Arguments passed to external pointer listeners registered via [`registerPointerListener()`](/api-reference/classes/vistaview#registerpointerlistener).
