@@ -33,7 +33,7 @@ Creates a new pointer tracking system.
 **Parameters:**
 
 - `args.elm` - Element to attach listeners to (defaults to `document`)
-- `args.listeners` - Array of [pointer listeners](/api-reference/types#vistapointereventargs)
+- `args.listeners` - Array of [pointer listeners](/api-reference/types#vistaexternalpointerlistenerargs)
 
 **Example:**
 
