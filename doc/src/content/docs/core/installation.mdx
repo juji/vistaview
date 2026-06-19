@@ -80,15 +80,22 @@ VistaView works in all modern browsers:
 
 ## Framework Integrations
 
-VistaView provides official bindings for popular frameworks:
+VistaView provides official bindings for popular frameworks. Each integration ships a component (recommended) and a hook/composable for more advanced use cases:
 
-- **React** – Component and hook
-- **Vue 3** – Component and composable
-- **Svelte** – Component and hook
-- **Solid** – Component and hook
-- **Vanilla JS** – Direct API
+- **[React](/integrations/react)** – `VistaView` component + `useVistaView` hook, exports `VistaViewProps` and `VistaComponentRef` types
+- **[Vue 3](/integrations/vue)** – `VistaView` component + `useVistaView` composable, exports `VistaViewProps` and `VistaComponentRef` types
+- **[Svelte](/integrations/svelte)** – `VistaView` component + `useVistaView` hook, exports `VistaViewProps` and `VistaComponentRef` types
+- **[Solid](/integrations/solid)** – `VistaView` component + `useVistaView` hook, exports `VistaViewProps` type
+- **[Vanilla JS](/integrations/vanilla)** – Direct `vistaView()` API, no wrapper needed
 
-See the [Integration guides](/integrations/overview) for framework-specific instructions. Each integration is maintained in the monorepo and may have its own documentation and stability guarantees.
+All framework packages are imported from the same `vistaview` package using subpath exports:
+
+```ts
+import { VistaView, useVistaView } from 'vistaview/react';
+import { VistaView, useVistaView } from 'vistaview/vue';
+import { VistaView, useVistaView } from 'vistaview/svelte';
+import { VistaView, useVistaView } from 'vistaview/solid';
+```
 
 ## Next Steps
 
