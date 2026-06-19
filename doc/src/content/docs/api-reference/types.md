@@ -59,10 +59,10 @@ interface VistaOpt {
   extensions?: VistaExtension[];
 
   // Event Callbacks
-  onOpen?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
-  onClose?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
-  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
-  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
+  onOpen?: (vistaView: VistaView) => void;
+  onClose?: (vistaView: VistaView) => void;
+  onImageView?: (data: VistaData, vistaView: VistaView) => void;
+  onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
 
   // Lifecycle Functions
   initFunction?: VistaInitFn;
@@ -345,12 +345,12 @@ interface VistaExtension {
   description?: string;
   control?: () => HTMLElement | null;
   onInitializeImage?: (parsed: VistaImageParams) => VistaBox | void | null | undefined;
-  onImageView?: (data:` [VistaData](#vistadata), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
-  onContentChange?: (content:` [VistaImageClone](#vistaimageclone), vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
-  onDeactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
-  onReactivateUi?: (names: string[], requestBy:` [VistaBox](#vistabox) | null, vistaView: [VistaView](/api-reference/classes/vistaview)) => void;
-  onOpen?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
-  onClose?: (vistaView:` [VistaView](/api-reference/classes/vistaview)) => void;
+  onImageView?: (data: VistaData, vistaView: VistaView) => void;
+  onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
+  onDeactivateUi?: (names: string[], requestBy: VistaBox | null, vistaView: VistaView) => void;
+  onReactivateUi?: (names: string[], requestBy: VistaBox | null, vistaView: VistaView) => void;
+  onOpen?: (vistaView: VistaView) => void;
+  onClose?: (vistaView: VistaView) => void;
 }
 ```
 
