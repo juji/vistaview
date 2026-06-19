@@ -99,16 +99,15 @@ export function download(): VistaExtension {
           : config.src || null;
 
       currentAlt = config.alt || null;
-      }
     },
 
-    onDeactivateUi: (names: string[], _v: VistaView) => {
+    onDeactivateUi: (names: string[], _requestBy, _v: VistaView) => {
       if (names.includes('download') && button) {
         button.setAttribute('disabled', 'true');
       }
     },
 
-    onReactivateUi: (names: string[], _v: VistaView) => {
+    onReactivateUi: (names: string[], _requestBy, _v: VistaView) => {
       if (names.includes('download') && button) {
         button.removeAttribute('disabled');
       }

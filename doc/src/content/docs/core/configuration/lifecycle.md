@@ -17,7 +17,7 @@ import {
 
 import type { VistaView, VistaData } from 'vistaview';
 
-
+vistaView({
   elements: '#gallery a',
 
   // Custom initialization (runs once on instance creation)
