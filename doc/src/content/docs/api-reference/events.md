@@ -50,7 +50,7 @@ vistaView({
   elements: '#gallery > a',
   onClose: (vistaView) => {
     console.log('Lightbox closed');
-    console.log('Last viewed index:', vistaView.state.index);
+    console.log('Last viewed index:', vistaView.state.currentIndex);
   },
 });
 ```
