@@ -57,7 +57,7 @@ For quick prototyping or non-bundler environments:
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="https://unpkg.com/vistaview/dist/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/style.css" />
   </head>
   <body>
     <div id="gallery">
@@ -69,7 +69,7 @@ For quick prototyping or non-bundler environments:
       </a>
     </div>
 
-    <script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
+    <script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
     <script>
       // VistaView is available globally
       const gallery = VistaView.vistaView({
@@ -83,8 +83,8 @@ For quick prototyping or non-bundler environments:
 ### Using jsDelivr CDN
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/dist/style.css" />
-<script src="https://cdn.jsdelivr.net/npm/vistaview/dist/vistaview.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vistaview/main/dist/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/vistaview/main/dist/vistaview.umd.js"></script>
 ```
 
 ## Basic Usage
@@ -185,8 +185,8 @@ You can use `data-vistaview-src` to specify high-resolution images:
 ## With Extensions (UMD)
 
 ```html
-<script src="https://unpkg.com/vistaview/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/dist/extensions/download.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
+<script src="https://unpkg.com/vistaview/main/dist/extensions/download.umd.js"></script>
 <script>
   VistaView.vistaView({
     elements: '#gallery a',
