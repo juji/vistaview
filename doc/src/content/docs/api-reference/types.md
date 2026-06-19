@@ -106,7 +106,7 @@ interface VistaInterface {
 - `view(index)` - Navigate to specific image
 - `next()` - Navigate to next image
 - `prev()` - Navigate to previous image
-- `reset()` - Reset zoom and position
+- `reset()` - Recalculate elements and re-attach event listeners (useful after DOM changes)
 - `zoomIn()` - Zoom in
 - `zoomOut()` - Zoom out
 - `getCurrentIndex()` - Get current image index

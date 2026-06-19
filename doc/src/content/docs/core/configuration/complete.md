@@ -34,6 +34,7 @@ vistaView({
   controls: {
     topLeft: ['indexDisplay'], // Array of control names
     topRight: ['zoomIn', 'zoomOut', 'close'],
+    topCenter: [],
     bottomLeft: ['description'],
     bottomRight: [],
     bottomCenter: [],

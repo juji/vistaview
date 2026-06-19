@@ -11,12 +11,12 @@ The OpenStreetMap extension allows you to embed interactive OpenStreetMap maps u
 
 ```javascript
 import { vistaView } from 'vistaview';
-import { openstreetmap } from 'vistaview/extensions/openstreetmap';
+import { openStreetMap } from 'vistaview/extensions/openstreetmap';
 import 'vistaview/style.css';
 
 vistaView({
   elements: '#gallery > a',
-  extensions: [openstreetmap()],
+  extensions: [openStreetMap()],
 });
 ```
 
@@ -24,12 +24,12 @@ vistaView({
 
 ```html
 <script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/main/dist/extensions/openstreetmap.umd.js"></script>
+<script src="https://unpkg.com/vistaview/extensions/openstreetmap/dist/main.umd.cjs"></script>
 
 <script>
   VistaView.vistaView({
     elements: '#gallery > a',
-    extensions: [VistaView.openstreetmap()],
+    extensions: [VistaView.openStreetMap()],
   });
 </script>
 ```
@@ -56,12 +56,12 @@ Create links with OpenStreetMap-compatible coordinate URLs:
 
 <script type="module">
   import { vistaView } from 'vistaview';
-  import { openstreetmap } from 'vistaview/extensions/openstreetmap';
+  import { openStreetMap } from 'vistaview/extensions/openstreetmap';
   import 'vistaview/style.css';
 
   vistaView({
     elements: '#gallery > a',
-    extensions: [openstreetmap()],
+    extensions: [openStreetMap()],
   });
 </script>
 ```

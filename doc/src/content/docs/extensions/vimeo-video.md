@@ -24,7 +24,7 @@ vistaView({
 
 ```html
 <script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/main/dist/extensions/vimeo-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/extensions/vimeo-video/dist/main.umd.cjs"></script>
 
 <script>
   VistaView.vistaView({

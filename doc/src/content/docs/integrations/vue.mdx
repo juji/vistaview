@@ -71,14 +71,14 @@ We expose both the imperative API and the root DOM element on the component ref.
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { VistaInterface } from 'vistaview';
 import { VistaView } from 'vistaview/vue';
+import type { VistaComponentRef } from 'vistaview/vue';
 import 'vistaview/style.css';
 
-const compRef = ref<{ vistaView: VistaInterface; container: HTMLElement | null } | null>(null);
+const compRef = ref<VistaComponentRef>(null);
 
 const openGallery = () => {
-  compRef.value?.vistaView.open(0);
+  compRef.value?.vistaView?.open(0);
   console.log(compRef.value?.container);
 };
 </script>
@@ -93,7 +93,7 @@ const openGallery = () => {
 </template>
 ```
 
-> Note: `compRef.value.vistaView` gives the API and `compRef.value.container` gives the root DOM element.
+> Note: `compRef.value?.vistaView` gives the API and `compRef.value?.container` gives the root DOM element.
 
 ### With Options
 

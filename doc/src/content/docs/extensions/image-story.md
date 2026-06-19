@@ -33,9 +33,9 @@ vistaView({
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/style.css" />
-<link rel="stylesheet" href="https://unpkg.com/vistaview/main/dist/styles/extensions/image-story.css" />
+<link rel="stylesheet" href="https://unpkg.com/vistaview/extensions/image-story/dist/style.css" />
 <script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/main/dist/extensions/image-story.umd.js"></script>
+<script src="https://unpkg.com/vistaview/extensions/image-story/dist/main.umd.cjs"></script>
 
 <script>
   VistaView.vistaView({

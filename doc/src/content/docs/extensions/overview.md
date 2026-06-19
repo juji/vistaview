@@ -13,6 +13,7 @@ Add interactive controls to the lightbox:
 
 - **[Download](/extensions/download)** - Download button for saving high-resolution images
 - **[Image Story](/extensions/image-story)** - Display rich HTML content alongside images
+- **[Select Box](/extensions/select-box)** - Dropdown selector control for the lightbox
 
 ### Video Platform Extensions
 
@@ -24,6 +25,7 @@ Embed videos from popular platforms:
 - **[Wistia](/extensions/wistia-video)** - Embed Wistia videos
 - **[Vidyard](/extensions/vidyard-video)** - Embed Vidyard videos
 - **[Streamable](/extensions/streamable-video)** - Embed Streamable videos
+- **[Twitch](/extensions/twitch-video)** - Embed Twitch videos and live streams
 
 ### Map Extensions
 
@@ -59,8 +61,8 @@ vistaView({
 
 ```html
 <script src="https://unpkg.com/vistaview/main/dist/vistaview.umd.js"></script>
-<script src="https://unpkg.com/vistaview/main/dist/extensions/download.umd.js"></script>
-<script src="https://unpkg.com/vistaview/main/dist/extensions/youtube-video.umd.js"></script>
+<script src="https://unpkg.com/vistaview/extensions/download/dist/main.umd.cjs"></script>
+<script src="https://unpkg.com/vistaview/extensions/youtube-video/dist/main.umd.cjs"></script>
 
 <script>
   VistaView.vistaView({
