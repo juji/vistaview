@@ -26,8 +26,8 @@ interface VistaExtension {
   onInitializeImage?: (par: VistaImageParams) => VistaBox | void | null | undefined;
   onImageView?: (data: VistaData, vistaView: VistaView) => void;
   onContentChange?: (content: VistaImageClone, vistaView: VistaView) => void;
-  onDeactivateUi?: (names: string[], vistaView: VistaView) => void;
-  onReactivateUi?: (names: string[], vistaView: VistaView) => void;
+  onDeactivateUi?: (names: string[], requestBy: VistaBox | null, vistaView: VistaView) => void;
+  onReactivateUi?: (names: string[], requestBy: VistaBox | null, vistaView: VistaView) => void;
   onOpen?: (vistaView: VistaView) => void;
   onClose?: (vistaView: VistaView) => void;
 }
