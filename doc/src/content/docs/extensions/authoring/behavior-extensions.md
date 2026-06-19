@@ -197,14 +197,14 @@ export function preloadAdjacent(): VistaExtension {
 
       // Preload next image
       const nextIndex = (currentIndex + 1) % total;
-      const nextImage = vistaView.state.elms[nextIndex];
+      const nextImage = vistaView.state.children.images[nextIndex];
       if (nextImage?.config.src) {
         preload(nextImage.config.src);
       }
 
       // Preload previous image
       const prevIndex = (currentIndex - 1 + total) % total;
-      const prevImage = vistaView.state.elms[prevIndex];
+      const prevImage = vistaView.state.children.images[prevIndex];
       if (prevImage?.config.src) {
         preload(prevImage.config.src);
       }
@@ -238,11 +238,11 @@ export function autoPlay({
     intervalId = window.setInterval(() => {
       if (!vistaView) return;
 
-      const currentIndex = vistaView.state.currElmIndex;
+      const currentIndex = vistaView.state.currentIndex;
       const total = vistaView.state.elmLength;
       const nextIndex = (currentIndex + 1) % total;
 
-      vistaView.go(nextIndex);
+      vistaView.view(nextIndex);
     }, interval);
   };
 
@@ -303,7 +303,7 @@ export function imageCounter(): VistaExtension {
         font-size: 14px;
       `;
 
-      vistaView.stage?.appendChild(counterElement);
+      vistaView.qs('.vvw-container')?.appendChild(counterElement);
     },
 
     onImageView: (vistaData: VistaData, vistaView: VistaView) => {
