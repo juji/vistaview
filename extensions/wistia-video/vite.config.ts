@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     lib: {
-      name: 'main',
+      name: 'VistaView',
       entry: {
         ['main']: resolve(__dirname, 'src/main.ts'),
       },
@@ -17,6 +17,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['vistaview'],
       output: {
+        extend: true,
         globals: {
           vistaview: 'VistaView',
         },

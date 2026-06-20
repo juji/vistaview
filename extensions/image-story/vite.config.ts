@@ -15,7 +15,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: !!isUMD,
     lib: {
-      name: 'main',
+      name: 'VistaView',
       entry: isUMD ? {
         ['main']: resolve(__dirname, 'src/main.ts'),
       } : entry,
@@ -25,6 +25,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['vistaview'],
       output: {
+        extend: true,
         globals: {
           vistaview: 'VistaView',
         },
