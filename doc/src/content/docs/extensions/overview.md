@@ -81,18 +81,20 @@ All extensions are optimized for minimal bundle size:
 
 | Extension         | ESM Size                 | UMD Size                |
 | ----------------- | ------------------------ | ----------------------- |
-| logger            | 0.61 KB (0.23 KB gzip)   | 0.76 KB (0.37 KB gzip)  |
-| download          | 1.42 KB (0.70 KB gzip)   | 1.41 KB (0.79 KB gzip)  |
-| streamable-video  | 2.69 KB (1.24 KB gzip)   | 13.73 KB (4.19 KB gzip) |
-| vimeo-video       | 2.65 KB (1.24 KB gzip)   | 13.69 KB (4.19 KB gzip) |
-| vidyard-video     | 2.73 KB (1.24 KB gzip)   | 13.75 KB (4.19 KB gzip) |
-| dailymotion-video | 2.80 KB (1.26 KB gzip)   | 13.82 KB (4.21 KB gzip) |
-| wistia-video      | 2.93 KB (1.35 KB gzip)   | 13.92 KB (4.28 KB gzip) |
-| youtube-video     | 3.10 KB (1.42 KB gzip)   | 14.07 KB (4.36 KB gzip) |
-| google-maps       | 3.65 KB (1.60 KB gzip)   | 14.56 KB (4.56 KB gzip) |
-| openstreetmap     | 4.79 KB (1.90 KB gzip)   | 15.43 KB (4.79 KB gzip) |
-| mapbox            | 4.99 KB (1.93 KB gzip)   | 15.63 KB (4.81 KB gzip) |
-| image-story       | 33.60 KB (10.84 KB gzip) | 25.28 KB (9.81 KB gzip) |
+| logger            | 0.60 KB (0.26 KB gzip)   | 0.72 KB (0.36 KB gzip)  |
+| download          | 1.58 KB (0.78 KB gzip)   | 1.50 KB (0.81 KB gzip)  |
+| select-box        | 0.83 KB (0.42 KB gzip)   | 0.90 KB (0.50 KB gzip)  |
+| streamable-video  | 2.53 KB (1.13 KB gzip)   | 2.22 KB (1.12 KB gzip)  |
+| vimeo-video       | 2.44 KB (1.12 KB gzip)   | 2.18 KB (1.11 KB gzip)  |
+| vidyard-video     | 2.53 KB (1.13 KB gzip)   | 2.24 KB (1.11 KB gzip)  |
+| dailymotion-video | 2.63 KB (1.15 KB gzip)   | 2.30 KB (1.14 KB gzip)  |
+| wistia-video      | 2.73 KB (1.24 KB gzip)   | 2.45 KB (1.24 KB gzip)  |
+| twitch-video      | 3.06 KB (1.30 KB gzip)   | 2.73 KB (1.29 KB gzip)  |
+| youtube-video     | 2.89 KB (1.30 KB gzip)   | 2.56 KB (1.28 KB gzip)  |
+| google-maps       | 3.53 KB (1.54 KB gzip)   | 3.07 KB (1.49 KB gzip)  |
+| openstreetmap     | 4.75 KB (1.88 KB gzip)   | 4.10 KB (1.77 KB gzip)  |
+| mapbox            | 4.91 KB (1.90 KB gzip)   | 4.32 KB (1.80 KB gzip)  |
+| image-story       | 29.56 KB (10.06 KB gzip) | 23.36 KB (9.27 KB gzip) |
 
 ## Creating Custom Extensions
 
