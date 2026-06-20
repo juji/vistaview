@@ -59,7 +59,7 @@ VistaView is a lightweight, modern image lightbox library for the web. Zero depe
 For AI consumption, the documentation is split into manageable sections:
 
 - **[llms-core.txt](./llms-core.txt)** - Core installation and configuration (${categories.core.length} docs)
-- **[llms-integrations.txt](./llms-integrations.txt)** - Framework integrations: React, Vue, Svelte, Solid (${categories.integrations.length} docs)
+- **[llms-integrations.txt](./llms-integrations.txt)** - Framework integrations: React, Vue, Svelte, Solid, Vanilla JS (${categories.integrations.length} docs)
 - **[llms-extensions.txt](./llms-extensions.txt)** - Extensions for videos, maps, and more (${categories.extensions.length} docs)
 - **[llms-styling.txt](./llms-styling.txt)** - CSS theming and customization (${categories.styling.length} docs)
 - **[llms-api.txt](./llms-api.txt)** - Complete API reference and types (${categories['api-reference'].length} docs)
