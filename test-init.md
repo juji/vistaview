@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox core, 4 framework bindings (React, Vue, Svelte, Solid), and 14 extensions. Core library has 170 tests, extensions have 64 tests (across 10 extension packages). select-box and twitch-video are undocumented and excluded from tests.
+VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox core, 4 framework bindings (React, Vue, Svelte, Solid), and 14 extensions. Core: 170 tests. Extensions: 74 tests (10 packages). React: 20 tests. Vue: 19 tests. Svelte: 19 tests. Solid: 25 tests. select-box and twitch-video are undocumented and excluded from tests.
 
 ## 2. Progress
 
@@ -83,11 +83,12 @@ All 4 bindings follow the same pattern:
 - [x] Verify tests pass (19/19)
 
 #### 5c. Svelte
-- [ ] Add vitest + happy-dom + `@testing-library/svelte`
-- [ ] Create `vitest.config.ts`
-- [ ] Write `useVistaView` hook tests (mock core, verify API shape, lifecycle, cleanup)
-- [ ] Write `VistaView` component tests (slot rendering, MutationObserver, reactive statements)
-- [ ] Verify tests pass
+- [x] Rename workspace package from `svelte` to `vistaview-svelte` to avoid name collision with npm `svelte`
+- [x] Add vitest + happy-dom + `@testing-library/svelte`
+- [x] Create `vitest.config.ts` (add `resolve.conditions: ['browser']` for Svelte client-side mount)
+- [x] Write `useVistaView` hook tests (13 tests — API shape, options passthrough, method delegation, cleanup)
+- [x] Write `VistaView` component tests (6 tests — container render, selector mount, options, custom selector, cleanup, vistaRef callback)
+- [x] Verify tests pass (19/19)
 
 #### 5d. Solid
 - [x] Fix stale `test/index.test.tsx` — rewrite with 14 hook tests (API shape, options passthrough, method delegation, cleanup)
