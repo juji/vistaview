@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox core, 4 framework bindings (React, Vue, Svelte, Solid), and 11 extensions. Currently there are **no tests for the core library** and only Solid framework binding has vitest setup. The root `package.json` has `"test": "echo \"no test specified\""`.
+VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox core, 4 framework bindings (React, Vue, Svelte, Solid), and 14 extensions. Core library has 170 tests, extensions have 64 tests (across 10 extension packages). select-box and twitch-video are undocumented and excluded from tests.
 
 ## 2. Progress
 
@@ -39,10 +39,19 @@ VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox c
 - [x] Write `vista-view.test.ts` (17 tests covering constructor, open, close, destroy, navigation, zoom)
 
 ### Phase 4 — Extensions
-- [ ] Write extension lifecycle hook tests
-- [ ] Write video extension tests with mocked embeds
-- [ ] Write map extension tests
-- [ ] Write download, logger, image-story, select-box tests
+- [x] Write youtube-video tests: `parseYouTubeVideoId`, `getYouTubeThumbnail` (13 tests)
+- [x] Write vimeo-video tests: `parseVimeoVideoId`, `getVimeoThumbnail` (8 tests)
+- [x] Write dailymotion-video tests: `parseDailymotionVideoId`, `getDailymotionThumbnail` (7 tests)
+- [x] Write wistia-video tests: `parseWistiaVideoId` (5 tests)
+- [x] Write vidyard-video tests: `parseVidyardVideoId`, `getVidyardThumbnail` (7 tests)
+- [x] Write streamable-video tests: `parseStreamableVideoId`, `getStreamableThumbnail` (6 tests)
+- [x] Write twitch-video tests (removed — undocumented extension)
+- [x] Write google-maps tests: `parseGoogleMapsLocation` (3 tests)
+- [x] Write mapbox tests: `parseMapboxLocation`, `getMapboxStaticImage` (5 tests)
+- [x] Write openstreetmap tests: `parseOpenStreetMapLocation` (4 tests)
+- [x] Write logger tests: lifecycle hook console.debug verification (6 tests)
+- [ ] Write download tests (requires full integration or refactor)
+- [ ] Write image-story tests (removeStory is pure but not exported)
 
 ### Phase 5 — Framework Bindings
 - [ ] Set up testing for React binding
