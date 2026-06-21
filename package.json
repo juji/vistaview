@@ -18,17 +18,6 @@
     "touch",
     "responsive"
   ],
-  "scripts": {
-    "test": "pnpm --recursive --parallel test",
-    "test:core": "pnpm --filter main test",
-    "build": "pnpm build:main && pnpm build:libs",
-    "build:main": "pnpm --filter main build",
-    "build:libs": "pnpm --parallel --filter './extensions/*' --filter './frameworks/*' build",
-    "build:local": "pnpm build:main && pnpm build:libs && pnpm build:rest",
-    "predev": "pnpm build:main && pnpm build:libs",
-    "dev": "pnpm --parallel dev",
-    "prepare": "husky || true"
-  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -150,7 +139,22 @@
     "frameworks/*/dist",
     "extensions/*/dist"
   ],
+  "scripts": {
+    "test": "pnpm --recursive --parallel test",
+    "test:core": "pnpm --filter main test",
+    "test:e2e": "playwright test",
+    "build": "pnpm build:main && pnpm build:libs",
+    "build:main": "pnpm --filter main build",
+    "build:libs": "pnpm --parallel --filter './extensions/*' --filter './frameworks/*' build",
+    "build:local": "pnpm build:main && pnpm build:libs && pnpm build:rest",
+    "predev": "pnpm build:main && pnpm build:libs",
+    "dev": "pnpm --parallel dev",
+    "prepare": "husky || true"
+  },
   "dependencies": {
     "husky": "^9.1.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
   }
 }

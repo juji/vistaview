@@ -1,0 +1,17 @@
+import { defineConfig } from '@playwright/test'
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 45000,
+  fullyParallel: true,
+  retries: 1,
+  webServer: {
+    command: 'pnpm --parallel --filter "./dev/*" dev',
+    port: 3001,
+    timeout: 120000,
+    reuseExistingServer: true,
+  },
+  use: {
+    headless: true,
+  },
+})
