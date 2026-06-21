@@ -76,11 +76,11 @@ All 4 bindings follow the same pattern:
 - [x] Verify tests pass (20/20)
 
 #### 5b. Vue
-- [ ] Add vitest + happy-dom + `@vue/test-utils`
-- [ ] Create `vitest.config.ts`
-- [ ] Write `useVistaView` composable tests (mock core, verify API shape, options reactivity, cleanup)
-- [ ] Write `VistaView` component tests (slot rendering, prop reactivity, deep watch re-init, cleanup)
-- [ ] Verify tests pass
+- [x] Add vitest + happy-dom + `@vue/test-utils`
+- [x] Create `vitest.config.ts`
+- [x] Write `useVistaView` composable tests (13 tests — API shape, options passthrough, method delegation, cleanup on unmount)
+- [x] Write `VistaView` component tests (6 tests — container render, selector mount, options, custom selector, cleanup, exposed ref)
+- [x] Verify tests pass (19/19)
 
 #### 5c. Svelte
 - [ ] Add vitest + happy-dom + `@testing-library/svelte`
@@ -90,10 +90,11 @@ All 4 bindings follow the same pattern:
 - [ ] Verify tests pass
 
 #### 5d. Solid
-- [ ] Fix stale `test/index.test.tsx` — rewrite to test `useVistaView`, remove `Hello`/`createHello`
-- [ ] Fix stale `test/server.test.tsx` — rewrite for SSR behavior of `VistaView`
-- [ ] Expand with component tests using `solid-testing-library`
-- [ ] Verify both client + SSR modes pass
+- [x] Fix stale `test/index.test.tsx` — rewrite with 14 hook tests (API shape, options passthrough, method delegation, cleanup)
+- [x] Fix stale `test/server.test.tsx` — rewrite with 5 SSR tests (server env, no-op methods, component HTML rendering)
+- [x] Create `test/vistaview.test.tsx` — 6 component tests (container render, selector, options, custom selector, cleanup, componentRef callback)
+- [x] Fix pre-existing `@testing-library/jest-dom` resolution (install as optional peer dep of vite-plugin-solid)
+- [x] Verify client (20/20) + SSR (5/5) pass
 
 ### Phase 6 — E2E / Visual
 - [ ] Install Playwright
