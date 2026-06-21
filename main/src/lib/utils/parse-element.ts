@@ -59,7 +59,7 @@ export function parseElement(elm: HTMLImageElement | HTMLAnchorElement): VistaPa
     '';
 
   if (!src && !srcSet) {
-    console.error('VistaView Error:', elm);
+    console.error('VistaView Error: Element must have href, src, or srcSet');
     throw new Error('VistaView: Element must have href, src, or srcSet');
   }
 
