@@ -220,7 +220,7 @@ export class VistaView {
 
   private lastSwapTime = 0;
   private isRapidSwap = false;
-  private isRapidSwapRelease = 0;
+  private isRapidSwapRelease: ReturnType<typeof setTimeout> | null = null;
   private transitionCleanup: (() => void) | null = null;
 
   private async swap(beforeIndex: number, via?: { next: boolean; prev: boolean }): Promise<void> {

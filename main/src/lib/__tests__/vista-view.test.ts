@@ -183,7 +183,7 @@ describe('VistaView', () => {
       // Fire transitionend events (close waits for 3 on the root)
       const root = document.querySelector('#vvw-root')!
       for (let i = 0; i < 3; i++) {
-        root.dispatchEvent(new TransitionEvent('transitionend', { target: root, bubbles: true }))
+        root.dispatchEvent(new TransitionEvent('transitionend', { bubbles: true }))
       }
 
       await closePromise

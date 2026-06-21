@@ -6,6 +6,8 @@ node_modules
 .netlify
 .wrangler
 /.svelte-kit
+# SvelteKit generated types
+/src/**/*.svelte.d.ts
 /build
 /dist
 

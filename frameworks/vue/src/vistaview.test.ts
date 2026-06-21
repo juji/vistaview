@@ -58,13 +58,13 @@ describe('VistaView component', () => {
     mount(VistaView, {
       props: {
         id: 'test-gallery',
-        options: { closeOnBackdrop: false },
+        options: { transition: 'fade' },
       },
       slots: { default: '<a href="p1.jpg">link</a>' },
     })
     expect(mockVistaView).toHaveBeenCalledWith({
       elements: '#test-gallery > a',
-      closeOnBackdrop: false,
+      transition: 'fade',
     })
   })
 
@@ -92,7 +92,6 @@ describe('VistaView component', () => {
       props: { id: 'test-gallery' },
       slots: { default: '<a href="p1.jpg">link</a>' },
     })
-    const vm = wrapper.getCurrentComponent()
     // @vue/test-utils exposes stub refs via component.vm.[exposed property]
     const exposed = (wrapper as any).vm
     expect(exposed.vistaView).toBeDefined()

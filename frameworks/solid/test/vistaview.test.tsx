@@ -57,13 +57,13 @@ describe('VistaView component', () => {
 
   it('passes options to vistaView', () => {
     const dispose = render(() => (
-      <VistaView id="test-gallery" options={{ closeOnBackdrop: false }}>
+      <VistaView id="test-gallery" options={{ transition: 'fade' }}>
         <a href="p1.jpg">link</a>
       </VistaView>
     ), document.body)
     expect(mockVistaView).toHaveBeenCalledWith({
       elements: '#test-gallery > a',
-      closeOnBackdrop: false,
+      transition: 'fade',
     })
     dispose()
   })

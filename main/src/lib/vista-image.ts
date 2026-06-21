@@ -257,7 +257,7 @@ export class VistaImage extends VistaBox {
     };
   }
 
-  private animateNormalizeTimeout: number | null = null;
+  private animateNormalizeTimeout: ReturnType<typeof setTimeout> | null = null;
   private animateNormalize() {
     if (this.animateNormalizeTimeout) {
       clearTimeout(this.animateNormalizeTimeout);

@@ -52,12 +52,12 @@ describe('VistaView component', () => {
     render(VistaViewHarness, {
       props: {
         id: 'test-gallery',
-        options: { closeOnBackdrop: false },
+        options: { transition: 'fade' },
       },
     })
     expect(mockVistaView).toHaveBeenCalledWith({
       elements: '#test-gallery > a',
-      closeOnBackdrop: false,
+      transition: 'fade',
     })
   })
 

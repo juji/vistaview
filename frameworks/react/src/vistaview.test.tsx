@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, act } from '@testing-library/react'
-import userEvent from '@testing-library/react'
+import React from 'react'
+import { render } from '@testing-library/react'
 import { VistaView } from './vistaview'
 
 const { mockVistaView, mockInstance } = vi.hoisted(() => {
@@ -55,10 +55,10 @@ describe('VistaView component', () => {
   })
 
   it('passes options to vistaView', () => {
-    renderGallery({ options: { closeOnBackdrop: false } })
+    renderGallery({ options: { transition: 'fade' } })
     expect(mockVistaView).toHaveBeenCalledWith({
       elements: '#test-gallery > a',
-      closeOnBackdrop: false,
+      transition: 'fade',
     })
   })
 
