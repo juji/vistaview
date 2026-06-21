@@ -13,7 +13,6 @@ Add interactive controls to the lightbox:
 
 - **[Download](/extensions/download)** - Download button for saving high-resolution images
 - **[Image Story](/extensions/image-story)** - Display rich HTML content alongside images
-- **[Select Box](/extensions/select-box)** - Dropdown selector control for the lightbox
 
 ### Video Platform Extensions
 
@@ -25,7 +24,6 @@ Embed videos from popular platforms:
 - **[Wistia](/extensions/wistia-video)** - Embed Wistia videos
 - **[Vidyard](/extensions/vidyard-video)** - Embed Vidyard videos
 - **[Streamable](/extensions/streamable-video)** - Embed Streamable videos
-- **[Twitch](/extensions/twitch-video)** - Embed Twitch videos and live streams
 
 ### Map Extensions
 
@@ -83,13 +81,11 @@ All extensions are optimized for minimal bundle size:
 | ----------------- | ------------------------ | ----------------------- |
 | logger            | 0.60 KB (0.26 KB gzip)   | 0.72 KB (0.36 KB gzip)  |
 | download          | 1.58 KB (0.78 KB gzip)   | 1.50 KB (0.81 KB gzip)  |
-| select-box        | 0.83 KB (0.42 KB gzip)   | 0.90 KB (0.50 KB gzip)  |
 | streamable-video  | 2.53 KB (1.13 KB gzip)   | 2.22 KB (1.12 KB gzip)  |
 | vimeo-video       | 2.44 KB (1.12 KB gzip)   | 2.18 KB (1.11 KB gzip)  |
 | vidyard-video     | 2.53 KB (1.13 KB gzip)   | 2.24 KB (1.11 KB gzip)  |
 | dailymotion-video | 2.63 KB (1.15 KB gzip)   | 2.30 KB (1.14 KB gzip)  |
 | wistia-video      | 2.73 KB (1.24 KB gzip)   | 2.45 KB (1.24 KB gzip)  |
-| twitch-video      | 3.06 KB (1.30 KB gzip)   | 2.73 KB (1.29 KB gzip)  |
 | youtube-video     | 2.89 KB (1.30 KB gzip)   | 2.56 KB (1.28 KB gzip)  |
 | google-maps       | 3.53 KB (1.54 KB gzip)   | 3.07 KB (1.49 KB gzip)  |
 | openstreetmap     | 4.75 KB (1.88 KB gzip)   | 4.10 KB (1.77 KB gzip)  |

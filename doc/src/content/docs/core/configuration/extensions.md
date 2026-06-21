@@ -35,7 +35,7 @@ vistaView({
 VistaView provides optional extensions for:
 
 - **UI Controls** - Download buttons, image story overlays
-- **Video Platforms** - YouTube, Vimeo, Dailymotion, Wistia, Vidyard, Streamable, Twitch
+- **Video Platforms** - YouTube, Vimeo, Dailymotion, Wistia, Vidyard, Streamable
 - **Maps** - Google Maps, Mapbox, OpenStreetMap
 - **Development** - Logger for debugging
 
