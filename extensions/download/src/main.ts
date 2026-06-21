@@ -4,6 +4,19 @@ import type { VistaBox } from 'vistaview';
 // okayy
 const downloadIcon = `<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`;
 
+export function getDownloadFileName(url: string, alt?: string | null): string {
+  const clean = url.split('?')[0].split('#')[0];
+  const lastSegment = clean.split('/').pop() || '';
+  const dotIndex = lastSegment.lastIndexOf('.');
+  if (dotIndex > -1) {
+    const ext = lastSegment.slice(dotIndex + 1);
+    if (alt) return `${alt}.${ext}`;
+    return lastSegment;
+  }
+  if (alt) return alt;
+  return lastSegment || 'download';
+}
+
 export function download(): VistaExtension {
   let currentImage: string | null = null;
   let currentAlt: string | null = null;
@@ -24,11 +37,7 @@ export function download(): VistaExtension {
         let blob: Blob | null = await response.blob();
         const finalUrl = response.url; // This is the redirected URL
 
-        const alt = currentAlt;
-        const extension = finalUrl.split('?')[0].split('#')[0].split('.').pop();
-        const fileName = alt
-          ? `${alt}.${extension}`
-          : finalUrl.split('?')[0].split('#')[0].split('/').pop() || 'download.' + extension;
+        const fileName = getDownloadFileName(finalUrl, currentAlt);
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);

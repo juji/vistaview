@@ -9,7 +9,7 @@ type VistaGetStoryResult = {
   onUnload?: () => void;
 };
 
-function removeStory(
+export function removeStory(
   currentIndex: string,
   storyCache: { [key: string]: VistaGetStoryResult },
   maxStoryCache: number

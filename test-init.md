@@ -50,8 +50,8 @@ VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox c
 - [x] Write mapbox tests: `parseMapboxLocation`, `getMapboxStaticImage` (5 tests)
 - [x] Write openstreetmap tests: `parseOpenStreetMapLocation` (4 tests)
 - [x] Write logger tests: lifecycle hook console.debug verification (6 tests)
-- [ ] Write download tests (requires full integration or refactor)
-- [ ] Write image-story tests (removeStory is pure but not exported)
+- [x] Refactor download: export `getDownloadFileName` (6 tests)
+- [x] Refactor image-story: export `removeStory` (4 tests)
 
 ### Phase 5 — Framework Bindings
 - [ ] Set up testing for React binding
