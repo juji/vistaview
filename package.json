@@ -19,7 +19,8 @@
     "responsive"
   ],
   "scripts": {
-    "test": "echo \"no test specified\"",
+    "test": "pnpm --recursive --parallel test",
+    "test:core": "pnpm --filter main test",
     "build": "pnpm build:main && pnpm build:libs",
     "build:main": "pnpm --filter main build",
     "build:libs": "pnpm --parallel --filter './extensions/*' --filter './frameworks/*' build",
