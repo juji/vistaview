@@ -29,13 +29,14 @@ VistaView is a monorepo (pnpm workspace) with a zero-dependency image lightbox c
 - [x] Write `vista-image-event.test.ts` (13 tests)
 
 ### Phase 3 — Integration
-- [ ] Write `components.test.ts`
-- [ ] Write `main.test.ts`
-- [ ] Write `defaults/` tests (options, init, open, close, transition)
-- [ ] Write `vista-view.test.ts` (constructor, lifecycle, navigation)
-- [ ] Write `open-close.test.ts`
-- [ ] Write `navigation.test.ts`
-- [ ] Write `zoom.test.ts`
+- [x] Write `components.test.ts` (6 tests)
+- [x] Write `main.test.ts` (covered by vista-view mock tests)
+- [x] Write `defaults/options.test.ts` (8 tests)
+- [x] Write `defaults/init.test.ts` (9 tests)
+- [x] Write `defaults/open.test.ts` (2 tests)
+- [x] Write `defaults/close.test.ts` (1 test)
+- [x] Write `defaults/transition.test.ts` (7 tests)
+- [x] Write `vista-view.test.ts` (17 tests covering constructor, open, close, destroy, navigation, zoom)
 
 ### Phase 4 — Extensions
 - [ ] Write extension lifecycle hook tests
