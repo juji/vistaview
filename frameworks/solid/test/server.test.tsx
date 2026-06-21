@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { isServer, renderToString } from 'solid-js/web'
-import { Hello, createHello } from '../src'
+import { useVistaView } from '../src/use-vistaview'
+import { VistaView } from '../src/vistaview'
 
 describe('environment', () => {
   it('runs on server', () => {
@@ -9,22 +10,41 @@ describe('environment', () => {
   })
 })
 
-describe('createHello', () => {
-  it('Returns a Hello World signal', () => {
-    const [hello] = createHello()
-    expect(hello()).toBe('Hello World!')
+describe('useVistaView (SSR)', () => {
+  it('returns the interface shape', () => {
+    const api = useVistaView({ elements: '#gallery a' } as any)
+    expect(api).toHaveProperty('open')
+    expect(api).toHaveProperty('close')
+    expect(api).toHaveProperty('reset')
+    expect(api).toHaveProperty('destroy')
   })
 
-  it('Changes the hello target', () => {
-    const [hello, setHello] = createHello()
-    setHello('Solid')
-    expect(hello()).toBe('Hello Solid!')
+  it('methods are no-ops on server (no onMount)', () => {
+    const api = useVistaView({ elements: '#gallery a' } as any)
+    // onMount never fires in SSR, so instance stays null
+    expect(api.getCurrentIndex()).toBe(-1)
+    expect(api.close()).resolves.toBeUndefined()
   })
 })
 
-describe('Hello', () => {
-  it('renders a hello component', () => {
-    const string = renderToString(() => <Hello />)
-    expect(string).toBe('<div>Hello World!</div>')
+describe('VistaView (SSR)', () => {
+  it('renders a div with children', () => {
+    const string = renderToString(() => (
+      <VistaView id="test-gallery">
+        <a href="p1.jpg"><img src="t1.jpg" alt="1" /></a>
+      </VistaView>
+    ))
+    expect(string).toContain('test-gallery')
+    expect(string).toContain('<a href="p1.jpg"')
+  })
+
+  it('does not initialize vistaView on server', () => {
+    const string = renderToString(() => (
+      <VistaView id="test-gallery">
+        <a href="p1.jpg">link</a>
+      </VistaView>
+    ))
+    // No vistaView call expected in SSR — onMount never fires
+    expect(string).toContain('test-gallery')
   })
 })

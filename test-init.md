@@ -66,20 +66,34 @@ All 4 bindings follow the same pattern:
 - **Hook tests** — lighter weight, verify the returned `VistaInterface` proxies the core API correctly. Can mock `vistaView` from core and assert methods are wired, destroy cleans up.
 - **Component tests** — need jsdom + framework testing-library. Verify DOM rendering, child querying, lifecycle (mount/destroy), re-initialization on prop changes.
 
-**Recommended order:** Hook tests first (simpler, share pattern across frameworks), then component tests.
+**Approach:** Do one framework at a time. Finish hook + component tests, commit, then ask before proceeding to the next.
 
-| Binding | Test infra | Hook tests | Component tests | Notes |
-|---------|-----------|------------|----------------|-------|
-| React | Needs vitest + happy-dom + `@testing-library/react` + `@testing-library/jest-dom` | Test `useVistaView` returns correct API shape, options passthrough, cleanup on unmount | Test `VistaView` renders container, mounts with selector, re-renders on children change | Most popular binding — prioritize |
-| Vue | Needs vitest + happy-dom + `@vue/test-utils` | Test `useVistaView` composable, options reactivity, cleanup on unmount | Test `<VistaView>` renders slot content, reactives to prop changes | Watch deep option re-init |
-| Svelte | Needs vitest + happy-dom + `@testing-library/svelte` (or `vitest` + `svelte` only) | Test `useVistaView` with Svelte runes, lifecycle, cleanup | Test `<VistaView>` slot rendering, MutationObserver behavior | Svelte 5 syntax |
-| Solid | Has vitest + jsdom ✓, stale tests need rewrite | Fix existing `test/index.test.tsx` to test `useVistaView`, not `Hello` | Rewrite `test/server.test.tsx` for SSR behavior of `VistaView` | Dual-mode (client + SSR) already configured |
+#### 5a. React
+- [x] Add vitest + happy-dom + `@testing-library/react` + `@testing-library/jest-dom`
+- [x] Create `vitest.config.ts`
+- [x] Write `useVistaView` hook tests (mock `vistaview` core, 13 tests — API shape, options passthrough, all method delegation, destroy on unmount)
+- [x] Write `VistaView` component tests (7 tests — container render, selector mount, options pass-through, custom selector, children reset, unmount cleanup, imperative ref)
+- [x] Verify tests pass (20/20)
 
-- [ ] **React:** Add vitest + happy-dom + `@testing-library/react`, create vitest.config.ts, write hook tests, write component tests
-- [ ] **Vue:** Add vitest + happy-dom + `@vue/test-utils`, create vitest.config.ts, write composable tests, write component tests
-- [ ] **Svelte:** Add vitest + happy-dom + `@testing-library/svelte`, create vitest.config.ts, write hook tests, write component tests
-- [ ] **Solid:** Fix stale `test/index.test.tsx` to test actual `useVistaView`/`VistaView` exports, fix `test/server.test.tsx`, expand with hook + component tests
-- [ ] Verify `pnpm --recursive --parallel test` includes all framework test scripts
+#### 5b. Vue
+- [ ] Add vitest + happy-dom + `@vue/test-utils`
+- [ ] Create `vitest.config.ts`
+- [ ] Write `useVistaView` composable tests (mock core, verify API shape, options reactivity, cleanup)
+- [ ] Write `VistaView` component tests (slot rendering, prop reactivity, deep watch re-init, cleanup)
+- [ ] Verify tests pass
+
+#### 5c. Svelte
+- [ ] Add vitest + happy-dom + `@testing-library/svelte`
+- [ ] Create `vitest.config.ts`
+- [ ] Write `useVistaView` hook tests (mock core, verify API shape, lifecycle, cleanup)
+- [ ] Write `VistaView` component tests (slot rendering, MutationObserver, reactive statements)
+- [ ] Verify tests pass
+
+#### 5d. Solid
+- [ ] Fix stale `test/index.test.tsx` — rewrite to test `useVistaView`, remove `Hello`/`createHello`
+- [ ] Fix stale `test/server.test.tsx` — rewrite for SSR behavior of `VistaView`
+- [ ] Expand with component tests using `solid-testing-library`
+- [ ] Verify both client + SSR modes pass
 
 ### Phase 6 — E2E / Visual
 - [ ] Install Playwright
