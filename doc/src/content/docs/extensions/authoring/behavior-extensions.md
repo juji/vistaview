@@ -367,5 +367,4 @@ onClose: () => {
 ## Next Steps
 
 - [Content Extensions](/extensions/authoring/content-extensions)
-- [Best Practices](/extensions/authoring/best-practices)
 - [Built-in Extensions](/extensions/overview)

@@ -275,5 +275,4 @@ onReactivateUi: (names) => {
 ## Next Steps
 
 - [Behavior Extensions](/extensions/authoring/behavior-extensions)
-- [Best Practices](/extensions/authoring/best-practices)
 - [Built-in Extensions](/extensions/overview)

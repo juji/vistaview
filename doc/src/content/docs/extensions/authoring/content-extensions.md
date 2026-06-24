@@ -335,6 +335,4 @@ export function myPdfContent(): VistaExtension {
 
 ## Next Steps
 
-- [Complex Extensions](/extensions/authoring/complex-extensions)
-- [Best Practices](/extensions/authoring/best-practices)
 - [Built-in Video Extensions](/extensions/overview)
