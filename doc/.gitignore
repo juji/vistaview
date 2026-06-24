@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# bundled pages function
+functions/*.js
 # generated types
 .astro/
 
