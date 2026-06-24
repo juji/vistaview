@@ -1,70 +1,76 @@
-# AI Agent Rules
+# VistaView — AI Agent Rules
+
+## What This Is
+
+Zero-dependency TypeScript image lightbox library. Published to npm as `vistaview`. Touch/pinch, zoom, animations, extension system, 4 framework bindings.
+
+## Stack
+
+TypeScript (strict, noUnusedLocals, noUnusedParameters), Vite (rolldown-vite), Vitest + happy-dom, Playwright E2E, pnpm monorepo.
+
+## Layout
+
+```
+main/              - Core library
+frameworks/        - react/, vue/, svelte/, solid/
+extensions/        - 14 extensions (video, maps, download, select-box, logger, etc.)
+dev/               - Playgrounds (vanilla, next, nuxt, svelte, solid)
+doc/               - VitePress docs
+```
+
+Each sub-package has its own `package.json`, `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`.
+
+## Commands
+
+| Command | What |
+|---|---|
+| `pnpm dev` | Build all + parallel dev servers |
+| `pnpm build` | Build core + libs |
+| `pnpm test` | All packages' unit tests |
+| `pnpm test:core` | Core lib only |
+| `pnpm test:e2e` | Playwright E2E |
+| `pnpm build:main` | Build core only |
+| `pnpm build:libs` | Build frameworks + extensions |
+
+## Conventions
+
+- **kebab-case filenames** (e.g. `vista-image.ts`, not `vistaImage.ts`)
+- CSS classes prefixed with `vvw-`
+- Tests co-located in `__tests__/` directories, Vitest with `happy-dom` environment
+- TypeScript strict mode, no unused locals/params allowed
+- Vite library mode with `preserveModules` for ES output
+- `main/src/lib/types.ts` has all shared types
+- `main/src/lib/defaults/` has default functions (init, open, close, transition, options)
+- All classes exportable from `main/src/vistaview.ts`
+
+## Architecture
+
+- **`vistaView(elements, opts)`** — the public entry point, returns a `VistaInterface`
+- **`VistaView` class** (`vista-view.ts`) — lifecycle, navigation, zoom state
+- **Extensions** implement `VistaExtension` type: lifecycle hooks (`onInitializeImage`, `onImageView`, `onOpen`, `onClose`, `onDeactivateUi`, `onReactivateUi`) + optional `control()` for toolbar buttons
+- **Framework bindings** wrap core. React uses `useVistaView` hook + `<VistaView>` component with forwarded ref. Vue/Svelte/Solid follow same component pattern.
+- **Uses `AbortController`** for cancelable transitions during rapid navigation
+
+## NPM Publishing
+
+Root `package.json` is the published artifact. `pnpm publish --access public` on push to `main` (latest tag) or `dev` (next tag). CI in `.github/workflows/`.
 
 ## File Creation
 
 - Create files with lowercase kebab casing (e.g., `utils-helper.ts`).
 - Avoid uppercase letters, underscores, or camelCase in filenames.
-
-## Code Quality
-
-- Write clean, readable, and maintainable code.
-- Follow language-specific best practices and conventions.
-- Include comments for complex logic.
-
-## Project Structure
-
 - Organize files logically within the project structure.
-
-## Dependencies
-
-- Only add necessary dependencies.
-- Prefer lightweight, well-maintained packages.
 
 ## Committing
 
-- Ensure you are in the project's root directory before running any git commands.
-- Be detailed in commit messages, specifying what changes were made instead of just mentioning general changes to files.
-- Commit messages should reflect the actual changes to the files, not the actions taken.
-- Before committing, always check the git diff to understand what has changed.
-- Produce commit messages based on the file changes observed in the diff.
-
-- Commit with conventional commit format.
-- Example single-line commit: `feat: add user authentication`
-- Example multi-line commit (must be true multi-line, not escaped newlines!):
-
-  The correct way:
-
-  feat: add user authentication
-  - Implement login form
-  - Add JWT token handling
-  - Update user model
-
-  **How to do it correctly:**
-  - The subject line is followed by a blank line.
-  - Each bullet point is on its own line, not separated by `\n` or any escape sequence.
-  - Do NOT use a single quoted string with embedded `\n` characters in your commit command.
-  - In the terminal, use a single multi-line string with real line breaks.
-
-  **Incorrect (do NOT do this):**
-  - `git commit -m "feat: add user authentication\n\n- Implement login form\n- Add JWT token handling\n- Update user model"`
-  - This will result in a single-line commit message with literal `\n` characters, not a true multi-line message.
-
-### On Failed Commit
-
-- Check the error message from the terminal output to understand the cause (e.g., merge conflict, pre-commit hook failure, or invalid message format).
-- Address the issue: resolve conflicts if any, fix hooks, or correct the commit message.
-- After fixing, retry the commit command.
-- If unsure, use git status or git log to verify the repository state.
+- Use conventional commit format: `type: description`
+- Subject line, blank line, then bullet points for details
+- Before committing, check `git status` and `git diff`
+- Use real multi-line strings, not `\n` escapes
+- On failure, check the error and fix the underlying issue
 
 ## Avoiding Untruthfulness
 
-- **NEVER state something as fact without verifying it first**.
-- Always use tools to check file contents, configurations, or code before making claims.
-- If you're unsure about something, explicitly say "let me check" and use the appropriate tool.
-- Do NOT make assumptions and present them as truth, especially in:
-  - File contents (check with `read_file` first)
-  - Configuration settings (verify before stating)
-  - Code implementation (read the actual code)
-  - Git status or tracked files (use `git status` or other git commands)
-- If you make a mistake or hallucinate, acknowledge it immediately and correct it.
-- Be honest about uncertainty.
+- Never state something as fact without verifying first. Read the file, check the config, trace the code.
+- If unsure, say "let me check" and use the appropriate tool.
+- Admit mistakes immediately and correct them.
