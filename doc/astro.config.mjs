@@ -132,6 +132,7 @@ const sidebar = [
   {
     label: 'AI Documentation',
     items: [
+      { label: 'AI Integration', slug: 'ai-integration' },
       {
         label: 'LLMs.txt',
         link: '/llms.txt',

@@ -1,0 +1,69 @@
+---
+title: AI Integration
+description: Agent-ready tooling — MCP Server, Markdown for Agents, and LLMs.txt
+---
+
+VistaView's documentation is built for AI consumption. Agents and LLMs can access docs via three complementary mechanisms:
+
+## LLMs.txt (via Context7)
+
+A curated summary of all documentation in a single file. Ideal for LLM context windows.
+
+- [`/llms.txt`](/llms.txt) — Concise overviews of each section
+- [`/llms-full.txt`](/llms-full.txt) — Complete documentation in one file
+- [Context7](https://context7.com/llmstxt/vistaview_jujiplay_llms_txt) — Preprocessed for common AI tools
+
+## Markdown for Agents
+
+Set the `Accept: text/markdown` header on any documentation URL to receive the page content as plain Markdown instead of HTML.
+
+```sh
+curl -H "Accept: text/markdown" https://vistaview.jujiplay.com/core/installation/
+```
+
+The response contains only the page's main content — no navigation, sidebars, or chrome.
+
+## MCP Server
+
+A JSON-RPC MCP server is available at [`POST /api/mcp`](/api/mcp) for programmatic access from AI agents and tools.
+
+**Tools:**
+
+| Tool | Description |
+|---|---|
+| `get_package_info` | Fetch npm package metadata for vistaview (or any package) |
+| `get_build_status` | Get latest GitHub Actions build status |
+| `search_docs` | Search across all documentation |
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "vistaview": {
+      "url": "https://vistaview.jujiplay.com/api/mcp"
+    }
+  }
+}
+```
+
+### Any MCP Client
+
+Configure with the endpoint URL:
+
+```
+https://vistaview.jujiplay.com/api/mcp
+```
+
+Protocol: JSON-RPC 2.0 over HTTP POST.
+
+## Why Agent-Ready?
+
+When building with VistaView, AI assistants can:
+
+- Look up configuration options without leaving the IDE
+- Verify the latest package version and compatibility
+- Check build status when reporting issues
+- Search documentation for specific features or APIs
