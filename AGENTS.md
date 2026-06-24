@@ -32,6 +32,8 @@ Each sub-package has its own `package.json`, `vite.config.ts`, `vitest.config.ts
 | `pnpm build:main` | Build core only |
 | `pnpm build:libs` | Build frameworks + extensions |
 
+- Never run the dev server (`pnpm dev`).
+
 ## Conventions
 
 - **kebab-case filenames** (e.g. `vista-image.ts`, not `vistaImage.ts`)
@@ -64,7 +66,6 @@ Root `package.json` is the published artifact. `pnpm publish --access public` on
 ## Committing
 
 - Never push. Only stage and commit locally.
-- Never run the dev server.
 - Use conventional commit format: `type: description`
 - Subject line, blank line, then bullet points for details
 - Before committing, check `git status` and `git diff`
