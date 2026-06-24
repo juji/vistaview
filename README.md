@@ -221,6 +221,10 @@ pnpm test        # All packages
 pnpm test:e2e    # Playwright end-to-end tests
 ```
 
+## Support
+
+If you find this project useful, consider [sponsoring](https://github.com/sponsors/juji?o=esc) ❤️
+
 ## License
 
 MIT
