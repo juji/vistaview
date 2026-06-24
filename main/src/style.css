@@ -9,12 +9,12 @@
   --vvw-dest-z: 2147483647;
 
   /* UI theme colors */
-  --vvw-ui-outline-color: hsl(from var(--vvw-bg-color) h s calc(l + 30));
+  --vvw-ui-outline-color: hsl(from var(--vvw-bg-color) h s calc(l + 25));
   --vvw-ui-bg-color: var(--vvw-bg-color);
   --vvw-ui-text-color: var(--vvw-text-color);
   --vvw-ui-hover-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 20));
   --vvw-ui-active-bg-color: hsl(from var(--vvw-bg-color) h s calc(l + 40));
-  --vvw-ui-border-radius: 0px;
+  --vvw-ui-border-radius: 3px;
   --vvw-ui-border-width: 1px;
 
   /* calculated */
