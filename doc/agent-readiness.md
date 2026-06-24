@@ -10,13 +10,12 @@
 | Agent Skills Index | `public/.well-known/agent-skills/index.json` | v0.2.0 schema. Empty skills array — no agent skills published yet. |
 | MCP Server Card | `public/.well-known/mcp/server-card.json` | SEP-2127 format. Identifies project. No remotes (no MCP server exists). |
 | Content-Signal | in robots.txt | `ai-train=yes, search=yes, ai-input=yes` |
-| Sitemap | `@astrojs/sitemap` + `astro.config.mjs` | Generates `sitemap-0.xml` + `sitemap-index.xml`. Referenced in robots.txt. |
+| Sitemap | `@astrojs/sitemap` + `astro.config.mjs` | Generates `sitemap-0.xml` + `sitemap-index.xml`. Referenced in robots.txt. SSR-compatible via sidebar-derived `customPages`. |
+| Markdown for Agents | `src/middleware.ts` + `astro.config.mjs` | SSR middleware. `Accept: text/markdown` triggers `jsdom` extraction of `.sl-markdown-content` → `turndown` conversion. Returns `Content-Type: text/markdown`. Tested working on all doc pages. **Tradeoff:** Requires `prerender: false` (SSR routes), which disables Pagefind search. |
 
 ## Not Done
 
-| Area | Why | Path to fix |
-|---|---|---|
-| Markdown for Agents | Cloudflare platform feature, requires Pro/Business plan | Toggle on in Cloudflare dashboard → AI Crawl Control → Markdown for Agents. Or implement via Worker/API. |
+_none_
 
 ## Future
 
