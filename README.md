@@ -203,7 +203,7 @@ Available extensions:
 | `vistaview/extensions/vidyard-video` | Embed Vidyard videos |
 | `vistaview/extensions/wistia-video` | Embed Wistia videos |
 | `vistaview/extensions/google-maps` | Embed Google Maps |
-| `vistaview/extensions/mapbox` | Embed Mapbox maps |
+| `vistaview/extensions/mapbox` | Embed Mapbox maps (access token required) |
 | `vistaview/extensions/openstreetmap` | Embed OpenStreetMap |
 | `vistaview/extensions/image-story` | Instagram-style story layout |
 | `vistaview/extensions/logger` | Debug logging |
