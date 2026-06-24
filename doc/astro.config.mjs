@@ -163,6 +163,7 @@ export default defineConfig({
 			components: {
 				Hero: './src/components/Hero.astro',
 				Footer: './src/components/Footer.astro',
+				ThemeSelect: './src/components/ThemeSelect.astro',
 			},
 		}),
 	],
