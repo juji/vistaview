@@ -26,7 +26,7 @@ export default defineConfig({
 		svelte(),
 		vue(),
 		starlight({
-			title: 'VistaView',
+			title: 'VistaView v2',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/juji/vistaview' }],
 			sidebar: [
 				{
