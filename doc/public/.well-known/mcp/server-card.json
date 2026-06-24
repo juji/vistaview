@@ -4,5 +4,11 @@
   "version": "2.0.5",
   "description": "Zero-dependency TypeScript image lightbox library with touch/pinch, zoom, animations, extension system, and framework bindings for React, Vue, Svelte, and Solid.",
   "title": "VistaView",
-  "websiteUrl": "https://vistaview.jujiplay.com/"
+  "websiteUrl": "https://vistaview.jujiplay.com/",
+  "remotes": [
+    {
+      "url": "https://vistaview.jujiplay.com/mcp",
+      "type": "streamable-http"
+    }
+  ]
 }
