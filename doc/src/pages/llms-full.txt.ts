@@ -37,7 +37,7 @@ export const GET: APIRoute = async () => {
     index: docs.filter((d) => d.id === 'index'),
   };
 
-  let content = `# VistaView Documentation - Full
+  let content = `# VistaView v2 Documentation - Full
 
 > Generated: ${new Date().toISOString()}
 > This file contains the complete VistaView documentation in a single document.

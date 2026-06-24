@@ -42,7 +42,7 @@ export const GET: APIRoute = async () => {
   };
 
   // Build index file with links
-  let content = `# VistaView Documentation - Index
+  let content = `# VistaView v2 Documentation - Index
 
 > Generated: ${new Date().toISOString()}
 > This file contains the VistaView documentation index with links to categorized sections.
