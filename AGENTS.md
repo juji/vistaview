@@ -63,6 +63,7 @@ Root `package.json` is the published artifact. `pnpm publish --access public` on
 
 ## Committing
 
+- Never push. Only stage and commit locally.
 - Use conventional commit format: `type: description`
 - Subject line, blank line, then bullet points for details
 - Before committing, check `git status` and `git diff`
