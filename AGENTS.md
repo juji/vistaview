@@ -53,6 +53,10 @@ Each sub-package has its own `package.json`, `vite.config.ts`, `vitest.config.ts
 - **Framework bindings** wrap core. React uses `useVistaView` hook + `<VistaView>` component with forwarded ref. Vue/Svelte/Solid follow same component pattern.
 - **Uses `AbortController`** for cancelable transitions during rapid navigation
 
+## Known Gaps
+
+`select-box` and `twitch-video` extensions ship but have no docs. This is intentional — they work, just not documented yet. Don't add docs unless asked.
+
 ## NPM Publishing
 
 Root `package.json` is the published artifact. `pnpm publish --access public` on push to `main` (latest tag) or `dev` (next tag). CI in `.github/workflows/`.
