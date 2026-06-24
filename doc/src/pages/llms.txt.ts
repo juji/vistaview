@@ -69,7 +69,7 @@ For AI consumption, the documentation is split into manageable sections:
 
 VistaView provides agent-ready documentation:
 
-- **MCP Server**: JSON-RPC endpoint at \`POST /api/mcp\` with tools: \`get_package_info\`, \`get_build_status\`, \`search_docs\`
+- **MCP Server**: JSON-RPC endpoint at \`POST /mcp\` with tools: \`get_package_info\`, \`get_build_status\`, \`search_docs\`
 - **Markdown for Agents**: Set \`Accept: text/markdown\` on any doc URL for clean Markdown
 - **LLMs.txt**: This index plus categorized full-text files below
 - **Setup guides**: [AI Integration page](./ai-integration) includes Claude Desktop config

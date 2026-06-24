@@ -25,7 +25,7 @@ The response contains only the page's main content — no navigation, sidebars, 
 
 ## MCP Server
 
-A JSON-RPC MCP server is available at [`POST /api/mcp`](/api/mcp) for programmatic access from AI agents and tools.
+A JSON-RPC MCP server is available at [`POST /mcp`](/mcp) for programmatic access from AI agents and tools.
 
 **Tools:**
 
@@ -43,7 +43,7 @@ Add to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "vistaview": {
-      "url": "https://vistaview.jujiplay.com/api/mcp"
+      "url": "https://vistaview.jujiplay.com/mcp"
     }
   }
 }
@@ -54,7 +54,7 @@ Add to your `claude_desktop_config.json`:
 Configure with the endpoint URL:
 
 ```
-https://vistaview.jujiplay.com/api/mcp
+https://vistaview.jujiplay.com/mcp
 ```
 
 Protocol: JSON-RPC 2.0 over HTTP POST.
