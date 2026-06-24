@@ -222,9 +222,6 @@ export class VistaImage extends VistaBox {
 
       const bound = img.getBoundingClientRect();
 
-      t.x = t.x + par.x;
-      t.y = t.y + par.y;
-
       if (bound.right < window.innerWidth / 2) {
         t.x += (window.innerWidth / 2 - bound.right) * 0.1;
         par.x *= 0.7;

@@ -588,13 +588,18 @@ export class VistaView {
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
-    this.state.children = { htmls: [], images: [] };
-    this.state.currentIndex = -1;
-
-    //
+    
+    // cleanup children images and htmls
     this.state.children.images.forEach((img) => {
       img.destroy();
     });
+    this.state.children.htmls.forEach((el) => {
+      el.remove();
+    });
+
+    this.state.children = { htmls: [], images: [] };
+    this.state.currentIndex = -1;
+
 
     // Restore body scrolling
     document.body.style.overflow = '';
