@@ -561,11 +561,13 @@ export class VistaView {
       }, animDur * 2);
 
       await new Promise((resolve) => {
-        this.root!.addEventListener('transitionend', (e) => {
+        const onTransitionEnd = (e: TransitionEvent) => {
           if (e.target !== this.root || e.propertyName !== 'opacity') return;
+          this.root!.removeEventListener('transitionend', onTransitionEnd);
           clearTimeout(revealSource);
           resolve(null);
-        }, { once: true });
+        };
+        this.root!.addEventListener('transitionend', onTransitionEnd);
         this.root!.classList.add('vvw--closing');
         setTimeout(resolve, animDur * 3 + 100);
       });
