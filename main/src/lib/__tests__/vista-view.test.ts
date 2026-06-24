@@ -180,11 +180,8 @@ describe('VistaView', () => {
 
       const closePromise = vv.close(true)
 
-      // Fire transitionend events (close waits for 3 on the root)
-      const root = document.querySelector('#vvw-root')!
-      for (let i = 0; i < 3; i++) {
-        root.dispatchEvent(new TransitionEvent('transitionend', { bubbles: true }))
-      }
+      // Advance timers past the setTimeout fallback (animDur * 3 + 100)
+      vi.advanceTimersByTime(333 * 3 + 100)
 
       await closePromise
 

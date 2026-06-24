@@ -548,48 +548,28 @@ export class VistaView {
     });
 
     if (animate) {
+      const animDur = this.options.animationDurationBase || 333;
       await new Promise((resolve) => {
-        const target = 3;
-        let current = 0;
         this.root!.addEventListener('transitionend', (e) => {
-          if (e.target !== this.root) return;
-          current++;
-
-          if (current === 2) {
-            if (typeof this.elements === 'string') {
-              this.state.children.images.forEach((img) => {
-                img.destroy();
-              });
-              this.qsOrigin(this.elements as string).forEach((el) => {
-                el.style.opacity = '';
-              });
-            }
-          }
-
-          if (current === target) {
-            resolve(null);
-          }
-        });
+          if (e.target !== this.root || e.propertyName !== 'opacity') return;
+          resolve(null);
+        }, { once: true });
         this.root!.classList.add('vvw--closing');
+        setTimeout(resolve, animDur * 3 + 100);
       });
-    } else {
-      if (typeof this.elements === 'string') {
-        this.state.children.images.forEach((img) => {
-          img.destroy();
-        });
-        this.qsOrigin(this.elements as string).forEach((el) => {
-          el.style.opacity = '';
-        });
-      }
     }
 
-    // this.eventHandlers.stop();
+    // reset source element opacity
+    if (typeof this.elements === 'string') {
+      this.qsOrigin(this.elements as string).forEach((el) => {
+        el.style.opacity = '';
+      });
+    }
 
     this.root.remove();
     this.root = null;
     this.imageContainer = null;
-    
-    // cleanup children images and htmls
+
     this.state.children.images.forEach((img) => {
       img.destroy();
     });
