@@ -1,4 +1,3 @@
-import { defineMiddleware } from 'astro:middleware';
 import TurndownService from 'turndown';
 
 const turndown = new TurndownService({
@@ -32,13 +31,13 @@ function extractContent(html: string): string {
   return html.slice(tagEnd, i - 6);
 }
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export async function onRequest(context: { request: Request; next: () => Promise<Response> }) {
   const accept = context.request.headers.get('accept') ?? '';
   if (!accept.includes('text/markdown')) {
-    return next();
+    return context.next();
   }
 
-  const response = await next();
+  const response = await context.next();
   const ct = response.headers.get('content-type') ?? '';
   if (!ct.includes('text/html')) {
     return response;
@@ -54,4 +53,4 @@ export const onRequest = defineMiddleware(async (context, next) => {
       'content-type': 'text/markdown; charset=utf-8',
     },
   });
-});
+}

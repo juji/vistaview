@@ -7,7 +7,6 @@ import svelte from '@astrojs/svelte';
 import vue from '@astrojs/vue';
 import solid from '@astrojs/solid-js';
 import sitemap from '@astrojs/sitemap';
-import cloudflare from '@astrojs/cloudflare';
 
 function collectSlugs(items) {
   const slugs = [];
@@ -145,8 +144,6 @@ const sidebar = [
 // https://astro.build/config
 export default defineConfig({
   site: 'https://vistaview.jujiplay.com',
-  output: 'server',
-  adapter: cloudflare(),
   vite: {
     resolve: {
       alias: {
@@ -168,7 +165,6 @@ export default defineConfig({
     vue(),
     starlight({
       title: 'VistaView v2',
-      prerender: false,
       plugins: [starlightCelestiaTheme()],
       head: [
         {
