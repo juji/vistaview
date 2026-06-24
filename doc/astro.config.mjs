@@ -6,6 +6,7 @@ import react from '@astrojs/react';
 import svelte from '@astrojs/svelte';
 import vue from '@astrojs/vue';
 import solid from '@astrojs/solid-js';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,6 +19,7 @@ export default defineConfig({
     },
   },
 	integrations: [
+		sitemap(),
 		solid({
 			include: ['**/solid/**/*.tsx'],
 		}),
