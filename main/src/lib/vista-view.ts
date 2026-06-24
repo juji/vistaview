@@ -536,11 +536,11 @@ export class VistaView {
       return;
     }
 
-    if (!this.root) {
+    if (!this.root || !this.eventHandlers) {
       return;
     }
 
-    this.eventHandlers!.stop();
+    this.eventHandlers.stop();
     this.eventHandlers = null;
 
     this.state.children.images.forEach((img) => {
