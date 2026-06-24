@@ -1,5 +1,4 @@
 import { defineMiddleware } from 'astro:middleware';
-import { JSDOM } from 'jsdom';
 import TurndownService from 'turndown';
 
 const turndown = new TurndownService({
@@ -7,19 +6,30 @@ const turndown = new TurndownService({
   codeBlockStyle: 'fenced',
 });
 
+turndown.remove('script');
+turndown.remove('style');
+
 function extractContent(html: string): string {
-  const cleaned = html.replace(/<style[\s\S]*?<\/style>/g, '');
-  const dom = new JSDOM(cleaned);
-  const doc = dom.window.document;
+  const idx = html.indexOf('class="sl-markdown-content"');
+  if (idx === -1) return html;
 
-  const el =
-    doc.querySelector('.sl-markdown-content') ??
-    doc.querySelector('article') ??
-    doc.querySelector('main') ??
-    doc.body;
+  const tagEnd = html.indexOf('>', idx) + 1;
+  let depth = 1;
+  let i = tagEnd;
 
-  for (const s of el.querySelectorAll('script')) s.remove();
-  return el.innerHTML;
+  while (i < html.length && depth) {
+    if (html[i] === '<' && html[i + 1] === '/' && html[i + 2] === 'd' && html[i + 3] === 'i' && html[i + 4] === 'v' && html[i + 5] === '>') {
+      depth--;
+      i += 6;
+    } else if (html[i] === '<' && html[i + 1] === 'd' && html[i + 2] === 'i' && html[i + 3] === 'v' && (html[i + 4] === '>' || html[i + 4] === ' ')) {
+      depth++;
+      i += 5;
+    } else {
+      i++;
+    }
+  }
+
+  return html.slice(tagEnd, i - 6);
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {

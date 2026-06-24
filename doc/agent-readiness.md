@@ -11,7 +11,7 @@
 | MCP Server Card | `public/.well-known/mcp/server-card.json` | SEP-2127 format. Identifies project. No remotes (no MCP server exists). |
 | Content-Signal | in robots.txt | `ai-train=yes, search=yes, ai-input=yes` |
 | Sitemap | `@astrojs/sitemap` + `astro.config.mjs` | Generates `sitemap-0.xml` + `sitemap-index.xml`. Referenced in robots.txt. SSR-compatible via sidebar-derived `customPages`. |
-| Markdown for Agents | `src/middleware.ts` + `astro.config.mjs` | SSR middleware. `Accept: text/markdown` triggers `jsdom` extraction of `.sl-markdown-content` → `turndown` conversion. Returns `Content-Type: text/markdown`. Tested working on all doc pages. **Tradeoff:** Requires `prerender: false` (SSR routes), which disables Pagefind search. |
+| Markdown for Agents | `src/middleware.ts` + `astro.config.mjs` | SSR middleware. `Accept: text/markdown` triggers extraction of `.sl-markdown-content` → `turndown` conversion. Returns `Content-Type: text/markdown`. Tested working on all doc pages. **Tradeoff:** Requires `prerender: false` (SSR routes), which disables Pagefind search. Uses `@astrojs/cloudflare` adapter for Cloudflare Pages deployment. |
 
 ## Not Done
 

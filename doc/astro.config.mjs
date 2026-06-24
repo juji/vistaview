@@ -7,7 +7,7 @@ import svelte from '@astrojs/svelte';
 import vue from '@astrojs/vue';
 import solid from '@astrojs/solid-js';
 import sitemap from '@astrojs/sitemap';
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 
 function collectSlugs(items) {
   const slugs = [];
@@ -146,7 +146,7 @@ const sidebar = [
 export default defineConfig({
   site: 'https://vistaview.jujiplay.com',
   output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  adapter: cloudflare(),
   vite: {
     resolve: {
       alias: {
