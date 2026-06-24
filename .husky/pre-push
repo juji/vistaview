@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname "$0")/_/h"
 
-pnpm build && pnpm test
+pnpm build 
+pnpm test
