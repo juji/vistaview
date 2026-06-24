@@ -25,6 +25,10 @@
   "author": "jujiyangasli@gmail.com",
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juji/vistaview.git"
+  },
   "exports": {
     ".": {
       "types": "./main/dist/vistaview.d.ts",
