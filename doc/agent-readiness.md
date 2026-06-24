@@ -10,19 +10,26 @@
 | Agent Skills Index | `public/.well-known/agent-skills/index.json` | v0.2.0 schema. Empty skills array — no agent skills published yet. |
 | MCP Server Card | `public/.well-known/mcp/server-card.json` | SEP-2127 format. Identifies project. No remotes (no MCP server exists). |
 | Content-Signal | in robots.txt | `ai-train=yes, search=yes, ai-input=yes` |
+| Sitemap | `@astrojs/sitemap` + `astro.config.mjs` | Generates `sitemap-0.xml` + `sitemap-index.xml`. Referenced in robots.txt. |
 
-## Not Done / Blocked
+## Not Done
 
 | Area | Why | Path to fix |
 |---|---|---|
 | Markdown for Agents | Cloudflare platform feature, requires Pro/Business plan | Toggle on in Cloudflare dashboard → AI Crawl Control → Markdown for Agents. Or implement via Worker/API. |
-| Sitemap | `@astrojs/sitemap` not installed | `pnpm add @astrojs/sitemap` in `doc/`, add to `astro.config.mjs`, update `robots.txt` with `Sitemap:` line. |
+
+## Future
+
+| Area | Notes |
+|---|---|
+| MCP Server | Build an MCP server (`@modelcontextprotocol/sdk` or Workers `agents-sdk`) that exposes VistaView API as tools (create-gallery, get-config, generate-setup-code). Serve at `/mcp`, add `remotes` entry to `server-card.json`, and point `_mcp._agents` DNS-AID record at it. Would let AI agents generate gallery code dynamically. |
 
 ## Skip (Intentionally)
 
 | Area | Reason |
 |---|---|
 | WebMCP | Static docs site — no dynamic app state for agents to act on. Agents can read HTML/markdown directly. |
+| DNS-AID | No agent endpoints to advertise. Requires actual A2A or MCP server. |
 
 ## Verify
 
