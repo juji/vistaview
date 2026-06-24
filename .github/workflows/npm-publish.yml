@@ -10,7 +10,27 @@ permissions:
   contents: read
 
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          PKG_NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "${PKG_NAME}@${VERSION}" version &>/dev/null; then
+            echo "Version $VERSION already published — skipping"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New version $VERSION — proceeding"
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   test:
+    needs: check-version
+    if: needs.check-version.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
