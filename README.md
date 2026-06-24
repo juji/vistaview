@@ -208,6 +208,26 @@ Available extensions:
 | `vistaview/extensions/image-story` | Instagram-style story layout |
 | `vistaview/extensions/logger` | Debug logging |
 
+## AI Tooling
+
+VistaView's documentation is agent-ready. AI assistants can look up docs, check versions, and verify build status via [MCP Server](https://vistaview.jujiplay.com/ai-integration/):
+
+```json
+{
+  "mcpServers": {
+    "vistaview": {
+      "url": "https://vistaview.jujiplay.com/mcp"
+    }
+  }
+}
+```
+
+- `get_package_info` — npm registry
+- `get_build_status` — GitHub Actions
+- `search_docs` — search all docs
+
+Or just set `Accept: text/markdown` on any doc URL for clean markdown.
+
 ## Development
 
 ```bash
