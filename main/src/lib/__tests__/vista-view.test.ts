@@ -266,4 +266,10 @@ describe('VistaView', () => {
       vv.destroy()
     })
   })
+
+  describe('deliberate failure', () => {
+    it('DELIBERATELY FAILING - remove this test', () => {
+      expect(true).toBe(false)
+    })
+  })
 })
