@@ -1,0 +1,8 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "com.jujiplay.vistaview/v2",
+  "version": "2.0.5",
+  "description": "Zero-dependency TypeScript image lightbox library with touch/pinch, zoom, animations, extension system, and framework bindings for React, Vue, Svelte, and Solid.",
+  "title": "VistaView",
+  "websiteUrl": "https://vistaview.jujiplay.com/"
+}

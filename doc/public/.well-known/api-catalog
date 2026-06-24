@@ -1,0 +1,23 @@
+{
+ "linkset": [
+  {
+   "anchor": "https://vistaview.jujiplay.com/",
+   "service-desc": [
+    {
+     "href": "https://vistaview.jujiplay.com/llms.txt",
+     "type": "text/markdown"
+    },
+    {
+     "href": "https://github.com/juji/vistaview",
+     "type": "text/html"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://vistaview.jujiplay.com/",
+     "type": "text/html"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+/
+  Link: </llms.txt>; rel="describedby"
+  Link: </robots.txt>; rel="service-doc"
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+
+/.well-known/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Access-Control-Allow-Headers: Content-Type
+  Cache-Control: public, max-age=3600
