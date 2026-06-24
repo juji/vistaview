@@ -2,7 +2,7 @@ name: Node.js Package
 
 on:
   push:
-    branches: [main,dev]
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
@@ -53,6 +53,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm publish --access public
+      - name: Publish (latest)
+        if: github.ref_name == 'main'
+        run: pnpm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish (next)
+        if: github.ref_name == 'dev'
+        run: pnpm publish --access public --tag next --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
