@@ -81,6 +81,10 @@ VistaView is a lightweight, modern image lightbox library for the web. Zero depe
   content += `\n\n---\n\n## API Reference\n\n`;
   content += buildDocContent(categories['api-reference']);
 
+  const aiDocs = docs.filter((d) => d.id.startsWith('ai-'));
+  content += `\n\n---\n\n## AI Integration\n\n`;
+  content += buildDocContent(aiDocs);
+
   return new Response(content, {
     status: 200,
     headers: {

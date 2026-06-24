@@ -63,6 +63,16 @@ For AI consumption, the documentation is split into manageable sections:
 - **[llms-extensions.txt](./llms-extensions.txt)** - Extensions for videos, maps, and more (${categories.extensions.length} docs)
 - **[llms-styling.txt](./llms-styling.txt)** - CSS theming and customization (${categories.styling.length} docs)
 - **[llms-api.txt](./llms-api.txt)** - Complete API reference and types (${categories['api-reference'].length} docs)
+- **[AI Integration](./ai-integration)** - MCP Server, Markdown for Agents, LLMs.txt setup
+
+## AI Integration
+
+VistaView provides agent-ready documentation:
+
+- **MCP Server**: JSON-RPC endpoint at \`POST /api/mcp\` with tools: \`get_package_info\`, \`get_build_status\`, \`search_docs\`
+- **Markdown for Agents**: Set \`Accept: text/markdown\` on any doc URL for clean Markdown
+- **LLMs.txt**: This index plus categorized full-text files below
+- **Setup guides**: [AI Integration page](./ai-integration) includes Claude Desktop config
 
 ## Quick Stats
 
