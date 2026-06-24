@@ -27,6 +27,12 @@ export default defineConfig({
 		vue(),
 		starlight({
 			title: 'VistaView v2',
+			head: [
+				{
+					tag: 'script',
+					content: 'localStorage.setItem("starlight-theme","dark");document.documentElement.dataset.theme="dark";',
+				},
+			],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/juji/vistaview' }],
 			sidebar: [
 				{
