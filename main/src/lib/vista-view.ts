@@ -549,9 +549,21 @@ export class VistaView {
 
     if (animate) {
       const animDur = this.options.animationDurationBase || 333;
+
+      // Mid-animation: reset source element opacity so it cross-fades
+      // with the overlay (root opacity starts fading at 2*anim-dur)
+      const revealSource = setTimeout(() => {
+        if (typeof this.elements === 'string') {
+          this.qsOrigin(this.elements as string).forEach((el) => {
+            el.style.opacity = '';
+          });
+        }
+      }, animDur * 2);
+
       await new Promise((resolve) => {
         this.root!.addEventListener('transitionend', (e) => {
           if (e.target !== this.root || e.propertyName !== 'opacity') return;
+          clearTimeout(revealSource);
           resolve(null);
         }, { once: true });
         this.root!.classList.add('vvw--closing');
@@ -559,7 +571,7 @@ export class VistaView {
       });
     }
 
-    // reset source element opacity
+    // fallback: ensure source element opacity is reset
     if (typeof this.elements === 'string') {
       this.qsOrigin(this.elements as string).forEach((el) => {
         el.style.opacity = '';
