@@ -21,6 +21,7 @@
     "react-dom": "^19.2.3",
     "sharp": "^0.34.2",
     "solid-js": "^1.9.10",
+    "starlight-theme-celestia": "^0.2.4",
     "svelte": "^5.46.1",
     "typescript": "^5.9.3",
     "vistaview": "next",

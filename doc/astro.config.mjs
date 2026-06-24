@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightCelestiaTheme from 'starlight-theme-celestia';
 import react from '@astrojs/react';
 import svelte from '@astrojs/svelte';
 import vue from '@astrojs/vue';
@@ -27,6 +28,7 @@ export default defineConfig({
 		vue(),
 		starlight({
 			title: 'VistaView v2',
+			plugins: [starlightCelestiaTheme()],
 			head: [
 				{
 					tag: 'script',
