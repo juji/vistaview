@@ -2,7 +2,7 @@
 
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { readdirSync } from 'fs';
+import { readdirSync, writeFileSync } from 'fs';
 
 // Collect all CSS files from src/styles
 const stylesDir = resolve(__dirname, 'src/styles');
@@ -24,7 +24,21 @@ let entry = {
 
 const isUMD = process.env.UMD === '1';
 
+function writeCssStubs(dir: string) {
+  for (const f of readdirSync(dir, { withFileTypes: true })) {
+    const full = resolve(dir, f.name);
+    if (f.isDirectory()) writeCssStubs(full);
+    else if (f.name.endsWith('.css')) writeFileSync(full + '.d.ts', 'export {};\n');
+  }
+}
+
 export default defineConfig({
+  plugins: [
+    {
+      name: 'css-dts-stubs',
+      closeBundle() { if (!isUMD) writeCssStubs(resolve(__dirname, 'dist')); },
+    },
+  ],
   build: isUMD
     ? {
         outDir: 'dist',

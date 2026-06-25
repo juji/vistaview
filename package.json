@@ -35,9 +35,18 @@
       "import": "./main/dist/vistaview.js",
       "require": "./main/dist/vistaview.umd.js"
     },
-    "./style.css": "./main/dist/style.css",
-    "./styles/*": "./main/dist/styles/*",
-    "./styles/extensions/image-story.css": "./extensions/image-story/dist/style.css",
+    "./style.css": {
+      "types": "./main/dist/style.css.d.ts",
+      "default": "./main/dist/style.css"
+    },
+    "./styles/*.css": {
+      "types": "./main/dist/styles/*.css.d.ts",
+      "default": "./main/dist/styles/*.css"
+    },
+    "./styles/extensions/image-story.css": {
+      "types": "./extensions/image-story/dist/style.css.d.ts",
+      "default": "./extensions/image-story/dist/style.css"
+    },
     "./react": {
       "types": "./frameworks/react/dist/main.d.ts",
       "import": "./frameworks/react/dist/main.es.js"
@@ -81,7 +90,10 @@
       "import": "./extensions/google-maps/dist/main.js",
       "require": "./extensions/google-maps/dist/main.umd.cjs"
     },
-    "./extensions/image-story/style.css": "./extensions/image-story/dist/style.css",
+    "./extensions/image-story/style.css": {
+      "types": "./extensions/image-story/dist/style.css.d.ts",
+      "default": "./extensions/image-story/dist/style.css"
+    },
     "./extensions/image-story": {
       "types": "./extensions/image-story/dist/main.d.ts",
       "import": "./extensions/image-story/dist/main.js",
