@@ -18,7 +18,7 @@ function makeView(overrides: Partial<any> = {}): VistaView {
           setInitialCenter: vi.fn(),
           scaleMove: vi.fn(),
           setFinalTransform: vi.fn(() => ({ close: false, cancel: vi.fn() })),
-          momentumThrow: vi.fn(() => vi.fn()),
+          theThrow: vi.fn(() => vi.fn()),
           isThrowing: false,
           fullW: 800,
           minW: 400,

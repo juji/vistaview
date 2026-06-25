@@ -194,7 +194,7 @@ main/
 | Module | What to test |
 |--------|-------------|
 | `vista-box.ts` | State creation, setSizes, normalize, destroy (DOM cleanup), cloneStyleFrom, setFinalTransform, toObject |
-| `vista-image.ts` | Image element creation, onLoad flow, srcSet resolution, scaleMove math, animateZoom bounds, momentumThrow, setFinalTransform close logic |
+| `vista-image.ts` | Image element creation, onLoad flow, srcSet resolution, scaleMove math, animateZoom bounds, theThrow, setFinalTransform close logic |
 | `vista-pointers.ts` | Pointer down/move/up/cancel event handling, multi-touch, centroid calculation, distance calculation, listener lifecycle |
 | `vista-image-event.ts` | Keyboard shortcuts, wheel zoom, resize handler, pointer event delegation, pinch gesture detection |
 | `components.ts` | Trusted types handling, HTML structure generation, control layout, extension container population |

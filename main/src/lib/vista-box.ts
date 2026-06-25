@@ -206,7 +206,7 @@ export abstract class VistaBox {
   onImageReady(): void {}
   animateZoom(_scaleFactor: number, _center?: { x: number; y: number }): void {}
   scaleMove(_scaleFactor: number, _center?: { x: number; y: number }, _animate?: boolean): void {}
-  momentumThrow(_par: { x: number; y: number }): () => void {
+  theThrow(_par: { x: number; y: number }): () => void {
     return () => {};
   }
 

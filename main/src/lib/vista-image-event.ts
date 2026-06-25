@@ -98,7 +98,7 @@ export class VistaImageEvent {
       } else if (this.vvw.state.zoomedIn && e.pointers.length === 0 && !this.isPinching()) {
         // End drag: animate back to bounds if necessary
         vistaImage.isThrowing = true;
-        this.cancelMove = vistaImage.momentumThrow({
+        this.cancelMove = vistaImage.theThrow({
           x: e.pointer.movementX,
           y: e.pointer.movementY,
         });

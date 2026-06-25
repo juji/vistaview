@@ -153,20 +153,20 @@ describe('VistaImage', () => {
     img.element.remove()
   })
 
-  it('momentumThrow returns noop when not ready', () => {
+  it('theThrow returns noop when not ready', () => {
     const img = new VistaImage(makeParams())
     img.isReady = false
-    const cleanup = img.momentumThrow({ x: 10, y: 10 })
+    const cleanup = img.theThrow({ x: 10, y: 10 })
     expect(cleanup).toEqual(expect.any(Function))
     img.cancelPendingLoad()
     img.element.remove()
   })
 
-  it('momentumThrow returns noop when not throwing', () => {
+  it('theThrow returns noop when not throwing', () => {
     const img = new VistaImage(makeParams())
     img.isReady = true
     img.isThrowing = false
-    const cleanup = img.momentumThrow({ x: 10, y: 10 })
+    const cleanup = img.theThrow({ x: 10, y: 10 })
     expect(cleanup).toEqual(expect.any(Function))
     img.cancelPendingLoad()
     img.element.remove()

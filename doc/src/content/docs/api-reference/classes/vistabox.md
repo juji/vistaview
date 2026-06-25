@@ -185,10 +185,10 @@ scaleMove(scaleFactor: number, center?: { x: number; y: number }, animate?: bool
 
 Override to implement custom scale and movement logic.
 
-### momentumThrow()
+### theThrow()
 
 ```typescript
-momentumThrow(par: { x: number; y: number }): () => void
+theThrow(par: { x: number; y: number }): () => void
 ```
 
 Override to implement momentum scrolling after a swipe gesture.

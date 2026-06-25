@@ -171,7 +171,7 @@ export class VistaImage extends VistaBox {
   }
 
   // Used by: VistaImageEvent
-  momentumThrow(par: { x: number; y: number }) {
+  theThrow(par: { x: number; y: number }) {
     if (!this.isReady) {
       return () => {};
     }
@@ -213,7 +213,7 @@ export class VistaImage extends VistaBox {
     }
 
     requestAnimationFrame(() => {
-      if (!this.isThrowing) return this.momentumThrow({ x: 0, y: 0 });
+      if (!this.isThrowing) return this.theThrow({ x: 0, y: 0 });
 
       const img = this.element!;
       const t = this.state.transform;
@@ -241,7 +241,7 @@ export class VistaImage extends VistaBox {
 
       this.state.transform = t;
 
-      this.momentumThrow({
+      this.theThrow({
         x: par.x * 0.9,
         y: par.y * 0.9,
       });
