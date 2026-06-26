@@ -107,6 +107,10 @@ const sidebar = [
     ],
   },
   {
+    label: 'File Sizes',
+    slug: 'file-sizes',
+  },
+  {
     label: 'API Reference',
     items: [
       { label: 'Main Function', slug: 'api-reference/main-function' },

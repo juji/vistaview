@@ -1,0 +1,132 @@
+<section class="file-sizes-section">
+	<div>
+		<h2>Lightweight by Design</h2>
+		<p>
+			VistaView is built to be lightweight. The entire core library is just <strong>10.5 KB gzip</strong> — zero dependencies, no bloat. Framework bindings are under 1 KB each.
+		</p>
+		<p><a href="/file-sizes/">View full file size details →</a></p>
+	</div>
+	<div>
+		<table class="size-table">
+			<thead>
+				<tr>
+					<th>Package</th>
+					<th>Gzip</th>
+					<th>Raw</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Core Library</td>
+					<td><strong>10.5 KB</strong></td>
+					<td>39.4 KB</td>
+				</tr>
+				<tr>
+					<td>React Binding</td>
+					<td><strong>0.7 KB</strong></td>
+					<td>1.6 KB</td>
+				</tr>
+				<tr>
+					<td>Vue Binding</td>
+					<td><strong>1.1 KB</strong></td>
+					<td>2.8 KB</td>
+				</tr>
+				<tr>
+					<td>Svelte Binding</td>
+					<td><strong>0.4 KB</strong></td>
+					<td>0.9 KB</td>
+				</tr>
+				<tr>
+					<td>Solid Binding</td>
+					<td><strong>0.9 KB</strong></td>
+					<td>2.5 KB</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="table-footnote">Updated June 27, 2026</p>
+	</div>
+</section>
+
+<style>
+	.file-sizes-section {
+		padding: 2rem 0;
+		text-align: start;
+
+		@media screen and (min-width: 50rem) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
+
+			.size-table {
+				margin-left: 2rem;
+			}
+		}
+	}
+
+	.file-sizes-section h2 {
+		font-size: var(--sl-text-2xl);
+		margin-bottom: 1rem;
+	}
+
+	.file-sizes-section p {
+		max-width: 60ch;
+		margin: 0 0 2rem 0;
+		color: var(--sl-color-gray-2);
+	}
+
+	.size-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--sl-text-sm);
+	}
+
+	.size-table th,
+	.size-table td {
+		padding: 0.5rem 0.75rem;
+		text-align: left;
+		border-bottom: 1px solid var(--sl-color-gray-5);
+	}
+
+	.size-table th {
+		color: var(--sl-color-gray-3);
+		font-weight: 500;
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.size-table th:first-child,
+	.size-table td:first-child {
+		width: 30%;
+		color: var(--sl-color-gray-1);
+	}
+
+	.size-table th:nth-child(2),
+	.size-table td:nth-child(2) {
+		width: 50%;
+	}
+
+	.size-table th:last-child,
+	.size-table td:last-child {
+		width: 20%;
+	}
+
+	.size-table td strong {
+		color: #22c55e;
+		font-weight: 600;
+		font-size: var(--sl-text-base);
+	}
+
+	.file-sizes-section .table-footnote {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		margin: 2rem 0 0 0;
+		max-width: none;
+	}
+
+	@media screen and (min-width: 50rem) {
+		.file-sizes-section .table-footnote {
+			margin-left: 2rem;
+		}
+	}
+</style>
