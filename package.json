@@ -18,9 +18,9 @@
     "touch",
     "responsive"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./main/dist/vistaview.js",
+  "module": "./main/dist/vistaview.js",
+  "types": "./main/dist/vistaview.d.ts",
   "browser": {},
   "author": "jujiyangasli@gmail.com",
   "license": "MIT",

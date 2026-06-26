@@ -87,7 +87,7 @@ const { themeName } = Astro.props;
       // Load new theme
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = `https://unpkg.com/vistaview/dist/styles/${themeName}.css`;
+      link.href = `https://unpkg.com/vistaview/main/dist/styles/${themeName}.css`;
       link.onload = () => resolve();
       link.onerror = () => resolve(); // Resolve even on error
       document.head.appendChild(link);
