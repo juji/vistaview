@@ -165,7 +165,7 @@ export default defineConfig({
     svelte(),
     vue(),
     starlight({
-      title: 'VistaView v2',
+      title: 'VistaView',
       plugins: [starlightCelestiaTheme()],
       head: [
         {
