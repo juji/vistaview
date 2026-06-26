@@ -1,6 +1,6 @@
 {
   "name": "vistaview",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A lightweight, zero-dependency image lightbox library with smooth animations and touch support",
   "keywords": [
     "image",
@@ -167,10 +167,8 @@
     "dev": "pnpm --parallel dev",
     "prepare": "husky || true"
   },
-  "dependencies": {
-    "husky": "^9.1.7"
-  },
   "devDependencies": {
+    "husky": "^9.1.7",
     "@playwright/test": "^1.52.0"
   }
 }
